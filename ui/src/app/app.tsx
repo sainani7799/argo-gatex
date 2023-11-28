@@ -1,14 +1,34 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.css';
+import { useState } from 'react';
+import './app.module.css';
+import NxWelcome from "./nx-welcome";
+import axios from 'axios';
+import AppRoutes from './app-routes';
 
-import NxWelcome from './nx-welcome';
+
 
 export function App() {
+  const [load, setLoad] = useState<any>();
+
+
+  axios.interceptors.request.use(request => {
+      setLoad(true);
+      return request;
+  });
+
+  axios.interceptors.response.use(response => {
+      setLoad(false);
+      return response;
+  }, error => {
+      setLoad(false);
+      throw error;
+  });
+
   return (
-    <div>
-      <NxWelcome title="ui" />
-    </div>
-  );
+    <>
+     <AppRoutes />
+    </>);
+
 }
+
 
 export default App;

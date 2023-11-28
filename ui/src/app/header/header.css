@@ -1,0 +1,59 @@
+.menuCon {
+    width: calc(100% - 10px);
+    float: left;
+    position: relative;
+  }
+  
+  .header-icon {
+    margin: 0 15px;
+  }
+  
+  .header-icon i {
+    font-size: 20px;
+  }
+  
+  
+  .ant-layout-header {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px -2px rgb(0 0 0 / 5%);
+  
+  }
+  
+  .header-row .ant-form-item {
+    margin-bottom: 0;
+  }
+  
+  .logo h1 {
+    letter-spacing: 10px;
+    margin-left: 12px;
+    margin-top: 0px;
+    display: inline-block;
+    font-weight: 600;
+    font-size: 40px;
+    font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+    padding: 5px;
+    cursor: pointer;
+    /* background: linear-gradient(to right, #1cc91c, rgb(84, 128, 241), rgb(217, 48, 191)); */
+    /* background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+    /* -webkit-background-clip: text; */
+    overflow: visible;
+    /* animation: shine 1s linear infinite; */
+  }
+  
+  .ant-dropdown-link .ant-avatar {
+    height: 40px;
+    width: 40px;
+  }
+
+  .header-search .ant-select-selector{
+    border-radius:15px !important
+  }
