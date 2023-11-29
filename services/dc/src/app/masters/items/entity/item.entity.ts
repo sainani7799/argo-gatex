@@ -1,0 +1,57 @@
+import { Column, Entity,  CreateDateColumn, UpdateDateColumn, VersionColumn,PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity('shahi_item') 
+export class ItemEntity  {
+
+    @PrimaryGeneratedColumn("increment", { name: 'item_id' })
+    itemId: number;
+
+    @Column('varchar', {
+        name: 'item_code',
+        length: 50
+    })
+    itemCode: string;
+
+    @Column('varchar', {
+        name: 'item_name',
+        length: 50
+    })
+    itemName: string;
+
+    @Column('varchar', {
+        name: 'description',
+    })
+    description: string;
+
+    @Column('varchar', {
+        name: 'uom',
+    })
+    uom: string;
+
+
+    @CreateDateColumn({
+        name: "created_at",
+        type: "datetime"
+    })
+    createdAt: Date;
+    
+
+    @Column('varchar', {
+        name: 'created_user',
+    })
+    createdUser: string;
+
+    @Column({
+        nullable: false,
+        name: "is_active",
+        default: 1
+    })
+    isActive: boolean;
+
+    @VersionColumn({
+        default: 1,
+        name: "version_flag"
+    })
+    versionFlag: number;
+
+}
