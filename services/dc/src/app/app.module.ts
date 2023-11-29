@@ -9,9 +9,11 @@ import { AppDataSource } from './app-data-source';
 import { DataSource } from 'typeorm';
 import { UnitModule } from './masters/branch/unit.module';
 import { SectionsEntity } from './masters/department/entity/section.entity';
+import { WarehouseModule } from './masters/warehouse/warehouse.module';
+import { SupplierModule } from './masters/supplier/supplier.module';
 
 @Module({
-  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity],
+  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: DataSource,

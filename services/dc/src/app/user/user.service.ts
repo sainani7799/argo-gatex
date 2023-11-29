@@ -67,9 +67,9 @@ export class UserMangementService {
   async create(userDto: CreateUserDto): Promise<CommonResponse> {
     const { userId, userName, password, employeeId ,cardNo,unitId } = userDto;
 
-    // check if the user exists in the db    
-    console.log(userDto,'userDto')
-    console.log(userDto.cardNo,'userDto.cardNo')
+    // // check if the user exists in the db    
+    // console.log(userDto,'userDto')
+    // console.log(userDto.cardNo,'userDto.cardNo')
     const userInDb = await AppDataSource.getRepository(UserEntity).findOne({
       where: { cardNo: userDto.cardNo }
     });
@@ -80,7 +80,7 @@ export class UserMangementService {
     }
 
     const user: UserEntity = await AppDataSource.getRepository(UserEntity).create({ userName, password, employeeId , cardNo,unitId});
-    console.log(user,'user.....')
+    // console.log(user,'user.....')
     await AppDataSource.getRepository(UserEntity).save(user);
     return toUserDto(user);
 }
