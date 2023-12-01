@@ -97,121 +97,132 @@ const AddressForm = (props: AddressFormProps) => {
             >
                 <Card>
 
-                    <Row gutter={24}   >
+                    <Row gutter={24}>
                         <Form.Item name="addressId" style={{ display: "none" }}>
                             <Input hidden />
                         </Form.Item>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                            <Form.Item name="addresser" label="Address Type"
-                                rules={[
-                                    { required: true },
-                                ]}>
-                                <Select
-                                    placeholder="Select Address Type"
-                                    style={{ width: 210 }}
-                                    allowClear
-                                    onChange={handleAddressTypeChange}
-                                >
-                                    <Select.Option value="unit">Unit</Select.Option>
-                                    <Select.Option value="Supplier">Supplier</Select.Option>
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }}>
-                            <Form.Item name="addressName" label="Name" rules={[{ required: true }]}>
-                                <Select
-                                    showSearch
-                                    placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'Supplier'}`}
-                                    optionFilterProp="children"
-                                    allowClear
-                                >
-                                    {selectedAddressType === 'unit'
-                                        ? unit.map((rec: any) => (
-                                            <Select.Option key={rec.unitCode} value={rec.unitCode}>
-                                                {rec.unitName}
-                                            </Select.Option>
-                                        ))
-                                        : supplier.map((rec: any) => (
-                                            <Select.Option key={rec.supplierCode} value={rec.supplierCode}>
-                                                {rec.supplierName}
-                                            </Select.Option>
-                                        ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <br/><br/><br/><br/>
-                        <Row>
-                            <Card >
-                                <Row style={{width:'100%'}}>
-                                    <Col>
-                                <Form.Item name="lineOne" label="lineOne"
+                        <Row style={{ width: '50%', margin: '10px auto 10px auto' }}>
+                            <Card style={{ width: '100%' }}>
+                                <Row style={{ width: '100%' }}>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="addresser" label="Address Type"
+                                            rules={[
+                                                { required: true },
+                                            ]} style={{ width: '90%' }}>
+                                            <Select
+                                                placeholder="Select Address Type"
+                                                style={{ width: "100%" }}
+                                                allowClear
+                                                onChange={handleAddressTypeChange}
+                                            >
+                                                <Select.Option value="unit">Unit</Select.Option>
+                                                <Select.Option value="Supplier">Supplier</Select.Option>
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="addressName" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
+                                            <Select
+                                                showSearch
+                                                placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'Supplier'}`}
+                                                optionFilterProp="children"
+                                                allowClear
+                                                style={{ width: '100%' }}
+                                            >
+                                                {selectedAddressType === 'unit'
+                                                    ? unit.map((rec: any) => (
+                                                        <Select.Option key={rec.unitCode} value={rec.unitCode}>
+                                                            {rec.unitName}
+                                                        </Select.Option>
+                                                    ))
+                                                    : supplier.map((rec: any) => (
+                                                        <Select.Option key={rec.supplierCode} value={rec.supplierCode}>
+                                                            {rec.supplierName}
+                                                        </Select.Option>
+                                                    ))}
+                                            </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Form.Item name="lineOne" label="line One"
                                     rules={[
                                         { required: true },
-                                    ]}>
-                                    <Input placeholder=" Enter lineOne" />
+                                    ]} style={{ width: '90%' }}>
+                                    <Input placeholder=" Enter line One" style={{ width: '100%' }} />
                                 </Form.Item>
-                                    </Col>
-                                    <Col>
-
                                 <Form.Item name="lineTwo" label="line Two"
                                     rules={[
                                         { required: true },
-                                    ]}>
-                                    <Input placeholder=" Enter line Two" />
+                                    ]} style={{ width: '90%' }}>
+                                    <Input placeholder=" Enter line Two" style={{ width: '100%' }} />
                                 </Form.Item>
-                                </Col>
+                                <Row style={{ width: '100%' }}>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="city" label="city:"
+                                            rules={[
+                                                { required: true },
+                                            ]}
+                                            style={{ width: '90%' }}
+                                        >
+                                            <Input placeholder=" Enter city" />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="dist" label="Dist" style={{ width: '90%' }}>
+                                            <Input placeholder=" Enter Dist" />
+                                        </Form.Item>
+                                    </Col>
                                 </Row>
-                                <Form.Item name="city" label="city:"
+                                <Row style={{ width: '100%' }}>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item
+                                            name="pinCode"
+                                            label="Pin Code"
+                                            rules={[
+                                                { required: true, message: ' Valid Mobile No is required', min: 6, },
+                                                {
+                                                    pattern: /^[0-9]*$/,
+                                                    message: `Don't Allow letters and Spaces`
+                                                }
+                                            ]}
+                                            style={{ width: '90%' }}>
+                                            <Input />
+                                        </Form.Item>
+                                    </Col>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="state" label="state"
+                                            rules={[
+                                                { required: true },
+                                            ]}
+                                        >
+                                            <Input placeholder=" Enter state" />
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+
+
+
+                                <Form.Item name="country" label="country"
                                     rules={[
                                         { required: true },
                                     ]}
                                 >
-                                    <Input placeholder=" Enter city" />
-                                </Form.Item>
-                                <Form.Item name="dist" label="Dist">
-                                    <Input placeholder=" Enter Dist" />
+                                    <Input placeholder=" Enter country" />
                                 </Form.Item>
 
-                                <Form.Item
-                                    name="pinCode"
-                                    label="Pin Code"
-                                    rules={[
-                                        { required: true, message: ' Valid Mobile No is required', min: 6, },
-                                        {
-                                            pattern: /^[0-9]*$/,
-                                            message: `Don't Allow letters and Spaces`
-                                        }
-                                    ]}>
-                                    <Input />
+                                <Form.Item style={{ display: "none" }} name="createdUser"  >
                                 </Form.Item>
-                                <Form.Item name="state" label="state"
-                                rules={[
-                                    { required: true },
-                                ]}
-                            >
-                                <Input placeholder=" Enter state" />
-                            </Form.Item>
-
-                            <Form.Item name="country" label="country"
-                                rules={[
-                                    { required: true },
-                                ]}
-                            >
-                                <Input placeholder=" Enter country" />
-                            </Form.Item>
-
-                            <Form.Item style={{ display: "none" }} name="createdUser"  >
-                            </Form.Item>
-                            <Button type="primary" htmlType="submit">
-                                Submit
-                            </Button>
-                            {(props.isUpdate !== true) &&
-                                <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
-                                    Reset
-                                </Button>}
+                                <Button type="primary" htmlType="submit">
+                                    Submit
+                                </Button>
+                                {(props.isUpdate !== true) &&
+                                    <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
+                                        Reset
+                                    </Button>}
                             </Card>
                         </Row>
                     </Row>
+
                 </Card>
 
             </Form>
