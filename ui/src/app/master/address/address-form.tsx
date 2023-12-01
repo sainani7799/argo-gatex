@@ -1,5 +1,5 @@
 import { CreateAddressDto, CreateEmployeeDto } from 'libs/shared-models/src';
-import {  AddressService, DepartmentService, DesignationService, EmployeeService, UnitService } from 'libs/shared-services/src';
+import { AddressService, DepartmentService, DesignationService, EmployeeService, SupplierService, UnitService } from 'libs/shared-services/src';
 import { Button, Card, Col, DatePicker, Form, Input, Row, Select, message, theme } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';
@@ -20,23 +20,29 @@ const AddressForm = (props: AddressFormProps) => {
     const { token: { colorPrimary } } = useToken()
     const [form] = Form.useForm();
     let navigate = useNavigate()
-    const [designation, setDesignation] = useState<any[]>([]);
-    const [department, setDepartment] = useState<any[]>([]);
-    const [section, setSection] = useState<any[]>([]);
     const [unit, setUnit] = useState<any[]>([]);
-    const [employeeNames, setEmployeeNames] = useState<any[]>([]);
-    const designationService = new DesignationService();
+    const [supplier, setSupplier] = useState<any[]>([]);
     const unitService = new UnitService();
-    const departmentService = new DepartmentService();
+    const supplierService = new SupplierService();
     const service = new AddressService;
+    const [selectedAddressType, setSelectedAddressType] = useState(null);
+    const authdata = JSON.parse(localStorage.getItem('userName'))
+    const handleAddressTypeChange = (value) => {
+        setSelectedAddressType(value);
+    };
 
     const onReset = () => {
         form.resetFields();
     };
 
+    useEffect(() => {
+        form.setFieldsValue({ createdUser: authdata.userName })
+    }, [])
+
 
     useEffect(() => {
         getAllUnits();
+        getAllSuppliers();
 
     }, []);
 
@@ -51,13 +57,22 @@ const AddressForm = (props: AddressFormProps) => {
         })
     }
 
+    const getAllSuppliers = () => {
+        supplierService.getAllSuppliers().then((res) => {
+            if (res) {
+                setSupplier(res.data);
+                console.log(res.data)
+            }
+        })
+    }
+
 
     const save = (addressData: CreateAddressDto) => {
         service.createAddress(addressData).then(res => {
             if (res) {
                 onReset();
                 message.success('Created Successfully')
-                navigate('/employee-view')
+                // navigate('/employee-view')
             } else {
                 console.log(res.internalMessage, "**********");
                 message.error('Not Created')
@@ -67,17 +82,12 @@ const AddressForm = (props: AddressFormProps) => {
         })
     }
 
-    const saveData = (values: CreateEmployeeDto) => {
-        // console.log('va', values);
-        // if (props.isUpdate) {
-        //     props.updateDetails(values);
-        // } else {
-        //     save(values);
-        // }
+    const saveData = (values: CreateAddressDto) => {
+        save(values);
     };
 
     return (
-        <Card title={<span style={{ color: 'white' }}>Employee Form</span>}
+        <Card title={<span style={{ color: 'white' }}>Add Address</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/employee-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
             <Form
                 form={form}
@@ -85,202 +95,125 @@ const AddressForm = (props: AddressFormProps) => {
                 onFinish={saveData}
                 layout='vertical'
             >
+                <Card>
 
-                <Row gutter={24}   >
-                    <Form.Item name="addressId" style={{ display: "none" }}>
-                        <Input hidden />
-                    </Form.Item>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="addresser" label="Address Type"
-                        rules={[
-                            { required: true },
-                        ]}>
-                            <Input placeholder="select addresser" />
+                    <Row gutter={24}   >
+                        <Form.Item name="addressId" style={{ display: "none" }}>
+                            <Input hidden />
                         </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="addressName" label="Name"
-                        rules={[
-                            { required: true },
-                        ]}>
-                            <Input placeholder=" select Name" />
-                        </Form.Item>
-                    </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                            <Form.Item name="addresser" label="Address Type"
+                                rules={[
+                                    { required: true },
+                                ]}>
+                                <Select
+                                    placeholder="Select Address Type"
+                                    style={{ width: 210 }}
+                                    allowClear
+                                    onChange={handleAddressTypeChange}
+                                >
+                                    <Select.Option value="unit">Unit</Select.Option>
+                                    <Select.Option value="Supplier">Supplier</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }}>
+                            <Form.Item name="addressName" label="Name" rules={[{ required: true }]}>
+                                <Select
+                                    showSearch
+                                    placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'Supplier'}`}
+                                    optionFilterProp="children"
+                                    allowClear
+                                >
+                                    {selectedAddressType === 'unit'
+                                        ? unit.map((rec: any) => (
+                                            <Select.Option key={rec.unitCode} value={rec.unitCode}>
+                                                {rec.unitName}
+                                            </Select.Option>
+                                        ))
+                                        : supplier.map((rec: any) => (
+                                            <Select.Option key={rec.supplierCode} value={rec.supplierCode}>
+                                                {rec.supplierName}
+                                            </Select.Option>
+                                        ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <br/><br/><br/><br/>
+                        <Row>
+                            <Card >
+                                <Row style={{width:'100%'}}>
+                                    <Col>
+                                <Form.Item name="lineOne" label="lineOne"
+                                    rules={[
+                                        { required: true },
+                                    ]}>
+                                    <Input placeholder=" Enter lineOne" />
+                                </Form.Item>
+                                    </Col>
+                                    <Col>
 
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="cardNo" label="Card No"
-                        rules={[
-                            { required: true },
-                        ]}>
-                            <Input placeholder=" Enter Card No" />
-                        </Form.Item>
-                    </Col>
-                   
+                                <Form.Item name="lineTwo" label="line Two"
+                                    rules={[
+                                        { required: true },
+                                    ]}>
+                                    <Input placeholder=" Enter line Two" />
+                                </Form.Item>
+                                </Col>
+                                </Row>
+                                <Form.Item name="city" label="city:"
+                                    rules={[
+                                        { required: true },
+                                    ]}
+                                >
+                                    <Input placeholder=" Enter city" />
+                                </Form.Item>
+                                <Form.Item name="dist" label="Dist">
+                                    <Input placeholder=" Enter Dist" />
+                                </Form.Item>
 
-
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="gender" label="Gender:"
-                            rules={[
-                                { required: true },
-                            ]}
-                        >
-                            <Select placeholder=" Select Gender" style={{ width: 210 }}
-                                allowClear
-                                options={[
-                                    { value: 'male', label: 'Male' },
-                                    { value: 'Female', label: 'Female' },
+                                <Form.Item
+                                    name="pinCode"
+                                    label="Pin Code"
+                                    rules={[
+                                        { required: true, message: ' Valid Mobile No is required', min: 6, },
+                                        {
+                                            pattern: /^[0-9]*$/,
+                                            message: `Don't Allow letters and Spaces`
+                                        }
+                                    ]}>
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="state" label="state"
+                                rules={[
+                                    { required: true },
                                 ]}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="maritalStatus" label="Marital Status">
-                            <Select
-                                showSearch
-                                placeholder="Select Marital Status"
                             >
-                                <Option key={1} value={'Married'}>Married</Option>
-                                <Option key={2} value={'UnMarried'}>UnMarried </Option>
-                                <Option key={3} value={'Others'}>Others </Option>
-                            </Select>
-                        </Form.Item>
-                    </Col>
+                                <Input placeholder=" Enter state" />
+                            </Form.Item>
 
-
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item
-                            name="mobileNumber"
-                            label="Mobile Number"
-                            rules={[
-                                { required: true, message: ' Valid Mobile No is required', min: 10, max: 12 },
-                                {
-                                    pattern: /^[0-9]*$/,
-                                    message: `Don't Allow letters and Spaces`
-                                }
-                            ]}>
-                            <Input />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="emailId" label="Email Id:"
-                            rules={[
-                                { required: true },
-                            ]}
-                        >
-                            <Input placeholder=" Enter Email Id" />
-                        </Form.Item>
-                        {/* <Select placeholder=" Enter Employee Code:" style={{ width: 150 }}> */}                        {/* </Select> */}
-                    </Col>
-
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="designation" label="Designation"
-                            rules={[
-                                { required: true },
-                            ]}
-                        >
-                            <Select
-                                showSearch
-                                placeholder="Select Designation "
-                                optionFilterProp="children"
-                                dropdownMatchSelectWidth={false}
-                                allowClear
+                            <Form.Item name="country" label="country"
+                                rules={[
+                                    { required: true },
+                                ]}
                             >
-                                {designation.map((rec: any) => {
-                                    return (
-                                        <Option key={rec.designationId} value={rec.designationId}>
-                                            {rec.designation}
-                                        </Option>
-                                    )
-                                })}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    
+                                <Input placeholder=" Enter country" />
+                            </Form.Item>
 
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="department" label="Department" rules={[
-                                { required: true },
-                            ]}>
-                            <Select
-                                showSearch
-                                placeholder="Select Department "
-                                dropdownMatchSelectWidth={false}
-                                optionFilterProp="children"
-                                // onChange={getAllSectionsForDrop}
-                                allowClear
-                            >
-                                {department.map((rec: any) => {
-                                    return (
-                                        <Option key={rec.id} value={rec.id}>
-                                            {rec.departmentName}
-                                        </Option>
-                                    )
-                                })}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="section" label="Section" rules={[
-                                { required: true },
-                            ]}>
-                            <Select
-                                showSearch
-                                placeholder="Select Section "
-                                dropdownMatchSelectWidth={false}
-                                optionFilterProp="children"
-                                allowClear
-                            >
-                                {section.map((rec: any) => {
-                                    return (
-                                        <Option key={rec.section_id} value={rec.section_id}>
-                                            {rec.section}
-                                        </Option>
-                                    )
-                                })}
-                            </Select>
-                        </Form.Item>
-                    </Col>
+                            <Form.Item style={{ display: "none" }} name="createdUser"  >
+                            </Form.Item>
+                            <Button type="primary" htmlType="submit">
+                                Submit
+                            </Button>
+                            {(props.isUpdate !== true) &&
+                                <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
+                                    Reset
+                                </Button>}
+                            </Card>
+                        </Row>
+                    </Row>
+                </Card>
 
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="unit" label="Unit"
-                            rules={[
-                                { required: true },
-                            ]}
-                        >
-                            <Select
-                                showSearch
-                                placeholder="Select Unit "
-                                optionFilterProp="children"
-                                allowClear
-                            >
-                                {unit.map((rec: any) => {
-                                    return (
-                                        <Option key={rec.unitCode} value={rec.unitCode}>
-                                            {rec.unitName}
-                                        </Option>
-                                    )
-                                })}
-                            </Select>
-                        </Form.Item>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="address" label="Address" >
-                            <TextArea />
-                        </Form.Item>
-                    </Col>
-                </Row>
-                <Row justify="end">
-                    <Col span={40} style={{ textAlign: 'right' }}>
-
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                        {(props.isUpdate !== true) &&
-                            <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
-                                Reset
-                            </Button>}
-                    </Col>
-                </Row>
             </Form>
         </Card>
     )

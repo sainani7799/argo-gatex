@@ -9,4 +9,7 @@ export class SupplierService extends CommonAxiosServicePms {
     async createSupplier(createDto: SupplierDto[]): Promise<any> {
         return  this.axiosPostCall(this.SupplierController +'/createSupplier', createDto, );
     }
+    async getAllSuppliers(): Promise<any> {
+        return await this.axiosGetCall(this.SupplierController + '/getAllSuppliers')
+    }
 }

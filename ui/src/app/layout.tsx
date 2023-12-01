@@ -86,6 +86,9 @@ export default function BasicLayout() {
                             <Menu.Item key="supplier-form" icon={<UserOutlined />}>
                                 <Link to="/supplier-form"><span>Supplier</span></Link>
                             </Menu.Item>
+                            <Menu.Item key="address-form" icon={<UserOutlined />}>
+                                <Link to="/address-form"><span>Address</span></Link>
+                            </Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>
