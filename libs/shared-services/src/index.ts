@@ -5,3 +5,4 @@ export * from './common-axios-service-prs';
 export * from './department';
 export * from './designation';
 export * from './unit';
+export * from './address'
