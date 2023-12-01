@@ -1,0 +1,92 @@
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { SupplierService } from 'libs/shared-services';
+import { SupplierDto } from 'libs/shared-models';
+import form from 'antd/es/form';
+
+const { useToken } = theme;
+const { Option } = Select;
+
+const SupplierForm = () => {
+    const { token: { colorPrimary } } = useToken()
+    const [form] = Form.useForm();
+    const service = new SupplierService();
+    const navigate = useNavigate();
+    const authdata = JSON.parse(localStorage.getItem('userName'))
+    console.log(authdata)
+
+    const onReset = () => {
+        form.resetFields();
+    };
+
+    useEffect(() => {
+        form.setFieldsValue({createdUser:authdata.userName})
+    }, [])
+
+
+    const save = (supplerData: SupplierDto[]) => {
+        service.createSupplier(supplerData).then(res => {
+            if (res) {
+                onReset();
+                message.success('Created Successfully')
+                // navigate('/employee-view')
+            } else {
+                console.log(res.internalMessage, "**********");
+                message.error('Not Created')
+            }
+        }).catch(err => {
+            message.error('')
+        })
+    }
+    const saveData = (values: SupplierDto[]) => {
+        console.log('va', values);
+        save(values);
+    }
+
+
+    return (
+        <Card title={<span style={{ color: 'white' }}>Supplier Form</span>}
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/supplier-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            <Form
+                form={form}
+                onFinish={saveData}
+                layout='vertical'
+            >
+
+                <Row gutter={24}   >
+                    <Form.Item name="supplierId" style={{ display: "none" }}>
+                        <Input hidden />
+                    </Form.Item>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                        <Form.Item name="supplierName" label="Supplier Name"
+                            rules={[
+                                { required: true },
+                            ]}>
+                            <Input placeholder=" Enter Supplier Name" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 4 }} style={{ margin: '1%' }}
+                    >
+                        <Form.Item style={{ display: "none" }} name="createdUser"  >
+                        </Form.Item>
+                    </Col>
+
+                </Row>
+                <Row justify="end">
+                    <Col span={40} style={{ textAlign: 'right' }}>
+
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                        <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
+                            Reset
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        </Card>
+    );
+};
+
+export default SupplierForm;

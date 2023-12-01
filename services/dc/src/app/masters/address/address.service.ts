@@ -12,14 +12,15 @@ export class AddressService {
     
   ) { }
 
-  async createAddress(dto:CreateAddressDto[]):Promise<CommonResponse>{
+  async createAddress(dto:CreateAddressDto | CreateAddressDto[]):Promise<CommonResponse>{
     try{
-        for( const obj of dto){
+      const address = Array.isArray(dto) ? dto : [dto];
+        for( const obj of address){
             const existingAddress = await AppDataSource.getRepository(AddressEntity).findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
             if(existingAddress){
                 return await new CommonResponse(false,444,'already address created for this name',existingAddress)
             }else{
-                for(const obj of dto){
+                for(const obj of address){
                     const entity = new AddressEntity()
                     entity.addressId = obj.addressId;
                     entity.addresser = obj.addresser;

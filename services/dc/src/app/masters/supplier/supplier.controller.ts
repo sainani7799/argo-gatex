@@ -4,7 +4,7 @@ import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/app
 import { CommonResponse } from "libs/shared-models/src/common";
 import { CreateSupplierDto } from "./dto/supplier.dto";
 
-@Controller("/supplier-controller")
+@Controller("/suppliers")
 export class SupplierController {
   constructor(
     private readonly service: SupplierService,

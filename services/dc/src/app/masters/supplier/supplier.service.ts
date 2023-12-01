@@ -15,15 +15,16 @@ export class SupplierService {
     
   ) { }
 
-  async createSupplier(dto:CreateSupplierDto[]):Promise<CommonResponse>{
+  async createSupplier(dto:CreateSupplierDto| CreateSupplierDto[]):Promise<CommonResponse>{
+    const supplier = Array.isArray(dto) ? dto : [dto];
     try{
-        for (const obj of dto) {
+        for (const obj of supplier) {
             const existingRecord = await AppDataSource.getRepository(SupplierEntity).findOne({ where: { supplierName: obj.supplierName } });
       
             if (existingRecord) {
               return new CommonResponse(false, 0, "Supplier already existed", []);
             }else{
-                for(const obj of dto){
+                for(const obj of supplier){
                     const entity = new SupplierEntity()
                     entity.supplierId = obj.supplierId;
                     entity.supplierName = obj.supplierName;

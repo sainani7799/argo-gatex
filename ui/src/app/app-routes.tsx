@@ -6,6 +6,7 @@ import UserFormGrid from "./user/user-grid";
 import Login from "./login/login";
 import EmployeeGrid from "./master/employee-grid";
 import EmployeeForm from "./master/employee-form";
+import SupplierForm from "./master/suppliers/supplier-form";
 // import EmployeeGrid from "./master/employee-grid";
 // import EmployeeForm from "./master/employee-form";
 
@@ -33,7 +34,7 @@ const AppRoutes = () => {
 
             <Routes>
                 <Route path="/" element={<ChildProtectionWrapper><BasicLayout /></ChildProtectionWrapper>}>
-                <Route path="/form9" element={<UserForm />} />
+                    <Route path="/form9" element={<UserForm />} />
                     <Route path="/users" element={<UserFormGrid />} />
                     <Route path="/employee-view" element={<EmployeeGrid />} />
                     <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
@@ -42,9 +43,11 @@ const AppRoutes = () => {
                         closeForm={() => { }}
                         updateDetails={(undefined) => { }}
                     />} />
+                    <Route path="/supplier-form" element={<SupplierForm />} />
                 </Route>
+
                 <Route path="/login" element={<Login />} />
-                
+
             </Routes>
         </Router>
     );

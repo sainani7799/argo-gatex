@@ -16,15 +16,16 @@ export class WarehouseService {
     
   ) { }
 
-  async createWarehouse(dto:CreateWarehouseDto[]):Promise<CommonResponse>{
+  async createWarehouse(dto:CreateWarehouseDto | CreateWarehouseDto[]):Promise<CommonResponse>{
     try{
-        for (const obj of dto) {
+      const warehouse = Array.isArray(dto) ? dto : [dto];
+        for (const obj of warehouse) {
             const existingRecord = await AppDataSource.getRepository(WarehouseEntity).findOne({ where: {unitId:obj.unitId , warehouseName: obj.warehouseName } });
       
             if (existingRecord) {
               return new CommonResponse(false, 0, "Warehouse already existed in this unit", []);
             }else{
-                for(const obj of dto){
+                for(const obj of warehouse){
                     const entity = new WarehouseEntity()
                     entity.warehouseId = obj.warehouseId;
                     entity.warehouseName = obj.warehouseName;

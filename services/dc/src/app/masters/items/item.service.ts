@@ -13,14 +13,15 @@ export class ItemService {
   ) { }
 
 
-    async createItem(dto: CreateItemDto[]): Promise<CommonResponse> {
+    async createItem(dto: CreateItemDto | CreateItemDto[]): Promise<CommonResponse> {
         try {
-            for (const obj of dto) {
+            const item = Array.isArray(dto) ? dto : [dto];
+            for (const obj of item) {
                 const existedItem = await AppDataSource.getRepository(ItemEntity).findOne({ where: { itemCode: obj.itemCode } })
                 if (existedItem) {
                     return new CommonResponse(false, 0, "Item code already existed in this unit", [])
                 } else {
-                    for (const obj of dto) {
+                    for (const obj of item) {
                         const entity = new ItemEntity()
                         entity.itemId = obj.itemId
                         entity.itemCode = obj.itemCode
