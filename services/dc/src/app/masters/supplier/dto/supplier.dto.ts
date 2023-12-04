@@ -6,6 +6,9 @@ export class CreateSupplierDto {
 
     @ApiProperty()
     supplierName: string;
+    
+    @ApiProperty()
+    supplierCode: string;
 
     @ApiProperty()
     isActive: boolean;

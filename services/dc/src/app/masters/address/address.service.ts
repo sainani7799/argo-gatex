@@ -43,8 +43,18 @@ export class AddressService {
     }
   }
 
-//   async getAllAddress():Promise<CommonResponse>{
-
-//   }
+  async getAllAddress(): Promise<CommonResponse> {
+    try {
+      const query = `SELECT a.address_id AS addressId,addresser, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt 
+      FROM shahi_address a
+      LEFT JOIN shahi_units u ON u.id = a.addresser_name AND a.addresser = 'unit'
+      LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name AND a.addresser = 'supplier'
+      WHERE addresser IN ('unit', 'supplier')`;
+      const data = await AppDataSource.query(query)
+      return new CommonResponse(true, 111, 'data retried successfully', data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
 }

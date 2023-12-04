@@ -3,6 +3,8 @@ import { Layout, Menu, MenuProps } from 'antd';
 import {  ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, Outlet,   Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLocationPin } from '@fortawesome/free-solid-svg-icons';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -83,11 +85,11 @@ export default function BasicLayout() {
                             <Menu.Item key="users" icon={<UserOutlined />}>
                                 <Link to="/users"><span>Users</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="supplier-form" icon={<UserOutlined />}>
-                                <Link to="/supplier-form"><span>Supplier</span></Link>
+                            <Menu.Item key="supplier-view" icon={<UserOutlined />}>
+                                <Link to="/supplier-view"><span>Supplier</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="address-form" icon={<UserOutlined />}>
-                                <Link to="/address-form"><span>Address</span></Link>
+                            <Menu.Item key="/address-view" icon={<FontAwesomeIcon icon={faLocationPin} />}>
+                                <Link to="/address-view"><span>Address</span></Link>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>
