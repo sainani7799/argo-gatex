@@ -12,9 +12,10 @@ import { SectionsEntity } from './masters/department/entity/section.entity';
 import { WarehouseModule } from './masters/warehouse/warehouse.module';
 import { SupplierModule } from './masters/supplier/supplier.module';
 import { ItemModule } from './masters/items/item.module';
+import { AddressModule } from './masters/address/address.module';
 
 @Module({
-  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule],
+  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: DataSource,

@@ -23,12 +23,17 @@ const SupplierGrid = () => {
     const columns = [
         {
             key: "1",
+            title: "Supplier Code",
+            dataIndex: "supplierCode"
+        },
+        {
+            key: "2",
             title: "Supplier Name",
             dataIndex: "supplierName"
         },
 
         {
-            key: "2",
+            key: "3",
             title: "Created user ",
             dataIndex: "createdUser"
         }

@@ -5,7 +5,11 @@ import { AxiosRequestConfig } from "axios";
 export class AddressService extends CommonAxiosServicePms {
     private AddressController = '/address'
 
-    async createAddress(createDto: CreateAddressDto, config?: AxiosRequestConfig): Promise<any> {
-        return await this.axiosPostCall(this.AddressController +'/createDepartment', createDto, config);
+    async createAddress(createDto: CreateAddressDto): Promise<any> {
+        return await this.axiosPostCall(this.AddressController +'/createAddress', createDto, );
+    }
+
+    async getAllAddress(): Promise<any> {
+        return await this.axiosGetCall(this.AddressController +'/getAllAddress' );
     }
 }

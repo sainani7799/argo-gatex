@@ -8,6 +8,7 @@ import { UnitEntity } from "./masters/branch/entity/unit.entity";
 import { WarehouseEntity } from "./masters/warehouse/entity/warehouse.entity";
 import { SupplierEntity } from "./masters/supplier/entity/supplier.entity";
 import { ItemEntity } from "./masters/items/entity/item.entity";
+import { AddressEntity } from "./masters/address/entity/address.entity";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -17,7 +18,7 @@ export const AppDataSource = new DataSource({
     database: 'internal_apps',
     synchronize: false,
     logging:true,
-    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity]
+    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity]
    
 })
 

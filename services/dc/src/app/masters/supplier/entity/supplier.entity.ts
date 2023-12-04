@@ -8,9 +8,13 @@ export class SupplierEntity  {
 
     @Column('varchar', {
         name: 'supplier_name',
-        length: 100
     })
     supplierName: string;
+
+    @Column('varchar', {
+        name: 'supplier_code',
+    })
+    supplierCode: string;
 
     @CreateDateColumn({
         name: "created_at",

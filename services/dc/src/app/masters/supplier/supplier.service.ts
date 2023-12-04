@@ -28,6 +28,7 @@ export class SupplierService {
                     const entity = new SupplierEntity()
                     entity.supplierId = obj.supplierId;
                     entity.supplierName = obj.supplierName;
+                    entity.supplierCode = obj.supplierCode;
                     entity.createdUser = obj.createdUser;
                     const create = await AppDataSource.getRepository(SupplierEntity).save(entity)
                     console.log(create)

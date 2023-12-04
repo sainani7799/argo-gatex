@@ -59,6 +59,14 @@ const SupplierForm = () => {
                         <Input hidden />
                     </Form.Item>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                        <Form.Item name="supplierCode" label="Supplier Code"
+                            rules={[
+                                { required: true },
+                            ]}>
+                            <Input placeholder=" Enter Supplier Code" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="supplierName" label="Supplier Name"
                             rules={[
                                 { required: true },
@@ -66,6 +74,7 @@ const SupplierForm = () => {
                             <Input placeholder=" Enter Supplier Name" />
                         </Form.Item>
                     </Col>
+                  
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 4 }} style={{ margin: '1%' }}
                     >
                         <Form.Item style={{ display: "none" }} name="createdUser"  >

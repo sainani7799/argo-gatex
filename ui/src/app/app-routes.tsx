@@ -9,6 +9,7 @@ import EmployeeForm from "./master/employee-form";
 import SupplierForm from "./master/suppliers/supplier-form";
 import AddressForm from "./master/address/address-form";
 import SupplierGrid from "./master/suppliers/supplier-grid";
+import AddressGrid from "./master/address/address-grid";
 // import SupplierGrid from "./master/suppliers/supplier-grid";
 // import EmployeeGrid from "./master/employee-grid";
 // import EmployeeForm from "./master/employee-form";
@@ -49,11 +50,11 @@ const AppRoutes = () => {
                     <Route path="/supplier-form" element={<SupplierForm />} />
                     <Route path="/supplier-view" element={<SupplierGrid />}/>
                     <Route path="/address-form" element={<AddressForm addressData={undefined}
-
                         isUpdate={false}
                         closeForm={() => { }}
                         updateDetails={(undefined) => { }}
                     />} />
+                    <Route path="/address-view" element={<AddressGrid />}/>
                 </Route>
 
                 <Route path="/login" element={<Login />} />

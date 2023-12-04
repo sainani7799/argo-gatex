@@ -88,7 +88,7 @@ const AddressForm = (props: AddressFormProps) => {
 
     return (
         <Card title={<span style={{ color: 'white' }}>Add Address</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/employee-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/address-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
             <Form
                 form={form}
                 initialValues={props.addressData}
@@ -105,7 +105,7 @@ const AddressForm = (props: AddressFormProps) => {
                             <Card style={{ width: '100%' }}>
                                 <Row style={{ width: '100%' }}>
                                     <Col style={{ width: '50%' }}>
-                                        <Form.Item name="addresser" label="Address Type"
+                                        <Form.Item name="addresser" label="Unit/Supplier"
                                             rules={[
                                                 { required: true },
                                             ]} style={{ width: '90%' }}>
@@ -116,27 +116,27 @@ const AddressForm = (props: AddressFormProps) => {
                                                 onChange={handleAddressTypeChange}
                                             >
                                                 <Select.Option value="unit">Unit</Select.Option>
-                                                <Select.Option value="Supplier">Supplier</Select.Option>
+                                                <Select.Option value="supplier">Supplier</Select.Option>
                                             </Select>
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ width: '50%' }}>
-                                        <Form.Item name="addressName" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
+                                        <Form.Item name="addresserName" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
                                             <Select
                                                 showSearch
-                                                placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'Supplier'}`}
+                                                placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'supplier'}`}
                                                 optionFilterProp="children"
                                                 allowClear
                                                 style={{ width: '100%' }}
                                             >
                                                 {selectedAddressType === 'unit'
                                                     ? unit.map((rec: any) => (
-                                                        <Select.Option key={rec.unitCode} value={rec.unitCode}>
+                                                        <Select.Option key={rec.id} value={rec.id}>
                                                             {rec.unitName}
                                                         </Select.Option>
                                                     ))
                                                     : supplier.map((rec: any) => (
-                                                        <Select.Option key={rec.supplierCode} value={rec.supplierCode}>
+                                                        <Select.Option key={rec.supplierId} value={rec.supplierId}>
                                                             {rec.supplierName}
                                                         </Select.Option>
                                                     ))}
