@@ -1,0 +1,90 @@
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { CreateWarehouseDto } from 'libs/shared-models';
+import { WarehouseService, UnitService } from 'libs/shared-services';
+const { Option } = Select;
+
+const WarehouseForm = () => {
+    const [unit, setUnit] = useState<any[]>([]);
+    const service = new WarehouseService();
+    const unitService = new UnitService();
+    const [form] = Form.useForm();
+    const authdata = JSON.parse(localStorage.getItem('userName'))
+
+    useEffect(() => {
+        form.setFieldsValue({ createdUser: authdata.userName });
+        unitService.getAllUnits().then((res) => {
+            if (res) {
+                setUnit(res.data);
+                console.log(res.data)
+            }
+        });
+    }, [])
+
+    const saveData = (data: CreateWarehouseDto) => {
+        console.log(data);
+        service.createWarehouse(data).then(res => {
+            if (res) {
+                message.success('Created Successfully');
+            } else {
+                message.error('Not Created');
+            }
+        }).catch(err => {
+            console.log(err);
+            message.error('Some Error');
+        });
+    };
+
+    return (
+        <Card title={<span style={{ color: 'white' }}>Warehouse Form</span>}
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/warehouse-grid' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            <Form
+                form={form}
+                onFinish={saveData}
+                layout='vertical'
+            >
+                <Row gutter={24}>
+                    <Col>
+                        <Form.Item name="unitId" label="Unit ID" rules={[
+                            { required: true },
+                        ]}>
+                            <Select
+                                showSearch
+                                placeholder="Select Unit "
+                                optionFilterProp="children"
+                                allowClear
+                            >
+                                {unit.map((rec: any) => {
+                                    return (
+                                        <Option key={rec.id} value={rec.id}>
+                                            {rec.unitName}
+                                        </Option>
+                                    )
+                                })}
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col>
+                        <Form.Item name="warehouseName" label="Warehouse Name" rules={[
+                            { required: true },
+                        ]}>
+                            <Input placeholder="Enter Warehouse Name" />
+                        </Form.Item>
+                    </Col>
+
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 6 }} lg={{ span: 6 }} xl={{ span: 4 }} style={{ margin: '1%' }}
+                    >
+                        <Form.Item style={{ display: "none" }} name="createdUser"  >
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Button type="primary" htmlType="submit">
+                    Submit
+                </Button>
+            </Form>
+        </Card>
+    );
+};
+
+export default WarehouseForm;

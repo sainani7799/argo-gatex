@@ -7,3 +7,4 @@ export * from './designation';
 export * from './unit';
 export * from './address';
 export * from './supplier';
+export * from './warehouse';
