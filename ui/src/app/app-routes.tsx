@@ -12,9 +12,6 @@ import SupplierGrid from "./master/suppliers/supplier-grid";
 import WarehouseForm from "./master/warehouse/warehouse-form";
 import WarehouseGrid from "./master/warehouse/warehouse-grid";
 import AddressGrid from "./master/address/address-grid";
-// import SupplierGrid from "./master/suppliers/supplier-grid";
-// import EmployeeGrid from "./master/employee-grid";
-// import EmployeeForm from "./master/employee-form";
 
 
 
