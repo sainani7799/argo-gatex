@@ -13,9 +13,10 @@ import { WarehouseModule } from './masters/warehouse/warehouse.module';
 import { SupplierModule } from './masters/supplier/supplier.module';
 import { ItemModule } from './masters/items/item.module';
 import { AddressModule } from './masters/address/address.module';
+import { ApprovedUserModule } from './masters/approved/approval-user.module';
 
 @Module({
-  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule],
+  imports: [DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule,ApprovedUserModule],
   controllers: [AppController],
   providers: [AppService, {
     provide: DataSource,

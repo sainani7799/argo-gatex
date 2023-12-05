@@ -27,9 +27,9 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
   const Service = new ApprovalUserService();
 
   const [fileList, setFileList] = useState<any>(props.isUpdate?[{
-    name: props.data.approvedImageName,
+    name: props.data.sigImageName,
     status: 'done',
-    url:props.data.approvedImageName,
+    url:props.data.sigImageName,
 
   }]:[]);
 
@@ -39,7 +39,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
 
   useEffect(() => {
     if(props.data){
-     const updateImage ='http://localhost/DELIVERY_CHALAN/upload-files'+props.data.approvedImageName
+     const updateImage ='http://localhost/DELIVERY_CHALAN/upload-files'+props.data.sigImageName
      // const updateImage ='http://165.22.220.143/crm/gtstoinfor/upload-files/'+props.styleData.styleFileName
      setIsUpdateImg(updateImage)
     }
@@ -74,22 +74,25 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     setDisable(true);
     // const file:any = data.fabricWeaveImageName
     // const abc:string =file.file.name
-    const req = new ApprovedUserDto(data.approvedId,data.approvalUserName,data.emailId,null,null,data.isActive,data.createdAt,data.createdUser,data.versionFlag)
+    const req = new ApprovedUserDto(data.approvedId,data.approvedUserName,data.emailId,data.isActive,data.createdUser,data.versionFlag)
     Service.createApprovalUser(req).then((res) => {
       // console.log(req,'req');
       setDisable(false);
-
+        console.log(res)
         if (res.status) {
           message.success('User Created Successfully');
           if(fileList.length > 0){
+            console.log(fileList)
             const formData = new FormData();
             fileList.forEach((file: any) => {
+              console.log(file)
                 formData.append('file', file);
             });
-
-            formData.append('approvedId', `${res.data[0].fabricWeaveId}`)
+            console.log(res)
+            formData.append('approvedId', `${res.data.approvedId}`)
+            console.log(formData)
             Service.approvalUserImageUpload(formData).then(fileRes => {
-                res.data[0].fabricWeaveImagePath = fileRes.data
+                
             })
           }
         //   navigate("/masters/fabric-weave/fabric-weave-view")
@@ -155,11 +158,11 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     },
     fileList: fileList,
   };
-  const showImagePreview = props.isUpdate && props.data.approvedImageName;
+  const showImagePreview = props.isUpdate && props.data.sigImageName;
 
 return (
     
-  <Card title={props.isUpdate ? 'Update Fabric' : 'Fabric Weave'} extra={(props.isUpdate === false) && <span><Button onClick={() => navigate('approval-user-view')} type={'primary'}>View</Button></span>}>
+  <Card title={props.isUpdate ? 'Update user' : 'User '} extra={(props.isUpdate === false) && <span><Button onClick={() => navigate('approval-user-view')} type={'primary'}>View</Button></span>}>
     <Form form={form}
     onFinish={saveData}
     initialValues={props.data} layout="vertical">
@@ -174,7 +177,7 @@ return (
         <Card>
           <Row gutter={24}>
             <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span:10 }}>
-              <Form.Item name='approvalUserName' label='Name'
+              <Form.Item name='approvedUserName' label='Name'
               rules={[{
                 required: true,
                 message:'Name Is Required'
@@ -193,8 +196,8 @@ return (
             </Col>
             
             <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span:12 }}>
-              <Form.Item name="approvedImageName" label='Signature Image'
-              initialValue={props.isUpdate ? props.data.approvedImageName:''}
+              <Form.Item name="sigImageName" label='Signature Image'
+              initialValue={props.isUpdate ? props.data.sigImageName:''}
             
               >
                { !imageUrl ? (

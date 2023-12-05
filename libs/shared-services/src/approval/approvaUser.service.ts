@@ -11,7 +11,7 @@ export class ApprovalUserService extends CommonAxiosServicePms {
     }
 
     async approvalUserImageUpload(file: any): Promise<any> {
-        return await this.axiosPostCall(this.URL + '/fileUpload', file);
+        return await this.axiosPostCall(this.AddressController + '/fileUpload', file);
     }
 
     // async getAllAddress(): Promise<any> {

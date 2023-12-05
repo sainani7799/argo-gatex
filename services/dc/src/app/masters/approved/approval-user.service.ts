@@ -1,0 +1,67 @@
+import { Injectable } from "@nestjs/common";
+import { ApprovedUserEntityRepository } from "./repository/approval-user.repository";
+import { ApprovedUserDto } from "./dto/appUser";
+import { CommonResponse } from "libs/shared-models/src/common";
+import { AppDataSource } from "../../app-data-source";
+import { ApprovedUserEntity } from "./entity/appUser.entity";
+
+@Injectable()
+export class ApprovedUserService {
+    constructor(
+        private SupplierRepo: ApprovedUserEntityRepository,
+
+    ) { }
+
+    async createApprovalUser(dto: ApprovedUserDto | ApprovedUserDto[]): Promise<CommonResponse> {
+        const supplier = Array.isArray(dto) ? dto : [dto];
+        try {
+            for (const obj of supplier) {
+                const existingRecord = await AppDataSource.getRepository(ApprovedUserEntity).findOne({ where: { approvedUserName: obj.approvedUserName } });
+
+                if (existingRecord) {
+                    return new CommonResponse(false, 0, "user already existed", []);
+                } else {
+                    for (const obj of supplier) {
+                        const entity = new ApprovedUserEntity()
+                        entity.approvedId = obj.approvedId;
+                        entity.approvedUserName = obj.approvedUserName;
+                        entity.emailId = obj.emailId;
+                        entity.sigImageName = obj.sigImageName;
+                        entity.signPath = obj.signPath;
+                        entity.createdUser = obj.createdUser;
+                        const create = await AppDataSource.getRepository(ApprovedUserEntity).save(entity)
+                        console.log(create)
+                        return await new CommonResponse(true, 111, 'Approved User created successfully', create)
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async updatePath(filePath: string, fileName: string, id: number): Promise<CommonResponse> {
+        try {
+            console.log("coming ra mawa",filePath,fileName)
+            console.log(id)
+            let imagePathUpdate;
+            imagePathUpdate = await AppDataSource.getRepository(ApprovedUserEntity).update(
+                { approvedId: id },
+                { signPath: filePath, sigImageName: fileName },
+            );
+            const result = await AppDataSource.getRepository(ApprovedUserEntity).findOne({ where: { approvedId: id } })
+            console.log('*****result*****', result)
+            if (imagePathUpdate.affected > 0) {
+                return new CommonResponse(true, 11, 'Uploaded successfully', filePath);
+            }
+            else {
+                return new CommonResponse(false, 11, 'Uploaded failed', filePath);
+            }
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+
+
+}

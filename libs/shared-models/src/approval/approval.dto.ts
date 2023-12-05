@@ -1,32 +1,29 @@
 export class ApprovedUserDto {
     approvedId: number;
-    approvalUserName: string;
+    approvedUserName: string;
     emailId:string;
-    approvedImageName : string;
-    approvedImagePath : string
     isActive: boolean;
-    createdAt : Date | any;
     createdUser : string;
     versionFlag : number;
+    sigImageName ?: string;
+    signPath ?: string
 
     constructor(
     approvedId: number,
-    approvalUserName: string,
+    approvedUserName: string,
     emailId:string,
-    approvedImageName : string,
-    approvedImagePath : string,
     isActive: boolean,
-    createdAt : Date | any,
     createdUser : string,
     versionFlag : number,
+    sigImageName ?: string,
+    signPath ?: string,
     ){
         this.approvedId = approvedId
-        this.approvalUserName = approvalUserName
+        this.approvedUserName = approvedUserName
         this.emailId = emailId
-        this.approvedImageName = approvedImageName
-        this.approvedImagePath = approvedImagePath
+        this.sigImageName = sigImageName
+        this.signPath = signPath
         this.isActive = isActive
-        this.createdAt = createdAt
         this.createdUser = createdUser
         this.versionFlag = versionFlag
     }
