@@ -94,6 +94,9 @@ export default function BasicLayout() {
                             <Menu.Item key="/approval-user-from" icon={<UserOutlined/>}>
                                 <Link to="/approval-user-from"><span>Approval Users</span></Link>
                             </Menu.Item>
+                            <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faLocationPin} />}>
+                                <Link to="/warehouse-grid"><span>Warehouse</span></Link>
+                            </Menu.Item>
                         </SubMenu>
                     </Menu>
                 </Sider>

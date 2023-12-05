@@ -9,3 +9,4 @@ export * from './enum/workstation-enum';
 export * from './address';
 export * from './supplier';
 export * from './approval';
+export * from './warehouse';

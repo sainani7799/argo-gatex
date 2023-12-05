@@ -9,11 +9,10 @@ import EmployeeForm from "./master/employee-form";
 import SupplierForm from "./master/suppliers/supplier-form";
 import AddressForm from "./master/address/address-form";
 import SupplierGrid from "./master/suppliers/supplier-grid";
+import WarehouseForm from "./master/warehouse/warehouse-form";
+import WarehouseGrid from "./master/warehouse/warehouse-grid";
 import AddressGrid from "./master/address/address-grid";
 import ApprovedUserForm from "./master/authorised/authorised-form";
-// import SupplierGrid from "./master/suppliers/supplier-grid";
-// import EmployeeGrid from "./master/employee-grid";
-// import EmployeeForm from "./master/employee-form";
 
 
 
@@ -55,6 +54,8 @@ const AppRoutes = () => {
                         closeForm={() => { }}
                         updateDetails={(undefined) => { }}
                     />} />
+                    <Route path="/warehouse-form" element={<WarehouseForm />} />
+                    <Route path="/warehouse-grid" element={<WarehouseGrid />} />
                     <Route path="/address-view" element={<AddressGrid />}/>
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}

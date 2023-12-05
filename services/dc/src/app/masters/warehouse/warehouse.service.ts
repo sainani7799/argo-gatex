@@ -45,7 +45,9 @@ export class WarehouseService {
 
   async getAllWarehouses():Promise<CommonResponse>{
     try{
-      const warehouseData = await AppDataSource.getRepository(WarehouseEntity).find()
+      const query =`select w.warehouse_id as warehouseId, warehouse_name as warehouseName , unit_id as unit_id ,u.unit_name as unitName, created_user as createdUser from shahi_warehouse w
+      left join shahi_units u on u.id = w.unit_id`
+      const warehouseData = await AppDataSource.getRepository(WarehouseEntity).query(query)
       return new CommonResponse(true,2222,'warehouse data retrieved successfully',warehouseData)
     }catch(error){
       console.log(error)
