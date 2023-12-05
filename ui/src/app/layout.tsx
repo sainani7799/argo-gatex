@@ -4,7 +4,7 @@ import {  ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/ico
 import { Link, Outlet,   Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationPin } from '@fortawesome/free-solid-svg-icons';
+import { faLocationPin, faPerson, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -79,22 +79,22 @@ export default function BasicLayout() {
                                 </span>
                             }
                         >
-                            <Menu.Item key="employee-view" icon={<UserOutlined />}>
+                            <Menu.Item key="employee-view" icon={<FontAwesomeIcon icon={faUserTie}/>}>
                                 <Link to="/employee-view"><span>Employee</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="users" icon={<UserOutlined />}>
+                            <Menu.Item key="users" icon={<FontAwesomeIcon icon={faUsers}/>}>
                                 <Link to="/users"><span>Users</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="supplier-view" icon={<UserOutlined />}>
+                            <Menu.Item key="supplier-view" icon={<FontAwesomeIcon icon={faPerson} />}>
                                 <Link to="/supplier-view"><span>Supplier</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/address-view" icon={<FontAwesomeIcon icon={faLocationPin} />}>
                                 <Link to="/address-view"><span>Address</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="/approval-user-from" icon={<UserOutlined/>}>
+                            <Menu.Item key="/approval-user-from" icon={<FontAwesomeIcon icon={faUserShield} />}>
                                 <Link to="/approval-user-from"><span>Approval Users</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faLocationPin} />}>
+                            <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faWarehouse} />}>
                                 <Link to="/warehouse-grid"><span>Warehouse</span></Link>
                             </Menu.Item>
                         </SubMenu>
