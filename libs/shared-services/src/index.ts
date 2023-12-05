@@ -6,4 +6,5 @@ export * from './department';
 export * from './designation';
 export * from './unit';
 export * from './address';
+export * from './approval';
 export * from './supplier';

@@ -10,6 +10,7 @@ import SupplierForm from "./master/suppliers/supplier-form";
 import AddressForm from "./master/address/address-form";
 import SupplierGrid from "./master/suppliers/supplier-grid";
 import AddressGrid from "./master/address/address-grid";
+import ApprovedUserForm from "./master/authorised/authorised-form";
 // import SupplierGrid from "./master/suppliers/supplier-grid";
 // import EmployeeGrid from "./master/employee-grid";
 // import EmployeeForm from "./master/employee-form";
@@ -55,6 +56,11 @@ const AppRoutes = () => {
                         updateDetails={(undefined) => { }}
                     />} />
                     <Route path="/address-view" element={<AddressGrid />}/>
+                    <Route path="/approval-user-from" element={<ApprovedUserForm
+                        data={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateApprovalUser={(undefined) => { }} />} />
                 </Route>
 
                 <Route path="/login" element={<Login />} />
