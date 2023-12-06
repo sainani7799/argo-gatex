@@ -11,7 +11,7 @@ const { Option } = Select;
 
 export interface AddressFormProps {
     addressData: CreateAddressDto;
-    updateDetails: (address: AddressFormProps) => void;
+    updateDetails: (addressData: CreateAddressDto) => void;
     isUpdate: boolean;
     closeForm: () => void;
 }
@@ -26,7 +26,9 @@ const AddressForm = (props: AddressFormProps) => {
     const supplierService = new SupplierService();
     const service = new AddressService;
     const [selectedAddressType, setSelectedAddressType] = useState(null);
+    const [disable, setDisable] = useState<boolean>(false)
     const authdata = JSON.parse(localStorage.getItem('userName'))
+
     const handleAddressTypeChange = (value) => {
         setSelectedAddressType(value);
     };
@@ -43,7 +45,9 @@ const AddressForm = (props: AddressFormProps) => {
     useEffect(() => {
         getAllUnits();
         getAllSuppliers();
-
+        if(props.isUpdate){
+            setSelectedAddressType(props.addressData.addresser)
+        }
     }, []);
 
 
@@ -52,7 +56,8 @@ const AddressForm = (props: AddressFormProps) => {
         unitService.getAllUnits().then((res) => {
             if (res) {
                 setUnit(res.data);
-                console.log(res.data)
+               
+                // console.log(res.data)
             }
         })
     }
@@ -61,7 +66,7 @@ const AddressForm = (props: AddressFormProps) => {
         supplierService.getAllSuppliers().then((res) => {
             if (res) {
                 setSupplier(res.data);
-                console.log(res.data)
+                // console.log(res.data)
             }
         })
     }
@@ -69,23 +74,31 @@ const AddressForm = (props: AddressFormProps) => {
 
     const save = (addressData: CreateAddressDto) => {
         service.createAddress(addressData).then(res => {
-            if (res) {
+            if (res.status) {
                 onReset();
                 message.success('Created Successfully')
-                // navigate('/employee-view')
+                navigate('/address-view')
             } else {
                 console.log(res.internalMessage, "**********");
                 message.error('Not Created')
             }
         }).catch(err => {
+            setDisable(false)
             message.error('')
         })
     }
 
     const saveData = (values: CreateAddressDto) => {
-        save(values);
+        setDisable(false)
+        if (props.isUpdate) {
+            props.updateDetails(values);
+          } else {
+            save(values);
+            setDisable(false)
+            
+          }
     };
-
+    console.log(props.addressData)
     return (
         <Card title={<span style={{ color: 'white' }}>Add Address</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/address-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
@@ -121,7 +134,7 @@ const AddressForm = (props: AddressFormProps) => {
                                         </Form.Item>
                                     </Col>
                                     <Col style={{ width: '50%' }}>
-                                        <Form.Item name="addresserName" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
+                                        <Form.Item name="addresserNameId" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
                                             <Select
                                                 showSearch
                                                 placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'supplier'}`}
@@ -141,6 +154,21 @@ const AddressForm = (props: AddressFormProps) => {
                                                         </Select.Option>
                                                     ))}
                                             </Select>
+                                        </Form.Item>
+                                    </Col>
+                                </Row>
+                                <Row style={{ width: '100%' }}>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="gstNo" label="GST IN :"
+                                            rules={[
+                                                { required: true },
+                                            ]} style={{ width: '90%' }}>
+                                             <Input  placeholder=" Enter GST"/>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col style={{ width: '50%' }}>
+                                        <Form.Item name="cstNo" label="CST :" rules={[{ required: true }]} style={{ width: '90%' }}>
+                                            <Input  placeholder=" Enter CST"/>
                                         </Form.Item>
                                     </Col>
                                 </Row>
@@ -179,7 +207,7 @@ const AddressForm = (props: AddressFormProps) => {
                                             name="pinCode"
                                             label="Pin Code"
                                             rules={[
-                                                { required: true, message: ' Valid Mobile No is required', min: 6, },
+                                                { required: true, message: 'PinCode is required', },
                                                 {
                                                     pattern: /^[0-9]*$/,
                                                     message: `Don't Allow letters and Spaces`
@@ -212,7 +240,7 @@ const AddressForm = (props: AddressFormProps) => {
 
                                 <Form.Item style={{ display: "none" }} name="createdUser"  >
                                 </Form.Item>
-                                <Button type="primary" htmlType="submit">
+                                <Button type="primary" disabled={disable} htmlType="submit">
                                     Submit
                                 </Button>
                                 {(props.isUpdate !== true) &&

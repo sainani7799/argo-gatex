@@ -13,9 +13,19 @@ export class AddressEntity  {
     addresser: string;
 
     @Column('int', {
-        name: 'addresser_name',
+        name: 'addresser_name_id',
     })
-    addresserName: number;
+    addresserNameId: number;
+
+    @Column('varchar', {
+        name: 'gst_no',
+    })
+    gstNo: string;
+
+    @Column('varchar', {
+        name: 'cst_no',
+    })
+    cstNo: string;
 
     @Column('varchar', {
         name: 'line_one',
@@ -63,6 +73,12 @@ export class AddressEntity  {
         name: 'created_user',
     })
     createdUser: string;
+    
+    
+    @Column('varchar', {
+        name: 'updated_user',
+    })
+    updatedUser: string;
 
     @Column({
         nullable: false,

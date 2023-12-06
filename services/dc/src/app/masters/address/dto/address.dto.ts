@@ -8,7 +8,13 @@ export class CreateAddressDto {
     addresser: string;
 
     @ApiProperty()
-    addresserName:number;
+    addresserNameId:number;
+
+    @ApiProperty()
+    gstNo:string;
+
+    @ApiProperty()
+    cstNo:string;
 
     @ApiProperty()
     lineOne:string;
@@ -39,6 +45,9 @@ export class CreateAddressDto {
 
     @ApiProperty()
     createdUser: string;
+
+    @ApiProperty()
+    updatedUser: string;
 
     @ApiProperty()
     versionFlag: number;

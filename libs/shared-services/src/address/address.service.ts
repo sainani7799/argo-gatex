@@ -9,6 +9,10 @@ export class AddressService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.AddressController +'/createAddress', createDto, );
     }
 
+    async updateAddress(createDto: CreateAddressDto): Promise<any> {
+        return await this.axiosPostCall(this.AddressController +'/updateAddress', createDto, );
+    }
+
     async getAllAddress(): Promise<any> {
         return await this.axiosGetCall(this.AddressController +'/getAllAddress' );
     }
