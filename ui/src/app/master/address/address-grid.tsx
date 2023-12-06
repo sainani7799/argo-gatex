@@ -1,10 +1,12 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip } from 'antd';
+import { EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer } from 'antd';
 import { AddressService } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
+import { CreateAddressDto } from 'libs/shared-models';
+import AddressForm from './address-form';
 
 const AddressGrid = () => {
 
@@ -13,6 +15,8 @@ const AddressGrid = () => {
     const [page, setPage] = React.useState(1);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
+    const [drawerVisible, setDrawerVisible] = useState(false);
+    const [selectedAddress, setSelectedAddress] = useState<any>(undefined);
     const searchInput = useRef(null);
 
     useEffect(() => {
@@ -26,6 +30,26 @@ const AddressGrid = () => {
             }
         });
     };
+  
+
+    const updateAddress=(address: CreateAddressDto)=>{
+        const authdata = JSON.parse(localStorage.getItem('userName'))
+        address.updatedUser=authdata.userName
+        console.log(address.updatedUser)
+        service.updateAddress(address).then(res=>{
+            if(res.status){
+                message.success('Updated Successfully');
+                setDrawerVisible(false);
+                getAddress()
+    
+            }else{
+                message.error(res.internalMessage);
+    
+            }
+        }).catch(err => {
+            message.error(err.message);
+          })
+      }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -37,6 +61,13 @@ const AddressGrid = () => {
         clearFilters();
         setSearchText('');
     };
+    const openFormWithData=(viewData: CreateAddressDto)=>{
+        setDrawerVisible(true);
+        setSelectedAddress(viewData);
+    }
+    const closeDrawer = () => {
+        setDrawerVisible(false);
+      }
 
     const getColumnSearchProps = (dataIndex: string) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -115,6 +146,14 @@ const AddressGrid = () => {
             dataIndex: "addresserName"
         },
         {
+            title: "GST No",
+            dataIndex: "gstNo"
+        },
+        {
+            title: "CST No",
+            dataIndex: "cstNo"
+        },
+        {
             title: "Line One",
             dataIndex: "lineOne"
         },
@@ -145,6 +184,43 @@ const AddressGrid = () => {
             title: "Country",
             dataIndex: "country"
         },
+        {
+            title:`Action`,
+            dataIndex: 'action',
+            align:"center",
+            render: (text, rowData) => (
+              <span>  
+               <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
+                    onClick={() => {
+                      if (rowData.isActive) {
+                        openFormWithData(rowData);
+                      } else {
+                        message.error('You Cannot Edit Deactivated Payment mode');
+                      }
+                    }}
+                    style={{ color: '#1890ff', fontSize: '14px' }}
+                  />      
+                  
+                
+                <Divider type="vertical" />
+                  {/* <Popconfirm onConfirm={e =>{deleteColour(rowData);}}
+                  title={
+                    rowData.isActive
+                      ? 'Are you sure to Deactivate color ?'
+                      :  'Are you sure to Activate color ?'
+                  }
+                >
+                  <Switch  size="default"
+                      className={ rowData.isActive ? 'toggle-activated' : 'toggle-deactivated' }
+                      checkedChildren={<RightSquareOutlined type="check" />}
+                      unCheckedChildren={<RightSquareOutlined type="close" />}
+                      checked={rowData.isActive}
+                    />
+                  
+                </Popconfirm> */}
+              </span>
+            )
+          }
 
     ];
     
@@ -165,7 +241,20 @@ const AddressGrid = () => {
 
                 headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData}></Table>
+            <Table columns={columnsSkelton} dataSource={responseData}
+            scroll={{ x: 1400, y: 400 }} />
+            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
+              onClose={closeDrawer} visible={drawerVisible} closable={true}>
+              <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
+                <AddressForm key={Date.now()}
+                  updateDetails={updateAddress}
+                  isUpdate={true}
+                  addressData={selectedAddress}
+                  closeForm={closeDrawer} />
+              </Card>
+            </Drawer>
+                
+           
         </Card>
     );
 };

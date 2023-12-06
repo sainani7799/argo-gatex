@@ -11,9 +11,19 @@ export class AddressController {
   constructor(private readonly service: AddressService) { }
 
   @Post('/createAddress')
-  async createAddress(@Body() dto: any): Promise<CommonResponse> {
+  async createAddress(@Body() dto: any , isUpdate:boolean=false): Promise<CommonResponse> {
     try {
-      return await this.service.createAddress(dto);
+      return await this.service.createAddress(dto,false);
+    } catch (error) {
+      console.log(error,'err')
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/updateAddress')
+  async updateAddress(@Body() dto: any): Promise<CommonResponse> {
+    try {
+      return await this.service.createAddress(dto,true);
     } catch (error) {
       console.log(error,'err')
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
