@@ -14,7 +14,7 @@ export class ApprovalUserService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.AddressController + '/fileUpload', file);
     }
 
-    // async getAllAddress(): Promise<any> {
-    //     return await this.axiosGetCall(this.AddressController +'/getAllAddress' );
-    // }
+    async getAllApprovalUser(): Promise<any> {
+        return await this.axiosGetCall(this.AddressController +'/getAllApprovalUser' );
+    }
 }

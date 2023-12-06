@@ -1,16 +1,87 @@
 import { Form, Input, Button, Select, Card, message, Col, Row, theme, Radio, RadioChangeEvent } from 'antd';
-import { WarehouseService, UnitService } from 'libs/shared-services';
+import { WarehouseService, UnitService, SupplierService, ApprovalUserService, DepartmentService } from 'libs/shared-services';
 import React, { useEffect, useState } from 'react';
 const { Option } = Select;
 
 const DCForm = () => {
 
+    const warehouseService = new WarehouseService();
+    const unitService = new UnitService();
+    const supplierService = new SupplierService();
+    const approvedService = new ApprovalUserService();
+    const departmentService = new DepartmentService();
+    const [units, setUnits] = useState<any>([]);
+    const [deps, setDeps] = useState<any>([]);
+    const [suppliers, setSuppliers] = useState<any>([]);
+    const [warehouses, setWarehouses] = useState<any>([]);
     const [radioValue, setRadioValue] = useState("Unit");
     const [returnaValue, setReturnaValue] = useState("Y");
+    const [approval, setApproval] = useState<any>([]);
 
     const [form] = Form.useForm();
     const saveData = (data: any) => {
         console.log(data.unitOrSupplier);
+    };
+
+    useEffect(() => {
+        getWarehouses();
+        getUnits();
+        getSuppliers();
+        getDeps();
+        getApprovedUsers();
+    }, [])
+
+    const getWarehouses = () => {
+        warehouseService.getAllWarehouse().then(res => {
+            if (res) {
+                console.log(res);
+                setWarehouses(res.data);
+            }
+        }).catch(err => {
+            message.error("Something went wrong");
+        })
+    };
+
+    const getUnits = () => {
+        unitService.getAllUnits().then(res => {
+            if (res) {
+                console.log(res);
+                setUnits(res.data);
+            }
+        }).catch(err => {
+            message.error("Something went wrong");
+        })
+    };
+
+    const getSuppliers = () => {
+        supplierService.getAllSuppliers().then(res => {
+            if (res) {
+                console.log(res);
+                setSuppliers(res.data);
+            }
+        }).catch(err => {
+            message.error("Something went wrong");
+        })
+    };
+
+    const getDeps = () => {
+        departmentService.getAllDepartments().then(res => {
+            if (res) {
+                console.log("This is Departments");
+                console.log(res);
+                setDeps(res.data);
+            }
+        })
+    };
+
+    const getApprovedUsers = () => {
+        approvedService.getAllApprovalUser().then(res => {
+            if (res) {
+                console.log("This Is Approval");
+                console.log(res);
+                setApproval(res.data);
+            }
+        })
     };
 
     const radioOnChange = (e: RadioChangeEvent) => {
@@ -41,6 +112,13 @@ const DCForm = () => {
                                 optionFilterProp="children"
                                 allowClear
                             >
+                                {warehouses.map(wh => {
+                                    return (
+                                        <Option key={wh.warehouseId} value={wh.warehouseId}>
+                                            {wh.warehouseName}
+                                        </Option>
+                                    )
+                                })}
                             </Select>
                         </Form.Item>
                         <Form.Item name="unitId" label="Unit" rules={[
@@ -52,6 +130,13 @@ const DCForm = () => {
                                 optionFilterProp="children"
                                 allowClear
                             >
+                                {units.map(unit => {
+                                    return (
+                                        <Option key={unit.id} value={unit.id}>
+                                            {unit.unitName}
+                                        </Option>
+                                    )
+                                })}
                             </Select>
                         </Form.Item>
                         <Form.Item name="dept" label="Dept." rules={[
@@ -63,6 +148,13 @@ const DCForm = () => {
                                 optionFilterProp="children"
                                 allowClear
                             >
+                                {deps.map(dep => {
+                                    return (
+                                        <Option key={dep.id} value={dep.id}>
+                                            {dep.departmentName}
+                                        </Option>
+                                    )
+                                })}
                             </Select>
                         </Form.Item>
                         <Form.Item name="PONo" label="PO Number">
@@ -92,6 +184,19 @@ const DCForm = () => {
                                 optionFilterProp="children"
                                 allowClear
                             >
+                                {radioValue == "Unit" ? units.map(unit => {
+                                    return (
+                                        <Option key={unit.id} value={unit.id}>
+                                            {unit.unitName}
+                                        </Option>
+                                    )
+                                }) : suppliers.map(supplier => {
+                                    return (
+                                        <Option key={supplier.supplierId} value={supplier.supplierId}>
+                                            {supplier.supplierName}
+                                        </Option>
+                                    )
+                                })}
                             </Select>
                         </Form.Item>
                         <Form.Item name="weight" label="Weight" rules={[
@@ -141,6 +246,20 @@ const DCForm = () => {
                         <Form.Item name="requestedBy" label="Requested By" rules={[
                             { required: true },
                         ]}>
+                            <Select
+                                showSearch
+                                placeholder="Select User"
+                                optionFilterProp="children"
+                                allowClear
+                            >
+                                {approval.map(app => {
+                                    return (
+                                        <Option key={app.approvedId} value={app.approvedId}>
+                                            {app.approvedUserName}
+                                        </Option>
+                                    )
+                                })}
+                            </Select>
                         </Form.Item>
                     </Col>
                 </Row>

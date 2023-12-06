@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { ApprovedUserService } from "./approval-user.service";
 import { CommonResponse } from "libs/shared-models/src/common";
@@ -54,6 +54,16 @@ export class ApprovalUSerController {
     try {
       return await this.service.updatePath(file.path,file.filename, uploadData.approvedId)
     } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Get('/getAllApprovalUser')
+  async getAllApprovalUser(): Promise<CommonResponse> {
+    try {
+      return await this.service.getAllApprovalUser();
+    } catch (error) {
+      console.log(error,'err')
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }

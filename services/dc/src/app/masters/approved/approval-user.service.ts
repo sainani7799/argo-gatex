@@ -62,6 +62,14 @@ export class ApprovedUserService {
             console.log(error);
         }
     }
+    async getAllApprovalUser():Promise<CommonResponse>{
+        try{
+            const data = await AppDataSource.getRepository(ApprovedUserEntity).find()
+            return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
+        }catch(error){
+            console.log(error)
+        }
+    }
 
 
 }
