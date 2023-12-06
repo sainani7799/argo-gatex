@@ -1,6 +1,6 @@
 import { Column, Entity,  CreateDateColumn, UpdateDateColumn, VersionColumn,PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('shahi_item') 
+@Entity('shahi_items') 
 export class ItemEntity  {
 
     @PrimaryGeneratedColumn("increment", { name: 'item_id' })

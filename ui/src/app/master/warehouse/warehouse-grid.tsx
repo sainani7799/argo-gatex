@@ -36,20 +36,20 @@ const WarehouseGrid = () => {
 
     return (
         <Card
-                title={<span style={{ color: "white" }}>Supplier Data</span>}
-                extra={
-                    (
-                        <Link to="/warehouse-form">
-                            <span style={{ color: "white" }}>
-                                <Button>Create </Button>{" "}
-                            </span>
-                        </Link>
-                    )
-                }
+            title={<span style={{ color: "white" }}>Supplier Data</span>}
+            extra={
+                (
+                    <Link to="/warehouse-form">
+                        <span style={{ color: "white" }}>
+                            <Button>Create </Button>{" "}
+                        </span>
+                    </Link>
+                )
+            }
 
-                headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
-                    <Table columns={columns} dataSource={responseData}></Table>
-                </Card>
+            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            <Table columns={columns} dataSource={responseData}></Table>
+        </Card>
     );
 }
 

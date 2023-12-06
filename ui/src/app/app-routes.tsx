@@ -13,6 +13,8 @@ import WarehouseForm from "./master/warehouse/warehouse-form";
 import WarehouseGrid from "./master/warehouse/warehouse-grid";
 import AddressGrid from "./master/address/address-grid";
 import ApprovedUserForm from "./master/authorised/authorised-form";
+import ItemForm from "./master/items/item-form";
+import ItemGrid from "./master/items/item-grid";
 
 
 
@@ -48,7 +50,7 @@ const AppRoutes = () => {
                         updateDetails={(undefined) => { }}
                     />} />
                     <Route path="/supplier-form" element={<SupplierForm />} />
-                    <Route path="/supplier-view" element={<SupplierGrid />}/>
+                    <Route path="/supplier-view" element={<SupplierGrid />} />
                     <Route path="/address-form" element={<AddressForm addressData={undefined}
                         isUpdate={false}
                         closeForm={() => { }}
@@ -57,6 +59,8 @@ const AppRoutes = () => {
                     <Route path="/warehouse-form" element={<WarehouseForm />} />
                     <Route path="/warehouse-grid" element={<WarehouseGrid />} />
                     <Route path="/address-view" element={<AddressGrid />}/>
+                    <Route path="/item-form" element={<ItemForm />}/>
+                    <Route path="/item-grid" element={<ItemGrid />}/>
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}

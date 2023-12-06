@@ -4,7 +4,7 @@ import {  ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/ico
 import { Link, Outlet,   Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationPin, faPerson, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { faLocationPin, faPerson, faShirt, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -96,6 +96,9 @@ export default function BasicLayout() {
                             </Menu.Item>
                             <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faWarehouse} />}>
                                 <Link to="/warehouse-grid"><span>Warehouse</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/item-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
+                                <Link to="/item-grid"><span>Item</span></Link>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>

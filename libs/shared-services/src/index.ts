@@ -9,3 +9,4 @@ export * from './address';
 export * from './approval';
 export * from './supplier';
 export * from './warehouse';
+export * from './item';
