@@ -34,7 +34,6 @@ export class ItemService {
                     }
                 }
             }
-
         } catch (error) {
             console.log(error)
         }
@@ -48,5 +47,4 @@ export class ItemService {
             console.log(error)
         }
     }
-
 }

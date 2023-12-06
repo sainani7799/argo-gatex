@@ -13,6 +13,7 @@ const WarehouseForm = () => {
     const authdata = JSON.parse(localStorage.getItem('userName'))
 
     useEffect(() => {
+        console.log(`This is Auth data: ${authdata}`);
         form.setFieldsValue({ createdUser: authdata.userName });
         unitService.getAllUnits().then((res) => {
             if (res) {
@@ -27,6 +28,7 @@ const WarehouseForm = () => {
         service.createWarehouse(data).then(res => {
             if (res) {
                 message.success('Created Successfully');
+                form.resetFields();
             } else {
                 message.error('Not Created');
             }
