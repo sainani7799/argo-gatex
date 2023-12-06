@@ -47,4 +47,12 @@ export class ItemService {
             console.log(error)
         }
     }
+    async getAllItemsByCode(itemCode:string):Promise<CommonResponse>{
+        try{
+            const data = await AppDataSource.getRepository(ItemEntity).find({where:{itemCode:itemCode}})
+            return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
+        }catch(error){
+            console.log(error)
+        }
+    }
 }

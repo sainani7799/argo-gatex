@@ -29,5 +29,14 @@ export class ItemController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+  @Post('/getAllItemsByCode')
+  async getAllItemsByCode(@Body() itemCode:string): Promise<CommonResponse> {
+    try {
+      return await this.service.getAllItemsByCode(itemCode);
+    } catch (error) {
+      console.log(error,'err')
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
 
 }
