@@ -15,6 +15,7 @@ import AddressGrid from "./master/address/address-grid";
 import ApprovedUserForm from "./master/authorised/authorised-form";
 import ItemForm from "./master/items/item-form";
 import ItemGrid from "./master/items/item-grid";
+import DCForm from "./dc/dc-form";
 
 
 
@@ -61,6 +62,7 @@ const AppRoutes = () => {
                     <Route path="/address-view" element={<AddressGrid />}/>
                     <Route path="/item-form" element={<ItemForm />}/>
                     <Route path="/item-grid" element={<ItemGrid />}/>
+                    <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}
