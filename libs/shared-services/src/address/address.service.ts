@@ -1,4 +1,4 @@
-import { CreateAddressDto } from "libs/shared-models";
+import { CreateAddressDto, ToAddressReq, UnitReq } from "libs/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 
@@ -15,5 +15,13 @@ export class AddressService extends CommonAxiosServicePms {
 
     async getAllAddress(): Promise<any> {
         return await this.axiosGetCall(this.AddressController +'/getAllAddress' );
+    }
+
+    async getAllAddressByUnit(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.AddressController +'/getAllAddressByUnit', req, );
+    }
+
+    async getAllToAddressByUnit(req: ToAddressReq): Promise<any> {
+        return await this.axiosPostCall(this.AddressController +'/getAllToAddressByUnit', req, );
     }
 }

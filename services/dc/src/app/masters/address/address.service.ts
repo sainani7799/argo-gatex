@@ -6,6 +6,7 @@ import { AppDataSource } from "../../app-data-source";
 import { AddressEntity } from "./entity/address.entity";
 import { Raw } from "typeorm";
 import { AddressAdapter } from "./dto/address.adapter";
+import { ToAddressReq, UnitReq } from "libs/shared-models";
 
 @Injectable()
 export class AddressService {
@@ -146,6 +147,34 @@ export class AddressService {
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
       LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
       WHERE addresser IN ('unit', 'supplier')`;
+      const data = await AppDataSource.query(query)
+      return new CommonResponse(true, 111, 'data retried successfully', data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async getAllAddressByUnit(req:UnitReq): Promise<CommonResponse> {
+    try {
+      const query = `SELECT a.address_id AS addressId,addresser, addresser_name_id,
+      CASE WHEN addresser = 'unit' THEN u.unit_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode,
+       state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
+            FROM shahi_address a
+            LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
+            WHERE addresser = 'unit' AND a.addresser_name_id = '${req.unitId}'`;
+      const data = await AppDataSource.query(query)
+      return new CommonResponse(true, 111, 'data retried successfully', data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  async getAllToAddressByUnit(req:ToAddressReq): Promise<CommonResponse> {
+    try {
+      const query = `SELECT a.address_id AS addressId,addresser,a.addresser_name_id AS addresserNameId, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
+      FROM shahi_address a
+      LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
+      LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
+      WHERE addresser = '${req.addresser}' AND a.addresser_name_id = '${req.addresserNameId}'`;
       const data = await AppDataSource.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {

@@ -4,7 +4,7 @@ export * from './user';
 export * from './auth';
 export * from './department';
 export * from './unit';
-export * from './enum/shift-enum';
+export * from './enum/status-enum';
 export * from './enum/workstation-enum';
 export * from './address';
 export * from './supplier';

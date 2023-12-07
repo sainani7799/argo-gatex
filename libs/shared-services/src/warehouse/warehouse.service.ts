@@ -1,4 +1,4 @@
-import { CreateWarehouseDto } from "libs/shared-models";
+import { CreateWarehouseDto, UnitReq } from "libs/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 
@@ -11,5 +11,8 @@ export class WarehouseService extends CommonAxiosServicePms {
 
     async getAllWarehouse(): Promise<any> {
         return await this.axiosGetCall(this.WarehouseController + '/getAllWarehouses')
+    }
+    async getAllWarehousesByUnit(req:UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.WarehouseController + '/getAllWarehousesByUnit',req)
     }
 }

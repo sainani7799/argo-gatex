@@ -38,4 +38,20 @@ export class AddressController {
       return (error);
     }
   }
+  @Post('/getAllAddressByUnit')
+  async getAllAddressByUnit(@Body() req:any): Promise<CommonResponse> {
+    try {
+      return await this.service.getAllAddressByUnit(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+  @Post('/getAllToAddressByUnit')
+  async getAllToAddressByUnit(@Body() req:any): Promise<CommonResponse> {
+    try {
+      return await this.service.getAllToAddressByUnit(req);
+    } catch (error) {
+      return (error);
+    }
+  }
 }
