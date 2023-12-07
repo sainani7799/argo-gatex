@@ -5,3 +5,7 @@ export class ItemDto {
     uom: string;
     createdUser: string;
 }
+
+export class itemCode{
+    itemCode:string
+}

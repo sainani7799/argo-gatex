@@ -30,9 +30,9 @@ export class ItemController {
     }
   }
   @Post('/getAllItemsByCode')
-  async getAllItemsByCode(@Body() itemCode:string): Promise<CommonResponse> {
+  async getAllItemsByCode(@Body() req:any): Promise<CommonResponse> {
     try {
-      return await this.service.getAllItemsByCode(itemCode);
+      return await this.service.getAllItemsByCode(req);
     } catch (error) {
       console.log(error,'err')
       return this.applicationExceptionHandler.returnException(CommonResponse, error);

@@ -4,6 +4,7 @@ import { CreateItemDto } from "./dto/item.dto";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { AppDataSource } from "../../app-data-source";
 import { ItemEntity } from "./entity/item.entity";
+import { itemCode } from "libs/shared-models";
 
 @Injectable()
 export class ItemService {
@@ -47,9 +48,10 @@ export class ItemService {
             console.log(error)
         }
     }
-    async getAllItemsByCode(itemCode:string):Promise<CommonResponse>{
+    async getAllItemsByCode(req:itemCode):Promise<CommonResponse>{
         try{
-            const data = await AppDataSource.getRepository(ItemEntity).find({where:{itemCode:itemCode}})
+            const query =`select item_id AS itemId, item_code AS itemCode ,item_name AS itemName,description ,uom FROM shahi_items where item_code = '${req.itemCode}'`
+            const data = await AppDataSource.getRepository(ItemEntity).query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         }catch(error){
             console.log(error)

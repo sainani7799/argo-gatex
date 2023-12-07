@@ -1,8 +1,8 @@
 import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Input, Button, Select, Card, message, Col, Row, theme, Radio, RadioChangeEvent, Descriptions, Upload, UploadProps, Popconfirm, Tooltip, Divider, Tag } from 'antd';
 import Table, { ColumnProps } from 'antd/es/table';
-import { StatusEnum, ToAddressReq, UnitReq } from 'libs/shared-models';
-import { WarehouseService, UnitService, SupplierService, ApprovalUserService, DepartmentService, ItemService, AddressService } from 'libs/shared-services';
+import { DcReq, StatusEnum, ToAddressReq, UnitReq, itemCode } from 'libs/shared-models';
+import { WarehouseService, UnitService, SupplierService, ApprovalUserService, DepartmentService, ItemService, AddressService, EmployeeService, DcService } from 'libs/shared-services';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const { Option } = Select;
@@ -15,6 +15,8 @@ const DCForm = () => {
     const approvedService = new ApprovalUserService();
     const departmentService = new DepartmentService();
     const addressService = new AddressService();
+    const employeeService = new EmployeeService();
+    const dcService = new DcService(); 
     const [units, setUnits] = useState<any>([]);
     const [deps, setDeps] = useState<any>([]);
     const [suppliers, setSuppliers] = useState<any>([]);
@@ -26,12 +28,13 @@ const DCForm = () => {
     const [toAddressData, setToAddressData] = useState<any>([]);
     const authdata = JSON.parse(localStorage.getItem('userName'))
     const [loading, setLoading] = useState<boolean>(false);
-    const [itemFiledList, setItemFiledList] = useState<any>([]);
+    const [itemFiledList, setItemFieldList] = useState<any>([]);
     const [btnType, setBtnType] = useState<any>("Add");
     const [itemTableData, setItemTableData] = useState<any[]>([])
     const [defaultItemFormData, setDefaultItemFormData] = useState<any>(undefined);
     const [itemIndexVal, setItemIndexVal] = useState<any>(0);
-    const [itemTableVisible, setItemTableVisible] = useState<boolean>(false)
+    const [itemTableVisible, setItemTableVisible] = useState<boolean>(false);
+    const [employee, setEmployee] = useState<any>([]);
     // console.log(authdata)
     const itemService = new ItemService()
     const [form] = Form.useForm();
@@ -51,7 +54,7 @@ const DCForm = () => {
         // alert();
         multiple: false,
         onRemove: file => {
-            setItemFiledList([]);
+            setItemFieldList([]);
         },
 
         progress: {
@@ -72,6 +75,8 @@ const DCForm = () => {
         getDeps();
         getApprovedUsers();
         getAllAddressByUnit();
+        getAllItems();
+        getAllEmployees();
         getAllToAddressByUnit(radioValue);
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
@@ -105,13 +110,34 @@ const DCForm = () => {
         const req = { unitId: unitValue };
         addressService.getAllAddressByUnit(req).then(res => {
             if (res) {
-                // console.log(res);
                 setAddressData(res.data);
             }
         }).catch(err => {
             message.error("Something went wrong");
         })
     };
+
+    const getAllItems = () => {
+        itemService.getAllItems().then((res) => {
+            if (res) {
+                setItemData(res.data);
+                // console.log(res.data)
+            }
+        })
+    }
+    const getAllItemsByCode = () => {
+        const req = new itemCode()
+        req.itemCode = itemForm.getFieldValue('itemCode')
+        console.log(req)
+        itemService.getAllItemsByCode(req).then((res) => {
+            if (res) {
+                setItemData(res.data);
+                itemForm.setFieldValue('itemName', res.data[0].itemName)
+                itemForm.setFieldValue('description', res.data[0].description)
+                itemForm.setFieldValue('uom', res.data[0].uom)
+            }
+        })
+    }
 
     const getAllToAddressByUnit = async (radioValue) => {
         const req = new ToAddressReq()
@@ -149,6 +175,15 @@ const DCForm = () => {
             }
         })
     };
+    const getAllEmployees = () => {
+        employeeService.getAllEmployees().then(res => {
+            if (res) {
+                console.log("This is employee");
+                // console.log(res);
+                setEmployee(res.data);
+            }
+        })
+    };
 
     const getApprovedUsers = () => {
         approvedService.getAllApprovalUser().then(res => {
@@ -169,30 +204,10 @@ const DCForm = () => {
         setReturnaValue(e.target.value);
     };
 
-    useEffect(() => {
-        getAllItems();
-    }, [])
 
-    const getAllItems = () => {
-        itemService.getAllItems().then((res) => {
-            if (res) {
-                setItemData(res.data);
-                // console.log(res.data)
-            }
-        })
-    }
-    const handleItems = async (value) => {
-        const itemDetails = await itemService.getAllItems();
-        console.log(itemDetails)
-        if (itemDetails && itemDetails.length > 0) {
-            setSelectedItem(itemDetails);
-            form.setFieldsValue({
-                itemName: itemDetails.itemName,
-            });
-        } else {
-            console.error('No item details found');
-        }
-    };
+
+
+
 
     const setEditForm = (rowData: any, index: any) => {
         console.log(rowData);
@@ -361,6 +376,35 @@ const DCForm = () => {
         });
     };
 
+    const onSubmit = () =>{
+        form.validateFields().then(() => {
+            const req = new DcReq(form.getFieldValue('fromUnitId'),form.getFieldValue('warehouseId'),form.getFieldValue('departmentId'),form.getFieldValue('poNo'),form.getFieldValue('modeOfTransport'),form.getFieldValue('toAddresser'),form.getFieldValue('addresserNameId'),form.getFieldValue('weight'),form.getFieldValue('vehicleNo'),form.getFieldValue('returnable'),form.getFieldValue('purpose'),form.getFieldValue('value'),form.getFieldValue('status'),form.getFieldValue('requestedBy'),form.getFieldValue('remarks'),itemTableData)
+            console.log(req)
+            dcService.createDc(req).then(res => {
+                if(res.status){
+                    // navigate('/requisition-view')
+                    message.success(res.internalMessage);
+                }
+                else{
+                    message.error(res.internalMessage);
+                }
+            })
+            // onReset()
+        }).catch(() => {
+            message.error('Please fill all fields')
+        })
+    }
+
+    const onReset = () => {
+        setItemTableVisible(false)
+        itemForm.resetFields()
+        form.resetFields()
+        setItemTableData([])
+        setItemTableVisible(false)
+        setItemFieldList([]);
+    
+    }
+
 
     return (
         <>
@@ -410,7 +454,7 @@ const DCForm = () => {
                                 </Select>
                             </Form.Item>
 
-                            <Form.Item name="department" label="Department" rules={[
+                            <Form.Item name="departmentId" label="Department" rules={[
                                 { required: true },
                             ]}>
                                 <Select
@@ -419,7 +463,7 @@ const DCForm = () => {
                                     optionFilterProp="children"
                                     allowClear
                                 >
-                                    {deps.map(dep => {
+                                    {deps?.map(dep => {
                                         return (
                                             <Option key={dep.id} value={dep.id}>
                                                 {dep.departmentName}
@@ -512,14 +556,14 @@ const DCForm = () => {
                             ]}>
                                 <Select
                                     showSearch
-                                    placeholder="Select User"
+                                    placeholder="Select Name"
                                     optionFilterProp="children"
                                     allowClear
                                 >
-                                    {approval.map(app => {
+                                    {employee.map(app => {
                                         return (
-                                            <Option key={app.approvedId} value={app.approvedId}>
-                                                {app.approvedUserName}
+                                            <Option key={app.employeeId} value={app.employeeId}>
+                                                {app.employeeName}
                                             </Option>
                                         )
                                     })}
@@ -603,10 +647,10 @@ const DCForm = () => {
             <Card>
 
                 <Form layout="vertical" onFinish={onItemAdd} form={itemForm}> <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>Item DETAILS</h1>
-                    <Row gutter={24}>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                    <Row gutter={14}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                             <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code' }]}>
-                                <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' onChange={handleItems}>
+                                <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
                                     {itemData.map(e => {
                                         return (
                                             <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
@@ -615,36 +659,36 @@ const DCForm = () => {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                             <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name' }]}>
-                                <Input />
+                                <Input disabled/>
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
-                            <Form.Item name='description' label='Description' rules={[{ required: true, message: 'M3 Code is required' }]}>
-                                <Input />
+                            <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
+                                <Input disabled/>
                             </Form.Item>
                         </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                             <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
-                                <Input />
+                                <Input disabled/>
                             </Form.Item>
                         </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                             <Form.Item name='qty' label='Qty' rules={[
                                 { required: true, message: 'Qty required' },
                             ]}>
                                 <Input onChange={calculateAmount} />
                             </Form.Item>
                         </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                             <Form.Item name='rate' label='Rate' rules={[
                                 { required: true, message: 'Rate is required' },
                             ]}>
                                 <Input onChange={calculateAmount} />
                             </Form.Item>
                         </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
                             <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
                                 <Input disabled />
                             </Form.Item>
@@ -661,13 +705,12 @@ const DCForm = () => {
         </Card>
         <Row style={{paddingTop :"30px"}} justify={'end'}>
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                    <Button type="primary" 
-                    // onClick={onSubmit}
+                    <Button type="primary" onClick={onSubmit}
                      disabled={itemTableData.length > 0  ? false : true}>Submit</Button>
                 </Col>
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Button 
-                    // onClick={onReset}
+                    onClick={onReset}
                     >Reset</Button>
                 </Col>
 

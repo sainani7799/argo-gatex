@@ -27,7 +27,7 @@ import { ApprovedUserModule } from './masters/approved/approval-user.module';
       }).catch((err) => {
         console.error('Error during Data Source 1 initialization', err);
       });
-      return [AppDataSource];
+      return AppDataSource;
 
     },
   },],
