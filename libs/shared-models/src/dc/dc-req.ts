@@ -1,3 +1,4 @@
+import { AcceptableEnum } from "../enum/is-acceptable";
 import { StatusEnum } from "../enum/status-enum";
 import { ItemsReq } from "./items.req";
 
@@ -17,8 +18,12 @@ export class DcReq{
     status:StatusEnum;
     requestedBy:number;
     remarks:string;
-    items:ItemsReq[];
-    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string, items:ItemsReq[]){
+    createdUser:string;
+    dcItemDetails:ItemsReq[];
+    updatedUser?:string;
+    isAssignable?:AcceptableEnum;
+    assignBy?:number;
+    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number){
         this.fromUnitId = fromUnitId;
         this.warehouseId = warehouseId;
         this.departmentId = departmentId;
@@ -34,6 +39,10 @@ export class DcReq{
         this.status = status;
         this.requestedBy = requestedBy;
         this.remarks = remarks;
-        this.items = items;
+        this.createdUser = createdUser;
+        this.dcItemDetails = dcItemDetails;
+        this.updatedUser = updatedUser;
+        this.isAssignable = isAssignable;
+        this.assignBy = assignBy
     }
 }

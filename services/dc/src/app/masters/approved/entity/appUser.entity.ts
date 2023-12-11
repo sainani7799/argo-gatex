@@ -12,7 +12,7 @@ export class ApprovedUserEntity {
   @Column("varchar",{
     name:"approved_user_name"
     })
-    approvedUserName:string;
+    approvedUserName:number;
 
   @Column("varchar",{
     name:"email_id"

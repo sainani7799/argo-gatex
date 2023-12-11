@@ -16,6 +16,8 @@ import ApprovedUserForm from "./master/authorised/authorised-form";
 import ItemForm from "./master/items/item-form";
 import ItemGrid from "./master/items/item-grid";
 import DCForm from "./dc/dc-form";
+import DCGrid from "./dc/dc-grid";
+import DcDetailsView from "./dc/dc-detail-view";
 
 
 
@@ -63,6 +65,8 @@ const AppRoutes = () => {
                     <Route path="/item-form" element={<ItemForm />}/>
                     <Route path="/item-grid" element={<ItemGrid />}/>
                     <Route path="/dc-form" element={<DCForm />} />
+                    <Route path="/dc-view" element={<DCGrid />} />
+                    <Route path="/dc-detail-view" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}

@@ -16,7 +16,7 @@ const DCForm = () => {
     const departmentService = new DepartmentService();
     const addressService = new AddressService();
     const employeeService = new EmployeeService();
-    const dcService = new DcService(); 
+    const dcService = new DcService();
     const [units, setUnits] = useState<any>([]);
     const [deps, setDeps] = useState<any>([]);
     const [suppliers, setSuppliers] = useState<any>([]);
@@ -43,7 +43,9 @@ const DCForm = () => {
     const [itemData, setItemData] = useState<any[]>([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const navigate = useNavigate()
-    let tableData: any[] = []
+    let tableData: any[] = [];
+
+ 
 
 
     const saveData = (data: any) => {
@@ -131,7 +133,7 @@ const DCForm = () => {
         console.log(req)
         itemService.getAllItemsByCode(req).then((res) => {
             if (res) {
-                setItemData(res.data);
+                // setItemData(res.data);
                 itemForm.setFieldValue('itemName', res.data[0].itemName)
                 itemForm.setFieldValue('description', res.data[0].description)
                 itemForm.setFieldValue('uom', res.data[0].uom)
@@ -364,28 +366,26 @@ const DCForm = () => {
     }
 
 
-    const calculateAmount =  () => {
+    const calculateAmount = () => {
         const qty = itemForm.getFieldValue('qty');
-        console.log(qty)
         const rate = itemForm.getFieldValue('rate');
-        console.log(rate)
-        const amount =  (qty * rate).toString() ;
+        const amount = (qty * rate).toString();
 
         itemForm.setFieldsValue({
-            amount: amount,
+            amount: isNaN(Number(amount)) ? 0 : Number(amount),
         });
     };
 
-    const onSubmit = () =>{
+    const onSubmit = () => {
         form.validateFields().then(() => {
-            const req = new DcReq(form.getFieldValue('fromUnitId'),form.getFieldValue('warehouseId'),form.getFieldValue('departmentId'),form.getFieldValue('poNo'),form.getFieldValue('modeOfTransport'),form.getFieldValue('toAddresser'),form.getFieldValue('addresserNameId'),form.getFieldValue('weight'),form.getFieldValue('vehicleNo'),form.getFieldValue('returnable'),form.getFieldValue('purpose'),form.getFieldValue('value'),form.getFieldValue('status'),form.getFieldValue('requestedBy'),form.getFieldValue('remarks'),itemTableData)
+            const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), form.getFieldValue('status'), form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
             console.log(req)
             dcService.createDc(req).then(res => {
-                if(res.status){
-                    // navigate('/requisition-view')
+                if (res.status) {
+                    navigate('/dc-view')
                     message.success(res.internalMessage);
                 }
-                else{
+                else {
                     message.error(res.internalMessage);
                 }
             })
@@ -402,21 +402,23 @@ const DCForm = () => {
         setItemTableData([])
         setItemTableVisible(false)
         setItemFieldList([]);
-    
+
     }
 
 
     return (
         <>
-        <Card  title={<span style={{ color: 'white' }}>DC Form</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>View</Button></span>} >
-            <Form
-                form={form}
-                layout='vertical'
-                style={{ width: '100%', margin: '0px auto 0px auto' }}
-            >
+            <Card title={<span style={{ color: 'white' }}>DC Form</span>}
+                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>View</Button></span>} >
+                <Form
+                    form={form}
+                    layout='vertical'
+                    style={{ width: '100%', margin: '0px auto 0px auto' }}
+                >
                     <Row gutter={24} style={{ width: "100%", justifyContent: "space-around" }}>
                         <Col style={{ width: "30%" }}>
+                            <Form.Item style={{ display: "none" }} name="createdUser"  >
+                            </Form.Item>
                             <Form.Item name="fromUnitId" label="Unit" rules={[
                                 { required: true },
                             ]}>
@@ -480,7 +482,7 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col style={{ width: "30%" }}>
-                            <Form.Item name="toAddresser" label="Unit / Supplier" rules={[
+                            <Form.Item name="toAddresser"  label="Unit / Supplier" rules={[
                                 { required: true },
                             ]}>
                                 <Radio.Group onChange={radioOnChange} value={radioValue} defaultValue={"unit"}>
@@ -642,75 +644,75 @@ const DCForm = () => {
                             </Card>
                         </Col>
                     </Row>
-            </Form>
-            <br />
-            <Card>
-
-                <Form layout="vertical" onFinish={onItemAdd} form={itemForm}> <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>Item DETAILS</h1>
-                    <Row gutter={14}>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-                            <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code' }]}>
-                                <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
-                                    {itemData.map(e => {
-                                        return (
-                                            <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
-                                        );
-                                    })}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-                            <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name' }]}>
-                                <Input disabled/>
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
-                            <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
-                                <Input disabled/>
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                            <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
-                                <Input disabled/>
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                            <Form.Item name='qty' label='Qty' rules={[
-                                { required: true, message: 'Qty required' },
-                            ]}>
-                                <Input onChange={calculateAmount} />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                            <Form.Item name='rate' label='Rate' rules={[
-                                { required: true, message: 'Rate is required' },
-                            ]}>
-                                <Input onChange={calculateAmount} />
-                            </Form.Item>
-                        </Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
-                            <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
-                                <Input disabled />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row justify={'end'}>
-                        <Button type='primary' htmlType="submit">{btnType}</Button>
-                    </Row>
                 </Form>
+                <br />
+                <Card>
+
+                    <Form layout="vertical" onFinish={onItemAdd} form={itemForm}> <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>Item DETAILS</h1>
+                        <Row gutter={14}>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code' }]}>
+                                    <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
+                                        {itemData.map(e => {
+                                            return (
+                                                <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name' }]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                                <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                <Form.Item name='qty' label='Qty' rules={[
+                                    { required: true, message: 'Qty required' },
+                                ]}>
+                                    <Input onChange={calculateAmount} />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                <Form.Item name='rate' label='Rate' rules={[
+                                    { required: true, message: 'Rate is required' },
+                                ]}>
+                                    <Input onChange={calculateAmount} />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row justify={'end'}>
+                            <Button type='primary' htmlType="submit">{btnType}</Button>
+                        </Row>
+                    </Form>
+                </Card>
+                {itemTableVisible ? (<>
+                    <Table columns={columns} dataSource={itemTableData} scroll={{ x: 'max-content' }} />
+                </>) : (<></>)}
             </Card>
-            {itemTableVisible ? (<>
-                <Table columns={columns} dataSource={itemTableData} scroll={{ x: 'max-content' }} />
-            </>) : (<></>)}
-        </Card>
-        <Row style={{paddingTop :"30px"}} justify={'end'}>
+            <Row style={{ paddingTop: "30px" }} justify={'end'}>
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Button type="primary" onClick={onSubmit}
-                     disabled={itemTableData.length > 0  ? false : true}>Submit</Button>
+                        disabled={itemTableData.length > 0 ? false : true}>Submit</Button>
                 </Col>
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                    <Button 
-                    onClick={onReset}
+                    <Button
+                        onClick={onReset}
                     >Reset</Button>
                 </Col>
 

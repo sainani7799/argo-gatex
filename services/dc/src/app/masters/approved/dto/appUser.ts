@@ -5,7 +5,7 @@ export class ApprovedUserDto {
   approvedId: number;
 
   @ApiProperty()
-  approvedUserName: string;
+  approvedUserName: number;
 
   @ApiProperty()
   emailId: string;

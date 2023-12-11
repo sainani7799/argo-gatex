@@ -161,7 +161,7 @@ export class AddressService {
        state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
             FROM shahi_address a
             LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
-            WHERE addresser = 'unit' AND a.addresser_name_id = '${req.unitId}'`;
+            WHERE addresser = 'unit' AND a.addresser_name_id = ${req.unitId}`;
       const data = await AppDataSource.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {

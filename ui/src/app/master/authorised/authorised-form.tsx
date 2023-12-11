@@ -3,13 +3,14 @@ import { Form, Input, Button, Select, Card, Row, Col, message, Typography, Uploa
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { ApprovedUserDto } from "libs/shared-models";
-import { ApprovalUserService } from "libs/shared-services";
+import { ApprovalUserService, EmployeeService } from "libs/shared-services";
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 export interface ApprovedUserFormProps {
   data: ApprovedUserDto;
-  updateApprovalUser: (dto: ApprovedUserDto, fileList:any) => void;
+  updateApprovalUser: (dto: ApprovedUserDto, fileList: any) => void;
   isUpdate: boolean;
   closeForm: () => void;
 }
@@ -18,35 +19,48 @@ export interface ApprovedUserFormProps {
 export function ApprovedUserForm(props: ApprovedUserFormProps) {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const [imageUrl,setImageUrl] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
   const [loading, setLoading] = useState<boolean>(false);
-  const [isUpdateImg, setIsUpdateImg]=useState('')
+  const [isUpdateImg, setIsUpdateImg] = useState('')
   const [disable, setDisable] = useState<boolean>(false);
+  const [employee, setEmployee] = useState<any>([]);
   const authdata = JSON.parse(localStorage.getItem('userName'))
+  const employeeService = new EmployeeService();
+
 
   const Service = new ApprovalUserService();
 
-  const [fileList, setFileList] = useState<any>(props.isUpdate?[{
+  const [fileList, setFileList] = useState<any>(props.isUpdate ? [{
     name: props.data.sigImageName,
     status: 'done',
-    url:props.data.sigImageName,
+    url: props.data.sigImageName,
 
-  }]:[]);
+  }] : []);
 
   useEffect(() => {
+    getAllEmployees();
     form.setFieldsValue({ createdUser: authdata.userName })
-}, [])
+  }, [])
+  const getAllEmployees = () => {
+    employeeService.getAllEmployees().then(res => {
+      if (res) {
+        console.log("This is employee");
+        // console.log(res);
+        setEmployee(res.data);
+      }
+    })
+  };
 
   useEffect(() => {
-    if(props.data){
-     const updateImage ='http://localhost/DELIVERY_CHALAN/upload-files'+props.data.sigImageName
-     // const updateImage ='http://165.22.220.143/crm/gtstoinfor/upload-files/'+props.styleData.styleFileName
-     setIsUpdateImg(updateImage)
+    if (props.data) {
+      const updateImage = 'http://localhost/DELIVERY_CHALAN/upload-files' + props.data.sigImageName
+      // const updateImage ='http://165.22.220.143/crm/gtstoinfor/upload-files/'+props.styleData.styleFileName
+      setIsUpdateImg(updateImage)
     }
-   }, [])
+  }, [])
 
 
-   const uploadButton = (
+  const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
       <div style={{ marginTop: 8 }}>Upload Style</div>
@@ -55,7 +69,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
   let createdUser = "";
 
   if (!props.isUpdate) {
-    createdUser= localStorage.getItem("createdUser");
+    createdUser = localStorage.getItem("createdUser");
   }
 
   const onReset = () => {
@@ -74,38 +88,38 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     setDisable(true);
     // const file:any = data.fabricWeaveImageName
     // const abc:string =file.file.name
-    const req = new ApprovedUserDto(data.approvedId,data.approvedUserName,data.emailId,data.isActive,data.createdUser,data.versionFlag)
+    const req = new ApprovedUserDto(data.approvedId, data.approvedUserName, data.emailId, data.isActive, data.createdUser, data.versionFlag)
     Service.createApprovalUser(req).then((res) => {
       // console.log(req,'req');
       setDisable(false);
-        console.log(res)
-        if (res.status) {
-          message.success('User Created Successfully');
-          if(fileList.length > 0){
-            console.log(fileList)
-            const formData = new FormData();
-            fileList.forEach((file: any) => {
-              console.log(file)
-                formData.append('file', file);
-            });
-            console.log(res)
-            formData.append('approvedId', `${res.data.approvedId}`)
-            console.log(formData)
-            Service.approvalUserImageUpload(formData).then(fileRes => {
-                
-            })
-          }
-        //   navigate("/masters/fabric-weave/fabric-weave-view")
-          onReset();
-        } else {
-          message.error(res.internalMessage);
+      console.log(res)
+      if (res.status) {
+        message.success('User Created Successfully');
+        if (fileList.length > 0) {
+          console.log(fileList)
+          const formData = new FormData();
+          fileList.forEach((file: any) => {
+            console.log(file)
+            formData.append('file', file);
+          });
+          console.log(res)
+          formData.append('approvedId', `${res.data.approvedId}`)
+          console.log(formData)
+          Service.approvalUserImageUpload(formData).then(fileRes => {
+
+          })
         }
-      })
+        //   navigate("/masters/fabric-weave/fabric-weave-view")
+        onReset();
+      } else {
+        message.error(res.internalMessage);
+      }
+    })
       .catch((err) => {
-         setDisable(false)
-        message.success(err.message,2);
+        setDisable(false)
+        message.success(err.message, 2);
       });
-   
+
   };
 
   const saveData = (values: ApprovedUserDto) => {
@@ -140,9 +154,9 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
           setFileList([file]);
           getBase64(file, imageUrl =>
             setImageUrl(imageUrl)
-          
+
           );
-      
+
           return false;
         }
       }
@@ -160,81 +174,94 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
   };
   const showImagePreview = props.isUpdate && props.data.sigImageName;
 
-return (
-    
-  <Card title={props.isUpdate ? 'Update user' : 'User '} extra={(props.isUpdate === false) && <span><Button onClick={() => navigate('approval-user-view')} type={'primary'}>View</Button></span>}>
-    <Form form={form}
-    onFinish={saveData}
-    initialValues={props.data} layout="vertical">
-      <Form.Item name="approvedId" style={{ display: "none" }} >
-        <Input hidden />
-      </Form.Item>
-      <Form.Item style={{ display: "none" }} name="createdUser" initialValue={''}>
-        <Input hidden />
-      </Form.Item>
-      <Row gutter={24}>
-       <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 14 }}>
-        <Card>
-          <Row gutter={24}>
-            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span:10 }}>
-              <Form.Item name='approvedUserName' label='Name'
-              rules={[{
-                required: true,
-                message:'Name Is Required'
-              }]}>
-                <Input placeholder="Enter Name "/>
+  return (
+
+    <Card title={props.isUpdate ? 'Update user' : 'User '} extra={(props.isUpdate === false) && <span><Button onClick={() => navigate('approval-user-view')} type={'primary'}>View</Button></span>}>
+      <Form form={form}
+        onFinish={saveData}
+        initialValues={props.data} layout="vertical">
+        <Form.Item name="approvedId" style={{ display: "none" }} >
+          <Input hidden />
+        </Form.Item>
+        <Form.Item style={{ display: "none" }} name="createdUser" initialValue={''}>
+          <Input hidden />
+        </Form.Item>
+        <Row gutter={24}>
+          <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 14 }}>
+            <Card>
+              <Row gutter={24}>
+                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 10 }}>
+                  <Form.Item name='approvedUserName' label='Name'
+                    rules={[{
+                      required: true,
+                      message: 'Name Is Required'
+                    }]}>
+                    <Select
+                      showSearch
+                      placeholder="Select Name"
+                      optionFilterProp="children"
+                      allowClear
+                    >
+                      {employee.map(app => {
+                        return (
+                          <Option key={app.employeeId} value={app.employeeId}>
+                            {app.employeeName}
+                          </Option>
+                        )
+                      })}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 10 }}>
+                  <Form.Item name='emailId' label='Email Id'
+                    rules={[{
+                      required: true,
+                      message: 'Email Id Is Required'
+                    }]}>
+                    <Input placeholder="Enter Email Id " />
+                  </Form.Item>
+                </Col>
+
+                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 12 }}>
+                  <Form.Item name="sigImageName" label='Signature Image'
+                    initialValue={props.isUpdate ? props.data.sigImageName : ''}
+
+                  >
+                    {!imageUrl ? (
+                      <Upload  {...weaveUploadFieldProps} style={{ width: '100%' }} listType="picture-card"  >
+                        {uploadButton}
+                      </Upload>
+                    ) : ""}
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24} style={{ textAlign: 'right' }}>
+                  <Button type="primary" htmlType="submit">
+                    Submit
+                  </Button>
+                  <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
+                    Reset
+                  </Button>
+                </Col>
+              </Row>
+            </Card>
+          </Col>
+          <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 10 }} >
+            <Card style={{ height: '331px' }}>
+              <Form.Item >
+                <img src={props.isUpdate ? isUpdateImg : imageUrl} alt="Preview"
+                  height={'300px'}
+                  width={'500px'}
+                  style={{ width: '100%', objectFit: 'contain', marginRight: '100px' }}
+                />
               </Form.Item>
-            </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span:10 }}>
-              <Form.Item name='emailId' label='Email Id'
-              rules={[{
-                required: true,
-                message:'Email Id Is Required'
-              }]}>
-                <Input placeholder="Enter Email Id "/>
-              </Form.Item>
-            </Col>
-            
-            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span:12 }}>
-              <Form.Item name="sigImageName" label='Signature Image'
-              initialValue={props.isUpdate ? props.data.sigImageName:''}
-            
-              >
-               { !imageUrl ? (
-                <Upload  {...weaveUploadFieldProps} style={{  width:'100%' }} listType="picture-card"  >
-                  {uploadButton}
-                </Upload>
-                   ):"" }
-              </Form.Item>
-            </Col>
-          </Row> 
-          <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-              <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
-                Reset
-              </Button>
-            </Col>
-          </Row>
-        </Card>  
-      </Col>
-      <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 10 }} >
-        <Card style={{height:'331px'}}>
-          <Form.Item >
-            <img src={props.isUpdate ? isUpdateImg:imageUrl} alt="Preview"  
-            height={'300px'} 
-            width={'500px'}   
-            style={{ width: '100%', objectFit: 'contain', marginRight: '100px' }}
-            /> 
-          </Form.Item>        
-        </Card>
-      </Col>
-    </Row>
-    </Form>
-  </Card>
-);
+            </Card>
+          </Col>
+        </Row>
+      </Form>
+    </Card>
+  );
 }
 
 export default ApprovedUserForm;

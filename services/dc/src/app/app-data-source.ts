@@ -10,6 +10,8 @@ import { SupplierEntity } from "./masters/supplier/entity/supplier.entity";
 import { ItemEntity } from "./masters/items/entity/item.entity";
 import { AddressEntity } from "./masters/address/entity/address.entity";
 import { ApprovedUserEntity } from "./masters/approved/entity/appUser.entity";
+import { DcEntity } from "./delivery-chalan/entity/dc.entity";
+import { DcItemEntity } from "./delivery-chalan/entity/dc-items.entity";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -19,7 +21,7 @@ export const AppDataSource = new DataSource({
     database: 'internal_apps',
     synchronize: false,
     logging:true,
-    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity]
+    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity]
    
 })
 

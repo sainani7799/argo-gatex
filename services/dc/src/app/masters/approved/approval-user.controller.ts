@@ -68,4 +68,14 @@ export class ApprovalUSerController {
     }
   }
 
+  @Post('/getAllApprovalIdUser')
+  async getAllApprovalIdUser(@Body() req:any): Promise<CommonResponse> {
+    try {
+      return await this.service.getAllApprovalIdUser(req);
+    } catch (error) {
+      console.log(error,'err')
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
 }

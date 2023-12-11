@@ -1,4 +1,4 @@
-import { ApprovedUserDto } from "libs/shared-models";
+import { ApprovalIdReq, ApprovedUserDto } from "libs/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 
@@ -16,5 +16,9 @@ export class ApprovalUserService extends CommonAxiosServicePms {
 
     async getAllApprovalUser(): Promise<any> {
         return await this.axiosGetCall(this.AddressController +'/getAllApprovalUser' );
+    }
+
+    async getAllApprovalIdUser(req: ApprovalIdReq): Promise<any> {
+        return await this.axiosPostCall(this.AddressController + '/getAllApprovalIdUser', req);
     }
 }

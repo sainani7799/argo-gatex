@@ -4,6 +4,7 @@ import { ApprovedUserDto } from "./dto/appUser";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { AppDataSource } from "../../app-data-source";
 import { ApprovedUserEntity } from "./entity/appUser.entity";
+import { ApprovalIdReq } from "libs/shared-models";
 
 @Injectable()
 export class ApprovedUserService {
@@ -64,12 +65,24 @@ export class ApprovedUserService {
     }
     async getAllApprovalUser():Promise<CommonResponse>{
         try{
-            const data = await AppDataSource.getRepository(ApprovedUserEntity).find()
+            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId FROM shahi_approved_users a
+            LEFT JOIN shahi_employees e ON e. employee_id = a.approved_user_name`
+            const data = await AppDataSource.query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         }catch(error){
             console.log(error)
         }
     }
 
-
+    async getAllApprovalIdUser(req:ApprovalIdReq):Promise<CommonResponse>{
+        console.log(req,'req;;;;')
+        try{
+            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId FROM shahi_approved_users a
+            LEFT JOIN shahi_employees e ON e. employee_id = a.approved_user_name where a.approved_user_name = ${req.approvedUserId}`
+            const data = await AppDataSource.query(query)
+            return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
+        }catch(error){
+            console.log(error)
+        }
+    }
 }

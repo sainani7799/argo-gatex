@@ -1,6 +1,6 @@
 export class ApprovedUserDto {
     approvedId: number;
-    approvedUserName: string;
+    approvedUserName: number;
     emailId:string;
     isActive: boolean;
     createdUser : string;
@@ -10,7 +10,7 @@ export class ApprovedUserDto {
 
     constructor(
     approvedId: number,
-    approvedUserName: string,
+    approvedUserName: number,
     emailId:string,
     isActive: boolean,
     createdUser : string,

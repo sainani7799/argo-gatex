@@ -4,7 +4,7 @@ import {  ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/ico
 import { Link, Outlet,   Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLocationPin, faPerson, faShirt, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { faFileExport, faLocationPin, faPerson, faShirt, faTruckArrowRight, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -99,6 +99,18 @@ export default function BasicLayout() {
                             </Menu.Item>
                             <Menu.Item key="/item-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
                                 <Link to="/item-grid"><span>Item</span></Link>
+                            </Menu.Item>
+                        </SubMenu>
+                        <SubMenu
+                            key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                            title={
+                                <span>
+                                    <span>Dc</span>
+                                </span>
+                            }
+                        >
+                            <Menu.Item key="/dc-form" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-form"><span>GatePass</span></Link>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>

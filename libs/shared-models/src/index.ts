@@ -12,3 +12,4 @@ export * from './approval';
 export * from './warehouse';
 export * from './item';
 export * from './dc';
+export * from './enum/is-acceptable';
