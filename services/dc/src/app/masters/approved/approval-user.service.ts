@@ -77,7 +77,7 @@ export class ApprovedUserService {
     async getAllApprovalIdUser(req:ApprovalIdReq):Promise<CommonResponse>{
         console.log(req,'req;;;;')
         try{
-            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId FROM shahi_approved_users a
+            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId , a. FROM shahi_approved_users a
             LEFT JOIN shahi_employees e ON e. employee_id = a.approved_user_name where a.approved_user_name = ${req.approvedUserId}`
             const data = await AppDataSource.query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)

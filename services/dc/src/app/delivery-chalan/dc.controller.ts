@@ -30,6 +30,15 @@ export class DcController {
     }
   }
 
+  @Post('/acceptDc')
+  async acceptDc(@Body() dto: any,): Promise<CommonResponse> {
+    try {
+      return await this.dcService.acceptDc(dto);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
   @Get('/getAllGatePass')
   async getAllGatePass(): Promise<CommonResponse> {
     try {

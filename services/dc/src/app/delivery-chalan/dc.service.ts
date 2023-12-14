@@ -7,7 +7,7 @@ import { AppDataSource } from "../app-data-source";
 import { DcEntity } from "./entity/dc.entity";
 import { DcAdapter } from "./adapter/dc.adapter";
 import { error } from "console";
-import { AssignReq, DcIdReq } from "libs/shared-models";
+import { AcceptReq, AssignReq, DcIdReq } from "libs/shared-models";
 
 @Injectable()
 export class DcService {
@@ -52,14 +52,24 @@ export class DcService {
         }
     }
 
+    async acceptDc(dto: AcceptReq): Promise<CommonResponse> {
+        console.log(dto,'acceptDcReq')
+        const dcRecord = await AppDataSource.getRepository(DcEntity).findOne({where :{dcId:dto.dcId }})
+        if(dcRecord){
+           const acceptData = await AppDataSource.getRepository(DcEntity).update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,acceptedUser:dto.acceptedUser,status:dto.status})
+            return new CommonResponse(true,333,'update successfully',acceptData)
+        }else{
+            return new CommonResponse(false,6666,'something went wrong')
+        }
+    }
+
     async getAllGatePass(): Promise<CommonResponse> {
         try {
             const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
             w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
-            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy,
-            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser
+            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
@@ -69,7 +79,6 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            LEFT JOIN shahi_dc_items dci ON dci.dc_id = dc.dc_id
             WHERE to_addresser IN ('unit', 'supplier')`;
             const data = await AppDataSource.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
@@ -85,7 +94,7 @@ export class DcService {
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy,
-            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser
+            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,dc.purpose,dc.vehicle_no as vehicleNo , dc.email_id as emailId
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id

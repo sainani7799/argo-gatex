@@ -66,7 +66,7 @@ const AppRoutes = () => {
                     <Route path="/item-grid" element={<ItemGrid />}/>
                     <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/dc-view" element={<DCGrid />} />
-                    <Route path="/dc-detail-view" element={<DcDetailsView dcId={undefined} />} />
+                    <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}
@@ -75,7 +75,7 @@ const AppRoutes = () => {
                 </Route>
 
                 <Route path="/login" element={<Login />} />
-
+                <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
             </Routes>
         </Router>
     );

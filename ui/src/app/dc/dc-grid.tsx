@@ -1,11 +1,11 @@
 import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select } from 'antd';
-import { AddressService, ApprovalUserService, DcService } from 'libs/shared-services';
+import { AddressService, ApprovalUserService, DcService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
-import { AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcReq, StatusEnum } from 'libs/shared-models';
+import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcReq, StatusEnum } from 'libs/shared-models';
 import DCForm from './dc-form';
 import moment from 'moment';
 const { Option } = Select;
@@ -20,8 +20,10 @@ const DCGrid = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState<any>(undefined);
+    const [mailLoading, setMailLoading] = useState<boolean>(false)
     const [user, setUser] = useState<any>([]);
     const searchInput = useRef(null);
+    const mailService = new EmailService()
     let navigate = useNavigate();
 
     useEffect(() => {
@@ -78,6 +80,88 @@ const DCGrid = () => {
         }).catch(err => {
             message.error(err.message);
         })
+    }
+
+    const acceptDc = (dto: AcceptReq) => {
+        dto.isAccepted = AcceptableEnum.YES,
+            dto.acceptedUser = form.getFieldValue('assignBy')
+        dto.dcId = form.getFieldValue('dcId')
+        console.log(dto)
+        service.acceptDc(dto).then(res => {
+            if (res.status) {
+                message.success('User Accept Successfully');
+                setDrawerVisible(false);
+
+            } else {
+                message.error(res.internalMessage);
+
+            }
+        }).catch(err => {
+            message.error(err.message);
+        })
+    }
+
+
+    let mailerSent = false;
+    async function sendDcMailForGatePass() {
+        const dcDetails = new DcEmailModel();
+        dcDetails.dcNo = form.getFieldValue('dcNumber');
+        dcDetails.to = form.getFieldValue('emailId');
+        dcDetails.html = `
+        <html>
+        <head>
+            <meta charset="UTF-8">
+        </head>
+        <body>
+            <p>Dear team,</p>
+            <p>Please find the Gate Pass details below:</p>
+            <p>DC NO: ${form.getFieldValue('dcNumber')}</p>
+            <p>Some items moved from Address: ${form.getFieldValue('fromUnit')} to Address: ${form.getFieldValue('toAddresserName')}</p>
+            <p>Please click the link below for details:</p>
+            <a href="http://localhost:4200/#/dc-detail-view/${form.getFieldValue('dcId')}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">View Details of GatePass</a>
+        
+           
+            <a href="javascript:void(0);" id="acceptDcLink" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">Accept DC</a>
+        
+            <script>
+                document.getElementById('acceptDcLink').addEventListener('click', function() {
+                    var dto = {
+                        isAccepted: 'YES', // Assuming AcceptableEnum.YES is a string, adjust accordingly
+                        acceptedUser: document.getElementById('assignBy').value,
+                        dcId: document.getElementById('dcId').value
+                    };
+        
+                    console.log(dto);
+        
+                    // Assuming 'service' is a global variable representing your service
+                    service.acceptDc(dto).then(function(res) {
+                        if (res.status) {
+                            alert('User Accept Successfully');
+                            // Assuming 'setDrawerVisible' is a global function
+                            setDrawerVisible(false);
+                        } else {
+                            alert(res.internalMessage);
+                        }
+                    }).catch(function(err) {
+                        alert(err.message);
+                    });
+                });
+            </script>
+        </body>
+        </html>`
+        dcDetails.subject = "Gate Pass : " + form.getFieldValue('dcNumber')
+        const res = await mailService.sendDcMail(dcDetails)
+        console.log(res)
+        if (res.status == 201) {
+            if (res.data.status) {
+                message.success("Mail sent successfully")
+                mailerSent = true;
+            } else {
+                message.error("Mail not sent due to an error")
+            }
+        } else {
+            message.error("Mail not sent due to an error")
+        }
     }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -222,7 +306,7 @@ const DCGrid = () => {
                             onClick={() => {
                                 console.log(rowData.dcId);
 
-                                navigate('/dc-detail-view', { state: rowData.dcId })
+                                navigate(`/dc-detail-view/${rowData.dcId}`, { state: rowData.dcId })
                             }}
                             style={{ color: "blue", fontSize: 20 }}
                         />
@@ -235,14 +319,18 @@ const DCGrid = () => {
                                 onClick={() => {
                                     setDrawerVisible(true);
                                     form.setFieldValue('dcId', rowData.dcId);
+                                    form.setFieldValue('dcNumber', rowData.dcNumber);
+                                    form.setFieldValue('fromUnit', rowData.fromUnit);
+                                    form.setFieldValue('toAddresserName', rowData.toAddresserName);
                                     console.log(rowData.dcId);
+                                    console.log(rowData.dcNumber);
                                 }}
                                 style={{ color: "blue", fontSize: 20 }}
                             />
                         </Tooltip>
                     ) : (
                         <Tooltip placement='top' title="Already Assigned">
-                            <CheckOutlined 
+                            <CheckOutlined
                                 onClick={() => {
                                     // Handle click for the other icon
                                 }}
@@ -250,7 +338,6 @@ const DCGrid = () => {
                             />
                         </Tooltip>
                     )}
-
                 </span>
             ),
 
@@ -284,17 +371,43 @@ const DCGrid = () => {
                         form={form}
                         layout='vertical'
                         style={{ width: '100%', margin: '0px auto 0px auto' }}
-                        onFinish={update}
+                        onFinish={sendDcMailForGatePass}
                     >
                         <Row gutter={24}>
                             <Form.Item name="dcId" label="Dc Id"
                                 rules={[
                                     { required: true },
                                 ]}
-                                style={{ display: 'none' }}>
+                                style={{ display: 'none' }}
+                            >
                                 <Input hidden />
                             </Form.Item>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
+                                <Form.Item name="dcNumber" label="Dc Number"
+                                    rules={[
+                                        { required: true },
+                                    ]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
+                                <Form.Item name="fromUnit" label="From Unit"
+                                    rules={[
+                                        { required: true },
+                                    ]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
+                                <Form.Item name="toAddresserName" label="To Addresser"
+                                    rules={[
+                                        { required: true },
+                                    ]}>
+                                    <Input disabled />
+                                </Form.Item>
+                            </Col>
+
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
 
                                 <Form.Item name="assignBy" label="Approval User"
                                     rules={[
@@ -317,7 +430,7 @@ const DCGrid = () => {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
                                 <Form.Item name="emailId" label="Email Id"
                                     rules={[
                                         { required: true },
@@ -325,7 +438,7 @@ const DCGrid = () => {
                                     <Input disabled />
                                 </Form.Item>
                             </Col>
-                        </Row>
+                        </Row >
                         <Button type="primary" htmlType="submit">
                             Submit
                         </Button>

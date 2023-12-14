@@ -1,9 +1,11 @@
-import { Button, Card, Col, Descriptions, Row, Table, message } from "antd";
+import { Button, Card, Col, Descriptions, Modal, Row, Table, message } from "antd";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
 import { AddressService, DcService } from "libs/shared-services";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import DcPrint from './dc-print'
 
 export interface DcViewProps {
   dcId: number
@@ -133,31 +135,66 @@ export const DcDetailsView = (props: DcViewProps) => {
     setIsModalVisible(false);
   };
 
+  const printDc = () => {
+    const divContents = document.getElementById('printme').innerHTML;
+    const element = window.open('', '', 'height=700, width=1024');
+    element.document.write(divContents);
+    getCssFromComponent(document, element.document);
+    element.document.close();
+    element.print();
+    element.close(); // to close window when click on cancel/Save
+    setIsModalVisible(true); // model should be open
+  };
+
+  /**
+ * get form data 
+ * @param fromDoc 
+ * @param toDoc 
+ */
+  const getCssFromComponent = (fromDoc, toDoc) => {
+    Array.from(fromDoc.styleSheets).forEach((styleSheet: any) => {
+      if (styleSheet.cssRules) { // true for inline styles
+        const newStyleElement = toDoc.createElement('style');
+        Array.from(styleSheet.cssRules).forEach((cssRule: any) => {
+          newStyleElement.appendChild(toDoc.createTextNode(cssRule.cssText));
+        });
+        toDoc.head.appendChild(newStyleElement);
+      }
+    });
+  }
+  const openPrint = () => {
+    setIsModalVisible(true);
+  }
+
   return (
     <div>
       <Card>
-        <Card title="Dc Detail View" headStyle={{ backgroundColor: '#69c0ff', border: 0 }} extra={<span style={{ color: 'white' }} > <Button className='panel_button' >Print</Button> <Button className='panel_button' onClick={() => navigate('/dc-view')}>DC View</Button> </span>} >
+        <Card title="Dc Detail View" headStyle={{ backgroundColor: '#69c0ff', border: 0 }} extra={<span style={{ color: 'white' }} > <Button className='panel_button' onClick={openPrint}>Print</Button> <Button className='panel_button' onClick={() => navigate('/dc-view')}>DC View</Button> </span>} >
           <Descriptions size='small' >
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{data[0]?.createdDate}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created By</span>}>{data[0]?.created_user}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Department</span>}>{data[0]?.department}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Weight (Kg)</span>}>{data[0]?.weight}</DescriptionsItem>
+            <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Purpose</span>}>{data[0]?.purpose}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Status</span>}>{data[0]?.status}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Value</span>}>{data[0]?.value}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Mode Of Transport</span>}>{data[0]?.modeOfTransport}</DescriptionsItem>
+            <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>vehicle No</span>}>{data[0]?.vehicleNo}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Requested By</span>}>{data[0]?.requestedBy}</DescriptionsItem>
-          </Descriptions>
-          <Descriptions size='small' >
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem>
+          </Descriptions>
+          
+          <Descriptions size='small' >
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Dc Assign</span>}>{data[0]?.isDcAssign}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Assign By</span>}>{data[0]?.assignBy}</DescriptionsItem>
+            <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Email</span>}>{data[0]?.emailId}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Remarks</span>}>{data[0]?.remarks}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Is Accepted</span>}>{data[0]?.is_accepted}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Accepted By</span>}>{data[0]?.acceptedUser}</DescriptionsItem>
           </Descriptions>
-          
-          
+
+
           <Row gutter={24}>
 
             <Col className="cardComp" xs={24} sm={24} md={8} xl={12}>
@@ -203,6 +240,23 @@ export const DcDetailsView = (props: DcViewProps) => {
             dataSource={data}
             pagination={false}
           />
+          {isModalVisible ?
+            <Modal
+              className='print-docket-modal'
+              key={'modal' + Date.now()}
+              width={'100%'}
+              style={{ top: 30, alignContent: 'right' }}
+              visible={isModalVisible}
+              title={<React.Fragment>
+              </React.Fragment>}
+              onCancel={handleCancel}
+              footer={[
+
+              ]}
+            >
+
+              <DcPrint dcId={props.dcId} printDc={printDc} />
+            </Modal> : ""}
         </Card>
       </Card>
     </div>

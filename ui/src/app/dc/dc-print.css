@@ -1,0 +1,51 @@
+
+  
+  #count:before {
+    counter-increment: section;
+    content: counter(section);
+  }
+  .ta-th{
+    background-color: antiquewhite;
+  }
+  .ta-b {
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+    /* padding: 5px; */
+    text-align: left;
+    border-bottom: 1px solid black;
+  }
+  .ta-b td {
+    border-bottom: 1px solid black;
+  }
+  .t1 {
+    padding: 5px;
+    text-align: left;
+  }
+  .stylesInfo {
+    font-family: monospace;
+  }
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 0mm, 0mm, 0mm, 0mm;
+    }
+    .stylesInfo {
+      font-family: monospace;
+      font-size: 7pt;
+    }
+    /* @page { size:'a4';  margin-top: 0mm; margin-bottom: 0mm; } */
+    /* @media print { */
+    /* body { transform: scale(.88);}
+      .ShippingInstructions {transform: scale(.70);}
+      table {page-break-inside: avoid;} */
+    /* } */
+    body {
+      width: auto;
+      border: 0;
+      margin: 0 2%;
+      padding: 0;
+      float: 10px;
+      position: static;
+      overflow: visible;
+    }
+}
