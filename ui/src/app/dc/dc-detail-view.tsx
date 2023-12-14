@@ -4,7 +4,7 @@ import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
 import { AddressService, DcService } from "libs/shared-services";
 import React from "react";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DcPrint from './dc-print'
 
 export interface DcViewProps {
@@ -16,19 +16,21 @@ export const DcDetailsView = (props: DcViewProps) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const page = 1
   const navigate = useNavigate();
-  const location = useLocation()
   const [addressData, setAddressData] = useState<any>([]);
   const service = new DcService();
   const addressService = new AddressService();
   const [toAddressData, setToAddressData] = useState<any>([]);
+  const { id } = useParams();
 
-
+  const location = useLocation();
+  const currentRoute = location.pathname;
+  console.log(currentRoute,'current route')
   useEffect(() => {
     getDc();
   }, [props.dcId])
 
   const getDc = () => {
-    const req = new DcIdReq(location.state)
+    const req = new DcIdReq(Number(id))
     console.log(req, '-----------');
     service.getDcDetailsById(req).then(res => {
       if (res.status) {

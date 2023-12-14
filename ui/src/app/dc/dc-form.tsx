@@ -482,7 +482,7 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col style={{ width: "30%" }}>
-                            <Form.Item name="toAddresser"  label="Unit / Supplier" rules={[
+                            <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Supplier" rules={[
                                 { required: true },
                             ]}>
                                 <Radio.Group onChange={radioOnChange} value={radioValue} defaultValue={"unit"}>
@@ -525,7 +525,7 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col style={{ width: "30%" }}>
-                            <Form.Item name="returnable" label="Returnable" rules={[
+                            <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
                                 { required: true },
                             ]}>
                                 <Radio.Group onChange={returnOnChange} value={returnaValue} defaultValue={"Y"}>

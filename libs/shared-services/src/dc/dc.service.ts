@@ -14,13 +14,13 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/updateDc', dto);
 
     }
-    async acceptDc(dto: AcceptReq): Promise<any> {
-        return await this.axiosPostCall(this.DcController + '/acceptDc', dto);
+    // async acceptDc(dto: AcceptReq): Promise<any> {
+    //     return await this.axiosPostCall(this.DcController + '/acceptDc', dto);
 
-    }
+    // }
+    
     async getAllGatePass(): Promise<any> {
         return await this.axiosGetCall(this.DcController + '/getAllGatePass');
-
     }
 
     async getDcDetailsById(req: DcIdReq): Promise<any> {
@@ -29,3 +29,7 @@ export class DcService extends CommonAxiosServicePms {
     }
     
 }
+
+export async function acceptDc(dto) {
+    return await this.axiosPostCall(this.DcController + '/acceptDc', dto);
+  }

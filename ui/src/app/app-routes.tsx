@@ -75,7 +75,7 @@ const AppRoutes = () => {
                 </Route>
 
                 <Route path="/login" element={<Login />} />
-                <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+                <Route path="/dc-email-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
             </Routes>
         </Router>
     );

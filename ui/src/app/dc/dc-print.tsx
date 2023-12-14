@@ -99,7 +99,9 @@ export function DcPrint(props: DcPrintProps) {
     const createdDate = moment(data[0]?.createdDate).format('DD-MM-YYYY');
     const totalQty = data.reduce((sum, item) => sum + parseFloat(item.qty || 0), 0);
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
-
+    const normalizeImagePath = (path) => {
+        return path.replace(/\\/g, '/');
+    };
     return (
         <Card title='GATE PASS PRINT'
             style={{ textAlign: 'center' }}
@@ -217,7 +219,7 @@ export function DcPrint(props: DcPrintProps) {
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px', paddingLeft: '30px' }}>
                         <Col span={8}>
                             <div>
-                                <h5>Prepared By :<br/> {data[0]?.created_user}</h5>
+                                <h5>Prepared By :<br /> {data[0]?.created_user}</h5>
                             </div>
                         </Col>
                         <Col span={8}>
@@ -227,7 +229,18 @@ export function DcPrint(props: DcPrintProps) {
                         </Col>
                         <Col span={8}>
                             <div>
-                                <h5>Authorised Signatory <br/> {data[0]?.created_user} </h5>
+                                <h5>Authorised Signatory</h5>
+                                <br />
+                                {data[0]?.sign_path && (
+                                    
+                                    <img
+                                        src={data[0]?.sign_path} // Use the image path from your data
+                                        alt={`Signature of ${data[0]?.user_signature}`}
+                                        style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }}
+                                    />
+                                    
+                                )}
+                               
                             </div>
                         </Col>
                     </Row>

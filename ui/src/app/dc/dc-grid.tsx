@@ -3,7 +3,7 @@ import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip,
 import { AddressService, ApprovalUserService, DcService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
 import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcReq, StatusEnum } from 'libs/shared-models';
 import DCForm from './dc-form';
@@ -25,7 +25,7 @@ const DCGrid = () => {
     const searchInput = useRef(null);
     const mailService = new EmailService()
     let navigate = useNavigate();
-
+    
     useEffect(() => {
         getGatePassData();
         getAllApprovalUser();
@@ -71,6 +71,7 @@ const DCGrid = () => {
         service.updateDc(dto).then(res => {
             if (res.status) {
                 message.success('Updated Successfully');
+                sendDcMailForGatePass()
                 setDrawerVisible(false);
 
             } else {
@@ -82,24 +83,24 @@ const DCGrid = () => {
         })
     }
 
-    const acceptDc = (dto: AcceptReq) => {
-        dto.isAccepted = AcceptableEnum.YES,
-            dto.acceptedUser = form.getFieldValue('assignBy')
-        dto.dcId = form.getFieldValue('dcId')
-        console.log(dto)
-        service.acceptDc(dto).then(res => {
-            if (res.status) {
-                message.success('User Accept Successfully');
-                setDrawerVisible(false);
+    // const acceptDc = (dto: AcceptReq) => {
+    //     dto.isAccepted = AcceptableEnum.YES,
+    //         dto.acceptedUser = form.getFieldValue('assignBy')
+    //     dto.dcId = form.getFieldValue('dcId')
+    //     console.log(dto)
+    //      function acceptDc(dto).then(res => {
+    //         if (res.status) {
+    //             message.success('User Accept Successfully');
+    //             setDrawerVisible(false);
 
-            } else {
-                message.error(res.internalMessage);
+    //         } else {
+    //             message.error(res.internalMessage);
 
-            }
-        }).catch(err => {
-            message.error(err.message);
-        })
-    }
+    //         }
+    //     }).catch(err => {
+    //         message.error(err.message);
+    //     })
+    // }
 
 
     let mailerSent = false;
@@ -110,45 +111,96 @@ const DCGrid = () => {
         dcDetails.html = `
         <html>
         <head>
-            <meta charset="UTF-8">
+          <meta charset="UTF-8" />
+          <style>
+            #acceptDcLink {
+                  display: inline-block;
+                  padding: 10px 20px;
+                  background-color: #28a745;
+                  color: #fff;
+                  text-decoration: none;
+                  border-radius: 5px;
+                  margin-top: 10px;
+                  transition: background-color 0.3s ease, color 0.3s ease;
+                  cursor: pointer;
+              }
+      
+              #acceptDcLink.accepted {
+                  background-color: #6c757d;
+                  cursor: not-allowed;
+              }
+      
+              #acceptDcLink:hover {
+                  background-color: #218838;
+                  color: #fff;
+              }
+          </style>
         </head>
         <body>
-            <p>Dear team,</p>
-            <p>Please find the Gate Pass details below:</p>
-            <p>DC NO: ${form.getFieldValue('dcNumber')}</p>
-            <p>Some items moved from Address: ${form.getFieldValue('fromUnit')} to Address: ${form.getFieldValue('toAddresserName')}</p>
-            <p>Please click the link below for details:</p>
-            <a href="http://localhost:4200/#/dc-detail-view/${form.getFieldValue('dcId')}" style="display: inline-block; padding: 10px 20px; background-color: #007BFF; color: #fff; text-decoration: none; border-radius: 5px;">View Details of GatePass</a>
-        
-           
-            <a href="javascript:void(0);" id="acceptDcLink" style="display: inline-block; padding: 10px 20px; background-color: #28a745; color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px;">Accept DC</a>
-        
-            <script>
-                document.getElementById('acceptDcLink').addEventListener('click', function() {
-                    var dto = {
-                        isAccepted: 'YES', // Assuming AcceptableEnum.YES is a string, adjust accordingly
-                        acceptedUser: document.getElementById('assignBy').value,
-                        dcId: document.getElementById('dcId').value
-                    };
-        
-                    console.log(dto);
-        
-                    // Assuming 'service' is a global variable representing your service
-                    service.acceptDc(dto).then(function(res) {
-                        if (res.status) {
-                            alert('User Accept Successfully');
-                            // Assuming 'setDrawerVisible' is a global function
-                            setDrawerVisible(false);
-                        } else {
-                            alert(res.internalMessage);
-                        }
-                    }).catch(function(err) {
-                        alert(err.message);
-                    });
+          <p>Dear team,</p>
+          <p>Please find the Gate Pass details below:</p>
+          <p>DC NO: ${form.getFieldValue('dcNumber')}</p>
+          <p>
+            Some items moved from Address: ${form.getFieldValue('fromUnit')} to
+            Address: ${form.getFieldValue('toAddresserName')}
+          </p>
+          <p>Please click the link below for details:</p>
+          <input type="hidden" id="assignBy" value=${form.getFieldValue('assignBy')}
+          /> <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
+      
+          <a
+            href="http://localhost:4200/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #007bff;
+              color: #fff;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >View Details of GatePass</a
+          >
+      
+          <button href="javascript:void(0);" onClick="acceptDc()" id="acceptDcLink">
+            Accept DC
+          </button>
+      
+          <script>
+            function acceptDc() {
+               var dto = {
+                isAccepted: "YES", // Assuming AcceptableEnum.YES is a string, adjust accordingly
+                acceptedUser: document.getElementById("assignBy").value,
+                dcId: document.getElementById("dcId").value,
+              };
+              const apiUrl = "http://localhost:3007/api/dc/acceptDc";
+      
+              fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  // Add any additional headers if needed
+                },
+                body: JSON.stringify(dto),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log("Success:", data);
+                  document.getElementById("acceptDcLink").innerText = "Accepted";
+                  document.getElementById("acceptDcLink").classList.add("accepted");
+                  document
+                    .getElementById("acceptDcLink")
+                    .setAttribute("disabled", true);
+                  // Handle the response data here
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  // Handle errors here
                 });
-            </script>
+            }
+          </script>
         </body>
-        </html>`
+      </html>
+      `
         dcDetails.subject = "Gate Pass : " + form.getFieldValue('dcNumber')
         const res = await mailService.sendDcMail(dcDetails)
         console.log(res)
@@ -371,7 +423,7 @@ const DCGrid = () => {
                         form={form}
                         layout='vertical'
                         style={{ width: '100%', margin: '0px auto 0px auto' }}
-                        onFinish={sendDcMailForGatePass}
+                        onFinish={update}
                     >
                         <Row gutter={24}>
                             <Form.Item name="dcId" label="Dc Id"
