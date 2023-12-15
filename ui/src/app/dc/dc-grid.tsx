@@ -149,7 +149,7 @@ const DCGrid = () => {
           /> <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://172.20.50.169:3011/api/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://172.20.50.169/del-chalan_app/#/dc-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -172,7 +172,7 @@ const DCGrid = () => {
                 acceptedUser: document.getElementById("assignBy").value,
                 dcId: document.getElementById("dcId").value,
               };
-              const apiUrl = "http://172.20.50.169:3007/api/dc/acceptDc";
+              const apiUrl = "http://172.20.50.169:3011/api/dc/acceptDc";
       
               fetch(apiUrl, {
                 method: "POST",
