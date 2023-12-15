@@ -86,7 +86,7 @@ export default function BasicLayout() {
                                 <Link to="/users"><span>Users</span></Link>
                             </Menu.Item>
                             <Menu.Item key="supplier-view" icon={<FontAwesomeIcon icon={faPerson} />}>
-                                <Link to="/supplier-view"><span>Supplier</span></Link>
+                                <Link to="/supplier-view"><span>Buyers</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/address-view" icon={<FontAwesomeIcon icon={faLocationPin} />}>
                                 <Link to="/address-view"><span>Address</span></Link>

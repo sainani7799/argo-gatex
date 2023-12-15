@@ -46,7 +46,7 @@ const SupplierForm = () => {
 
 
     return (
-        <Card title={<span style={{ color: 'white' }}>Supplier Form</span>}
+        <Card title={<span style={{ color: 'white' }}>Buyer Form</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/supplier-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
             <Form
                 form={form}
@@ -59,7 +59,7 @@ const SupplierForm = () => {
                         <Input hidden />
                     </Form.Item>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="supplierCode" label="Supplier Code"
+                        <Form.Item name="supplierCode" label="Buyer Code"
                             rules={[
                                 { required: true },
                             ]}>
@@ -67,7 +67,7 @@ const SupplierForm = () => {
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="supplierName" label="Supplier Name"
+                        <Form.Item name="supplierName" label="Buyer Name"
                             rules={[
                                 { required: true },
                             ]}>

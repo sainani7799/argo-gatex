@@ -482,12 +482,12 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col style={{ width: "30%" }}>
-                            <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Supplier" rules={[
+                            <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Buyer" rules={[
                                 { required: true },
                             ]}>
                                 <Radio.Group onChange={radioOnChange} value={radioValue} defaultValue={"unit"}>
                                     <Radio value={"unit"}>Unit</Radio>
-                                    <Radio value={"supplier"}>Supplier</Radio>
+                                    <Radio value={"supplier"}>Buyer</Radio>
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item name="addresserNameId" label="To" rules={[
