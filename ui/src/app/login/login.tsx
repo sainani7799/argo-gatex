@@ -28,7 +28,7 @@ export default function Login() {
                     setAuthState([{ userName: values.username, isAuthenticated: true }]);
                     console.log(setAuthState, 'setAuthState')
                     message.success(res.internalMessage)
-                    navigate('/users')
+                    navigate('/dc-view')
                 } else {
                     message.error(res.internalMessage)
                 }
