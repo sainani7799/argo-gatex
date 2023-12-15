@@ -151,10 +151,9 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="dateOfBirth" label="Date OF Birth" initialValue={moment()} >
+                        <Form.Item name="dateOfBirth" label="Date OF Birth"  >
                             <DatePicker
                                 style={{ width: '100%' }}
-                                format="YYYY-MM-DD"
                             />
                         </Form.Item>
                     </Col>

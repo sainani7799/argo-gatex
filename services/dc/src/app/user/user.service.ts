@@ -101,7 +101,9 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id FROM shahi_user us LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id`
+    let query = `SELECT us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name FROM shahi_user us 
+    LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
+    LEFT JOIN shahi_units u ON u.id = us.unit_id`
     const data = await AppDataSource.query(query)
     return (data)
 

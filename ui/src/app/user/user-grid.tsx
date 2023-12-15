@@ -68,6 +68,11 @@ const UserFormGrid = () => {
             key: "4",
             title: "Email",
             dataIndex: "email_id",
+        },
+        {
+            key: "5",
+            title: "Unit",
+            dataIndex: "unit_name",
         }
 
         // { title: 'Password', dataIndex: 'password', key: '3' },

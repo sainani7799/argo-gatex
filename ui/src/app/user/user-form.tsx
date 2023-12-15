@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message } from 'antd';
-import { EmployeeService, UserManagementServices } from 'libs/shared-services/src'
+import { EmployeeService, UserManagementServices } from 'libs/shared-services';
 import { Link, useNavigate } from 'react-router-dom';
 
 const { Option } = Select;
@@ -9,11 +9,23 @@ const { Option } = Select;
 const UserForm = () => {
     const userService = new UserManagementServices();
     const [employeeNames, setEmployeeNames] = useState<any[]>([]);
+    const [selectedEmployeeId, setSelectedEmployeeId] = useState(undefined);
     const service = new EmployeeService();
     const navigate = useNavigate();
+    const [form] = Form.useForm();
 
 
     const clickHandler = () => { };
+
+    const handleEmployeeIdChange = (value) => { 
+        setSelectedEmployeeId(value);
+        const selectedEmployee = employeeNames.find((employee) => employee.employeeId === value);
+        form.setFieldsValue({
+            cardNo: selectedEmployee ? selectedEmployee.cardNo : undefined,
+            unitId: selectedEmployee ? selectedEmployee.unitId:undefined,
+            
+        });
+    }
 
     useEffect(() => {
         fetchEmployeeNames();
@@ -38,7 +50,7 @@ const UserForm = () => {
         })
     }
 
-    const [form] = Form.useForm();
+  
 
     const handleReset = () => {
         form.resetFields();
@@ -90,6 +102,7 @@ const UserForm = () => {
                             placeholder="Select Employee Name "
                             optionFilterProp="children"
                             allowClear
+                            onChange={handleEmployeeIdChange}
                         >
                             {employeeNames.map((rec: any) => {
                                 return (
@@ -102,16 +115,46 @@ const UserForm = () => {
 
                         {/* <Input placeholder='Enter Paid To Employee' /> */}
                     </Form.Item>
-
-
-                    {/* <Form.Item
-                        label="Role"
-                        name="role"
-                        rules={[{ required: true, message: 'Please enter a role' }]}
+                    <Form.Item
+                        label=" Card No:"
+                        name="cardNo"
                     >
-                        <Input placeholder="Enter your Role" />
-                    </Form.Item> */}
-
+                        <Select
+                            showSearch
+                            placeholder="Select Card No "
+                            optionFilterProp="children"
+                            allowClear
+                            disabled={selectedEmployeeId}
+                        >
+                            {employeeNames.map((rec: any) => {
+                                return (
+                                    <Option key={rec.employeeId} value={rec.cardNo}>
+                                        {rec.cardNo}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label=" Unit:"
+                        name="unitId"
+                    >
+                        <Select
+                            showSearch
+                            placeholder="unit"
+                            optionFilterProp="children"
+                            allowClear
+                            disabled={selectedEmployeeId}
+                        >
+                            {employeeNames.map((rec: any) => {
+                                return (
+                                    <Option key={rec.employeeId} value={rec.unitId}>
+                                        {rec.unit}
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </Form.Item>
 
                     <Form.Item>
                         <Button type='primary' htmlType="submit" style={{ width: '100%', backgroundColor: '#7d33a2' }}>
