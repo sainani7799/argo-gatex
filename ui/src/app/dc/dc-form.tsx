@@ -541,12 +541,13 @@ const DCForm = () => {
                             <Form.Item name="value" label="Value" >
                                 <Input placeholder="Enter Value" />
                             </Form.Item>
-                            <Form.Item name="status" label="Status">
+                            <Form.Item name="status" label="Status" initialValue={StatusEnum.OPEN}>
                                 <Select
                                     showSearch
                                     placeholder="Select Status"
                                     optionFilterProp="children"
                                     allowClear
+                                    disabled
                                 >
                                     {Object.keys(StatusEnum).map((type) => {
                                         return <Option value={StatusEnum[type]}>{StatusEnum[type]}</Option>
