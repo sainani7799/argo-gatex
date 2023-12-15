@@ -2,13 +2,11 @@ import { Avatar, Button, Col, Dropdown, Layout, Menu, MenuProps, Row, Select, Se
 import logo from '../logo.jpeg';
 
 
-import {
-  SearchOutlined,
-  UserOutlined
-} from '@ant-design/icons';
+import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import './header.css';
 import { useEffect, useState } from 'react';
+let timer
 const { Header } = Layout;
 const { useToken } = theme
 
@@ -16,11 +14,20 @@ interface IProps {
   collapsed: boolean;
   toggle: () => void;
 }
+const events = [
+  "load",
+  "mousemove",
+  "mousedown",
+  "click",
+  "scroll",
+  "keypress",
+];
 export const CommonHeader = (props: IProps) => {
   const navigate = useNavigate();
   const { token: { colorPrimary } } = useToken()
   const [dark, setDark] = useState(false)
   const authdata = JSON.parse(localStorage.getItem('userName'))
+  const [loading, setLoading] = useState(true)
   // console.log(authdata,'authdata')
 
 
@@ -28,6 +35,34 @@ export const CommonHeader = (props: IProps) => {
   const logoutHandler = async () => {
     localStorage.clear()
     navigate('/login')
+  }
+  useEffect(() => {
+    Object.values(events).forEach((item) => {
+        window.addEventListener(item, () => {
+            resetTimer();
+            handleLogoutTimer();
+        });
+    });
+}, []);
+
+  useEffect(() => {
+    setTimeout(() => setLoading(false), 1000)
+}, [])
+
+const resetTimer = () => {
+    if (timer) clearTimeout(timer);
+};
+  const handleLogoutTimer = () => {
+    timer = setTimeout(() => {
+        // clears any pending timer.
+        resetTimer();
+        // Listener clean up. Removes the existing event listener from the window
+        Object.values(events).forEach((item) => {
+            window.removeEventListener(item, resetTimer);
+        });
+        // logs out user
+        logoutHandler();
+    }, 900000); //15 minutes
   }
   const menu = (
     <Menu >
