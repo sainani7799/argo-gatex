@@ -149,7 +149,7 @@ const DCGrid = () => {
           /> <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://localhost:4200/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://172.20.50.169:3011/api/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
