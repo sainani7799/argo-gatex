@@ -171,7 +171,7 @@ export const DcDetailsView = (props: DcViewProps) => {
   return (
     <div>
       <Card>
-        <Card title="Dc Detail View" headStyle={{ backgroundColor: '#69c0ff', border: 0 }} extra={<span style={{ color: 'white' }} > <Button className='panel_button' onClick={openPrint}>Print</Button> <Button className='panel_button' onClick={() => navigate('/dc-view')}>DC View</Button> </span>} >
+        <Card title="Dc Detail View" headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0,color:'#fff' }} extra={<span style={{ color: 'white' }} > <Button className='panel_button' onClick={openPrint}>Print</Button> <Button className='panel_button' onClick={() => navigate('/dc-view')}>DC View</Button> </span>} >
           <Descriptions size='small' >
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
             <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{data[0]?.createdDate}</DescriptionsItem>

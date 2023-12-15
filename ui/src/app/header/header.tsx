@@ -107,7 +107,7 @@ const resetTimer = () => {
       <Row justify='space-between' align='middle'>
         <Col span={4}>
           <div className="logo" >
-            <h1 style={{ color: colorPrimary }}>{'SHAHI'}</h1>
+            <h1 style={{ color: 'rgb(125, 51, 162)' }}>{'SHAHI'}</h1>
           </div>
         </Col>
         <Col span={1} >

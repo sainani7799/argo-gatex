@@ -98,7 +98,7 @@ export default function BasicLayout() {
                                 <Link to="/warehouse-grid"><span>Warehouse</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/item-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
-                                <Link to="/item-grid"><span>Item</span></Link>
+                                <Link to="/item-grid"><span>Items</span></Link>
                             </Menu.Item>
                         </SubMenu>
                         <SubMenu
@@ -109,8 +109,8 @@ export default function BasicLayout() {
                                 </span>
                             }
                         >
-                            <Menu.Item key="/dc-form" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-form"><span>GatePass</span></Link>
+                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-view"><span>GatePass</span></Link>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>
