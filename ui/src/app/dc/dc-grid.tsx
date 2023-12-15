@@ -172,7 +172,7 @@ const DCGrid = () => {
                 acceptedUser: document.getElementById("assignBy").value,
                 dcId: document.getElementById("dcId").value,
               };
-              const apiUrl = "http://localhost:3007/api/dc/acceptDc";
+              const apiUrl = "http://172.20.50.169:3007/api/dc/acceptDc";
       
               fetch(apiUrl, {
                 method: "POST",
