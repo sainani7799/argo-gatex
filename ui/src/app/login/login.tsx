@@ -36,52 +36,70 @@ export default function Login() {
 
         })
     }
+
     return (
         <Card style={{ background: colorBgTextHover }}>
-            <Row gutter={24} justify={'center'}>
-                <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', border: `1px solid ${colorPrimaryActive}` }}>
-                    <div style={{ display: 'flex' }}>
-                        {/* <img style={{marginLeft:'100%',marginBottom:'150%'}} src = {logo} /> */}
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                        <h1 style={{ color: colorPrimary }} className='shahi-logo' >Delivery Chalan</h1>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'flex-end', position: 'absolute', bottom: 0, right: 10 }}>
-                        <Text style={{ margin: '0%' }} type='secondary'>Powered by</Text>
-                        <Title style={{ margin: '0%' }} level={4}>UNIT 7</Title>
+            <Row gutter={24} justify={'center'} align={'middle'}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{ padding: '10px' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <h2 style={{ fontFamily: 'Lato, sans-serif', color: colorPrimary, fontSize: '2em', margin: 0 }}>
+                                Delivery Challan
+                            </h2>
+                        </div>
+
+                        <div style={{ marginTop: '10px' }}>
+                            <Text type='secondary'>Powered by</Text>
+                            <Title level={4} style={{ margin: '0', fontSize: '1em' }}>
+                                SHAHI
+                            </Title>
+                        </div>
                     </div>
                 </Col>
-                <Divider style={{ height: '90vh' }} type='vertical' />
-                <Col span={11} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: colorPrimaryActive }} >
+
+                <Divider style={{ display: 'none' }} type='vertical' />
+
+                <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{
+                    background: colorPrimaryActive,
+                    padding: '20px',
+                    borderRadius: '10px', // Adjust the border radius as needed
+                    boxShadow: '0 0 0 2px rgba(255, 255, 255, 0.8)',
+                }}>
+
                     <div className='login-title'>
                         <Title level={3} style={{ color: `#fff`, margin: '0' }}>Log In</Title>
                         <Text style={{ color: `#fff` }}>Enter your credentials below to login</Text>
-                        <br />
                     </div>
-                    <Card style={{ maxWidth: '70%', paddingTop: '10px' }}>
+                    <Card style={{ width: '100%', maxWidth: '400px', margin: '0 auto', paddingTop: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', borderRadius: '8px', border: '1px solid #e8e8e8' }}>
                         <Form form={loginForm} layout='vertical'>
-                            <Form.Item name='username' label='Username' rules={[
-                                { required: true },
-                            ]}>
-                                <Input />
-
-                            </Form.Item>
-                            <Form.Item name='password' label='Password' rules={[
-                                { required: true },
-                            ]}>
-                                <Input.Password />
-
-                            </Form.Item>
+                            <Row gutter={[16, 16]}>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <Form.Item name='username' label='User Name' rules={[{ required: true }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                                    <Form.Item name='password' label='Password' rules={[{ required: true }]}>
+                                        <Input.Password />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row style={{ paddingTop: '10px' }}>
+                                <Button onClick={onLogin} style={{
+                                    width: '100%',
+                                    backgroundColor: '#1890ff',  // Change the background color
+                                    color: '#fff',               // Change the text color
+                                    borderRadius: '8px',         // Add border-radius for rounded corners
+                                    border: 'none',              // Remove default border
+                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',  // Add box shadow for depth
+                                    transition: 'background-color 0.3s ease',  // Add smooth transition effect
+                                }} type={'primary'}>
+                                    Login
+                                </Button>
+                            </Row>
                         </Form>
-                        {/* <Row justify={'end'}>
-                            <Link>Forgot password ?</Link>
-                        </Row> */}
-                        <Row style={{ paddingTop: '5px' }}>
-                            <Button onClick={onLogin} style={{ width: '100%' }} type={'primary'}>Login</Button>
-                        </Row>
                     </Card>
                 </Col>
-
             </Row>
         </Card>
     )
