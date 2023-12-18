@@ -3,6 +3,7 @@ import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/app
 import { DcService } from "./dc.service";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { ApiTags } from "@nestjs/swagger";
+import { UnitReq } from "libs/shared-models";
 
 @Controller("dc")
 export class DcController {
@@ -39,10 +40,28 @@ export class DcController {
     }
   }
 
-  @Get('/getAllGatePass')
-  async getAllGatePass(): Promise<CommonResponse> {
+  @Post('/rejectDc')
+  async rejectDc(@Body() dto: any,): Promise<CommonResponse> {
     try {
-      return await this.dcService.getAllGatePass();
+      return await this.dcService.rejectDc(dto);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/getAllGatePass')
+  async getAllGatePass(@Body() req:any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getAllGatePass(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getIntransAndCompleteGatePass')
+  async getIntransAndCompleteGatePass(@Body() req:any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getIntransAndCompleteGatePass(req);
     } catch (error) {
       return (error);
     }
@@ -52,6 +71,15 @@ export class DcController {
   async getDcDetailsById(@Body() req: any): Promise<CommonResponse> {
     try {
       return await this.dcService.getDcDetailsById(req);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/receivedDc')
+  async receivedDc(@Body() dto: any,): Promise<CommonResponse> {
+    try {
+      return await this.dcService.receivedDc(dto);
     } catch (error) {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }

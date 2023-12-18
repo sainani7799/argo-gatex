@@ -1,195 +1,43 @@
-import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select } from 'antd';
-import { AddressService, ApprovalUserService, DcService, EmailService, } from 'libs/shared-services';
-import React, { useRef } from 'react';
-import { useEffect, useState } from 'react';
+import { CheckOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Divider, Drawer, Form, Input, Popconfirm, Row, Select, Switch, Table, Tooltip, message } from "antd";
+import { AcceptableEnum, ReceivedDcReq, StatusEnum } from "libs/shared-models";
+import { DcService, EmailService } from "libs/shared-services";
+import moment from "moment";
+import React, { useRef } from "react";
+import { useEffect, useState } from "react";
+import Highlighter from 'react-highlight-words';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import Highlighter from 'react-highlight-words'
-import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcReq, StatusEnum, UnitReq } from 'libs/shared-models';
-import DCForm from './dc-form';
-import moment from 'moment';
+
 const { Option } = Select;
 
-const DCGrid = () => {
+
+const DCReceived = () => {
+
     const [form] = Form.useForm();
     const [responseData, setResponseData] = useState<any>([]);
-    const service = new DcService();
-    const approvalService = new ApprovalUserService()
+    const authdata = JSON.parse(localStorage.getItem('userName'));
     const [page, setPage] = React.useState(1);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [drawerVisible, setDrawerVisible] = useState(false);
-    const [selectedAddress, setSelectedAddress] = useState<any>(undefined);
-    const [mailLoading, setMailLoading] = useState<boolean>(false);
-    const authdata = JSON.parse(localStorage.getItem('userName'))
-    const [user, setUser] = useState<any>([]);
     const searchInput = useRef(null);
-    const mailService = new EmailService()
-    
+    const service = new DcService()
 
     let navigate = useNavigate();
-    
     useEffect(() => {
-        getGatePassData();
-        getAllApprovalUser();
-    }, []);
+        getReceivedGatePassData()
+    }, [])
 
-    const getGatePassData = () => {
+    const getReceivedGatePassData = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
         console.log(req)
-        service.getAllGatePass(req).then((res: any) => {
+        service.getIntransAndCompleteGatePass(req).then((res: any) => {
             if (res.status) {
                 setResponseData(res.data);
             }
         });
     };
-    const getAllApprovalUser = () => {
-        approvalService.getAllApprovalUser().then((res: any) => {
-            if (res.status) {
-                setUser(res.data)
-
-            }
-        })
-    }
-    const getAllApprovalIdUser = () => {
-        const req = new ApprovalIdReq()
-        req.approvedUserId = form.getFieldValue('assignBy')
-        console.log(req)
-        approvalService.getAllApprovalIdUser(req).then((res: any) => {
-            if (res.status) {
-                form.setFieldValue('emailId', res.data[0]?.emailId)
-
-            }
-        })
-    }
-
-
-    const update = (dto: AssignReq) => {
-        const authdata = JSON.parse(localStorage.getItem('userName'))
-        dto.updatedUser = authdata.userName,
-            dto.status = StatusEnum.INPROGRESS,
-            dto.isAssignable = AcceptableEnum.YES,
-            dto.assignBy = form.getFieldValue('assignBy')
-        dto.emailId = form.getFieldValue('emailId')
-        dto.dcId = form.getFieldValue('dcId')
-        console.log(dto)
-        service.updateDc(dto).then(res => {
-            if (res.status) {
-                message.success('Updated Successfully');
-                sendDcMailForGatePass()
-                setDrawerVisible(false);
-
-            } else {
-                message.error(res.internalMessage);
-
-            }
-        }).catch(err => {
-            message.error(err.message);
-        })
-    }
-
-
-
-
-    let mailerSent = false;
-    async function sendDcMailForGatePass() {
-        const dcDetails = new DcEmailModel();
-        dcDetails.dcNo = form.getFieldValue('dcNumber');
-        dcDetails.to = form.getFieldValue('emailId');
-        dcDetails.html = `
-        <html>
-        <head>
-          <meta charset="UTF-8" />
-          <style>
-            #acceptDcLink {
-                  display: inline-block;
-                  padding: 10px 20px;
-                  background-color: #28a745;
-                  color: #fff;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  margin-top: 10px;
-                  transition: background-color 0.3s ease, color 0.3s ease;
-                  cursor: pointer;
-              }
-      
-              #acceptDcLink.accepted {
-                  background-color: #6c757d;
-                  cursor: not-allowed;
-              }
-      
-              #acceptDcLink:hover {
-                  background-color: #218838;
-                  color: #fff;
-              }
-          </style>
-        </head>
-        <body>
-          <p>Dear team,</p>
-          <p>Please find the Gate Pass details below:</p>
-          <p>DC NO: ${form.getFieldValue('dcNumber')}</p>
-          <p>
-            Some items moved from Address: ${form.getFieldValue('fromUnit')} to
-            Address: ${form.getFieldValue('toAddresserName')}
-          </p>
-          <p>Please click the link below for details:</p>
-          <input type="hidden" id="assignBy" value=${form.getFieldValue('assignBy')} /> 
-          <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
-      
-          <a
-            href="http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
-            style="
-              display: inline-block;
-              padding: 10px 20px;
-              background-color: #007bff;
-              color: #fff;
-              text-decoration: none;
-              border-radius: 5px;
-            "
-            >View Details of GatePass</a
-          >
-          <a
-          href="http://172.20.50.169/del-chalan_app/#/dc-mail/${form.getFieldValue('dcId')}"
-          style="
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #108f1a;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-          "
-          >Accept DC</a
-        >
-        <a
-          href="http://172.20.50.169/del-chalan_app/#/dc-reject-mail/${form.getFieldValue('dcId')}"
-          style="
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #ff001e;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-          "
-          >Reject DC</a
-        >
-        </body>
-      </html>
-      `
-        dcDetails.subject = "Gate Pass : " + form.getFieldValue('dcNumber')
-        const res = await mailService.sendDcMail(dcDetails)
-        console.log(res)
-        if (res.status == 201) {
-            if (res.data.status) {
-                message.success("Mail sent successfully")
-                mailerSent = true;
-            } else {
-                message.success("Mail sent successfully")
-            }
-        } else {
-            message.error("Mail not sent due to an error")
-        }
-    }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -201,10 +49,7 @@ const DCGrid = () => {
         clearFilters();
         setSearchText('');
     };
-    const openFormWithData = (viewData: CreateAddressDto) => {
-        setDrawerVisible(true);
-        setSelectedAddress(viewData);
-    }
+
     const closeDrawer = () => {
         setDrawerVisible(false);
     }
@@ -264,7 +109,25 @@ const DCGrid = () => {
                 ) : text
             )
                 : null
-    })
+    });
+
+    const receivedDc = (rowData) => {
+        const authdata = JSON.parse(localStorage.getItem('userName'))
+        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,StatusEnum.CLOSE,authdata.userName)
+        console.log(dto)
+        service.receivedDc(dto).then(res => {
+            if (res.status) {
+                message.success('Updated Successfully');
+                setDrawerVisible(false);
+
+            } else {
+                message.error(res.internalMessage);
+
+            }
+        }).catch(err => {
+            message.error(err.message);
+        })
+    }
 
 
     const columnsSkelton: any = [
@@ -340,22 +203,24 @@ const DCGrid = () => {
                         <Divider type='vertical' />
 
                     </Tooltip>
-                    {rowData.isDcAssign === 'NO' ? (
-                        <Tooltip placement='top' title="IS DC Received">
-                            <RightOutlined
-                                onClick={() => {
-                                    setDrawerVisible(true);
-                                    form.setFieldValue('dcId', rowData.dcId);
-                                    form.setFieldValue('dcNumber', rowData.dcNumber);
-                                    form.setFieldValue('fromUnit', rowData.fromUnit);
-                                    form.setFieldValue('toAddresserName', rowData.toAddresserName);
-                                    console.log(rowData.dcId);
-                                    console.log(rowData.dcNumber);
-                                }}
-                                style={{ color: "blue", fontSize: 20 }}
-                            />
-                        </Tooltip>
-                    ) : (
+                    <Divider type="vertical" />
+                    {rowData.received_dc === 'NO' ? (
+                  <Popconfirm 
+                  onConfirm={e =>{receivedDc(rowData)}}
+                  title={
+                    rowData.received_dc === 'NO'
+                      ? 'Are you sure to Receive The Dc ?'
+                      :  ''
+                  }
+                >
+                  <Switch  size="default"
+                      className={ rowData.received_dc ==='YES'? 'toggle-activated' : 'toggle-deactivated' }
+                      checkedChildren={<RightSquareOutlined type="check" />}
+                      unCheckedChildren={<RightSquareOutlined type="close" />}
+                      checked={rowData.received_dc ==='YES'}
+                    />
+                  
+                </Popconfirm>):(
                         <Tooltip placement='top' title="Already Assigned">
                             <CheckOutlined
                                 onClick={() => {
@@ -368,24 +233,16 @@ const DCGrid = () => {
                 </span>
             ),
 
+
+
         },
 
     ];
 
-
-
     return (
         <Card
             title={<span style={{ color: "white" }}>GatePass</span>}
-            extra={
-                (
-                    <Link to="/dc-form">
-                        <span style={{ color: "white" }}>
-                            <Button>Create </Button>{" "}
-                        </span>
-                    </Link>
-                )
-            }
+
 
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
@@ -398,7 +255,7 @@ const DCGrid = () => {
                         form={form}
                         layout='vertical'
                         style={{ width: '100%', margin: '0px auto 0px auto' }}
-                        onFinish={update}
+                    // onFinish={update}
                     >
                         <Row gutter={24}>
                             <Form.Item name="dcId" label="Dc Id"
@@ -434,7 +291,7 @@ const DCGrid = () => {
                                 </Form.Item>
                             </Col>
 
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
+                            {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
 
                                 <Form.Item name="assignBy" label="Approval User"
                                     rules={[
@@ -456,7 +313,7 @@ const DCGrid = () => {
                                         })}
                                     </Select>
                                 </Form.Item>
-                            </Col>
+                            </Col> */}
                             <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
                                 <Form.Item name="emailId" label="Email Id"
                                     rules={[
@@ -476,6 +333,5 @@ const DCGrid = () => {
 
         </Card>
     );
-};
-
-export default DCGrid;
+}
+export default DCReceived

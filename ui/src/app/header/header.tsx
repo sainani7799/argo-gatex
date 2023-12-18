@@ -105,35 +105,17 @@ const resetTimer = () => {
   return (
     <Header className='header-row' style={{ background: '#fff', padding: 0 }}>
       <Row justify='space-between' align='middle'>
-        <Col span={4}>
+        <Col span={1}>
           <div className="logo" >
             <h1 style={{ color: 'rgb(125, 51, 162)' }}>{'SHAHI'}</h1>
           </div>
         </Col>
         <Col span={1} >
-          {/* <span className='ant-pro-global-header-trigger'>
-            {React.createElement(props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-              className: 'trigger',
-              onClick: props.toggle,
-            })}
-          </span> */}
         </Col>
         <Col span={4}></Col>
-        {/* <Col span={4}>
-          <Tooltip placement="bottom" title={'Switch mode'}>
-            <Button
-              size="middle"
-              style={{ borderRadius: "5px" }}
-              onClick={() => {
-                setDark(!dark);
-              }}
-              icon={!dark ? <DarkModeIcon /> : <LightModeIcon />}
-            ></Button>
-          </Tooltip>,
-        </Col> */}
-        <Col span={7} style={{ textAlign: 'right' }}>
+        <Col span={14} style={{ textAlign: 'right' }}>
           <Dropdown menu={{ items }}>
-            <Avatar style={{ marginBottom: '40px', left: '80px' }} size={45} shape="circle" icon={<UserOutlined style={{ fontSize: '25px' }} />} />
+            <Avatar style={{ marginBottom: '40px', marginLeft: 'auto'  }} size={45} shape="circle" icon={<UserOutlined style={{ fontSize: '25px' }} />} />
           </Dropdown>
         </Col>
         <Col></Col>

@@ -10,6 +10,7 @@ const WarehouseForm = () => {
     const service = new WarehouseService();
     const unitService = new UnitService();
     const [form] = Form.useForm();
+    let navigate = useNavigate()
     const authdata = JSON.parse(localStorage.getItem('userName'))
 
     useEffect(() => {
@@ -29,6 +30,7 @@ const WarehouseForm = () => {
             if (res) {
                 message.success('Created Successfully');
                 form.resetFields();
+                navigate('/warehouse-grid')
             } else {
                 message.error('Not Created');
             }
@@ -47,7 +49,7 @@ const WarehouseForm = () => {
                 layout='vertical'
             >
                 <Row gutter={24}>
-                    <Col>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }}>
                         <Form.Item name="unitId" label="Unit ID" rules={[
                             { required: true },
                         ]}>
@@ -67,7 +69,7 @@ const WarehouseForm = () => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }}>
                         <Form.Item name="warehouseName" label="Warehouse Name" rules={[
                             { required: true },
                         ]}>

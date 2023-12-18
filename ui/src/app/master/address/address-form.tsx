@@ -45,7 +45,7 @@ const AddressForm = (props: AddressFormProps) => {
     useEffect(() => {
         getAllUnits();
         getAllSuppliers();
-        if(props.isUpdate){
+        if (props.isUpdate) {
             setSelectedAddressType(props.addressData.addresser)
         }
     }, []);
@@ -56,7 +56,7 @@ const AddressForm = (props: AddressFormProps) => {
         unitService.getAllUnits().then((res) => {
             if (res) {
                 setUnit(res.data);
-               
+
                 // console.log(res.data)
             }
         })
@@ -92,11 +92,11 @@ const AddressForm = (props: AddressFormProps) => {
         setDisable(false)
         if (props.isUpdate) {
             props.updateDetails(values);
-          } else {
+        } else {
             save(values);
             setDisable(false)
-            
-          }
+
+        }
     };
     console.log(props.addressData)
     return (
@@ -108,150 +108,145 @@ const AddressForm = (props: AddressFormProps) => {
                 onFinish={saveData}
                 layout='vertical'
             >
-                <Card>
-
+                <Form.Item name="addressId" style={{ display: "none" }}>
+                    <Input hidden />
+                </Form.Item>
+                <Card style={{ width: '100%' }}>
                     <Row gutter={24}>
-                        <Form.Item name="addressId" style={{ display: "none" }}>
-                            <Input hidden />
-                        </Form.Item>
-                        <Row style={{ width: '50%', margin: '10px auto 10px auto' }}>
-                            <Card style={{ width: '100%' }}>
-                                <Row style={{ width: '100%' }}>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="addresser" label="Unit/Supplier"
-                                            rules={[
-                                                { required: true },
-                                            ]} style={{ width: '90%' }}>
-                                            <Select
-                                                placeholder="Select Address Type"
-                                                style={{ width: "100%" }}
-                                                allowClear
-                                                onChange={handleAddressTypeChange}
-                                            >
-                                                <Select.Option value="unit">Unit</Select.Option>
-                                                <Select.Option value="supplier">Supplier</Select.Option>
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="addresserNameId" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
-                                            <Select
-                                                showSearch
-                                                placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'supplier'}`}
-                                                optionFilterProp="children"
-                                                allowClear
-                                                style={{ width: '100%' }}
-                                            >
-                                                {selectedAddressType === 'unit'
-                                                    ? unit.map((rec: any) => (
-                                                        <Select.Option key={rec.id} value={rec.id}>
-                                                            {rec.unitName}
-                                                        </Select.Option>
-                                                    ))
-                                                    : supplier.map((rec: any) => (
-                                                        <Select.Option key={rec.supplierId} value={rec.supplierId}>
-                                                            {rec.supplierName}
-                                                        </Select.Option>
-                                                    ))}
-                                            </Select>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row style={{ width: '100%' }}>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="gstNo" label="GST IN :"
-                                            rules={[
-                                                { required: true },
-                                            ]} style={{ width: '90%' }}>
-                                             <Input  placeholder=" Enter GST"/>
-                                        </Form.Item>
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="cstNo" label="CST :" rules={[{ required: true }]} style={{ width: '90%' }}>
-                                            <Input  placeholder=" Enter CST"/>
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Form.Item name="lineOne" label="line One"
-                                    rules={[
-                                        { required: true },
-                                    ]} style={{ width: '90%' }}>
-                                    <Input placeholder=" Enter line One" style={{ width: '100%' }} />
-                                </Form.Item>
-                                <Form.Item name="lineTwo" label="line Two"
-                                    rules={[
-                                        { required: true },
-                                    ]} style={{ width: '90%' }}>
-                                    <Input placeholder=" Enter line Two" style={{ width: '100%' }} />
-                                </Form.Item>
-                                <Row style={{ width: '100%' }}>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="city" label="city:"
-                                            rules={[
-                                                { required: true },
-                                            ]}
-                                            style={{ width: '90%' }}
-                                        >
-                                            <Input placeholder=" Enter city" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="dist" label="Dist" style={{ width: '90%' }}>
-                                            <Input placeholder=" Enter Dist" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-                                <Row style={{ width: '100%' }}>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item
-                                            name="pinCode"
-                                            label="Pin Code"
-                                            rules={[
-                                                { required: true, message: 'PinCode is required', },
-                                                {
-                                                    pattern: /^[0-9]*$/,
-                                                    message: `Don't Allow letters and Spaces`
-                                                }
-                                            ]}
-                                            style={{ width: '90%' }}>
-                                            <Input />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col style={{ width: '50%' }}>
-                                        <Form.Item name="state" label="state"
-                                            rules={[
-                                                { required: true },
-                                            ]}
-                                        >
-                                            <Input placeholder=" Enter state" />
-                                        </Form.Item>
-                                    </Col>
-                                </Row>
-
-
-
-                                <Form.Item name="country" label="country"
-                                    rules={[
-                                        { required: true },
-                                    ]}
+                        <Col xs={24} sm={12} md={12} lg={12} xl={6}>
+                            <Form.Item name="addresser" label="Unit/Supplier"
+                                rules={[
+                                    { required: true },
+                                ]} style={{ width: '90%' }}>
+                                <Select
+                                    placeholder="Select Address Type"
+                                    style={{ width: "100%" }}
+                                    allowClear
+                                    onChange={handleAddressTypeChange}
                                 >
-                                    <Input placeholder=" Enter country" />
-                                </Form.Item>
-
-                                <Form.Item style={{ display: "none" }} name="createdUser"  >
-                                </Form.Item>
-                                <Button type="primary" disabled={disable} htmlType="submit">
-                                    Submit
-                                </Button>
-                                {(props.isUpdate !== true) &&
-                                    <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
-                                        Reset
-                                    </Button>}
-                            </Card>
-                        </Row>
+                                    <Select.Option value="unit">Unit</Select.Option>
+                                    <Select.Option value="supplier">Supplier</Select.Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={6}>
+                            <Form.Item name="addresserNameId" label="Name" rules={[{ required: true }]} style={{ width: '90%' }}>
+                                <Select
+                                    showSearch
+                                    placeholder={`Select ${selectedAddressType === 'unit' ? 'Unit' : 'supplier'}`}
+                                    optionFilterProp="children"
+                                    allowClear
+                                    style={{ width: '100%' }}
+                                >
+                                    {selectedAddressType === 'unit'
+                                        ? unit.map((rec: any) => (
+                                            <Select.Option key={rec.id} value={rec.id}>
+                                                {rec.unitName}
+                                            </Select.Option>
+                                        ))
+                                        : supplier.map((rec: any) => (
+                                            <Select.Option key={rec.supplierId} value={rec.supplierId}>
+                                                {rec.supplierName}
+                                            </Select.Option>
+                                        ))}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={6}>
+                            <Form.Item name="gstNo" label="GST IN :"
+                                rules={[
+                                    { required: false },
+                                ]} style={{ width: '90%' }}>
+                                <Input placeholder=" Enter GST" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={6}>
+                            <Form.Item name="cstNo" label="CST :" rules={[{ required: false }]} style={{ width: '90%' }}>
+                                <Input placeholder=" Enter CST" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item name="lineOne" label="line One"
+                                rules={[
+                                    { required: true },
+                                ]} style={{ width: '90%' }}>
+                                <Input placeholder=" Enter line One" style={{ width: '100%' }} />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item name="lineTwo" label="line Two"
+                                rules={[
+                                    { required: true },
+                                ]} style={{ width: '90%' }}>
+                                <Input placeholder=" Enter line Two" style={{ width: '100%' }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row style={{ width: '100%' }}>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item name="city" label="city:"
+                                rules={[
+                                    { required: true },
+                                ]}
+                                style={{ width: '90%' }}
+                            >
+                                <Input placeholder=" Enter city" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item name="dist" label="Dist" style={{ width: '90%' }}>
+                                <Input placeholder=" Enter Dist" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row style={{ width: '100%' }}>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item
+                                name="pinCode"
+                                label="Pin Code"
+                                rules={[
+                                    { required: true, message: 'PinCode is required', },
+                                    {
+                                        pattern: /^[0-9]*$/,
+                                        message: `Don't Allow letters and Spaces`
+                                    }
+                                ]}
+                                style={{ width: '90%' }}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={12} lg={12} xl={12}>
+                            <Form.Item name="state" label="state"
+                                rules={[
+                                    { required: true },
+                                ]}
+                            >
+                                <Input placeholder=" Enter state" />
+                            </Form.Item>
+                        </Col>
                     </Row>
 
+
+
+                    <Form.Item name="country" label="country"
+                        rules={[
+                            { required: true },
+                        ]}
+                    >
+                        <Input placeholder=" Enter country" />
+                    </Form.Item>
+
+                    <Form.Item style={{ display: "none" }} name="createdUser"  >
+                    </Form.Item>
+                    <Button type="primary" disabled={disable} htmlType="submit">
+                        Submit
+                    </Button>
+                    {(props.isUpdate !== true) &&
+                        <Button htmlType="button" style={{ margin: '0 14px' }} onClick={onReset}>
+                            Reset
+                        </Button>}
                 </Card>
+
 
             </Form>
         </Card>

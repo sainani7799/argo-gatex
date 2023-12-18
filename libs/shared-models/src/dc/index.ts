@@ -4,3 +4,5 @@ export * from './dc-id.req';
 export * from './assign.req';
 export * from './dc-mail.req';
 export * from './dc-accept-re';
+export * from './received-dc-req';
+export * from './reject-dc-req';

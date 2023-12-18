@@ -41,12 +41,7 @@
     font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
     padding: 5px;
     cursor: pointer;
-    /* background: linear-gradient(to right, #1cc91c, rgb(84, 128, 241), rgb(217, 48, 191)); */
-    /* background-clip: text; */
-    /* -webkit-text-fill-color: transparent; */
-    /* -webkit-background-clip: text; */
     overflow: visible;
-    /* animation: shine 1s linear infinite; */
   }
   
   .ant-dropdown-link .ant-avatar {

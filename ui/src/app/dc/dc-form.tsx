@@ -416,7 +416,7 @@ const DCForm = () => {
                     style={{ width: '100%', margin: '0px auto 0px auto' }}
                 >
                     <Row gutter={24} style={{ width: "100%", justifyContent: "space-around" }}>
-                        <Col style={{ width: "30%" }}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item style={{ display: "none" }} name="createdUser"  >
                             </Form.Item>
                             <Form.Item name="fromUnitId" label="Unit" rules={[
@@ -481,7 +481,7 @@ const DCForm = () => {
                                 <Input placeholder="Enter Mode of Transport" />
                             </Form.Item>
                         </Col>
-                        <Col style={{ width: "30%" }}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Buyer" rules={[
                                 { required: true },
                             ]}>
@@ -524,7 +524,7 @@ const DCForm = () => {
                                 <Input placeholder="Enter Vehicle Number" />
                             </Form.Item>
                         </Col>
-                        <Col style={{ width: "30%" }}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
                                 { required: true },
                             ]}>
@@ -582,10 +582,10 @@ const DCForm = () => {
                         </Col>
                     </Row>
                     <Row gutter={24}>
-                        <Col className="cardComp" xs={24} sm={24} md={8} xl={12}>
+                        <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                             <Card size='small' title={<span style={{ color: 'white' }}>From Address</span>}
                                 style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
-                                <Descriptions column={2}>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="Line One">
                                         {addressData[0]?.lineOne}
                                     </Descriptions.Item>
@@ -593,7 +593,7 @@ const DCForm = () => {
                                         {addressData[0]?.lineTwo}
                                     </Descriptions.Item>
                                 </Descriptions>
-                                <Descriptions column={3}>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="City">
                                         {addressData[0]?.city}
                                     </Descriptions.Item>
@@ -613,10 +613,10 @@ const DCForm = () => {
 
                             </Card>
                         </Col>
-                        <Col className="cardComp" xs={24} sm={24} md={8} xl={12}>
+                        <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                             <Card size='small' title={<span style={{ color: 'white' }}>To Address</span>}
                                 style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
-                                <Descriptions column={2}>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="Line One">
                                         {toAddressData[0]?.lineOne}
                                     </Descriptions.Item>
@@ -624,7 +624,7 @@ const DCForm = () => {
                                         {toAddressData[0]?.lineTwo}
                                     </Descriptions.Item>
                                 </Descriptions>
-                                <Descriptions column={3}>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="City">
                                         {toAddressData[0]?.city}
                                     </Descriptions.Item>

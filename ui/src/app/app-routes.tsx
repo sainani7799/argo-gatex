@@ -18,6 +18,10 @@ import ItemGrid from "./master/items/item-grid";
 import DCForm from "./dc/dc-form";
 import DCGrid from "./dc/dc-grid";
 import DcDetailsView from "./dc/dc-detail-view";
+import { DcEmailModel } from "libs/shared-models";
+import { DcMail } from "./dc/dc-mail";
+import DCReceived from "./dc/dc-recived";
+import DcRejectMail from "./dc/dc-mail-reject";
 
 
 
@@ -66,7 +70,9 @@ const AppRoutes = () => {
                     <Route path="/item-grid" element={<ItemGrid />}/>
                     <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/dc-view" element={<DCGrid />} />
+                    <Route path="/dc-received" element={<DCReceived />} />
                     <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+                    <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}
@@ -76,6 +82,8 @@ const AppRoutes = () => {
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/dc-email-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+                <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
+                <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
             </Routes>
         </Router>
     );
