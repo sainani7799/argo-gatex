@@ -38,7 +38,11 @@ export default function Login() {
     }
 
     return (
-        <Card style={{ background: colorBgTextHover }}>
+        <Card style={{ background: colorBgTextHover, width: '100%', height: '100vh', 
+        margin: '0 auto',  
+        display:'-ms-flexbox',
+        justifyContent: 'center',
+        boxSizing: 'border-box'}}>
             <Row gutter={24} justify={'center'} align={'middle'}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} style={{ padding: '10px' }}>
                     <div style={{ textAlign: 'center' }}>
