@@ -8,12 +8,22 @@ import form from 'antd/es/form';
 const { useToken } = theme;
 const { Option } = Select;
 
-const SupplierForm = () => {
+
+export interface SupplierFormProps {
+    supplierData: SupplierDto;
+    updateDetails: (supplierData: SupplierDto) => void;
+    isUpdate: boolean;
+    closeForm: () => void;
+}
+
+
+const SupplierForm = (props:SupplierFormProps) => {
     const { token: { colorPrimary } } = useToken()
     const [form] = Form.useForm();
     const service = new SupplierService();
     const navigate = useNavigate();
-    const authdata = JSON.parse(localStorage.getItem('userName'))
+    const authdata = JSON.parse(localStorage.getItem('userName'));
+    const [disable, setDisable] = useState<boolean>(false);
     console.log(authdata)
 
     const onReset = () => {
@@ -25,24 +35,32 @@ const SupplierForm = () => {
     }, [])
 
 
-    const save = (supplerData: SupplierDto[]) => {
-        service.createSupplier(supplerData).then(res => {
-            if (res) {
+    const save = (suppliersData: SupplierDto) => {
+        service.createSupplier(suppliersData).then(res => {
+            if (res.status) {
                 onReset();
                 message.success('Created Successfully')
-                // navigate('/employee-view')
+                navigate('/supplier-view')
             } else {
                 console.log(res.internalMessage, "**********");
                 message.error('Not Created')
             }
         }).catch(err => {
-            message.error('')
+            setDisable(false)
+            message.error('Item code already exist')
         })
     }
-    const saveData = (values: SupplierDto[]) => {
-        console.log('va', values);
-        save(values);
-    }
+
+    const saveData = (values: SupplierDto) => {
+        setDisable(false)
+        if (props.isUpdate) {
+            props.updateDetails(values);
+        } else {
+            save(values);
+            setDisable(false)
+
+        }
+    };
 
 
     return (
@@ -52,6 +70,7 @@ const SupplierForm = () => {
                 form={form}
                 onFinish={saveData}
                 layout='vertical'
+                initialValues={props.supplierData}
             >
 
                 <Row gutter={24}   >
@@ -63,7 +82,7 @@ const SupplierForm = () => {
                             rules={[
                                 { required: true },
                             ]}>
-                            <Input placeholder=" Enter Supplier Code" />
+                            <Input placeholder=" Enter Buyer Code" disabled={props.isUpdate} />
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
@@ -71,7 +90,7 @@ const SupplierForm = () => {
                             rules={[
                                 { required: true },
                             ]}>
-                            <Input placeholder=" Enter Supplier Name" />
+                            <Input placeholder=" Enter Buyer Name" />
                         </Form.Item>
                     </Col>
                   

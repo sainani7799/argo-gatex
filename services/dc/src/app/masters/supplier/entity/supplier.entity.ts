@@ -28,6 +28,11 @@ export class SupplierEntity  {
     })
     createdUser: string;
 
+    @Column('varchar', {
+        name: 'updated_user',
+    })
+    updatedUser: string;
+
     @Column({
         nullable: false,
         name: "is_active",

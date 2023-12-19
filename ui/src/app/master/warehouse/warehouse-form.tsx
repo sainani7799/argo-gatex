@@ -5,8 +5,16 @@ import { CreateWarehouseDto } from 'libs/shared-models';
 import { WarehouseService, UnitService } from 'libs/shared-services';
 const { Option } = Select;
 
-const WarehouseForm = () => {
+export interface warehouseFormProps {
+    warehouseData: CreateWarehouseDto;
+    updateDetails: (warehouseData: CreateWarehouseDto) => void;
+    isUpdate: boolean;
+    closeForm: () => void;
+}
+
+const WarehouseForm = (props:warehouseFormProps) => {
     const [unit, setUnit] = useState<any[]>([]);
+    const [disable, setDisable] = useState<boolean>(false);
     const service = new WarehouseService();
     const unitService = new UnitService();
     const [form] = Form.useForm();
@@ -24,20 +32,36 @@ const WarehouseForm = () => {
         });
     }, [])
 
-    const saveData = (data: CreateWarehouseDto) => {
-        console.log(data);
-        service.createWarehouse(data).then(res => {
-            if (res) {
-                message.success('Created Successfully');
-                form.resetFields();
+    const onReset = () => {
+        form.resetFields();
+    };
+
+
+    const save = (warehouse: CreateWarehouseDto) => {
+        service.createWarehouse(warehouse).then(res => {
+            if (res.status) {
+                onReset();
+                message.success('Created Successfully')
                 navigate('/warehouse-grid')
             } else {
-                message.error('Not Created');
+                console.log(res.internalMessage, "**********");
+                message.error('Warehouse already exist in this unit')
             }
         }).catch(err => {
-            console.log(err);
-            message.error('Some Error');
-        });
+            setDisable(false)
+            message.error('')
+        })
+    }
+
+    const saveData = (values: CreateWarehouseDto) => {
+        setDisable(false)
+        if (props.isUpdate) {
+            props.updateDetails(values);
+        } else {
+            save(values);
+            setDisable(false)
+
+        }
     };
 
     return (
@@ -47,9 +71,13 @@ const WarehouseForm = () => {
                 form={form}
                 onFinish={saveData}
                 layout='vertical'
+                initialValues={props.warehouseData}
             >
                 <Row gutter={24}>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }}>
+                    <Form.Item name="warehouseId" style={{ display: "none" }}>
+                    <Input hidden />
+                    </Form.Item>
                         <Form.Item name="unitId" label="Unit ID" rules={[
                             { required: true },
                         ]}>

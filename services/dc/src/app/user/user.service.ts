@@ -37,17 +37,7 @@ export class UserMangementService {
       }
     } catch (error) {
       console.error(error);
-      // throw new InternalServerErrorException('Internal server error');
     }
-    // const validateUser = await AppDataSource.manager.findOneBy(UserEntity, { userName: dto.userName, password: dto.password })
-    // console.log(validateUser, 'user data')
-    // if (validateUser) return new AuthResponseModel(false, 1111, 'Please check your credentials')
-    // const rolesQuery = `SELECT  urp.role AS role ,r.role_name AS roleName  FROM Users urp LEFT JOIN Role r ON  r.role_id= urp.role WHERE urp.id = ${validateUser.userId}` 
-    // const rolesData = await projectPlanningDataSource.query(rolesQuery);
-    // console.log(rolesData)
-    // const rolesData = [{role:'',companyId:1}]
-    // const authModel = new AuthModel(validateUser.userName ,validateUser.employeeId)
-    // return new AuthResponseModel(true, 1111, 'Sucessfully logged in', authModel)
   }
 
   async getAllUsers(): Promise<any> {
@@ -67,9 +57,6 @@ export class UserMangementService {
   async create(userDto: CreateUserDto): Promise<CommonResponse> {
     const { userId, userName, password, employeeId ,cardNo,unitId } = userDto;
 
-    // // check if the user exists in the db    
-    // console.log(userDto,'userDto')
-    // console.log(userDto.cardNo,'userDto.cardNo')
     const userInDb = await AppDataSource.getRepository(UserEntity).findOne({
       where: { cardNo: userDto.cardNo }
     });
@@ -80,7 +67,6 @@ export class UserMangementService {
     }
 
     const user: UserEntity = await AppDataSource.getRepository(UserEntity).create({ userName, password, employeeId , cardNo,unitId});
-    // console.log(user,'user.....')
     await AppDataSource.getRepository(UserEntity).save(user);
     return toUserDto(user);
 }
@@ -101,13 +87,60 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name FROM shahi_user us 
+    let query = `SELECT us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
     LEFT JOIN shahi_units u ON u.id = us.unit_id`
     const data = await AppDataSource.query(query)
     return (data)
 
   }
+
+  async activateOrDeactivateUser(req: CreateUserDto): Promise<CommonResponse> {
+    try {
+        const userExists = await this.getUsersById(req.userId);
+        if (userExists) {
+            if (!userExists) {
+                throw new CommonResponse(false, 10113, 'Someone updated the current User information.Refresh and try again');
+            } else {
+
+                const userStatus = await AppDataSource.getRepository(UserEntity).update(
+                    { userId: req.userId },
+                    { isActive: req.isActive, });
+
+                if (userExists.isActive) {
+                    if (userStatus.affected) {
+                        const userResponse: CommonResponse = new CommonResponse(true, 10115, 'User is de-activated successfully');
+                        return userResponse;
+                    } else {
+                        throw new CommonResponse(false, 10111, 'User is already deactivated');
+                    }
+                } else {
+                    if (userStatus.affected) {
+                        const userResponse: CommonResponse = new CommonResponse(true, 10114, 'User is activated successfully');
+                        return userResponse;
+                    } else {
+                        throw new CommonResponse(false, 10112, 'User is already  activated');
+                    }
+                }
+            }
+        } else {
+            throw new CommonResponse(false, 998, 'No Records Found');
+        }
+    } catch (err) {
+        return err;
+    }
+}
+
+async getUsersById(userId: number): Promise<UserEntity> {
+    const Response = await AppDataSource.getRepository(UserEntity).findOne({
+        where: { userId: userId },
+    });
+    if (Response) {
+        return Response;
+    } else {
+        return null;
+    }
+}
 
 
 }

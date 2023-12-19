@@ -8,6 +8,9 @@ export class ItemService extends CommonAxiosServicePms {
     async createItem(createDto: ItemDto): Promise<any> {
         return await this.axiosPostCall(this.ItemController +'/createItem', createDto, );
     }
+    async updateItem(createDto: ItemDto): Promise<any> {
+        return await this.axiosPostCall(this.ItemController +'/updateItem', createDto, );
+    }
 
     async getAllItems(): Promise<any> {
         return await this.axiosGetCall(this.ItemController + '/getAllItems')
@@ -16,4 +19,9 @@ export class ItemService extends CommonAxiosServicePms {
     async getAllItemsByCode(req:itemCode): Promise<any> {
         return await this.axiosPostCall(this.ItemController + '/getAllItemsByCode',req)
     }
+
+    async activateOrDeactivateItem(  req: ItemDto): Promise<any> {
+        return this.axiosPostCall(this.ItemController + '/activateOrDeactivateItem', req)
+    
+      }
 }

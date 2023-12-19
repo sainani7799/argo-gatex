@@ -11,14 +11,25 @@ export class ItemController {
   ) { }
 
   @Post('/createItem')
-  async createItem(@Body() dto: any): Promise<CommonResponse> {
+  async createItem(@Body() dto: any, isUpdate:boolean=false): Promise<CommonResponse> {
     try {
-      return await this.service.createItem(dto);
+      return await this.service.createItem(dto ,false);
     } catch (error) {
       console.log(error,'err')
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+  
+  @Post('/updateItem')
+  async updateAddress(@Body() dto: any): Promise<CommonResponse> {
+    try {
+      return await this.service.createItem(dto,true);
+    } catch (error) {
+      console.log(error,'err')
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+  
 
   @Get('/getAllItems')
   async getAllItems(): Promise<CommonResponse> {
@@ -38,5 +49,15 @@ export class ItemController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+
+  @Post('/activateOrDeactivateItem')
+  async activateOrDeactivateItem( @Body()request:any ): Promise<CommonResponse> {
+    try {
+      return await this.service.activateOrDeactivateItem(request);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
 
 }

@@ -4,29 +4,61 @@ import { ItemService } from 'libs/shared-services';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-const ItemForm = () => {
+
+
+export interface ItemsFormProps {
+    itemData: ItemDto;
+    updateDetails: (itemsData: ItemDto) => void;
+    isUpdate: boolean;
+    closeForm: () => void;
+}
+
+const ItemForm = (props:ItemsFormProps) => {
 
     const service = new ItemService();
     const [form] = Form.useForm();
-    const saveData = (data: ItemDto) => {
-        console.log(`This is Item Data ${data}`);
-        console.log(data);
-        service.createItem(data).then(res => {
-            if (res) {
-                message.success('Created Successfully');
-                form.resetFields();
-            } else {
-                message.error("Couldn't create");
-            }
-        }).catch(err => {
-            message.error('Some Error Occured');
-        })
-    };
+    const [disable, setDisable] = useState<boolean>(false);
+    let navigate = useNavigate()
+
+
+
     const authdata = JSON.parse(localStorage.getItem('userName'))
 
     useEffect(() => {
         form.setFieldsValue({ createdUser: authdata.userName });
     }, [])
+
+    const onReset = () => {
+        form.resetFields();
+    };
+
+    const save = (itemsData: ItemDto) => {
+        service.createItem(itemsData).then(res => {
+            if (res.status) {
+                onReset();
+                message.success('Created Successfully')
+                navigate('/item-view')
+            } else {
+                console.log(res.internalMessage, "**********");
+                message.error('Not Created')
+            }
+        }).catch(err => {
+            setDisable(false)
+            message.error('')
+        })
+    }
+
+
+    const saveData = (values: ItemDto) => {
+        setDisable(false)
+        if (props.isUpdate) {
+            props.updateDetails(values);
+        } else {
+            save(values);
+            setDisable(false)
+
+        }
+    };
 
     return (
         <Card title={<span style={{ color: 'white' }}>Item Form</span>}
@@ -35,8 +67,12 @@ const ItemForm = () => {
                 form={form}
                 onFinish={saveData}
                 layout='vertical'
+                initialValues={props.itemData}
                 style={{ width: '50%', margin: '0px auto 0px auto' }}
             >
+                <Form.Item name="itemId" style={{ display: "none" }}>
+                    <Input hidden />
+                </Form.Item>
                 <Form.Item style={{ display: "none" }} name="createdUser"  >
                 </Form.Item>
                 <Row gutter={24} style={{ width: '100%' }}>
@@ -44,7 +80,7 @@ const ItemForm = () => {
                         <Form.Item label="Item Code" name="itemCode" rules={[
                             { required: true },
                         ]}>
-                            <Input placeholder="Enter Item Code" />
+                            <Input placeholder="Enter Item Code" disabled={props.isUpdate}/>
                         </Form.Item>
                     </Col>
                     <Col style={{ width: '50%' }}>

@@ -47,7 +47,11 @@ const AppRoutes = () => {
 
             <Routes>
                 <Route path="/" element={<ChildProtectionWrapper><BasicLayout /></ChildProtectionWrapper>}>
-                    <Route path="/form9" element={<UserForm />} />
+                    <Route path="/form9" element={<UserForm userData={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateDetails={(undefined) => { }}
+                    />} />
                     <Route path="/users" element={<UserFormGrid />} />
                     <Route path="/employee-view" element={<EmployeeGrid />} />
                     <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
@@ -56,18 +60,29 @@ const AppRoutes = () => {
                         closeForm={() => { }}
                         updateDetails={(undefined) => { }}
                     />} />
-                    <Route path="/supplier-form" element={<SupplierForm />} />
+                    <Route path="/supplier-form" element={<SupplierForm supplierData={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateDetails={(undefined) => { }} />} />
                     <Route path="/supplier-view" element={<SupplierGrid />} />
                     <Route path="/address-form" element={<AddressForm addressData={undefined}
                         isUpdate={false}
                         closeForm={() => { }}
                         updateDetails={(undefined) => { }}
                     />} />
-                    <Route path="/warehouse-form" element={<WarehouseForm />} />
+                    <Route path="/warehouse-form" element={<WarehouseForm warehouseData={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateDetails={(undefined) => { }}
+                    />} />
                     <Route path="/warehouse-grid" element={<WarehouseGrid />} />
-                    <Route path="/address-view" element={<AddressGrid />}/>
-                    <Route path="/item-form" element={<ItemForm />}/>
-                    <Route path="/item-grid" element={<ItemGrid />}/>
+                    <Route path="/address-view" element={<AddressGrid />} />
+                    <Route path="/item-form" element={<ItemForm itemData={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateDetails={(undefined) => { }}
+                    />} />
+                    <Route path="/item-grid" element={<ItemGrid />} />
                     <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/dc-view" element={<DCGrid />} />
                     <Route path="/dc-received" element={<DCReceived />} />

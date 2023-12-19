@@ -13,8 +13,9 @@ export class CreateAddressDto {
     country:string;
     createdUser: string;
     updatedUser :string;
-    addresserName?:number
-    constructor(addressId: number,addresser: string,addresserNameId:number,gstNo:string,cstNo:string,lineOne:string,lineTwo:string,city:string,dist:string,pinCode:number,state:string,country:string,createdUser: string,updatedUser :string,addresserName:number){
+    addresserName?:number;
+    isActive?:boolean;
+    constructor(addressId: number,addresser: string,addresserNameId:number,gstNo:string,cstNo:string,lineOne:string,lineTwo:string,city:string,dist:string,pinCode:number,state:string,country:string,createdUser: string,updatedUser :string,addresserName:number,isActive?:boolean){
         this.addressId = addressId;
         this.addresser = addresser;
         this.addresserNameId = addresserNameId;
@@ -30,5 +31,6 @@ export class CreateAddressDto {
         this.createdUser = createdUser;
         this.updatedUser = updatedUser;
         this.addresserName = addresserName;
+        this.isActive = isActive
     }
 }

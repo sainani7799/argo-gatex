@@ -24,4 +24,8 @@ export class AddressService extends CommonAxiosServicePms {
     async getAllToAddressByUnit(req: ToAddressReq): Promise<any> {
         return await this.axiosPostCall(this.AddressController +'/getAllToAddressByUnit', req, );
     }
+    async activateOrDeactivateAddress(  req: CreateAddressDto): Promise<any> {
+        return this.axiosPostCall(this.AddressController + '/activateOrDeactivateAddress', req)
+    
+      }
 }

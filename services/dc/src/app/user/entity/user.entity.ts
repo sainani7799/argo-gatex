@@ -32,6 +32,13 @@ export class UserEntity  {
     })
     unitId: number;
 
+    @Column({
+        nullable: false,
+        name: "is_active",
+        default: 1
+    })
+    isActive: boolean;
+
 
     @CreateDateColumn({
         name: "created_at",

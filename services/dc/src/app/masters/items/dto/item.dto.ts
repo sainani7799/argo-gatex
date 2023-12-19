@@ -24,6 +24,9 @@ export class CreateItemDto {
 
     @ApiProperty()
     createdUser: string;
+    
+    @ApiProperty()
+    updatedUser: string;
 
     @ApiProperty()
     versionFlag: number;

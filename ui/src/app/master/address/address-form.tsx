@@ -26,8 +26,8 @@ const AddressForm = (props: AddressFormProps) => {
     const supplierService = new SupplierService();
     const service = new AddressService;
     const [selectedAddressType, setSelectedAddressType] = useState(null);
-    const [disable, setDisable] = useState<boolean>(false)
-    const authdata = JSON.parse(localStorage.getItem('userName'))
+    const [disable, setDisable] = useState<boolean>(false);
+    const authdata = JSON.parse(localStorage.getItem('userName'));
 
     const handleAddressTypeChange = (value) => {
         setSelectedAddressType(value);

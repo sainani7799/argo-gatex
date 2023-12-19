@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class CreateUserDto {
     @ApiProperty()
-    userId: Number;
+    userId: number;
 
     @ApiProperty()
     userName: string;
@@ -24,9 +24,6 @@ export class CreateUserDto {
 
     @ApiProperty()
     createdAt: Date;
-
-    // @ApiProperty()
-    // createdUser: string;
 
     @ApiProperty()
     versionFlag: number;

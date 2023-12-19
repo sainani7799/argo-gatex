@@ -20,5 +20,8 @@ export class CreateSupplierDto {
     createdUser: string;
 
     @ApiProperty()
+    updatedUser: string;
+
+    @ApiProperty()
     versionFlag: number;
 }

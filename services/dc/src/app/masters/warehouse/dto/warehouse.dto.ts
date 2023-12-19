@@ -20,5 +20,9 @@ export class CreateWarehouseDto {
     createdUser: string;
 
     @ApiProperty()
+    updatedUser: string;
+
+
+    @ApiProperty()
     versionFlag: number;
 }

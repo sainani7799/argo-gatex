@@ -54,4 +54,13 @@ export class AddressController {
       return (error);
     }
   }
+
+  @Post('/activateOrDeactivateAddress')
+  async activateOrDeactivateAddress( @Body()request:any ): Promise<CommonResponse> {
+    try {
+      return await this.service.activateOrDeactivateAddress(request);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
 }

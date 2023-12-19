@@ -13,7 +13,7 @@ export class AddressService {
   constructor(
     private addressRepo: AddressEntityRepository,
     private addressAdapter: AddressAdapter,
-    
+
   ) { }
 
   // async createAddress(dto:CreateAddressDto | CreateAddressDto[],isUpdate:boolean):Promise<CommonResponse>{
@@ -79,66 +79,66 @@ export class AddressService {
   //   }
   // }
 
-  async getAddressWithoutRelations(addresserNameId: number): Promise<AddressEntity>{
+  async getAddressWithoutRelations(addresserNameId: number): Promise<AddressEntity> {
     const addressResponse = await AppDataSource.getRepository(AddressEntity).findOne({
-      where: {addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`)},
+      where: { addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`) },
     });
-    if(addressResponse){
+    if (addressResponse) {
       return addressResponse;
     }
-    else{
+    else {
       return null;
     }
   }
 
 
-  async createAddress(addressDto: CreateAddressDto, isUpdate: boolean): Promise<CommonResponse>{
-    console.log('isUpdate============',isUpdate)
-    try{
+  async createAddress(addressDto: CreateAddressDto, isUpdate: boolean): Promise<CommonResponse> {
+    console.log('isUpdate============', isUpdate)
+    try {
       let previousValue
-    const addressDtos: CreateAddressDto[] = [];
+      const addressDtos: CreateAddressDto[] = [];
 
-      if(!isUpdate){
+      if (!isUpdate) {
 
         const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
-        if (addressEntity){
-            console.log(addressEntity,'------')
-          throw new CommonResponse(false,11104, 'addressEntity already exists'); 
+        if (addressEntity) {
+          console.log(addressEntity, '------')
+          throw new CommonResponse(false, 11104, 'addressEntity already exists');
         }
       }
-      else{
-        const certificatePrevious = await AppDataSource.getRepository(AddressEntity).findOne({where:{addressId:addressDto.addressId}})
-        previousValue =(certificatePrevious.addresserNameId)
+      else {
+        const certificatePrevious = await AppDataSource.getRepository(AddressEntity).findOne({ where: { addressId: addressDto.addressId } })
+        previousValue = (certificatePrevious.addresserNameId)
         const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
-        if (addressEntity){
-          if(addressEntity.addresserNameId != addressDto.addresserNameId ){
-            throw new CommonResponse(false,11104, 'Address already exists'); 
+        if (addressEntity) {
+          if (addressEntity.addresserNameId != addressDto.addresserNameId) {
+            throw new CommonResponse(false, 11104, 'Address already exists');
           }
         }
       }
-      const convertedAddressEntity: AddressEntity = this.addressAdapter.convertDtoToEntity(addressDto,isUpdate);
+      const convertedAddressEntity: AddressEntity = this.addressAdapter.convertDtoToEntity(addressDto, isUpdate);
 
       console.log(convertedAddressEntity);
-    const savedAddressEntity: AddressEntity = await AppDataSource.getRepository(AddressEntity).save(convertedAddressEntity);
-    const savedHeadDto: CreateAddressDto = this.addressAdapter.convertEntityToDto(savedAddressEntity);
-    addressDtos.push(savedAddressEntity)
-      console.log(savedAddressEntity,'saved');
-    if (savedAddressEntity) {
-      const presentValue = addressDto.addresserNameId;
-      //generating resposnse
-      const response =new CommonResponse(true,1,isUpdate? 'Address Updated Successfully':'Address created Successfully')
-      const name=isUpdate?'updated':'created'
-      const displayValue = isUpdate? 'Address Updated Successfully': 'Address Created Successfully'
-      const userName = isUpdate? savedHeadDto.updatedUser :savedHeadDto.createdUser;
-        console.log(response,'9999999999999999');
-      return response;
-    } else {
-      throw new CommonResponse(false,11106,'Address saved but issue while transforming into DTO');
+      const savedAddressEntity: AddressEntity = await AppDataSource.getRepository(AddressEntity).save(convertedAddressEntity);
+      const savedHeadDto: CreateAddressDto = this.addressAdapter.convertEntityToDto(savedAddressEntity);
+      addressDtos.push(savedAddressEntity)
+      console.log(savedAddressEntity, 'saved');
+      if (savedAddressEntity) {
+        const presentValue = addressDto.addresserNameId;
+        //generating resposnse
+        const response = new CommonResponse(true, 1, isUpdate ? 'Address Updated Successfully' : 'Address created Successfully')
+        const name = isUpdate ? 'updated' : 'created'
+        const displayValue = isUpdate ? 'Address Updated Successfully' : 'Address Created Successfully'
+        const userName = isUpdate ? savedHeadDto.updatedUser : savedHeadDto.createdUser;
+        console.log(response, '9999999999999999');
+        return response;
+      } else {
+        throw new CommonResponse(false, 11106, 'Address saved but issue while transforming into DTO');
+      }
+    } catch (error) {
+      return error;
     }
-  } catch (error) {
-    return error;
   }
-}
 
   async getAllAddress(): Promise<CommonResponse> {
     try {
@@ -154,7 +154,7 @@ export class AddressService {
     }
   }
 
-  async getAllAddressByUnit(req:UnitReq): Promise<CommonResponse> {
+  async getAllAddressByUnit(req: UnitReq): Promise<CommonResponse> {
     try {
       const query = `SELECT a.address_id AS addressId,addresser, addresser_name_id,
       CASE WHEN addresser = 'unit' THEN u.unit_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode,
@@ -168,7 +168,7 @@ export class AddressService {
       console.log(error)
     }
   }
-  async getAllToAddressByUnit(req:ToAddressReq): Promise<CommonResponse> {
+  async getAllToAddressByUnit(req: ToAddressReq): Promise<CommonResponse> {
     try {
       const query = `SELECT a.address_id AS addressId,addresser,a.addresser_name_id AS addresserNameId, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
       FROM shahi_address a
@@ -179,6 +179,51 @@ export class AddressService {
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
       console.log(error)
+    }
+  }
+  async activateOrDeactivateAddress(req: CreateAddressDto): Promise<CommonResponse> {
+    try {
+      const addressExists = await this.getAddressById(req.addressId);
+      if (addressExists) {
+        if (!addressExists) {
+          throw new CommonResponse(false, 10113, 'Someone updated the current Address information.Refresh and try again');
+        } else {
+
+          const addressStatus = await AppDataSource.getRepository(AddressEntity).update(
+            { addressId: req.addressId },
+            { isActive: req.isActive, updatedUser: req.updatedUser });
+
+          if (addressExists.isActive) {
+            if (addressStatus.affected) {
+              const ProfitResponse: CommonResponse = new CommonResponse(true, 10115, 'Address is de-activated successfully');
+              return ProfitResponse;
+            } else {
+              throw new CommonResponse(false, 10111, 'Address is already deactivated');
+            }
+          } else {
+            if (addressStatus.affected) {
+              const ProfitResponse: CommonResponse = new CommonResponse(true, 10114, 'Address is activated successfully');
+              return ProfitResponse;
+            } else {
+              throw new CommonResponse(false, 10112, 'Address is already  activated');
+            }
+          }
+        }
+      } else {
+        throw new CommonResponse(false, 99998, 'No Records Found');
+      }
+    } catch (err) {
+      return err;
+    }
+  }
+  async getAddressById(addressId: number): Promise<AddressEntity> {
+    const Response = await AppDataSource.getRepository(AddressEntity).findOne({
+      where: { addressId: addressId },
+    });
+    if (Response) {
+      return Response;
+    } else {
+      return null;
     }
   }
 

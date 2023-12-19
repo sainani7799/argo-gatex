@@ -4,6 +4,7 @@ import { AuthResponseModel, LoginDto, UserResponse } from "libs/shared-models";
 import { ApplicationExceptionHandler } from 'libs/backend-utils/src/lib/libs/application-exception-handler';
 import { CreateUserDto } from "./dto/user.dto";
 import { UserRequestDto } from "./dto/user-request.dto";
+import { CommonResponse } from "libs/shared-models/src/common";
 
 
 @Controller("/user-management")
@@ -63,6 +64,15 @@ export class UserManagementController {
     } catch (error) {
       console.log(error,'err')
       return this.applicationExceptionHandler.returnException(UserResponse, error);
+    }
+  }
+
+  @Post('/activateOrDeactivateUser')
+  async activateOrDeactivateUser( @Body()request:any ): Promise<CommonResponse> {
+    try {
+      return await this.companyService.activateOrDeactivateUser(request);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
   

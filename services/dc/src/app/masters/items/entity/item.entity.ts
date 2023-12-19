@@ -41,10 +41,14 @@ export class ItemEntity  {
     })
     createdUser: string;
 
-    @Column({
-        nullable: false,
-        name: "is_active",
-        default: 1
+    @Column('varchar', {
+        name: 'updated_user',
+    })
+    updatedUser: string;
+
+    @Column("boolean", {
+        default: true,
+        name: "is_active"
     })
     isActive: boolean;
 

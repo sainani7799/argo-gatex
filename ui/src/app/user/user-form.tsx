@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message } from 'antd';
 import { EmployeeService, UserManagementServices } from 'libs/shared-services';
 import { Link, useNavigate } from 'react-router-dom';
+import { CreateUserDto } from 'libs/shared-models';
 
 const { Option } = Select;
 
-
-const UserForm = () => {
+export interface UserFormProps {
+    userData: CreateUserDto;
+    updateDetails: (userData: CreateUserDto) => void;
+    isUpdate: boolean;
+    closeForm: () => void;
+}
+const UserForm = (props:UserFormProps) => {
     const userService = new UserManagementServices();
     const [employeeNames, setEmployeeNames] = useState<any[]>([]);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(undefined);

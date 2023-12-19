@@ -125,6 +125,19 @@ const AddressGrid = () => {
             )
                 : null
     })
+    const deleteAddress = (dto:CreateAddressDto) => {
+        dto.isActive=dto.isActive?false:true;
+        service.activateOrDeactivateAddress(dto).then(res => { console.log(res);
+          if (res.status) {
+            message.success('Success'); 
+          } else {
+              message.error(res.internalMessage);
+            }
+        }).catch(err => {
+          message.error(err.message);
+        })
+      }
+
 
     
     const columnsSkelton: any  = [
@@ -203,11 +216,11 @@ const AddressGrid = () => {
                   
                 
                 <Divider type="vertical" />
-                  {/* <Popconfirm onConfirm={e =>{deleteColour(rowData);}}
+                  <Popconfirm onConfirm={e =>{deleteAddress(rowData);}}
                   title={
                     rowData.isActive
-                      ? 'Are you sure to Deactivate color ?'
-                      :  'Are you sure to Activate color ?'
+                      ? 'Are you sure to Deactivate Address ?'
+                      :  'Are you sure to Activate Address ?'
                   }
                 >
                   <Switch  size="default"
@@ -217,7 +230,7 @@ const AddressGrid = () => {
                       checked={rowData.isActive}
                     />
                   
-                </Popconfirm> */}
+                </Popconfirm>
               </span>
             )
           }
