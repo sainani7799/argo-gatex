@@ -188,7 +188,6 @@ export const DcDetailsView = (props: DcViewProps) => {
     setIsModalVisible(true);
   }
   const isDetailView = location.pathname === '/dc-detail-view';
-  
 
   return (
     <div>

@@ -88,9 +88,6 @@ const DCGrid = () => {
         })
     }
 
-
-
-
     let mailerSent = false;
     async function sendDcMailForGatePass() {
         const dcDetails = new DcEmailModel();

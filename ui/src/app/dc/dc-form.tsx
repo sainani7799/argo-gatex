@@ -112,8 +112,7 @@ const DCForm = () => {
         const req = { unitId: unitValue };
         addressService.getAllAddressByUnit(req).then(res => {
             if (res) {
-                const activeAddress = res.data.filter(address => address.isActive === true);
-                setAddressData(activeAddress);
+                setAddressData(res.data);
             }
         }).catch(err => {
             message.error("Something went wrong");
@@ -152,7 +151,7 @@ const DCForm = () => {
         console.log(req.addresserNameId)
         addressService.getAllToAddressByUnit(req).then(res => {
             if (res) {
-                const activeToAddress = res.data.filter(address => address.isActive === true);
+                const activeToAddress = res.data.filter(address => address.isActive === 1);
                 setToAddressData(activeToAddress);
             }
         }).catch(err => {
@@ -430,6 +429,7 @@ const DCForm = () => {
                                     placeholder="Select Unit "
                                     optionFilterProp="children"
                                     allowClear
+                                    disabled
                                 >
                                     {addressData.map(unit => {
                                         return (
@@ -644,7 +644,6 @@ const DCForm = () => {
                                         {toAddressData[0]?.country}
                                     </Descriptions.Item>
                                 </Descriptions>
-
                             </Card>
                         </Col>
                     </Row>
