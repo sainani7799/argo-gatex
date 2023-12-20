@@ -8,7 +8,7 @@ const { Option } = Select;
 
 export interface UserFormProps {
     userData: CreateUserDto;
-    updateDetails: (userData: CreateUserDto) => void;
+    // updateDetails: (userData: CreateUserDto) => void;
     isUpdate: boolean;
     closeForm: () => void;
 }

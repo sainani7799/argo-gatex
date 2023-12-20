@@ -14,10 +14,8 @@ import UserForm from './user-form';
 const UserFormGrid = () => {
     const [data, setData] = useState([]);
 
-    const [searchedText, setSearchedText] = useState<any>([])
-    const [isEditing, setIsEditing] = useState<any>(false);
-    const [editingData, setEditingData] = useState<any>();
     const [responseData, setResponseData] = useState<any>([]);
+    const [selectedUsers, setSelectedUsers] = useState<any>(undefined);
     const service = new UserManagementServices();
     const [loading, setLoading] = useState(true);
     const [drawerVisible, setDrawerVisible] = useState(false);
@@ -132,11 +130,11 @@ const UserFormGrid = () => {
                 <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                     onClose={closeDrawer} visible={drawerVisible} closable={true}>
                     <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
-                        {/* <UserForm key={Date.now()}
+                        <UserForm key={Date.now()}
                         // updateDetails={updateSuppliers}
                         isUpdate={true}
-                        userData={selectedSuppliers}
-                        closeForm={closeDrawer} /> */}
+                        userData={selectedUsers}
+                        closeForm={closeDrawer} />
                     </Card>
                 </Drawer>
             </Card>

@@ -119,7 +119,7 @@ const DCReceived = () => {
             if (res.status) {
                 message.success('Updated Successfully');
                 setDrawerVisible(false);
-
+                getReceivedGatePassData()
             } else {
                 message.error(res.internalMessage);
 
@@ -221,7 +221,7 @@ const DCReceived = () => {
                     />
                   
                 </Popconfirm>):(
-                        <Tooltip placement='top' title="Already Assigned">
+                        <Tooltip placement='top' title="DC Received">
                             <CheckOutlined
                                 onClick={() => {
                                     // Handle click for the other icon

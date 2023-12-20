@@ -47,10 +47,11 @@ const AppRoutes = () => {
 
             <Routes>
                 <Route path="/" element={<ChildProtectionWrapper><BasicLayout /></ChildProtectionWrapper>}>
-                    <Route path="/form9" element={<UserForm userData={undefined}
+                    <Route path="/form9" element={<UserForm 
+                        userData={undefined}
                         isUpdate={false}
                         closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
+                        // updateDetails={(undefined) => { }}
                     />} />
                     <Route path="/users" element={<UserFormGrid />} />
                     <Route path="/employee-view" element={<EmployeeGrid />} />

@@ -98,34 +98,35 @@ export class UserMangementService {
   async activateOrDeactivateUser(req: CreateUserDto): Promise<CommonResponse> {
     try {
         const userExists = await this.getUsersById(req.userId);
-        if (userExists) {
-            if (!userExists) {
-                throw new CommonResponse(false, 10113, 'Someone updated the current User information.Refresh and try again');
-            } else {
+        console.log(userExists,'userExists')
 
-                const userStatus = await AppDataSource.getRepository(UserEntity).update(
-                    { userId: req.userId },
-                    { isActive: req.isActive, });
-
-                if (userExists.isActive) {
-                    if (userStatus.affected) {
-                        const userResponse: CommonResponse = new CommonResponse(true, 10115, 'User is de-activated successfully');
-                        return userResponse;
-                    } else {
-                        throw new CommonResponse(false, 10111, 'User is already deactivated');
-                    }
-                } else {
-                    if (userStatus.affected) {
-                        const userResponse: CommonResponse = new CommonResponse(true, 10114, 'User is activated successfully');
-                        return userResponse;
-                    } else {
-                        throw new CommonResponse(false, 10112, 'User is already  activated');
-                    }
-                }
-            }
-        } else {
-            throw new CommonResponse(false, 998, 'No Records Found');
+        if (!userExists) {
+            throw new CommonResponse(false, 10113, 'Someone updated the current user information. Refresh and try again');
         }
+
+        const newStatus = req.isActive;
+        const currentStatus = userExists.isActive;
+
+        console.log('Current Status:', currentStatus); // Log current status
+
+        if (newStatus === currentStatus) {
+            const message = newStatus ? 'User is already activated' : 'User is already deactivated';
+            throw new CommonResponse(false, newStatus ? 10112 : 10111, message);
+        }
+
+        const userStatus = await AppDataSource.getRepository(UserEntity).update(
+            { userId: req.userId },
+            { isActive: newStatus }
+        );
+
+        console.log('User Status:', userStatus.affected); // Log affected rows
+
+        const successMessage = newStatus ? 'User is activated successfully' : 'User is deactivated successfully';
+        const errorMessage = newStatus ? 'User is already activated' : 'User is already deactivated';
+
+        const response = new CommonResponse(true, newStatus ? 10114 : 10115, userStatus.affected ? successMessage : errorMessage);
+        return response;
+
     } catch (err) {
         return err;
     }
