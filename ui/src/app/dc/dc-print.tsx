@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, message } from "antd";
+import { Button, Card, Col, QRCode, Row, message } from "antd";
 import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
 import { AddressService, DcService } from "libs/shared-services";
 import { useEffect, useState } from "react";
@@ -8,10 +8,9 @@ import { PrinterOutlined } from "@ant-design/icons";
 import moment from "moment";
 import './dc-print.css';
 import sign from '../../../../ui/src/assets/WhatsApp Image 2023-12-14 at 12-8731.jpeg'
-
 export interface DcPrintProps {
     dcId: number
-    printDc: () => void
+    // printDc: () => void
 }
 
 export function DcPrint(props: DcPrintProps) {
@@ -80,23 +79,16 @@ export function DcPrint(props: DcPrintProps) {
         })
     };
     const printDc = () => {
+        setTimeout(() => {
         const printableElements = document.getElementById('printme').innerHTML;
         const orderHTML = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
         const oldPage = document.body.innerHTML;
         document.body.innerHTML = orderHTML;
+        // document.body.innerHTML = oldPage;
         window.print();
+        }, 1000)
     }
-    const downloadAsPDF = () => {
-        const element = document.getElementById('printme');
-        const options = {
-            margin: 10, // Adjust the margin as needed
-            filename: 'PO.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        };
-        // html2pdf(element, options);
-    };
+   
     const createdDate = moment(data[0]?.createdDate).format('DD-MM-YYYY');
     const totalQty = data.reduce((sum, item) => sum + parseFloat(item.qty || 0), 0);
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
@@ -106,19 +98,30 @@ export function DcPrint(props: DcPrintProps) {
     return (
         <Card title='GATE PASS PRINT'
             style={{ textAlign: 'center' }}
-            headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0,color:'#fff' }} extra={<span style={{ color: 'white' }} ><Button onClick={props.printDc} className='panel_button'><PrinterOutlined /> Print</Button>
-             {/* <Button className='panel_button' onClick={downloadAsPDF}>Download PDF</Button> */}
-             </span>}>
+            headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0, color: '#fff' }} extra={<span style={{ color: 'white' }} ><Button onClick={printDc} className='panel_button'><PrinterOutlined /> Print</Button>
+                {/* <Button className='panel_button' onClick={downloadAsPDF}>Download PDF</Button> */}
+            </span>}>
             <html>
                 <body id='printme'>
-                    <h3 style={{ textAlign: 'center' }}>{'Shahi Export Pvt. Ltd'}</h3>
-                    <div style={{ textAlign: 'center', }}>
-                        <h5>{data[0]?.fromUnit}<br />
-                            {addressData[0]?.lineOne}, {addressData[0]?.lineTwo}<br />
-                            {addressData[0]?.city},{addressData[0]?.dist}<br />
-                            {addressData[0]?.state},{addressData[0]?.country},{addressData[0]?.pinCode}<br />
-                            GST IN :{addressData[0]?.gstNo},CST :{addressData[0]?.cstNo}</h5>
+                    <div id='printme'>
+
+                    <Row gutter={24} >
+                        <Col span={16} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '65px' }}>
+                            <h3 style={{ textAlign: 'center' }}>{'Shahi Export Pvt. Ltd'}</h3>
+                            <div style={{ textAlign: 'center', }}>
+                                <h5>{data[0]?.fromUnit}<br />
+                                    {addressData[0]?.lineOne}, {addressData[0]?.lineTwo}<br />
+                                    {addressData[0]?.city},{addressData[0]?.dist}<br />
+                                    {addressData[0]?.state},{addressData[0]?.country},{addressData[0]?.pinCode}<br />
+                                    GST IN :{addressData[0]?.gstNo},CST :{addressData[0]?.cstNo}</h5>
+                            </div>
+                        </Col>
+                        <Col span={8} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '5px'}}>
+                                <QRCode type="svg" value={`http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${location.state}`} />
+                        </Col>
+                    </Row>
                     </div>
+
                     <div style={{ textAlign: 'center' }}><h3 style={{ textAlign: 'center' }}>{'GATE PASS'}</h3></div>
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px', paddingLeft: '30px' }}>
                         <Col span={12}>
@@ -235,15 +238,15 @@ export function DcPrint(props: DcPrintProps) {
                                 <h5>Authorised Signatory</h5>
                                 <br />
                                 {data[0]?.sign_path && (
-                                    
+
                                     <img
                                         src={sign} // Use the image path from your data
                                         alt={`Signature of ${sign}`}
                                         style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }}
                                     />
-                                    
+
                                 )}
-                               
+
                             </div>
                         </Col>
                     </Row>

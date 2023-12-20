@@ -33,12 +33,6 @@
       font-family: monospace;
       font-size: 7pt;
     }
-    /* @page { size:'a4';  margin-top: 0mm; margin-bottom: 0mm; } */
-    /* @media print { */
-    /* body { transform: scale(.88);}
-      .ShippingInstructions {transform: scale(.70);}
-      table {page-break-inside: avoid;} */
-    /* } */
     body {
       width: auto;
       border: 0;
@@ -48,4 +42,10 @@
       position: static;
       overflow: visible;
     }
+}
+
+@media print {
+  .qr-code {
+    display: block !important;
+  }
 }

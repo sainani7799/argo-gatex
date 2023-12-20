@@ -157,16 +157,18 @@ export const DcDetailsView = (props: DcViewProps) => {
     setIsModalVisible(false);
   };
 
-  const printDc = () => {
-    const divContents = document.getElementById('printme').innerHTML;
-    const element = window.open('', '', 'height=700, width=1024');
-    element.document.write(divContents);
-    getCssFromComponent(document, element.document);
-    element.document.close();
-    element.print();
-    element.close(); // to close window when click on cancel/Save
-    setIsModalVisible(true); // model should be open
-  };
+  // const printDc = () => {
+  //   const divContents = document.getElementById('printme').innerHTML;
+  //   const orderHTML = '<html><head><title></title></head><body>' + divContents + '</body></html>'
+  //   const element = window.open('', '', 'height=700, width=1024');
+  //   element.document.write(divContents);
+  //   document.body.innerHTML = orderHTML;
+  //   getCssFromComponent(document, element.document);
+  //   element.document.close();
+  //   element.print();
+  //   element.close(); // to close window when click on cancel/Save
+  //   setIsModalVisible(true); // model should be open
+  // };
 
   /**
  * get form data 
@@ -287,7 +289,7 @@ export const DcDetailsView = (props: DcViewProps) => {
                 ]}
               >
 
-                <DcPrint dcId={props.dcId} printDc={printDc} />
+                <DcPrint dcId={props.dcId}/>
               </Modal> : ""}
           </Col>
         </Row>
