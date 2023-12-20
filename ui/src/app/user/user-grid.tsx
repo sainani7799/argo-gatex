@@ -27,7 +27,6 @@ const UserFormGrid = () => {
 
     const getUsers = () => {
         service.getUsers().then((res: any) => {
-            console.log(res, '................................')
             if (res) {
                 setResponseData(res)
             }

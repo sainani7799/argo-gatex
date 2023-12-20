@@ -24,7 +24,7 @@ export class UserMangementService {
 
   async login(dto: LoginDto): Promise<AuthResponseModel> {
     console.log(dto,'DTO')
-    const query = `SELECT user_name AS userName, PASSWORD,employee_id AS employeeId,unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,card_no AS cardNo FROM shahi_user u LEFT JOIN shahi_units un ON un.id = u.unit_id WHERE user_name = '${dto.userName}' AND password = '${dto.password}'`;
+    const query = `SELECT user_name AS userName, PASSWORD,employee_id AS employeeId,unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,card_no AS cardNo FROM shahi_user u LEFT JOIN shahi_units un ON un.id = u.unit_id WHERE u.is_active = 1 AND user_name = '${dto.userName}' AND password = '${dto.password}'`;
     try {
       const validateUser = await await AppDataSource.query(query);
       console.log(validateUser, 'user data');
@@ -87,7 +87,7 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive FROM shahi_user us 
+    let query = `SELECT us.id as userId, us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
     LEFT JOIN shahi_units u ON u.id = us.unit_id`
     const data = await AppDataSource.query(query)
@@ -97,47 +97,48 @@ export class UserMangementService {
 
   async activateOrDeactivateUser(req: CreateUserDto): Promise<CommonResponse> {
     try {
-        const userExists = await this.getUsersById(req.userId);
-        console.log(userExists,'userExists')
-
+      const userExists = await this.getUsersById(req.userId);
+      
+      if (userExists) {
         if (!userExists) {
-            throw new CommonResponse(false, 10113, 'Someone updated the current user information. Refresh and try again');
-        }
+          throw new CommonResponse(false, 10113, 'Someone updated the current user information.Refresh and try again');
+        } else {
 
-        const newStatus = req.isActive;
-        const currentStatus = userExists.isActive;
-
-        console.log('Current Status:', currentStatus); // Log current status
-
-        if (newStatus === currentStatus) {
-            const message = newStatus ? 'User is already activated' : 'User is already deactivated';
-            throw new CommonResponse(false, newStatus ? 10112 : 10111, message);
-        }
-
-        const userStatus = await AppDataSource.getRepository(UserEntity).update(
+          const userStatus = await AppDataSource.getRepository(UserEntity).update(
             { userId: req.userId },
-            { isActive: newStatus }
-        );
-
-        console.log('User Status:', userStatus.affected); // Log affected rows
-
-        const successMessage = newStatus ? 'User is activated successfully' : 'User is deactivated successfully';
-        const errorMessage = newStatus ? 'User is already activated' : 'User is already deactivated';
-
-        const response = new CommonResponse(true, newStatus ? 10114 : 10115, userStatus.affected ? successMessage : errorMessage);
-        return response;
-
+            { isActive: req.isActive });
+          if (userExists.isActive) {
+            if (userStatus.affected) {
+              const userResponse: CommonResponse = new CommonResponse(true, 10115, 'user  is de-activated successfully');
+              return userResponse;
+            } else {
+              throw new CommonResponse(false, 10111, 'user is already deactivated');
+            }
+          } else {
+            if (userStatus.affected) {
+              const userResponse: CommonResponse = new CommonResponse(true, 10114, 'user is activated successfully');
+              return userResponse;
+            } else {
+              throw new CommonResponse(false, 10112, 'user  is already  activated');
+            }
+          }
+        }
+      } else {
+        throw new CommonResponse(false, 99998, 'No Records Found');
+      }
     } catch (err) {
-        return err;
+      return err;
     }
-}
+  }
 
 async getUsersById(userId: number): Promise<UserEntity> {
     const Response = await AppDataSource.getRepository(UserEntity).findOne({
         where: { userId: userId },
-    });
+        
+    });console.log(userId,'userId....')
     if (Response) {
         return Response;
+        
     } else {
         return null;
     }

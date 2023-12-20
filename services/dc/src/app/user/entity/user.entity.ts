@@ -35,7 +35,6 @@ export class UserEntity  {
     @Column({
         nullable: false,
         name: "is_active",
-        default: 1
     })
     isActive: boolean;
 

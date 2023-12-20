@@ -37,7 +37,6 @@ const DCGrid = () => {
     const getGatePassData = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
-        console.log(req)
         service.getAllGatePass(req).then((res: any) => {
             if (res.status) {
                 setResponseData(res.data);
@@ -79,7 +78,7 @@ const DCGrid = () => {
                 message.success('Updated Successfully');
                 sendDcMailForGatePass()
                 setDrawerVisible(false);
-
+                getGatePassData()
             } else {
                 message.error(res.internalMessage);
 

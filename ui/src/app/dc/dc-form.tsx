@@ -88,8 +88,8 @@ const DCForm = () => {
         const req = { unitId: unitValue };
         warehouseService.getAllWarehousesByUnit(req).then(res => {
             if (res) {
-                // console.log(res);
-                setWarehouses(res.data);
+                const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
+                setWarehouses(activeWarehouses);
             }
         }).catch(err => {
             message.error("Something went wrong");
@@ -112,7 +112,8 @@ const DCForm = () => {
         const req = { unitId: unitValue };
         addressService.getAllAddressByUnit(req).then(res => {
             if (res) {
-                setAddressData(res.data);
+                const activeAddress = res.data.filter(address => address.isActive === true);
+                setAddressData(activeAddress);
             }
         }).catch(err => {
             message.error("Something went wrong");
@@ -122,6 +123,8 @@ const DCForm = () => {
     const getAllItems = () => {
         itemService.getAllItems().then((res) => {
             if (res) {
+                const activeItems = res.data.filter(item => item.isActive === true);
+                setWarehouses(activeItems)
                 setItemData(res.data);
                 // console.log(res.data)
             }
@@ -149,8 +152,8 @@ const DCForm = () => {
         console.log(req.addresserNameId)
         addressService.getAllToAddressByUnit(req).then(res => {
             if (res) {
-                // console.log(res);
-                setToAddressData(res.data);
+                const activeToAddress = res.data.filter(address => address.isActive === true);
+                setToAddressData(activeToAddress);
             }
         }).catch(err => {
             message.error("Something went wrong");
@@ -160,8 +163,8 @@ const DCForm = () => {
     const getSuppliers = () => {
         supplierService.getAllSuppliers().then(res => {
             if (res) {
-                // console.log(res);
-                setSuppliers(res.data);
+                const activeSuppliers = res.data.filter(suppliers => suppliers.isActive === true);
+                setSuppliers(activeSuppliers);
             }
         }).catch(err => {
             message.error("Something went wrong");
