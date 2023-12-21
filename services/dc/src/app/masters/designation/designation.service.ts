@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { DesignationRepository } from "./repository/designation.repo";
-import { AppDataSource } from "../../app-data-source";
 import { DesignationEntity } from "./entity/designation.entity";
 import { CommonResponse } from "libs/shared-models/src/common";
 
@@ -14,7 +13,7 @@ export class DesignationService {
 
       async getAllDesignations(): Promise<CommonResponse> {
         try{
-          const data = await AppDataSource.getRepository(DesignationEntity).find();
+          const data = await this.repository.find();
           if (data.length> 0) {
             return new CommonResponse(true,990,'data retrieve successfully',data)
           }else{

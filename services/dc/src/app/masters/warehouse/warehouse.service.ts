@@ -3,7 +3,6 @@ import { WarehouseEntityRepository } from "./repository/warehouse.repository";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { CreateWarehouseDto } from "./dto/warehouse.dto";
 import { WarehouseEntity } from "./entity/warehouse.entity";
-import { AppDataSource } from "../../app-data-source";
 import { UnitReq } from "libs/shared-models";
 import { WarehouseAdapter } from "./dto/warehouse.adapter";
 import { Raw } from "typeorm";
@@ -17,7 +16,7 @@ export class WarehouseService {
   ) { }
   
   async getWarehouseWithoutRelations(warehouseName: string, unitId: number): Promise<WarehouseEntity> {
-    const warehouseResponse = await AppDataSource.getRepository(WarehouseEntity).findOne({
+    const warehouseResponse = await this.warehouseRepo.findOne({
       where: { warehouseName, unitId },
     });
     if (warehouseResponse) {
@@ -43,7 +42,7 @@ export class WarehouseService {
         }
       }
       else {
-        const certificatePrevious = await AppDataSource.getRepository(WarehouseEntity).findOne({
+        const certificatePrevious = await this.warehouseRepo.findOne({
           where: { warehouseName: warehouseDto.warehouseName, unitId: warehouseDto.unitId },
         }); if (certificatePrevious) {
           previousValue = { warehouseName: certificatePrevious.warehouseName, unitId: certificatePrevious.unitId };
@@ -67,7 +66,7 @@ export class WarehouseService {
       const convertedWarehouseEntity: WarehouseEntity = this.warehouseAdapter.convertDtoToEntity(warehouseDto, isUpdate);
 
       console.log(convertedWarehouseEntity);
-      const savedWarehouseEntity: WarehouseEntity = await AppDataSource.getRepository(WarehouseEntity).save(convertedWarehouseEntity);
+      const savedWarehouseEntity: WarehouseEntity = await this.warehouseRepo.save(convertedWarehouseEntity);
       const savedHeadDto: CreateWarehouseDto = this.warehouseAdapter.convertEntityToDto(savedWarehouseEntity);
       warehouseDtos.push(savedWarehouseEntity)
       console.log(savedWarehouseEntity, 'saved');
@@ -94,7 +93,7 @@ export class WarehouseService {
     try {
       const query = `select w.warehouse_id as warehouseId, w.warehouse_name as warehouseName , w.unit_id  AS unitId,u.unit_name as unitName, created_user as createdUser,updated_user as updatedUser, w.is_active AS isActive from shahi_warehouse w
       left join shahi_units u on u.id = w.unit_id`
-      const warehouseData = await AppDataSource.getRepository(WarehouseEntity).query(query)
+      const warehouseData = await this.warehouseRepo.query(query)
       return new CommonResponse(true, 2222, 'warehouse data retrieved successfully', warehouseData)
     } catch (error) {
       console.log(error)
@@ -103,7 +102,7 @@ export class WarehouseService {
 
   async getAllWarehousesByUnit(req: UnitReq): Promise<CommonResponse> {
     try {
-      const warehouseData = await AppDataSource.getRepository(WarehouseEntity).find({ where: { unitId: req.unitId } })
+      const warehouseData = await this.warehouseRepo.find({ where: { unitId: req.unitId } })
       return new CommonResponse(true, 2222, 'warehouse data retrieved successfully', warehouseData)
     } catch (error) {
       console.log(error)
@@ -117,7 +116,7 @@ export class WarehouseService {
           throw new CommonResponse(false, 10113, 'Someone updated the current Warehouse information.Refresh and try again');
         } else {
 
-          const warehouseStatus = await AppDataSource.getRepository(WarehouseEntity).update(
+          const warehouseStatus = await this.warehouseRepo.update(
             { warehouseId: req.warehouseId },
             { isActive: req.isActive, updatedUser: req.updatedUser });
 
@@ -145,7 +144,7 @@ export class WarehouseService {
     }
   }
   async getWarehouseById(warehouseId: number): Promise<WarehouseEntity> {
-    const Response = await AppDataSource.getRepository(WarehouseEntity).findOne({
+    const Response = await this.warehouseRepo.findOne({
       where: { warehouseId: warehouseId },
     });
     if (Response) {

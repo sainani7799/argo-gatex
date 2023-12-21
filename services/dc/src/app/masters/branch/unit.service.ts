@@ -7,7 +7,6 @@ import { UnitAdapter } from './adapter/branch-adapter';
 import { UnitDto } from './dto/unit.dto';
 import { UnitRepository } from './repo/unit-repo';
 import { CommonResponse } from 'libs/shared-models/src/common';
-import { AppDataSource } from '../../app-data-source';
 
 @Injectable()
 export class UnitService {
@@ -40,7 +39,7 @@ export class UnitService {
   async getAllUnits(): Promise<CommonResponse> {
 
     try {
-      const data = await AppDataSource.getRepository(UnitEntity).find();
+      const data = await this.repository.find();
       if (data.length > 0) {
         return new CommonResponse(true,22,'data retrieve successfully',data)
       }else{

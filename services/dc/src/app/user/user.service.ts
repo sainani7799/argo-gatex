@@ -4,7 +4,6 @@ import { UserEntity } from "./entity/user.entity";
 import { UserEntityRepository } from "./repository/user-repository";
 import { Repository } from 'typeorm';
 import { LoginDto, AuthResponseModel, AuthModel } from 'libs/shared-models';
-import { AppDataSource } from "../app-data-source";
 import { CreateUserDto } from "./dto/user.dto";
 import { toUserDto } from "./mapper";
 import { UserRequestDto } from "./dto/user-request.dto";
@@ -26,7 +25,7 @@ export class UserMangementService {
     console.log(dto,'DTO')
     const query = `SELECT user_name AS userName, PASSWORD,employee_id AS employeeId,unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,card_no AS cardNo FROM shahi_user u LEFT JOIN shahi_units un ON un.id = u.unit_id WHERE u.is_active = 1 AND user_name = '${dto.userName}' AND password = '${dto.password}'`;
     try {
-      const validateUser = await await AppDataSource.query(query);
+      const validateUser = await this.userRepo.query(query);
       console.log(validateUser, 'user data');
 
       if (validateUser.length > 0) {
@@ -57,7 +56,7 @@ export class UserMangementService {
   async create(userDto: CreateUserDto): Promise<CommonResponse> {
     const { userId, userName, password, employeeId ,cardNo,unitId } = userDto;
 
-    const userInDb = await AppDataSource.getRepository(UserEntity).findOne({
+    const userInDb = await this.userRepo.findOne({
       where: { cardNo: userDto.cardNo }
     });
     console.log(userInDb,'userInDb');
@@ -66,8 +65,8 @@ export class UserMangementService {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
 
-    const user: UserEntity = await AppDataSource.getRepository(UserEntity).create({ userName, password, employeeId , cardNo,unitId});
-    await AppDataSource.getRepository(UserEntity).save(user);
+    const user: UserEntity = await this.userRepo.create({ userName, password, employeeId , cardNo,unitId});
+    await this.userRepo.save(user);
     return toUserDto(user);
 }
 
@@ -90,7 +89,7 @@ export class UserMangementService {
     let query = `SELECT us.id as userId, us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
     LEFT JOIN shahi_units u ON u.id = us.unit_id`
-    const data = await AppDataSource.query(query)
+    const data = await this.userRepo.query(query)
     return (data)
 
   }
@@ -104,7 +103,7 @@ export class UserMangementService {
           throw new CommonResponse(false, 10113, 'Someone updated the current user information.Refresh and try again');
         } else {
 
-          const userStatus = await AppDataSource.getRepository(UserEntity).update(
+          const userStatus = await this.userRepo.update(
             { userId: req.userId },
             { isActive: req.isActive });
           if (userExists.isActive) {
@@ -132,7 +131,7 @@ export class UserMangementService {
   }
 
 async getUsersById(userId: number): Promise<UserEntity> {
-    const Response = await AppDataSource.getRepository(UserEntity).findOne({
+    const Response = await this.userRepo.findOne({
         where: { userId: userId },
         
     });console.log(userId,'userId....')

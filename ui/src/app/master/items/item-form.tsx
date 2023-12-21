@@ -37,7 +37,7 @@ const ItemForm = (props:ItemsFormProps) => {
             if (res.status) {
                 onReset();
                 message.success('Created Successfully')
-                navigate('/item-view')
+                navigate('/item-grid')
             } else {
                 console.log(res.internalMessage, "**********");
                 message.error('Not Created')

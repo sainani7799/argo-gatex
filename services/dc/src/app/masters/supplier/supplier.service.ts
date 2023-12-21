@@ -3,20 +3,19 @@ import { SupplierEntityRepository } from "./repository/supplier.repository";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { CreateSupplierDto } from "./dto/supplier.dto";
 import { SupplierEntity } from "./entity/supplier.entity";
-import { AppDataSource } from "../../app-data-source";
 import { SupplierAdapter } from "./dto/buyer.adapter";
 
 @Injectable()
 export class SupplierService {
   constructor(
-    private SupplierRepo: SupplierEntityRepository,
+    private supplierRepo: SupplierEntityRepository,
     private supplierAdapter: SupplierAdapter,
 
   ) { }
 
 
   async getSupplierWithoutRelations(supplierCode: string): Promise<SupplierEntity> {
-    const supplierResponse = await AppDataSource.getRepository(SupplierEntity).findOne({
+    const supplierResponse = await this.supplierRepo.findOne({
       where: { supplierCode },
     });
     if (supplierResponse) {
@@ -43,7 +42,7 @@ export class SupplierService {
         }
       }
       else {
-        const certificatePrevious = await AppDataSource.getRepository(SupplierEntity).findOne({ where: { supplierCode: supplierDto.supplierCode } })
+        const certificatePrevious = await this.supplierRepo.findOne({ where: { supplierCode: supplierDto.supplierCode } })
         previousValue = (certificatePrevious.supplierCode)
         const supplierEntity = await this.getSupplierWithoutRelations(supplierDto.supplierCode);
         if (supplierEntity) {
@@ -55,7 +54,7 @@ export class SupplierService {
       const convertedSupplierEntity: SupplierEntity = this.supplierAdapter.convertDtoToEntity(supplierDto, isUpdate);
 
       console.log(convertedSupplierEntity);
-      const savedSupplierEntity: SupplierEntity = await AppDataSource.getRepository(SupplierEntity).save(convertedSupplierEntity);
+      const savedSupplierEntity: SupplierEntity = await this.supplierRepo.save(convertedSupplierEntity);
       const savedHeadDto: CreateSupplierDto = this.supplierAdapter.convertEntityToDto(savedSupplierEntity);
       suppliersDtos.push(savedSupplierEntity)
       console.log(savedSupplierEntity, 'saved');
@@ -77,7 +76,7 @@ export class SupplierService {
 
   async getAllSuppliers(): Promise<CommonResponse> {
     try {
-      const supplierData = await AppDataSource.getRepository(SupplierEntity).find()
+      const supplierData = await this.supplierRepo.find()
       return new CommonResponse(true, 2222, 'warehouse data retrieved successfully', supplierData)
     } catch (error) {
       console.log(error)
@@ -92,7 +91,7 @@ export class SupplierService {
                 throw new CommonResponse(false, 10113, 'Someone updated the current Supplier information.Refresh and try again');
             } else {
 
-                const supplierStatus = await AppDataSource.getRepository(SupplierEntity).update(
+                const supplierStatus = await this.supplierRepo.update(
                     { supplierId: req.supplierId },
                     { isActive: req.isActive, updatedUser: req.updatedUser });
 
@@ -121,7 +120,7 @@ export class SupplierService {
 }
 
 async getSuppliersById(supplierId: number): Promise<SupplierEntity> {
-    const Response = await AppDataSource.getRepository(SupplierEntity).findOne({
+    const Response = await this.supplierRepo.findOne({
         where: { supplierId: supplierId },
     });
     if (Response) {

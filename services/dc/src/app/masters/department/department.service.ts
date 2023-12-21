@@ -1,9 +1,3 @@
-
-
-
- 
-
-
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,7 +5,6 @@ import { DepartmentEntity } from './entity/department.entity';
 import { DepartmentDto } from './dto/department.dto';
 import { DepartmentAdapter } from './adapter/department-adapter';
 import { DepartmentRepository } from './repo/department-repo';
-import { AppDataSource } from '../../app-data-source';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { SectionsEntity } from './entity/section.entity';
 import { DepartmentIdReq } from 'libs/shared-models';
@@ -42,7 +35,7 @@ export class DepartmentService {
   }
 
   async getAllDepartments(): Promise<CommonResponse> {
-    const data = await AppDataSource.getRepository(DepartmentEntity).find();
+    const data = await this.repository.find();
     if (data.length > 0) {
       return new CommonResponse(true , 3344,'data retrieve successfully',data)
     }else{
@@ -62,7 +55,7 @@ export class DepartmentService {
       if (Req.departmentId) {
         query += ` AND department_id = '${Req.departmentId}'`; 
       }
-      const Sections = await AppDataSource.getRepository(SectionsEntity).query(query);
+      const Sections = await this.repository.query(query);
       return new CommonResponse(true, 11, 'Data retrieved', Sections);
     } catch (err) {
       throw err;

@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { ItemEntityRepository } from "./repository/item.repository";
 import { CreateItemDto } from "./dto/item.dto";
 import { CommonResponse } from "libs/shared-models/src/common";
-import { AppDataSource } from "../../app-data-source";
 import { ItemEntity } from "./entity/item.entity";
 import { itemCode, itemId } from "libs/shared-models";
 import { Raw } from "typeorm";
@@ -19,7 +18,7 @@ export class ItemService {
 
 
     async getItemWithoutRelations(itemCode: string): Promise<ItemEntity> {
-        const itemResponse = await AppDataSource.getRepository(ItemEntity).findOne({
+        const itemResponse = await this.itemRepo.findOne({
             where: { itemCode: Raw(alias => `item_code = '${itemCode}'`) },
         });
         if (itemResponse) {
@@ -46,7 +45,7 @@ export class ItemService {
                 }
             }
             else {
-                const certificatePrevious = await AppDataSource.getRepository(ItemEntity).findOne({ where: { itemCode: itemDto.itemCode } })
+                const certificatePrevious = await this.itemRepo.findOne({ where: { itemCode: itemDto.itemCode } })
                 previousValue = (certificatePrevious.itemCode)
                 const addressEntity = await this.getItemWithoutRelations(itemDto.itemCode);
                 if (addressEntity) {
@@ -58,7 +57,7 @@ export class ItemService {
             const convertedAddressEntity: ItemEntity = this.itemsAdapter.convertDtoToEntity(itemDto, isUpdate);
 
             console.log(convertedAddressEntity);
-            const savedItemsEntity: ItemEntity = await AppDataSource.getRepository(ItemEntity).save(convertedAddressEntity);
+            const savedItemsEntity: ItemEntity = await this.itemRepo.save(convertedAddressEntity);
             const savedHeadDto: CreateItemDto = this.itemsAdapter.convertEntityToDto(savedItemsEntity);
             itemsDtos.push(savedItemsEntity)
             console.log(savedItemsEntity, 'saved');
@@ -87,7 +86,7 @@ export class ItemService {
                     throw new CommonResponse(false, 10113, 'Someone updated the current Item information.Refresh and try again');
                 } else {
 
-                    const itemStatus = await AppDataSource.getRepository(ItemEntity).update(
+                    const itemStatus = await this.itemRepo.update(
                         { itemId: req.itemId },
                         { isActive: req.isActive, updatedUser: req.updatedUser });
 
@@ -117,7 +116,7 @@ export class ItemService {
 
     async getAllItems(): Promise<CommonResponse> {
         try {
-            const data = await AppDataSource.getRepository(ItemEntity).find()
+            const data = await this.itemRepo.find()
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         } catch (error) {
             console.log(error)
@@ -126,7 +125,7 @@ export class ItemService {
     async getAllItemsByCode(req: itemCode): Promise<CommonResponse> {
         try {
             const query = `select item_id AS itemId, item_code AS itemCode ,item_name AS itemName,description ,uom FROM shahi_items where item_code = '${req.itemCode}'`
-            const data = await AppDataSource.getRepository(ItemEntity).query(query)
+            const data = await this.itemRepo.query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         } catch (error) {
             console.log(error)
@@ -135,7 +134,7 @@ export class ItemService {
 
     async getItemsById(itemId: number): Promise<ItemEntity> {
         //  console.log(employeeId);
-        const Response = await AppDataSource.getRepository(ItemEntity).findOne({
+        const Response = await this.itemRepo.findOne({
             where: { itemId: itemId },
         });
         // console.log(employeeResponse);

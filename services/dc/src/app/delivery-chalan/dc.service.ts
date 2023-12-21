@@ -3,7 +3,6 @@ import { DcEntityRepository } from "./repository/dc-repository";
 import { DcController } from "./dc.controller";
 import { DcDto } from "./dto/dc.dto";
 import { CommonResponse } from "libs/shared-models/src/common";
-import { AppDataSource } from "../app-data-source";
 import { DcEntity } from "./entity/dc.entity";
 import { DcAdapter } from "./adapter/dc.adapter";
 import { error } from "console";
@@ -19,7 +18,7 @@ export class DcService {
 
     async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
         try {
-            const slNo = await AppDataSource.getRepository(DcEntity).count()
+            const slNo = await this.userRepo.count()
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
             const hours = String(currentDate.getHours()).padStart(2, '0');
@@ -28,7 +27,7 @@ export class DcService {
             req.dcNumber = dcNum;
             const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(req, isUpdate);
             console.log(convertedDcEntity)
-            const savedDcEntity: DcEntity = await AppDataSource.getRepository(DcEntity).save(convertedDcEntity);
+            const savedDcEntity: DcEntity = await this.userRepo.save(convertedDcEntity);
             const savedDcDto: DcDto = this.dcAdapter.convertEntityToDto(savedDcEntity);
             if (savedDcDto) {
                 const response = new CommonResponse(true, 1, isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully', savedDcDto);
@@ -43,9 +42,9 @@ export class DcService {
 
     async updateDc(dto: AssignReq): Promise<CommonResponse> {
         console.log(dto,'updateDto')
-        const dcRecord = await AppDataSource.getRepository(DcEntity).findOne({where :{dcId:dto.dcId }})
+        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
         if(dcRecord){
-           const updateData = await AppDataSource.getRepository(DcEntity).update({dcId:dto.dcId }, {isAssignable: dto.isAssignable,emailId:dto.emailId,assignBy:dto.assignBy,status:dto.status})
+           const updateData = await this.userRepo.update({dcId:dto.dcId }, {isAssignable: dto.isAssignable,emailId:dto.emailId,assignBy:dto.assignBy,status:dto.status})
             return new CommonResponse(true,333,'update successfully',updateData)
         }else{
             return new CommonResponse(false,6666,'something went wrong')
@@ -54,9 +53,9 @@ export class DcService {
 
     async acceptDc(dto: AcceptReq): Promise<CommonResponse> {
         console.log(dto,'acceptDcReq')
-        const dcRecord = await AppDataSource.getRepository(DcEntity).findOne({where :{dcId:dto.dcId }})
+        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
         if(dcRecord){
-           const acceptData = await AppDataSource.getRepository(DcEntity).update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,acceptedUser:dto.acceptedUser,status:dto.status})
+           const acceptData = await this.userRepo.update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,acceptedUser:dto.acceptedUser,status:dto.status})
             return new CommonResponse(true,333,'update successfully',acceptData)
         }else{
             return new CommonResponse(false,6666,'something went wrong')
@@ -65,9 +64,9 @@ export class DcService {
 
     async rejectDc(dto: RejectDcReq): Promise<CommonResponse> {
         console.log(dto,'acceptDcReq')
-        const dcRecord = await AppDataSource.getRepository(DcEntity).findOne({where :{dcId:dto.dcId }})
+        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
         if(dcRecord){
-           const acceptData = await AppDataSource.getRepository(DcEntity).update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,status:dto.status})
+           const acceptData = await this.userRepo.update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,status:dto.status})
             return new CommonResponse(true,333,'update successfully',acceptData)
         }else{
             return new CommonResponse(false,6666,'something went wrong')
@@ -77,9 +76,9 @@ export class DcService {
 
     async receivedDc(dto: ReceivedDcReq): Promise<CommonResponse> {
         console.log(dto,'ReceivedDcReq')
-        const dcRecord = await AppDataSource.getRepository(DcEntity).findOne({where :{dcId:dto.dcId }})
+        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
         if(dcRecord){
-           const updateData = await AppDataSource.getRepository(DcEntity).update({dcId:dto.dcId }, { receivedDc :dto.receivedDc,receivedUser :dto.receivedUser,status:dto.status})
+           const updateData = await this.userRepo.update({dcId:dto.dcId }, { receivedDc :dto.receivedDc,receivedUser :dto.receivedUser,status:dto.status})
             return new CommonResponse(true,333,'update successfully',updateData)
         }else{
             return new CommonResponse(false,6666,'something went wrong')
@@ -102,7 +101,7 @@ export class DcService {
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
             WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}` ;
-            const data = await AppDataSource.query(query)
+            const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {
             console.log(error)
@@ -126,7 +125,7 @@ export class DcService {
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
             WHERE to_addresser ='unit' AND addresser_name_id = ${req.unitId}` ;
-            const data = await AppDataSource.query(query)
+            const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {
             console.log(error)
@@ -153,7 +152,7 @@ export class DcService {
             LEFT JOIN shahi_dc_items dci ON dci.dc_id = dc.dc_id
             LEFT JOIN shahi_approved_users sa ON sa.approved_user_name = dc.assign_by
             WHERE to_addresser IN ('unit', 'supplier') AND dc.dc_id = ${req.dcId}`;
-            const dcData = await AppDataSource.query(query)
+            const dcData = await this.userRepo.query(query)
             return await new CommonResponse(true, 333, 'DC DATA Retrieved Successfully', dcData)
 
         } catch (error) {

@@ -10,7 +10,6 @@ import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object
 import { ReportingRequest } from './dto/reporting-manager.dto';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { CreateEmployeeDto, GetAllEmployeeResponse } from 'libs/shared-models';
-import { AppDataSource } from '../../app-data-source';
 
 
 @Injectable()
@@ -32,7 +31,7 @@ export class EmployeeService {
       let internalMessage: string;
 
       if (createDto.employeeId) {
-        const findRecord = await AppDataSource.getRepository(EmployeeEntity).findOne({ where: { employeeId: createDto.employeeId } });
+        const findRecord = await this.employeeRepo.findOne({ where: { employeeId: createDto.employeeId } });
 
         if (findRecord && findRecord.versionFlag !== createDto.versionFlag) {
           // Handle versionFlag mismatch if necessary
@@ -43,7 +42,7 @@ export class EmployeeService {
         internalMessage = 'Created Successfully';
       }
 
-      const savedData = await AppDataSource.getRepository(EmployeeEntity).save(save);
+      const savedData = await this.employeeRepo.save(save);
 
       console.log('Saved Data:', savedData);
 
@@ -85,7 +84,7 @@ export class EmployeeService {
 
   async getAllEmployees(): Promise<CommonResponse> {
     try {
-      const employeeData = await AppDataSource.getRepository(EmployeeEntity).query(`select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
+      const employeeData = await this.employeeRepo.query(`select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
       e.gender,e.date_of_birth AS dateOfBirth,e.address ,d.department_name AS departmentName,s.section_name AS section, de.designation,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unit from shahi_employees e
       left join shahi_department d on d.id = e.department 
       left join shahi_designation de on de.designation_id = e.designation

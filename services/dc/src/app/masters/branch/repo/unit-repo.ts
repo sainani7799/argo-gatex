@@ -4,5 +4,7 @@ import { UnitEntity } from "../entity/unit.entity";
 
 @Injectable()
 export class UnitRepository extends Repository<UnitEntity>{
-  
+    constructor(private dataSource: DataSource) {
+        super(UnitEntity, dataSource.createEntityManager());
+    }
 }

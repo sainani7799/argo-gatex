@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { AddressEntityRepository } from "./repository/address.repository";
 import { CreateAddressDto } from "./dto/address.dto";
 import { CommonResponse } from "libs/shared-models/src/common";
-import { AppDataSource } from "../../app-data-source";
 import { AddressEntity } from "./entity/address.entity";
 import { Raw } from "typeorm";
 import { AddressAdapter } from "./dto/address.adapter";
@@ -21,14 +20,14 @@ export class AddressService {
   //     const address = Array.isArray(dto) ? dto : [dto];
   //     if(!isUpdate){
   //       for( const obj of address){
-  //         const existingAddress = await AppDataSource.getRepository(AddressEntity).findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
+  //         const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
   //         if(existingAddress){
   //             return await new CommonResponse(false,444,'already address created for this name',existingAddress)
   //         }
   //       }
   //     }else{
   //       for( const obj of address){
-  //         const existingAddress = await AppDataSource.getRepository(AddressEntity).findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
+  //         const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
   //         if(existingAddress){
   //             return await new CommonResponse(false,444,'already address created for this name',existingAddress)
   //         }else{
@@ -45,14 +44,14 @@ export class AddressService {
   //                 entity.state = obj.state;
   //                 entity.country = obj.country;
   //                 entity.createdUser = obj.createdUser;
-  //                 const save = await AppDataSource.getRepository(AddressEntity).save(entity)
+  //                 const save = await this.addressRepo.save(entity)
   //                 return new CommonResponse(true,555,'create successfully ',save)
   //             }
   //         }
   //     }
   //     }
   //       for( const obj of address){
-  //           const existingAddress = await AppDataSource.getRepository(AddressEntity).findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
+  //           const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
   //           if(existingAddress){
   //               return await new CommonResponse(false,444,'already address created for this name',existingAddress)
   //           }else{
@@ -69,7 +68,7 @@ export class AddressService {
   //                   entity.state = obj.state;
   //                   entity.country = obj.country;
   //                   entity.createdUser = obj.createdUser;
-  //                   const save = await AppDataSource.getRepository(AddressEntity).save(entity)
+  //                   const save = await this.addressRepo.save(entity)
   //                   return new CommonResponse(true,555,'create successfully ',save)
   //               }
   //           }
@@ -80,7 +79,7 @@ export class AddressService {
   // }
 
   async getAddressWithoutRelations(addresserNameId: number): Promise<AddressEntity> {
-    const addressResponse = await AppDataSource.getRepository(AddressEntity).findOne({
+    const addressResponse = await this.addressRepo.findOne({
       where: { addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`) },
     });
     if (addressResponse) {
@@ -107,7 +106,7 @@ export class AddressService {
         }
       }
       else {
-        const certificatePrevious = await AppDataSource.getRepository(AddressEntity).findOne({ where: { addressId: addressDto.addressId } })
+        const certificatePrevious = await this.addressRepo.findOne({ where: { addressId: addressDto.addressId } })
         previousValue = (certificatePrevious.addresserNameId)
         const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
         if (addressEntity) {
@@ -119,7 +118,7 @@ export class AddressService {
       const convertedAddressEntity: AddressEntity = this.addressAdapter.convertDtoToEntity(addressDto, isUpdate);
 
       console.log(convertedAddressEntity);
-      const savedAddressEntity: AddressEntity = await AppDataSource.getRepository(AddressEntity).save(convertedAddressEntity);
+      const savedAddressEntity: AddressEntity = await this.addressRepo.save(convertedAddressEntity);
       const savedHeadDto: CreateAddressDto = this.addressAdapter.convertEntityToDto(savedAddressEntity);
       addressDtos.push(savedAddressEntity)
       console.log(savedAddressEntity, 'saved');
@@ -147,7 +146,7 @@ export class AddressService {
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
       LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
       WHERE addresser IN ('unit', 'supplier')`;
-      const data = await AppDataSource.query(query)
+      const data = await this.addressRepo.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
       console.log(error)
@@ -162,7 +161,7 @@ export class AddressService {
             FROM shahi_address a
             LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
             WHERE addresser = 'unit' AND a.addresser_name_id = ${req.unitId}`;
-      const data = await AppDataSource.query(query)
+      const data = await this.addressRepo.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
       console.log(error)
@@ -175,7 +174,7 @@ export class AddressService {
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
       LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
       WHERE addresser = '${req.addresser}' AND a.addresser_name_id = '${req.addresserNameId}'`;
-      const data = await AppDataSource.query(query)
+      const data = await this.addressRepo.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
       console.log(error)
@@ -189,7 +188,7 @@ export class AddressService {
           throw new CommonResponse(false, 10113, 'Someone updated the current Address information.Refresh and try again');
         } else {
 
-          const addressStatus = await AppDataSource.getRepository(AddressEntity).update(
+          const addressStatus = await this.addressRepo.update(
             { addressId: req.addressId },
             { isActive: req.isActive, updatedUser: req.updatedUser });
 
@@ -217,7 +216,7 @@ export class AddressService {
     }
   }
   async getAddressById(addressId: number): Promise<AddressEntity> {
-    const Response = await AppDataSource.getRepository(AddressEntity).findOne({
+    const Response = await this.addressRepo.findOne({
       where: { addressId: addressId },
     });
     if (Response) {

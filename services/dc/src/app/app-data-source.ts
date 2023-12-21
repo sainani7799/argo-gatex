@@ -1,4 +1,4 @@
-import { DataSource } from "typeorm";
+import { DataSource, DataSourceOptions } from "typeorm";
 import { UserEntity } from "./user/entity/user.entity";
 import { DesignationEntity } from "./masters/designation/entity/designation.entity";
 import { EmployeeEntity } from "./masters/employees/entity/employee.entity";
@@ -12,8 +12,9 @@ import { AddressEntity } from "./masters/address/entity/address.entity";
 import { ApprovedUserEntity } from "./masters/approved/entity/appUser.entity";
 import { DcEntity } from "./delivery-chalan/entity/dc.entity";
 import { DcItemEntity } from "./delivery-chalan/entity/dc-items.entity";
+import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm";
 
-export const AppDataSource = new DataSource({
+export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
     host: '172.20.50.169',
     username: 'internal_apps',
@@ -22,6 +23,19 @@ export const AppDataSource = new DataSource({
     synchronize: false,
     logging:true,
     entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity]
-   
-})
+}
+
+
+
+export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
+    useFactory: async (): Promise<TypeOrmModuleOptions> => {
+      return {
+        ...typeOrmConfig,
+        synchronize: false,
+        logging: false,
+        autoLoadEntities: true
+      }
+    },
+
+}
 
