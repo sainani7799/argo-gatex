@@ -124,7 +124,7 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            WHERE to_addresser ='unit' AND addresser_name_id = ${req.unitId}` ;
+            WHERE dc.is_accepted = 'YES' AND to_addresser ='unit' AND addresser_name_id = ${req.unitId}` ;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {
