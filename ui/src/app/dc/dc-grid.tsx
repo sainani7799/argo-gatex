@@ -146,7 +146,7 @@ const DCGrid = () => {
             >View Details of GatePass</a
           >
           <a
-          href="http://172.20.50.169/del-chalan_app/#/dc-mail/${form.getFieldValue('dcId')}"
+          href="http://172.20.50.169/del-chalan_app/#/dc-email/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -337,7 +337,7 @@ const DCGrid = () => {
 
                     </Tooltip>
                     {rowData.isDcAssign === 'NO' ? (
-                        <Tooltip placement='top' title="IS DC Received">
+                        <Tooltip placement='top' title="ASSIGN DC TO USER">
                             <RightOutlined
                                 onClick={() => {
                                     setDrawerVisible(true);

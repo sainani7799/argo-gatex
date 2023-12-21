@@ -98,7 +98,7 @@ const AppRoutes = () => {
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/dc-email-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
-                <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
+                <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
                 <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
             </Routes>
         </Router>
