@@ -35,6 +35,7 @@ const DCForm = () => {
     const [itemIndexVal, setItemIndexVal] = useState<any>(0);
     const [itemTableVisible, setItemTableVisible] = useState<boolean>(false);
     const [employee, setEmployee] = useState<any>([]);
+    const [responseData, setResponseData] = useState<any>([]);
     // console.log(authdata)
     const itemService = new ItemService()
     const [form] = Form.useForm();
@@ -42,11 +43,15 @@ const DCForm = () => {
     const [page, setPage] = React.useState(1);
     const [itemData, setItemData] = useState<any[]>([]);
     const [selectedItem, setSelectedItem] = useState(null);
+    const [isPopupVisible, setIsPopupVisible] = useState(false);
+
     const navigate = useNavigate()
     let tableData: any[] = [];
 
- 
 
+    const handlePopupClose = () => {
+        setIsPopupVisible(false);
+    };
 
     const saveData = (data: any) => {
         console.log(data.unitOrSupplier);
@@ -83,6 +88,19 @@ const DCForm = () => {
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
     }, [])
+    useEffect(() => {
+        getGatePassData();
+    }, []);
+
+    const getGatePassData = () => {
+        const unitValue = authdata.unitId;
+        const req = { unitId: unitValue };
+        dcService.getAllGatePass(req).then((res: any) => {
+            if (res.status) {
+                setResponseData(res.data);
+            }
+        });
+    };
     const getWarehouses = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
@@ -207,11 +225,6 @@ const DCForm = () => {
     const returnOnChange = (e: RadioChangeEvent) => {
         setReturnaValue(e.target.value);
     };
-
-
-
-
-
 
     const setEditForm = (rowData: any, index: any) => {
         console.log(rowData);
@@ -352,12 +365,19 @@ const DCForm = () => {
             if (itemIndexVal !== undefined) {
                 console.log(itemIndexVal)
                 itemTableData[itemIndexVal] = values;
-
                 tableData = [...itemTableData]
                 setItemIndexVal(itemIndexVal + 1)
             } else {
                 tableData = [...itemTableData, values]
             }
+            const sumOfAmounts = tableData.reduce((sum, item) => {
+                // Assuming 'amount' is the field name
+                const amount = parseFloat(item.amount) || 0;
+                return sum + amount;
+            }, 0);
+            form.setFieldsValue({
+                value: isNaN(Number(sumOfAmounts)) ? 0 : Number(sumOfAmounts),
+            });
             setItemTableData(tableData)
             itemForm.resetFields()
             setItemTableVisible(true)
@@ -366,7 +386,6 @@ const DCForm = () => {
             message.error('Please fill all required fields')
         })
     }
-
 
     const calculateAmount = () => {
         const qty = itemForm.getFieldValue('qty');
@@ -380,18 +399,23 @@ const DCForm = () => {
 
     const onSubmit = () => {
         form.validateFields().then(() => {
-            const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), form.getFieldValue('status'), form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
-            console.log(req)
-            dcService.createDc(req).then(res => {
-                if (res.status) {
-                    navigate('/dc-view')
-                    message.success(res.internalMessage);
-                }
-                else {
-                    message.error(res.internalMessage);
-                }
-            })
-            // onReset()
+            const value = form.getFieldValue('value');
+            if (parseFloat(value) < 50000) {
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), form.getFieldValue('status'), form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
+                console.log(req)
+                dcService.createDc(req).then(res => {
+                    if (res.status) {
+                        navigate('/dc-view')
+                        message.success(res.internalMessage);
+                        getGatePassData()
+                    }
+                    else {
+                        message.error(res.internalMessage);
+                    }
+                })
+            } else {
+                message.error(`DC is can't created why because DC value more then 50,000`);
+            }
         }).catch(() => {
             message.error('Please fill all fields')
         })
@@ -541,8 +565,9 @@ const DCForm = () => {
                             ]}>
                                 <Input placeholder="Enter Purpose" />
                             </Form.Item>
-                            <Form.Item name="value" label="Value" >
-                                <Input placeholder="Enter Value" />
+                            <Form.Item name="value" label="Value">
+
+                                <Input placeholder="Enter Value" disabled />
                             </Form.Item>
                             <Form.Item name="status" label="Status" initialValue={StatusEnum.OPEN}>
                                 <Select

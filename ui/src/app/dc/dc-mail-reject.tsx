@@ -70,12 +70,12 @@ export const DcRejectMail = (props: DcRejectMailProps) => {
                     // Add more styles as needed
                 }}>
                     THANK YOU FOR UPDATING
-                </h1>
-                <img
+                </h1 >
+                {/* <img
                     src={image}
                     alt="cancelled.jpg"
                     style={{ width: '100%', height: 'auto' }}
-                />
+                /> */}
             </div>
         </div>
     )

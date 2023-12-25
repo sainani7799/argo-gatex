@@ -6,6 +6,7 @@
   }
   .ta-th{
     background-color: antiquewhite;
+    font-family: 'Times New Roman', Times, serif;
   }
   .ta-b {
     /* border: 1px solid black; */
@@ -13,24 +14,39 @@
     /* padding: 5px; */
     text-align: left;
     border-bottom: 1px solid black;
+    font-family: 'Times New Roman', Times, serif;
   }
   .ta-b td {
     border-bottom: 1px solid black;
+    font-family: 'Times New Roman', Times, serif;
   }
   .t1 {
     padding: 5px;
     text-align: left;
+    font-family: 'Times New Roman', Times, serif;
   }
   .stylesInfo {
-    font-family: monospace;
+    font-family: 'Times New Roman', Times, serif;
   }
+  .issued-to {
+    display: flex;
+    margin-top: "0px";
+    align-items: flex-start;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.issued-to b {
+    margin-right: 10px; /* Adjust the margin as needed */
+    font-family: 'Times New Roman', Times, serif;
+}
   @media print {
     @page {
       size: A4 portrait;
       margin: 0mm, 0mm, 0mm, 0mm;
+      
     }
     .stylesInfo {
-      font-family: monospace;
+      font-family: 'Times New Roman', Times, serif;
       font-size: 7pt;
     }
     body {
@@ -41,11 +57,19 @@
       float: 10px;
       position: static;
       overflow: visible;
+     
+    }
+    .ui-element-class {
+      display: none;
+    }
+  
+    /* Exclude current time element from print */
+    .current-time-class {
+      display: none;
     }
 }
-
-@media print {
-  .qr-code {
-    display: block !important;
-  }
+#printme{
+  font-family: 'Times New Roman', Times, serif;
 }
+
+

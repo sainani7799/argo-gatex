@@ -202,7 +202,7 @@ export const DcDetailsView = (props: DcViewProps) => {
             className='panel_button'
             onClick={() => navigate('/dc-view')}
           >
-            DC View
+            BACK
           </Button>
         </span>
       } >
@@ -278,7 +278,7 @@ export const DcDetailsView = (props: DcViewProps) => {
               <Modal
                 className='print-docket-modal'
                 key={'modal' + Date.now()}
-                width={'100%'}
+                width={'75%'}
                 style={{ top: 30, alignContent: 'right' }}
                 visible={isModalVisible}
                 title={<React.Fragment>

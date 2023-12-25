@@ -21,9 +21,10 @@ export class DcService {
             const slNo = await this.userRepo.count()
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
+            const lastTwoDigitsOfYear = String(currentYear).slice(-2);
             const hours = String(currentDate.getHours()).padStart(2, '0');
             const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            const dcNum = `GP${currentYear}${hours}${minutes}${Number(Number(slNo))}`;
+            const dcNum = `GP${lastTwoDigitsOfYear}${hours}${minutes}${Number(Number(slNo))}`;
             req.dcNumber = dcNum;
             const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(req, isUpdate);
             console.log(convertedDcEntity)

@@ -69,7 +69,7 @@ export const DcMail = (props: DcMailProps) => {
                     textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)', // Add a subtle text shadow
                     // Add more styles as needed
                 }}>
-                    THANK YOU 
+                    GATE PASS "{data[0]?.dcNumber}" APPROVED, THANK YOU
                 </h1>
                 <img
                     src={image}

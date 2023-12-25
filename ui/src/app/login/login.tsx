@@ -48,7 +48,7 @@ export default function Login() {
                     <div style={{ textAlign: 'center' }}>
                         <div style={{ textAlign: 'center' }}>
                             <h2 style={{ fontFamily: 'Lato, sans-serif', color: colorPrimary, fontSize: '2em', margin: 0 }}>
-                                Delivery Challan
+                            GATE PASS DC
                             </h2>
                         </div>
 
