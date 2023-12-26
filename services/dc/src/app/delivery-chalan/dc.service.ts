@@ -22,9 +22,10 @@ export class DcService {
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
             const lastTwoDigitsOfYear = String(currentYear).slice(-2);
-            const hours = String(currentDate.getHours()).padStart(2, '0');
-            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-            const dcNum = `GP${lastTwoDigitsOfYear}${hours}${minutes}${Number(Number(slNo))}`;
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const returnablePrefix = req.returnable === 'Y' ? 'GPR' : 'GP';
+            const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${Number(Number(slNo))}`;
             req.dcNumber = dcNum;
             const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(req, isUpdate);
             console.log(convertedDcEntity)
@@ -42,50 +43,50 @@ export class DcService {
     }
 
     async updateDc(dto: AssignReq): Promise<CommonResponse> {
-        console.log(dto,'updateDto')
-        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
-        if(dcRecord){
-           const updateData = await this.userRepo.update({dcId:dto.dcId }, {isAssignable: dto.isAssignable,emailId:dto.emailId,assignBy:dto.assignBy,status:dto.status})
-            return new CommonResponse(true,333,'update successfully',updateData)
-        }else{
-            return new CommonResponse(false,6666,'something went wrong')
+        console.log(dto, 'updateDto')
+        const dcRecord = await this.userRepo.findOne({ where: { dcId: dto.dcId } })
+        if (dcRecord) {
+            const updateData = await this.userRepo.update({ dcId: dto.dcId }, { isAssignable: dto.isAssignable, emailId: dto.emailId, assignBy: dto.assignBy, status: dto.status })
+            return new CommonResponse(true, 333, 'update successfully', updateData)
+        } else {
+            return new CommonResponse(false, 6666, 'something went wrong')
         }
     }
 
     async acceptDc(dto: AcceptReq): Promise<CommonResponse> {
-        console.log(dto,'acceptDcReq')
-        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
-        if(dcRecord){
-           const acceptData = await this.userRepo.update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,acceptedUser:dto.acceptedUser,status:dto.status})
-            return new CommonResponse(true,333,'update successfully',acceptData)
-        }else{
-            return new CommonResponse(false,6666,'something went wrong')
+        console.log(dto, 'acceptDcReq')
+        const dcRecord = await this.userRepo.findOne({ where: { dcId: dto.dcId } })
+        if (dcRecord) {
+            const acceptData = await this.userRepo.update({ dcId: dto.dcId }, { isAccepted: dto.isAccepted, acceptedUser: dto.acceptedUser, status: dto.status })
+            return new CommonResponse(true, 333, 'update successfully', acceptData)
+        } else {
+            return new CommonResponse(false, 6666, 'something went wrong')
         }
     }
 
     async rejectDc(dto: RejectDcReq): Promise<CommonResponse> {
-        console.log(dto,'acceptDcReq')
-        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
-        if(dcRecord){
-           const acceptData = await this.userRepo.update({dcId:dto.dcId }, {isAccepted: dto.isAccepted,status:dto.status})
-            return new CommonResponse(true,333,'update successfully',acceptData)
-        }else{
-            return new CommonResponse(false,6666,'something went wrong')
+        console.log(dto, 'acceptDcReq')
+        const dcRecord = await this.userRepo.findOne({ where: { dcId: dto.dcId } })
+        if (dcRecord) {
+            const acceptData = await this.userRepo.update({ dcId: dto.dcId }, { isAccepted: dto.isAccepted, status: dto.status })
+            return new CommonResponse(true, 333, 'update successfully', acceptData)
+        } else {
+            return new CommonResponse(false, 6666, 'something went wrong')
         }
     }
 
 
     async receivedDc(dto: ReceivedDcReq): Promise<CommonResponse> {
-        console.log(dto,'ReceivedDcReq')
-        const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
-        if(dcRecord){
-           const updateData = await this.userRepo.update({dcId:dto.dcId }, { receivedDc :dto.receivedDc,receivedUser :dto.receivedUser,status:dto.status,receivedDate:dto.receivedDate})
-            return new CommonResponse(true,333,'update successfully',updateData)
-        }else{
-            return new CommonResponse(false,6666,'something went wrong')
+        console.log(dto, 'ReceivedDcReq')
+        const dcRecord = await this.userRepo.findOne({ where: { dcId: dto.dcId } })
+        if (dcRecord) {
+            const updateData = await this.userRepo.update({ dcId: dto.dcId }, { receivedDc: dto.receivedDc, receivedUser: dto.receivedUser, status: dto.status, receivedDate: dto.receivedDate })
+            return new CommonResponse(true, 333, 'update successfully', updateData)
+        } else {
+            return new CommonResponse(false, 6666, 'something went wrong')
         }
     }
-    async getAllGatePass(req:UnitReq): Promise<CommonResponse> {
+    async getAllGatePass(req: UnitReq): Promise<CommonResponse> {
         try {
             const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId, w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
@@ -100,7 +101,7 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}` ;
+            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}`;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {
@@ -108,7 +109,7 @@ export class DcService {
         }
     }
 
-    async getIntransAndCompleteGatePass(req:UnitReq): Promise<CommonResponse> {
+    async getIntransAndCompleteGatePass(req: UnitReq): Promise<CommonResponse> {
         try {
             const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
             w.warehouse_name AS warehouseName,
@@ -124,7 +125,7 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            WHERE dc.is_accepted = 'YES' AND to_addresser ='unit' AND addresser_name_id = ${req.unitId}` ;
+            WHERE dc.is_accepted = 'YES' AND to_addresser ='unit' AND addresser_name_id = ${req.unitId}`;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {

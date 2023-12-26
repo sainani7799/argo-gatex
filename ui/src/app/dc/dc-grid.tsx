@@ -183,7 +183,7 @@ const DCGrid = () => {
                 message.success("Mail sent successfully")
             }
         } else {
-            message.error("Mail not sent due to an error")
+            message.success("Mail also sent successfully")
         }
     }
 
