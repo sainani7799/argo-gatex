@@ -44,7 +44,7 @@ export const DcRejectMail = (props: DcRejectMailProps) => {
             dcId: Number(id),
             isAccepted: AcceptableEnum.REJECT,
             acceptedUser: data[0]?.assign_by,
-            status: StatusEnum.CLOSE,
+            status: StatusEnum.CLOSED,
         };
         // console.log(dto);
         service.rejectDc(dto).then(res => {

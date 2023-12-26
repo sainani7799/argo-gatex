@@ -79,7 +79,7 @@ export class DcService {
         console.log(dto,'ReceivedDcReq')
         const dcRecord = await this.userRepo.findOne({where :{dcId:dto.dcId }})
         if(dcRecord){
-           const updateData = await this.userRepo.update({dcId:dto.dcId }, { receivedDc :dto.receivedDc,receivedUser :dto.receivedUser,status:dto.status})
+           const updateData = await this.userRepo.update({dcId:dto.dcId }, { receivedDc :dto.receivedDc,receivedUser :dto.receivedUser,status:dto.status,receivedDate:dto.receivedDate})
             return new CommonResponse(true,333,'update successfully',updateData)
         }else{
             return new CommonResponse(false,6666,'something went wrong')
@@ -87,8 +87,7 @@ export class DcService {
     }
     async getAllGatePass(req:UnitReq): Promise<CommonResponse> {
         try {
-            const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
-            w.warehouse_name AS warehouseName,
+            const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId, w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser

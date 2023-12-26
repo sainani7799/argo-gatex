@@ -67,7 +67,7 @@ const DCGrid = () => {
     const update = (dto: AssignReq) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
         dto.updatedUser = authdata.userName,
-            dto.status = StatusEnum.INPROGRESS,
+            dto.status = StatusEnum.SENT_FOR_APPROVAL,
             dto.isAssignable = AcceptableEnum.YES,
             dto.assignBy = form.getFieldValue('assignBy')
         dto.emailId = form.getFieldValue('emailId')

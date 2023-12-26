@@ -113,7 +113,8 @@ const DCReceived = () => {
 
     const receivedDc = (rowData) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,StatusEnum.CLOSE,authdata.userName)
+        const status = rowData.returnable ==='N'? StatusEnum.CLOSED : StatusEnum.RECEIVED
+        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,authdata.userName,)
         console.log(dto)
         service.receivedDc(dto).then(res => {
             if (res.status) {
@@ -122,7 +123,6 @@ const DCReceived = () => {
                 getReceivedGatePassData()
             } else {
                 message.error(res.internalMessage);
-
             }
         }).catch(err => {
             message.error(err.message);
@@ -232,9 +232,6 @@ const DCReceived = () => {
                     )}
                 </span>
             ),
-
-
-
         },
 
     ];

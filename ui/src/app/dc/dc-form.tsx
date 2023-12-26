@@ -569,7 +569,7 @@ const DCForm = () => {
 
                                 <Input placeholder="Enter Value" disabled />
                             </Form.Item>
-                            <Form.Item name="status" label="Status" initialValue={StatusEnum.OPEN}>
+                            <Form.Item name="status" label="Status" initialValue={StatusEnum.ASSIGN_TO_APPROVAL}>
                                 <Select
                                     showSearch
                                     placeholder="Select Status"

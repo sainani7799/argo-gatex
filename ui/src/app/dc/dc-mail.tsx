@@ -44,7 +44,7 @@ export const DcMail = (props: DcMailProps) => {
             isAccepted: AcceptableEnum.YES,
             acceptedUser: data[0]?.assign_by,
             dcId: Number(id),
-            status: StatusEnum.CLOSE,
+            status: StatusEnum.READY_TO_RECEIVED,
         };
         // console.log(dto);
         service.acceptDc(dto).then(res => {

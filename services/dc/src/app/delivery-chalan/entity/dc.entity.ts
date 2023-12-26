@@ -90,7 +90,7 @@ export class DcEntity {
     name: 'status',
     nullable: false,
     enum: StatusEnum,
-    default: StatusEnum.OPEN
+    default: StatusEnum.ASSIGN_TO_APPROVAL
   })
   status: StatusEnum;
 
@@ -190,6 +190,12 @@ export class DcEntity {
     name: "version_flag"
   })
   versionFlag: number;
+
+  @UpdateDateColumn({
+    name: "received_date",
+    type: 'datetime'
+  })
+  receivedDate: Date;
 
   @OneToMany(type => DcItemEntity, items => items.itemInfo, { cascade: true })
   dcItemInfo: DcItemEntity[];
