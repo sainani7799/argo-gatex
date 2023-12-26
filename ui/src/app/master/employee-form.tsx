@@ -193,7 +193,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                             name="mobileNumber"
                             label="Mobile Number"
                             rules={[
-                                { required: true, message: ' Valid Mobile No is required', min: 10, max: 12 },
+                                { required: false, message: ' Valid Mobile No is required', min: 10, max: 12 },
                                 {
                                     pattern: /^[0-9]*$/,
                                     message: `Don't Allow letters and Spaces`
@@ -262,7 +262,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="section" label="Section" rules={[
-                                { required: true },
+                                { required: false },
                             ]}>
                             <Select
                                 showSearch

@@ -22,7 +22,7 @@ export const typeOrmConfig: DataSourceOptions ={
     database: 'internal_apps',
     synchronize: false,
     logging:true,
-    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity]
+    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]
 }
 
 

@@ -32,6 +32,11 @@ export class UserEntity  {
     })
     unitId: number;
 
+    @Column('int', {
+        name: 'role_id',
+    })
+    roleId: number;
+
     @Column({
         nullable: false,
         name: "is_active",

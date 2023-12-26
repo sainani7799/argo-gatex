@@ -54,7 +54,7 @@ export class UserMangementService {
   }
 
   async create(userDto: CreateUserDto): Promise<CommonResponse> {
-    const { userId, userName, password, employeeId ,cardNo,unitId } = userDto;
+    const { userId, userName, password, employeeId ,cardNo,unitId,roleId } = userDto;
 
     const userInDb = await this.userRepo.findOne({
       where: { cardNo: userDto.cardNo }
@@ -65,7 +65,7 @@ export class UserMangementService {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
 
-    const user: UserEntity = await this.userRepo.create({ userName, password, employeeId , cardNo,unitId});
+    const user: UserEntity = await this.userRepo.create({ userName, password, employeeId , cardNo,unitId,roleId});
     await this.userRepo.save(user);
     return toUserDto(user);
 }

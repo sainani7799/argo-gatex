@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message } from 'antd';
-import { EmployeeService, UserManagementServices } from 'libs/shared-services';
+import { EmployeeService, RoleService, UserManagementServices } from 'libs/shared-services';
 import { Link, useNavigate } from 'react-router-dom';
 import { CreateUserDto } from 'libs/shared-models';
 
@@ -12,35 +12,47 @@ export interface UserFormProps {
     isUpdate: boolean;
     closeForm: () => void;
 }
-const UserForm = (props:UserFormProps) => {
+const UserForm = (props: UserFormProps) => {
     const userService = new UserManagementServices();
     const [employeeNames, setEmployeeNames] = useState<any[]>([]);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(undefined);
     const service = new EmployeeService();
+    const roleServices = new RoleService()
+    const [roleData, setRoleData] = useState<any>([]);
     const navigate = useNavigate();
     const [form] = Form.useForm();
 
 
     const clickHandler = () => { };
 
-    const handleEmployeeIdChange = (value) => { 
+    const handleEmployeeIdChange = (value) => {
         setSelectedEmployeeId(value);
         const selectedEmployee = employeeNames.find((employee) => employee.employeeId === value);
         form.setFieldsValue({
             cardNo: selectedEmployee ? selectedEmployee.cardNo : undefined,
-            unitId: selectedEmployee ? selectedEmployee.unitId:undefined,
-            
+            unitId: selectedEmployee ? selectedEmployee.unitId : undefined,
+
         });
     }
 
     useEffect(() => {
         fetchEmployeeNames();
+        getAllRoleEntity()
     }, []);
 
     const fetchEmployeeNames = () => {
         service.getAllEmployees().then((res) => {
             if (res) {
                 setEmployeeNames(res.data)
+            }
+        })
+    }
+
+    const getAllRoleEntity = () => {
+        roleServices.getAllRoleEntity().then((res) => {
+            if (res) {
+                setRoleData(res)
+                console.log(res)
             }
         })
     }
@@ -56,7 +68,7 @@ const UserForm = (props:UserFormProps) => {
         })
     }
 
-  
+
 
     const handleReset = () => {
         form.resetFields();
@@ -65,7 +77,7 @@ const UserForm = (props:UserFormProps) => {
 
     return (
         <Card type="inner" title="User-Form"
-            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }}extra={ <Link to='/users' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>}>
+            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }} extra={<Link to='/users' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>}>
             <Form
                 name="user-form"
                 autoComplete='off'
@@ -160,6 +172,34 @@ const UserForm = (props:UserFormProps) => {
                                 )
                             })}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="Role"
+                        name="roleId"
+                        rules={[
+                            { required: true, message: "Please Select Role" }
+                        ]}
+                    >
+                        <Select
+                            showSearch
+                            placeholder="Select Role  "
+                            optionFilterProp="children"
+                            allowClear
+                        >
+                            {roleData && roleData.length > 0 ? (
+                                roleData.map((rec: any) => (
+                                    <Option key={rec.roleId} value={rec.roleId}>
+                                        {rec.roleName}
+                                    </Option>
+                                ))
+                            ) : (
+                                <Option value={null} disabled>
+                                    No Roles available
+                                </Option>
+                            )}
+                        </Select>
+
+                        {/* <Input placeholder='Enter Paid To Employee' /> */}
                     </Form.Item>
 
                     <Form.Item>

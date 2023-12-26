@@ -20,6 +20,9 @@ export class CreateUserDto {
     unitId:number;
 
     @ApiProperty()
+    roleId:number;
+
+    @ApiProperty()
     isActive: boolean;
 
     @ApiProperty()
