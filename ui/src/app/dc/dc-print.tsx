@@ -94,8 +94,8 @@ export function DcPrint(props: DcPrintProps) {
     const totalQty = data.reduce((sum, item) => sum + parseFloat(item.qty || 0), 0);
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
     const titleCase = (str) => str.toLowerCase().split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
     const normalizeImagePath = (path) => {
         return path.replace(/\\/g, '/');
     };
@@ -111,13 +111,13 @@ export function DcPrint(props: DcPrintProps) {
 
                         <Row gutter={24} >
                             <Col span={20} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '65px' }}>
-                                <h3 style={{ textAlign: 'center' ,fontFamily:'serif'}}>{'Shahi Export Pvt. Ltd'}</h3>
-                                <div style={{ textAlign: 'center',fontFamily:'serif' }}>
-                                    <h5>{data[0]?.fromUnit}<br />
+                                <h3 style={{ textAlign: 'center', fontFamily: 'serif' }}>{'Shahi Export Pvt. Ltd'}</h3>
+                                <div style={{ textAlign: 'center', fontFamily: 'serif' }}>
+                                    <h4>{data[0]?.fromUnit}<br />
                                         {addressData[0]?.lineOne}, {addressData[0]?.lineTwo}<br />
                                         {addressData[0]?.city},  {addressData[0]?.dist} <br />
                                         {addressData[0]?.state}, {addressData[0]?.country}, {addressData[0]?.pinCode}<br />
-                                        GST IN : {addressData[0]?.gstNo} , CST : {addressData[0]?.cstNo}</h5>
+                                        GST IN : {addressData[0]?.gstNo} , CST : {addressData[0]?.cstNo}</h4>
                                 </div>
                             </Col>
                             <Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '5px' }}>
@@ -129,26 +129,47 @@ export function DcPrint(props: DcPrintProps) {
                     <div style={{ textAlign: 'center' }}><h3 style={{ textAlign: 'center' }}>{'GATE PASS'}</h3></div>
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px' }}>
                         <Col span={12}>
-                            <div className="issued-to"><b style ={{fontSize :"15px",marginTop:'0px'}}>Gate Pass : </b> <h5 style={{ textAlign: 'left', marginTop: '4px',fontFamily:'serif' }}>{data[0]?.dcNumber}</h5></div>
+                            <div className="issued-to"><b style={{ fontSize: "15px", marginTop: '0px' }}>Gate Pass : </b> <h4 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}>{data[0]?.dcNumber}</h4></div>
                             <div className="issued-to">
-                                <b style ={{fontSize :"15px",marginTop:'-4px'}}>IssuedTo:</b>
-                                <h5 style={{ textAlign: 'left', marginTop: '0px',fontFamily:'serif' }}>
+                                <b style={{ fontSize: "15px", marginTop: '-4px' }}>IssuedTo:</b>
+                                <h4 style={{ textAlign: 'left', marginTop: '0px', fontFamily: 'serif' }}>
                                     {toAddressData[0]?.addresserName} {toAddressData[0]?.lineOne}, <br />
                                     {toAddressData[0]?.lineTwo},<br />
                                     {toAddressData[0]?.city}, {toAddressData[0]?.dist},{toAddressData[0]?.state}, <br />
                                     {toAddressData[0]?.country},{toAddressData[0]?.pinCode},<br />
                                     GST IN: {toAddressData[0]?.gstNo}, CST: {toAddressData[0]?.cstNo}
-                                </h5>
+                                </h4>
                             </div>
                         </Col>
                         <Col span={12} >
-                        <div className="issued-to"><b style ={{fontSize :"15px",marginTop:'0px'}}>Challan Date : </b> <h5 style={{ textAlign: 'left', marginTop: '4px',fontFamily:'serif' }}>{createdDate}</h5></div>
-                            <div className="issued-to">
-                                <b style ={{fontSize :"15px",marginTop:'-4px'}}>IssuedFor:</b>
-                                <h5 style={{ textAlign: 'left', marginTop: '0px' }}> {data[0]?.purpose} <br />Department from : {data[0]?.department}  <br /> Challan Returnable: {data[0]?.returnable}<br /> Mode Of Transport: {data[0]?.modeOfTransport}<br />Vehicle No: {data[0]?.vehicleNo}</h5>
+
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Challan Date </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}>: {createdDate}</h4>
+                            </div>
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>IssuedFor </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.purpose} </h4>
+                            </div>
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>From department </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.department} </h4>
+                            </div>
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Challan Returnable </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.returnable} </h4>
+                            </div>
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Mode Of Transport </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.modeOfTransport} </h4>
+                            </div>
+                            <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Vehicle No  </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.vehicleNo} </h4>
                             </div>
                         </Col>
                     </Row>
+                    <br />
                     <table className={'ta-b'} style={{ width: '100%' }}>
                         <tr style={{ textAlign: 'left', backgroundColor: '#a3a3a352' }}>
                             <th className={'ta-b'} style={{ textAlign: 'left', paddingLeft: '20px' }}> Sno</th>
@@ -190,64 +211,74 @@ export function DcPrint(props: DcPrintProps) {
                         {data.map((item, index) => (
                             <tr className='css-serial' key={index}>
                                 <td style={{ textAlign: 'left', paddingLeft: '20px' }} id={`count${index + 1}`}>{index + 1}</td>
-                                <td style={{ textAlign: 'left' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.itemCode}
                                 </td>
-                                <td style={{ textAlign: 'left' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.itemName}
                                 </td>
-                                <td style={{ textAlign: 'left' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.description}
                                 </td>
-                                <td style={{ textAlign: 'left' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.uom}
                                 </td>
-                                <td style={{ textAlign: 'right', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
                                     {item.qty}
                                 </td>
-                                <td style={{ textAlign: 'right', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'right', paddingRight: '35px', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.rate}
                                 </td>
-                                <td style={{ textAlign: 'right', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'right', paddingRight: '35px', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.amount}<span>&#8377;</span>
                                 </td>
                             </tr>
                         ))}
                         <tr>
-                            <td style={{ textAlign: 'left'}} colSpan={4} className={'ta-b'}  >
-                               <h5> Total: {titleCase(numberToWords(Number(Math.round(Number(Number(totalAmount)))))) } Rupees Only</h5>
+                            <td style={{ textAlign: 'left', fontSize: '11.5px' }} colSpan={4} className={'ta-b'}  >
+                                <h4 style={{ margin: '0px' }}> Total: {titleCase(numberToWords(Number(Math.round(Number(Number(totalAmount))))))} Rupees Only</h4>
                             </td>
-                            <td style={{ textAlign: 'right', paddingRight: '35px' }} colSpan={2} className={'ta-b'}>
+                            <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={2} className={'ta-b'}>
                                 {totalQty}
                             </td>
-                            <td style={{ textAlign: 'right', paddingRight: '35px' }} colSpan={4} className={'ta-b'}>
+                            <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={4} className={'ta-b'}>
                                 {totalAmount}<span>&#8377;</span>
                             </td>
                         </tr>
                     </table>
-                    <div className="issued-to" style={{marginLeft: '40px'}} ><b style ={{fontSize :"15px",marginTop:'0px'}}>Remark : </b> <h5 style={{ textAlign: 'left', marginTop: '4px',fontFamily:'serif' }}>{data[0]?.remarks}</h5></div>
+
                     <br />
-                    <div className="issued-to" style={{marginLeft: '40px'}} ><b style ={{fontSize :"15px",marginTop:'0px'}}>Weight (Approx Kgs) : </b> <h5 style={{ textAlign: 'left', marginTop: '4px',fontFamily:'serif' }}>{data[0]?.weight}</h5></div>
-                    <div className="issued-to" style={{marginLeft: '40px'}} ><b style ={{fontSize :"15px",marginTop:'0px'}}>Value (ApproxRs): </b> <h5 style={{ textAlign: 'left', marginTop: '4px',fontFamily:'serif' }}>{data[0]?.value}</h5></div>
-                    
+                    <div className="issued-to" style={{ marginLeft: '40px' }} >
+                        <b style={{ fontSize: "15px", marginTop: '0px' }}>Remark : </b>
+                        <h5 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}>{data[0]?.remarks}</h5>
+                    </div>
+                    <div className="issued-to" style={{ marginLeft: '40px' }} >
+                        <b style={{ fontSize: "15px", marginTop: '0px', width: '140px', textAlign: 'left' }}>Weight (Approx Kgs)</b>
+                        <h5 style={{ textAlign: 'left', marginTop: '4px', marginBottom: '0px', fontFamily: 'serif' }}> : {data[0]?.weight}</h5>
+                    </div>
+                    <div className="issued-to" style={{ marginLeft: '40px' }} >
+                        <b style={{ fontSize: "15px", marginTop: '0px', width: '140px', textAlign: 'left' }}>Value (ApproxRs)</b>
+                        <h5 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}> : {data[0]?.value}</h5>
+                    </div>
+
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px', paddingLeft: '30px' }}>
                         <Col span={8}>
-                            <div style={{fontFamily:'serif'}}>
+                            <div style={{ fontFamily: 'serif' }}>
                                 <h4>Prepared By :<br /> {data[0]?.created_user}</h4>
                             </div>
                         </Col>
                         <Col span={8}>
-                            <div style={{fontFamily:'serif'}}>
+                            <div style={{ fontFamily: 'serif' }}>
                                 <h4>Received By</h4>
                             </div>
                         </Col>
                         <Col span={8}>
-                            <div style={{fontFamily:'serif'}}>
+                            <div style={{ fontFamily: 'serif' }}>
                                 <h4>Authorised Signatory</h4>
                                 <br />
                                 {data[0]?.sign_path && (
                                     <img
-                                        src= {'http://172.20.50.169/delivery-chalan/dist/services/dc/upload-files/'+ data[0]?.user_signature}
+                                        src={'http://172.20.50.169/delivery-chalan/dist/services/dc/upload-files/' + data[0]?.user_signature}
                                         alt={`Signature of ${sign}`}
                                         style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }}
                                     />
@@ -257,14 +288,15 @@ export function DcPrint(props: DcPrintProps) {
                             </div>
                         </Col>
                     </Row>
+
                     <Row>
-                        <p style={{textAlign:'left', fontSize:'11px',fontFamily:'serif'}}>
+                        <p style={{ textAlign: 'left', fontSize: '11px', fontFamily: 'serif' }}>
                             The goods covered under open Policy NO. TATA-AIG/ MARINE/ DEUT0784BBY w.e.f 01.04.2023 to 31.03.2024
                         </p>
                     </Row>
                 </body>
             </html>
-        </Card>
+        </Card >
     )
 
 } export default DcPrint
