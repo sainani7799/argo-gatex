@@ -249,6 +249,7 @@ const DCForm = () => {
             console.log(defaultItemFormData)
             itemForm.setFieldsValue({
                 itemId: defaultItemFormData.itemId,
+                itemCode:defaultItemFormData.itemCode,
                 itemName: defaultItemFormData.itemName,
                 description: defaultItemFormData.description,
                 uom: defaultItemFormData.uom,
@@ -400,8 +401,8 @@ const DCForm = () => {
     const onSubmit = () => {
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
-            if (parseFloat(value) < 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), form.getFieldValue('status'), form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
+            if (parseFloat(value) <= 50000) {
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
                 console.log(req)
                 dcService.createDc(req).then(res => {
                     if (res.status) {
@@ -414,7 +415,7 @@ const DCForm = () => {
                     }
                 })
             } else {
-                message.error(`DC is can't created why because DC value more then 50,000`);
+                message.error(`DC is can't be created because DC value more then 50,000`);
             }
         }).catch(() => {
             message.error('Please fill all fields')
@@ -555,7 +556,7 @@ const DCForm = () => {
                             <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
                                 { required: true },
                             ]}>
-                                <Radio.Group onChange={returnOnChange} value={returnaValue} defaultValue={"Y"}>
+                                <Radio.Group onChange={returnOnChange} value={returnaValue} defaultValue={"N"}>
                                     <Radio value={"Y"}>Yes</Radio>
                                     <Radio value={"N"}>No</Radio>
                                 </Radio.Group>
@@ -569,7 +570,7 @@ const DCForm = () => {
 
                                 <Input placeholder="Enter Value" disabled />
                             </Form.Item>
-                            <Form.Item name="status" label="Status" initialValue={StatusEnum.ASSIGN_TO_APPROVAL}>
+                            <Form.Item name="status" label="Status" initialValue={StatusEnum.OPEN}>
                                 <Select
                                     showSearch
                                     placeholder="Select Status"

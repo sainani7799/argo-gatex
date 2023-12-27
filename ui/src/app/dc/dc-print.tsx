@@ -247,7 +247,7 @@ export function DcPrint(props: DcPrintProps) {
                                 <br />
                                 {data[0]?.sign_path && (
                                     <img
-                                        src={sign} // Use the image path from your data
+                                        src= {'http://172.20.50.169/delivery-chalan/dist/services/dc/upload-files/'+ data[0]?.user_signature}
                                         alt={`Signature of ${sign}`}
                                         style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }}
                                     />

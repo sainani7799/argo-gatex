@@ -5,6 +5,7 @@ import { Link, Outlet, Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExport, faLocationPin, faPerson, faShirt, faTruckArrowRight, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { Footer } from 'antd/es/layout/layout';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -36,28 +37,28 @@ export default function BasicLayout() {
     function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[], type?: 'group',): MenuItem {
         return { key, icon, children, label, type, } as MenuItem;
     }
-    
+
 
     const onCollapse = (collapsed) => {
-      setCollapsed(collapsed);
+        setCollapsed(collapsed);
     };
 
     return (
         <Layout className="site-layout" style={{ background: ' #f0f2f5' }}>
             <Sider
-                 collapsed={collapsed}
-                 onCollapse={onCollapse}
-                 trigger={null}
-                 breakpoint='lg'
-                 collapsedWidth={35}  // Adjust the collapsed width for mobile view
-                 width={200}  
+                collapsed={collapsed}
+                onCollapse={onCollapse}
+                trigger={null}
+                breakpoint='lg'
+                collapsedWidth={35}  // Adjust the collapsed width for mobile view
+                width={200}
                 style={{
                     overflow: 'auto',
                     height: '100vh',
                     position: 'fixed',
                     left: 0,
                     background: '#fff',
-                    marginTop: '55px',
+                    marginTop: '45px',
                     borderRadius: '5px',
                     boxShadow: '0 8px 24px -2px rgb(0 0 0 / 5%)',
                 }}
@@ -69,7 +70,7 @@ export default function BasicLayout() {
                     selectedKeys={[selectedMenu]}
                     onOpenChange={onOpenChange}
                     defaultSelectedKeys={['/']}
-                    style={{ paddingTop: '15px' }}
+                    style={{ paddingTop: '20px' }}
                 >
                     <SubMenu
                         key="masters" icon={<UserOutlined />}
@@ -124,7 +125,7 @@ export default function BasicLayout() {
                 style={{
                     marginTop: '60px',
                     padding: '6px',
-                    height: '100%',
+                    height: '90vh',
                     marginLeft: collapsed ? '25px' : '198px'
 
                 }}

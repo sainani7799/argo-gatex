@@ -106,7 +106,7 @@ const resetTimer = () => {
     <Header className='header-row' style={{ background: '#fff', padding: 0 }}>
       <Row justify='space-between' align='middle'>
         <Col span={1}>
-          <div className="logo" >
+          <div className="logo"  >
             <h1 style={{ color: 'rgb(125, 51, 162)' }}>{'SHAHI'}</h1>
           </div>
         </Col>

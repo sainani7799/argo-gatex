@@ -5,7 +5,7 @@
   }
   
   .header-icon {
-    margin: 0 15px;
+    margin: 0 10px;
   }
   
   .header-icon i {
@@ -21,7 +21,7 @@
     right: 0;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
+    padding: 0 5px;
     white-space: nowrap;
     box-shadow: 0 8px 24px -2px rgb(0 0 0 / 5%);
   
