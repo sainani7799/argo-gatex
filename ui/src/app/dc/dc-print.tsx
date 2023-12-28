@@ -129,7 +129,7 @@ export function DcPrint(props: DcPrintProps) {
                     <div style={{ textAlign: 'center' }}><h3 style={{ textAlign: 'center' }}>{'GATE PASS'}</h3></div>
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px' }}>
                         <Col span={12}>
-                            <div className="issued-to"><b style={{ fontSize: "15px", marginTop: '0px' }}>Gate Pass : </b> <h4 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}>{data[0]?.dcNumber}</h4></div>
+                            <div className="issued-to"><b style={{ fontSize: "15px", marginTop: '0px' }}>Gate Pass : </b> <h4 style={{ textAlign: 'left', marginTop: '3px', fontFamily: 'serif' }}>{data[0]?.dcNumber}</h4></div>
                             <div className="issued-to">
                                 <b style={{ fontSize: "15px", marginTop: '-4px' }}>IssuedTo:</b>
                                 <h4 style={{ textAlign: 'left', marginTop: '0px', fontFamily: 'serif' }}>
@@ -249,15 +249,15 @@ export function DcPrint(props: DcPrintProps) {
 
                     <br />
                     <div className="issued-to" style={{ marginLeft: '40px' }} >
-                        <b style={{ fontSize: "15px", marginTop: '0px' }}>Remark : </b>
-                        <h5 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}>{data[0]?.remarks}</h5>
+                        <b style={{ fontSize: "15px", marginTop: '1px' }}>Remark </b>
+                        <h5 style={{ textAlign: 'left', marginTop: '2px', fontFamily: 'serif' }}> : {data[0]?.remarks}</h5>
                     </div>
                     <div className="issued-to" style={{ marginLeft: '40px' }} >
-                        <b style={{ fontSize: "15px", marginTop: '0px', width: '140px', textAlign: 'left' }}>Weight (Approx Kgs)</b>
+                        <b style={{ fontSize: "15px", marginTop: '1px', width: '140px', textAlign: 'left' }}>Weight (Approx Kgs)</b>
                         <h5 style={{ textAlign: 'left', marginTop: '4px', marginBottom: '0px', fontFamily: 'serif' }}> : {data[0]?.weight}</h5>
                     </div>
                     <div className="issued-to" style={{ marginLeft: '40px' }} >
-                        <b style={{ fontSize: "15px", marginTop: '0px', width: '140px', textAlign: 'left' }}>Value (ApproxRs)</b>
+                        <b style={{ fontSize: "15px", marginTop: '1px', width: '140px', textAlign: 'left' }}>Value (ApproxRs)</b>
                         <h5 style={{ textAlign: 'left', marginTop: '4px', fontFamily: 'serif' }}> : {data[0]?.value}</h5>
                     </div>
 

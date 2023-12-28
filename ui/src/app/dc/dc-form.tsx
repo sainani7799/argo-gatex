@@ -552,6 +552,10 @@ const DCForm = () => {
                             </Form.Item>
                             <Form.Item name="weight" label="Weight" rules={[
                                 { required: true },
+                                {
+                                    pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
+                                    message: 'Please enter a valid numeric value with up to 2 decimal places.',
+                                  },
                             ]}>
                                 <Input placeholder="Enter Weight" />
                             </Form.Item>
