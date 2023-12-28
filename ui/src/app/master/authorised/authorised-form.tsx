@@ -226,7 +226,10 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
                 </Col>
 
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 12 }}>
-                  <Form.Item name="sigImageName" label='Signature Image'
+                  <Form.Item name="sigImageName" label='Signature Image(Upload the image in landscape)'
+                   rules={[{
+                    required: true,
+                  }]}
                     initialValue={props.isUpdate ? props.data.sigImageName : ''}
 
                   >

@@ -19,13 +19,14 @@ export class DcService {
     async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
         try {
             const slNo = await this.userRepo.count()
+            const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5, '0');
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear();
             const lastTwoDigitsOfYear = String(currentYear).slice(-2);
             const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
             const day = String(currentDate.getDate()).padStart(2, '0');
             const returnablePrefix = req.returnable === 'Y' ? 'GPR' : 'GP';
-            const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${Number(Number(slNo))}`;
+            const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
             req.dcNumber = dcNum;
             const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(req, isUpdate);
             console.log(convertedDcEntity)

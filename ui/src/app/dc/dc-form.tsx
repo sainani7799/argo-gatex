@@ -22,7 +22,7 @@ const DCForm = () => {
     const [suppliers, setSuppliers] = useState<any>([]);
     const [warehouses, setWarehouses] = useState<any>([]);
     const [radioValue, setRadioValue] = useState("unit");
-    const [returnaValue, setReturnaValue] = useState("Y");
+    const [returnaValue, setReturnaValue] = useState("N");
     const [approval, setApproval] = useState<any>([]);
     const [addressData, setAddressData] = useState<any>([]);
     const [toAddressData, setToAddressData] = useState<any>([]);
@@ -44,6 +44,7 @@ const DCForm = () => {
     const [itemData, setItemData] = useState<any[]>([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
+    const [loadingWarehouses, setLoadingWarehouses] = useState(true);
 
     const navigate = useNavigate()
     let tableData: any[] = [];
@@ -76,7 +77,7 @@ const DCForm = () => {
     };
 
     useEffect(() => {
-        getWarehouses();
+        // getWarehouses();
         getUnits();
         getSuppliers();
         getDeps();
@@ -101,18 +102,23 @@ const DCForm = () => {
             }
         });
     };
-    const getWarehouses = () => {
-        const unitValue = authdata.unitId;
-        const req = { unitId: unitValue };
-        warehouseService.getAllWarehousesByUnit(req).then(res => {
-            if (res) {
+    useEffect(() => {
+        const getWarehouses = async () => {
+            try {
+                const unitValue = authdata.unitId;
+                const req = { unitId: unitValue };
+                const res = await warehouseService.getAllWarehousesByUnit(req);
                 const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
                 setWarehouses(activeWarehouses);
+                setLoadingWarehouses(false);
+            } catch (error) {
+                message.error("Something went wrong");
+                setLoadingWarehouses(false);
             }
-        }).catch(err => {
-            message.error("Something went wrong");
-        })
-    };
+        };
+    
+        getWarehouses();
+    }, []);
 
     const getUnits = () => {
         unitService.getAllUnits().then(res => {
@@ -436,7 +442,7 @@ const DCForm = () => {
     return (
         <>
             <Card title={<span style={{ color: 'white' }}>DC Form</span>}
-                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>View</Button></span>} >
+                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>Back</Button></span>} >
                 <Form
                     form={form}
                     layout='vertical'
@@ -473,6 +479,7 @@ const DCForm = () => {
                                     placeholder="Select Warehouse"
                                     optionFilterProp="children"
                                     allowClear
+                                    loading={loadingWarehouses}
                                 >
                                     {warehouses.map(wh => {
                                         return (

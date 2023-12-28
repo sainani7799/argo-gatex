@@ -166,7 +166,7 @@ const AddressForm = (props: AddressFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="lineOne" label="line One"
+                            <Form.Item name="lineOne" label="Line One(Address 1)"
                                 rules={[
                                     { required: true },
                                 ]} style={{ width: '90%' }}>
@@ -174,7 +174,7 @@ const AddressForm = (props: AddressFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="lineTwo" label="line Two"
+                            <Form.Item name="lineTwo" label="Line Two(Address 2)"
                                 rules={[
                                     { required: true },
                                 ]} style={{ width: '90%' }}>
@@ -184,7 +184,7 @@ const AddressForm = (props: AddressFormProps) => {
                     </Row>
                     <Row style={{ width: '100%' }}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="city" label="city:"
+                            <Form.Item name="city" label="City:"
                                 rules={[
                                     { required: true },
                                 ]}
@@ -216,7 +216,7 @@ const AddressForm = (props: AddressFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="state" label="state"
+                            <Form.Item name="state" label="State"
                                 rules={[
                                     { required: true },
                                 ]}
@@ -228,7 +228,7 @@ const AddressForm = (props: AddressFormProps) => {
 
 
 
-                    <Form.Item name="country" label="country"
+                    <Form.Item name="country" label="Country"
                         rules={[
                             { required: true },
                         ]}
