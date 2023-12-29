@@ -31,18 +31,24 @@
     margin-bottom: 0;
   }
   
-  .logo h1 {
+  .logo {
     letter-spacing: 10px;
     margin-left: 12px;
-    margin-top: 0px;
+    margin-top: -0px;
     display: inline-block;
     font-weight: 600;
     font-size: 40px;
     font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
     padding: 5px;
     cursor: pointer;
+    color: rgb(125, 51, 162);
     overflow: visible;
   }
+  @media only screen and (max-width: 768px) {
+    .logo {
+        font-size: 24px; /* Adjust the font size for smaller screens */
+    }
+}
   
   .ant-dropdown-link .ant-avatar {
     height: 40px;

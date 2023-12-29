@@ -38,30 +38,30 @@ export const CommonHeader = (props: IProps) => {
   }
   useEffect(() => {
     Object.values(events).forEach((item) => {
-        window.addEventListener(item, () => {
-            resetTimer();
-            handleLogoutTimer();
-        });
+      window.addEventListener(item, () => {
+        resetTimer();
+        handleLogoutTimer();
+      });
     });
-}, []);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)
-}, [])
+  }, [])
 
-const resetTimer = () => {
+  const resetTimer = () => {
     if (timer) clearTimeout(timer);
-};
+  };
   const handleLogoutTimer = () => {
     timer = setTimeout(() => {
-        // clears any pending timer.
-        resetTimer();
-        // Listener clean up. Removes the existing event listener from the window
-        Object.values(events).forEach((item) => {
-            window.removeEventListener(item, resetTimer);
-        });
-        // logs out user
-        logoutHandler();
+      // clears any pending timer.
+      resetTimer();
+      // Listener clean up. Removes the existing event listener from the window
+      Object.values(events).forEach((item) => {
+        window.removeEventListener(item, resetTimer);
+      });
+      // logs out user
+      logoutHandler();
     }, 900000); //15 minutes
   }
   const menu = (
@@ -100,26 +100,20 @@ const resetTimer = () => {
 
   // const options: SelectProps['options'] = [{ value: 'project-creation-page', label: 'Project Creation' }, { value: 'project-list-grid', label: 'Project View' }];
 
-
+  //   <Dropdown menu={{ items }}>
+  //   <Avatar style={{ marginBottom: '40px', marginLeft: 'auto'  }} size={45} shape="circle" icon={<UserOutlined style={{ fontSize: '25px' }} />} />
+  // </Dropdown>
 
   return (
-    <Header className='header-row' style={{ background: '#fff', padding: 0 }}>
-      <Row justify='space-between' align='middle'>
-        <Col span={1}>
-          <div className="logo"  >
-            <h1 style={{ color: 'rgb(125, 51, 162)' }}>{'SHAHI'}</h1>
-          </div>
-        </Col>
-        <Col span={1} >
-        </Col>
-        <Col span={4}></Col>
-        <Col span={14} style={{ textAlign: 'right' }}>
-          <Dropdown menu={{ items }}>
-            <Avatar style={{ marginBottom: '40px', marginLeft: 'auto'  }} size={45} shape="circle" icon={<UserOutlined style={{ fontSize: '25px' }} />} />
-          </Dropdown>
-        </Col>
-        <Col></Col>
-      </Row>
+    <Header style={{ background: '#fff', padding: 0 }}>
+       <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className='logo'>SHAHI </div>
+        <div style={{ marginLeft: 'auto' ,marginRight:'25px'}} >
+            <Dropdown menu={{ items }}>
+                <Avatar shape="circle" icon={<UserOutlined style={{ fontSize: '25px' }} />} />
+            </Dropdown>
+        </div>
+    </div>
     </Header>
   )
 }
