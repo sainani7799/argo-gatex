@@ -23,13 +23,13 @@ export class UserMangementService {
 
   async login(dto: LoginDto): Promise<AuthResponseModel> {
     console.log(dto,'DTO')
-    const query = `SELECT user_name AS userName, PASSWORD,employee_id AS employeeId,unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,card_no AS cardNo FROM shahi_user u LEFT JOIN shahi_units un ON un.id = u.unit_id WHERE u.is_active = 1 AND user_name = '${dto.userName}' AND password = '${dto.password}'`;
+    const query = `SELECT user_name AS userName, PASSWORD,employee_id AS employeeId,unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,card_no AS cardNo,u.role_id AS roleId ,r.role_name FROM shahi_user u LEFT JOIN shahi_units un ON un.id = u.unit_id LEFT JOIN shahi_role r ON r.role_id = u.role_id WHERE u.is_active = 1 AND user_name = '${dto.userName}' AND password = '${dto.password}'`;
     try {
       const validateUser = await this.userRepo.query(query);
       console.log(validateUser, 'user data');
 
       if (validateUser.length > 0) {
-        const authModel = new AuthModel(validateUser[0].userName,validateUser[0].employeeId,validateUser[0].cardNo,validateUser[0].unitId,validateUser[0].unitName,validateUser[0].unitCode);
+        const authModel = new AuthModel(validateUser[0].userName,validateUser[0].employeeId,validateUser[0].cardNo,validateUser[0].unitId,validateUser[0].unitName,validateUser[0].unitCode,validateUser[0].roleId,validateUser[0].roleName);
         return new AuthResponseModel(true, 1111, 'Successfully logged in', authModel);
       } else {
         return new AuthResponseModel(false, 401, 'Invalid credentials', null);

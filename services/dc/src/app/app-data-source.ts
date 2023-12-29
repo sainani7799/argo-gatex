@@ -32,7 +32,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       return {
         ...typeOrmConfig,
         synchronize: false,
-        logging: false,
+        logging: true,
         autoLoadEntities: true
       }
     },

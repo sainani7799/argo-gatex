@@ -210,22 +210,25 @@ export const DcDetailsView = (props: DcViewProps) => {
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{data[0]?.createdDate}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created By</span>}>{data[0]?.created_user}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Value</span>}>{data[0]?.value}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Department</span>}>{data[0]?.department}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>To Department</span>}>{data[0]?.toDepartment}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Weight (Kg)</span>}>{data[0]?.weight}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Purpose</span>}>{data[0]?.purpose}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Status</span>}>{data[0]?.status}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Value</span>}>{data[0]?.value}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Requested By</span>}>{data[0]?.requestedBy}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Responsible Person</span>}>{data[0]?.responsiblePerson}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Mode Of Transport</span>}>{data[0]?.modeOfTransport}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>vehicle No</span>}>{data[0]?.vehicleNo}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Requested By</span>}>{data[0]?.requestedBy}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem>
-
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Dc Assign</span>}>{data[0]?.isDcAssign}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Assign By</span>}>{data[0]?.assignBy}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Email</span>}>{data[0]?.emailId}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Remarks</span>}>{data[0]?.remarks}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Is Accepted</span>}>{data[0]?.is_accepted}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Accepted By</span>}>{data[0]?.acceptedUser}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Is DC Received </span>}>{data[0]?.isDcReceived}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Received User</span>}>{data[0]?.received_user}</DescriptionsItem>
         </Descriptions>
 
 

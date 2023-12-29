@@ -38,13 +38,21 @@ export const DcMail = (props: DcMailProps) => {
             acceptDc()
         }
     }, [data])
+    "toAddresser=supplier"
 
     const acceptDc = () => {
+        let status;
+    
+        if (data[0]?.toAddresser === 'supplier') {
+            status = StatusEnum.CLOSED;
+        } else {
+            status = StatusEnum.READY_TO_RECEIVE;
+        }
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
             acceptedUser: data[0]?.assign_by,
             dcId: Number(id),
-            status: StatusEnum.READY_TO_RECEIVE,
+            status: status,
         };
         // console.log(dto);
         service.acceptDc(dto).then(res => {

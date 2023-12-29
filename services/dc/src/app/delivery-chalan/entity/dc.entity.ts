@@ -134,6 +134,19 @@ export class DcEntity {
   })
   acceptedUser: number;
 
+  @Column('int', {
+    name: 'responsible_person',
+    nullable: false
+  })
+  responsiblePerson: number;
+
+  @Column('int', {
+    name: 'to_department_id',
+    nullable: false
+  })
+  toDepartmentId: number;
+
+
   @Column('varchar', {
     name: 'email_id',
   })

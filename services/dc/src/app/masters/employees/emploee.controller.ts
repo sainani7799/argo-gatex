@@ -6,6 +6,7 @@ import { EmployeeDto } from './dto/employee.dto';
 import { CreateEmployeeDto, GetAllEmployeeResponse } from 'libs/shared-models';
 import { EmployeeRequest } from './dto/employee.request';
 import { ReportingRequest } from './dto/reporting-manager.dto';
+import { CommonResponse } from 'libs/shared-models/src/common';
 
 @Controller('employees')
 @ApiTags('employees')
@@ -55,6 +56,25 @@ export class EmployeeController {
     async getAllEmployeesById(@Body() req: ReportingRequest): Promise<GetAllEmployeeResponse> {
         try {
             return await this.service.getAllEmployeesById(req);
+        } catch (error) {
+            return (error);
+        }
+    }
+
+    @Post('/getAllEmployeesByUnit')
+    async getAllEmployeesByUnit(@Body() req: any): Promise<CommonResponse> {
+        try {
+            return await this.service.getAllEmployeesByUnit(req);
+        } catch (error) {
+            return (error);
+        }
+    }
+
+    @Post('/getAllToEmployeesByUnit')
+    async getAllToEmployeesByUnit(@Body() req: any): Promise<CommonResponse> {
+        console.log(req,"empReq")
+        try {
+            return await this.service.getAllToEmployeesByUnit(req);
         } catch (error) {
             return (error);
         }

@@ -92,7 +92,7 @@ export class DcService {
             const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId, w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
-            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser
+            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,td.department_name AS toDepartment,dc.received_date AS receivedData,er.employee_name AS responsiblePerson
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
@@ -102,6 +102,8 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
+            LEFT JOIN shahi_department td ON d.id = dc.to_department_id
+            LEFT JOIN shahi_employees er ON er.employee_id = dc.responsible_person
             WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}`;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
@@ -141,16 +143,22 @@ export class DcService {
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy,
-            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,dc.purpose,dc.vehicle_no as vehicleNo , dc.email_id as emailId ,sa.sign_path,sa.user_signature
+            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , 
+            dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by,
+             eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,dc.purpose,dc.vehicle_no AS vehicleNo ,
+              dc.email_id AS emailId ,sa.sign_path,sa.user_signature ,dc.to_department_id,td.department_name AS toDepartment,
+              er.employee_name AS responsiblePerson,dc.received_date AS receivedData,dc.received_dc AS isDcReceived,dc.received_user
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
             LEFT JOIN shahi_department d ON d.id = dc.department_id
+            LEFT JOIN shahi_department td ON td.id = dc.to_department_id
             LEFT JOIN shahi_units au ON au.id = dc.addresser_name_id AND dc.to_addresser = 'unit'
             LEFT JOIN shahi_suppliers s ON s.supplier_id = dc.addresser_name_id AND dc.to_addresser = 'supplier'
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
+            LEFT JOIN shahi_employees er ON er.employee_id = dc.responsible_person
             LEFT JOIN shahi_dc_items dci ON dci.dc_id = dc.dc_id
             LEFT JOIN shahi_approved_users sa ON sa.approved_user_name = dc.assign_by
             WHERE to_addresser IN ('unit', 'supplier') AND dc.dc_id = ${req.dcId}`;

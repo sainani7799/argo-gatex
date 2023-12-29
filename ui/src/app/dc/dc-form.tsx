@@ -1,7 +1,7 @@
 import { EditOutlined, LoadingOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Form, Input, Button, Select, Card, message, Col, Row, theme, Radio, RadioChangeEvent, Descriptions, Upload, UploadProps, Popconfirm, Tooltip, Divider, Tag } from 'antd';
 import Table, { ColumnProps } from 'antd/es/table';
-import { DcReq, StatusEnum, ToAddressReq, UnitReq, itemCode } from 'libs/shared-models';
+import { AcceptableEnum, DcReq, StatusEnum, ToAddressReq, ToEmpReq, UnitReq, itemCode } from 'libs/shared-models';
 import { WarehouseService, UnitService, SupplierService, ApprovalUserService, DepartmentService, ItemService, AddressService, EmployeeService, DcService } from 'libs/shared-services';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -35,8 +35,9 @@ const DCForm = () => {
     const [itemIndexVal, setItemIndexVal] = useState<any>(0);
     const [itemTableVisible, setItemTableVisible] = useState<boolean>(false);
     const [employee, setEmployee] = useState<any>([]);
+    const [toEmployee, setToEmployee] = useState<any>([]);
     const [responseData, setResponseData] = useState<any>([]);
-    // console.log(authdata)
+    console.log(authdata)
     const itemService = new ItemService()
     const [form] = Form.useForm();
     const [itemForm] = Form.useForm()
@@ -88,11 +89,12 @@ const DCForm = () => {
         getAllToAddressByUnit(radioValue);
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
+        form.setFieldsValue({ requestedBy:  authdata.employeeId})
     }, [])
     useEffect(() => {
         getGatePassData();
     }, []);
-
+    
     const getGatePassData = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
@@ -116,9 +118,18 @@ const DCForm = () => {
                 setLoadingWarehouses(false);
             }
         };
-    
+
         getWarehouses();
     }, []);
+
+    useEffect(() => {
+        const addresserNameId = form.getFieldValue('addresserNameId');
+        // const toDepartmentId = form.getFieldValue('toDepartmentId');
+
+        if ( addresserNameId) {
+            // getAllToEmployees();
+        }
+    }, [form.getFieldValue('addresserNameId'), form.getFieldValue('toDepartmentId')]);
 
     const getUnits = () => {
         unitService.getAllUnits().then(res => {
@@ -194,6 +205,19 @@ const DCForm = () => {
         })
     };
 
+    const getAllEmployees = () => {
+        const unitValue = authdata.unitId;
+        const req = { unitId: unitValue };
+        employeeService.getAllEmployeesByUnit(req).then(res => {
+            if (res) {
+                // const activeSuppliers = res.data.filter(suppliers => suppliers.isActive === true);
+                setEmployee(res.data);
+            }
+        }).catch(err => {
+            message.error("Something went wrong");
+        })
+    };
+
     const getDeps = () => {
         departmentService.getAllDepartments().then(res => {
             if (res) {
@@ -203,14 +227,28 @@ const DCForm = () => {
             }
         })
     };
-    const getAllEmployees = () => {
-        employeeService.getAllEmployees().then(res => {
-            if (res) {
-                console.log("This is employee");
-                // console.log(res);
-                setEmployee(res.data);
-            }
-        })
+
+    const getAllToEmployees = () => {
+        const req = new ToEmpReq();
+        req.unitId = form.getFieldValue('addresserNameId');
+        req.departmentId = form.getFieldValue('toDepartmentId');
+    
+        console.log(req);
+    
+        employeeService.getAllToEmployeesByUnit(req)
+            .then(res => {
+                if (res && res.data && res.data.length > 0) {
+                    setToEmployee(res.data);
+                } else {
+                    // Handle case when the response is empty
+                    // For example, display an error message
+                    message.error("No employees found in this department");
+                }
+            })
+            .catch(error => {
+                // Handle error if needed
+                console.error("Error fetching employees:", error);
+            });
     };
 
     const getApprovedUsers = () => {
@@ -255,7 +293,7 @@ const DCForm = () => {
             console.log(defaultItemFormData)
             itemForm.setFieldsValue({
                 itemId: defaultItemFormData.itemId,
-                itemCode:defaultItemFormData.itemCode,
+                itemCode: defaultItemFormData.itemCode,
                 itemName: defaultItemFormData.itemName,
                 description: defaultItemFormData.description,
                 uom: defaultItemFormData.uom,
@@ -408,7 +446,7 @@ const DCForm = () => {
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData)
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData,'',AcceptableEnum.NO,null,form.getFieldValue('responsiblePerson'),form.getFieldValue('toDepartmentId'))
                 console.log(req)
                 dcService.createDc(req).then(res => {
                     if (res.status) {
@@ -517,12 +555,12 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Buyer" rules={[
+                            <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Buyer /Supplier" rules={[
                                 { required: true },
                             ]}>
                                 <Radio.Group onChange={radioOnChange} value={radioValue} defaultValue={"unit"}>
                                     <Radio value={"unit"}>Unit</Radio>
-                                    <Radio value={"supplier"}>Buyer</Radio>
+                                    <Radio value={"supplier"}>Buyer/Supplier</Radio>
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item name="addresserNameId" label="To" rules={[
@@ -535,33 +573,69 @@ const DCForm = () => {
                                     allowClear
                                     onChange={(value, option) => getAllToAddressByUnit(radioValue)}
                                 >
-                                    {radioValue == "unit" ? units.map(unit => {
+                                    {radioValue === "unit" ? units.map(unit => (
+                                        <Option key={unit.id} value={unit.id}>
+                                            {unit.unitName}
+                                        </Option>
+                                    )) : suppliers.map(supplier => (
+                                        <Option key={supplier.supplierId} value={supplier.supplierId}>
+                                            {supplier.supplierName}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
+                            {radioValue === "unit" && (
+                                <>
+                                    <Form.Item name="toDepartmentId" label="To Department" rules={[
+                                        { required: true },
+                                    ]}>
+                                        <Select
+                                    showSearch
+                                    placeholder="Select Dept "
+                                    optionFilterProp="children"
+                                    allowClear
+                                    onChange={getAllToEmployees}
+                                >
+                                    {deps?.map(dep => {
                                         return (
-                                            <Option key={unit.id} value={unit.id}>
-                                                {unit.unitName}
-                                            </Option>
-                                        )
-                                    }) : suppliers.map(supplier => {
-                                        return (
-                                            <Option key={supplier.supplierId} value={supplier.supplierId}>
-                                                {supplier.supplierName}
+                                            <Option key={dep.id} value={dep.id}>
+                                                {dep.departmentName}
                                             </Option>
                                         )
                                     })}
                                 </Select>
-                            </Form.Item>
+                                    </Form.Item>
+                                    <Form.Item name="responsiblePerson" label="Responsible Person(Receiver side)">
+                                        <Select
+                                            showSearch
+                                            placeholder="Select Received Person"
+                                            optionFilterProp="children"
+                                            allowClear
+                                            
+                                        >
+                                            {toEmployee.map(app => (
+                                                <Option key={app.employeeId} value={app.employeeId}>
+                                                    {app.employeeName}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                </>
+                            )}
                             <Form.Item name="weight" label="Weight" rules={[
                                 { required: true },
                                 {
                                     pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
                                     message: 'Please enter a valid numeric value with up to 2 decimal places.',
-                                  },
+                                },
                             ]}>
                                 <Input placeholder="Enter Weight" />
                             </Form.Item>
                             <Form.Item name="vehicleNo" label="Vehicle Number">
                                 <Input placeholder="Enter Vehicle Number" />
                             </Form.Item>
+
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
@@ -602,10 +676,11 @@ const DCForm = () => {
                                     placeholder="Select Name"
                                     optionFilterProp="children"
                                     allowClear
+                                    disabled
                                 >
                                     {employee.map(app => {
                                         return (
-                                            <Option key={app.employeeId} value={app.employeeId}>
+                                            <Option key={app.employeeId} value={app.employeeId }>
                                                 {app.employeeName}
                                             </Option>
                                         )

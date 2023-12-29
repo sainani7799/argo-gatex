@@ -5,6 +5,8 @@ export class AuthModel {
     unitId:number
     unitName:string
     unitCode:string
+    roleId:number
+    roleName:string
 
 /**
  * 
@@ -14,6 +16,8 @@ export class AuthModel {
  * @param unitId 
  * @param unitName 
  * @param unitCode 
+ * @param roleId 
+ * @param roleName 
  */
 
     constructor(
@@ -22,14 +26,18 @@ export class AuthModel {
         cardNo:string,
         unitId:number,
         unitName:string,
-        unitCode:string
+        unitCode:string,
+        roleId:number,
+        roleName:string
     ) {
         this.userName = userName;
         this.employeeId = employeeId;
         this.cardNo = cardNo;
         this.unitId = unitId;
         this.unitName = unitName;
-        this.unitCode = unitCode
+        this.unitCode = unitCode;
+        this.roleId = roleId;
+        this.roleName =roleName
     }
 
 }

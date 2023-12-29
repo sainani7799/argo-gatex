@@ -9,7 +9,7 @@ import { EmployeeRequest } from './dto/employee.request';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
 import { ReportingRequest } from './dto/reporting-manager.dto';
 import { CommonResponse } from 'libs/shared-models/src/common';
-import { CreateEmployeeDto, GetAllEmployeeResponse } from 'libs/shared-models';
+import { CreateEmployeeDto, GetAllEmployeeResponse, ToEmpReq, UnitReq } from 'libs/shared-models';
 
 
 @Injectable()
@@ -123,7 +123,52 @@ export class EmployeeService {
   }
 
 
+  async getAllEmployeesByUnit(req: UnitReq): Promise<CommonResponse> {
+    try {
+      const employeeData = await this.employeeRepo.query(`select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
+      e.gender,e.date_of_birth AS dateOfBirth,e.address ,d.department_name AS departmentName,s.section_name AS section, de.designation,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unit from shahi_employees e
+      left join shahi_department d on d.id = e.department 
+      left join shahi_designation de on de.designation_id = e.designation
+	    left join shahi_sections s on s.section_id = e.section
+      left join shahi_units u on u.unit_code = e.unit where u.id = ${req.unitId}`);
+      // console.log(employeeData, 'employeeData');
+      if (employeeData.length > 0) {
+        return new CommonResponse(true, 221, 'Data retrieved', employeeData);
+      } else {
+        return new CommonResponse(false, 0, 'No data found');
+      }
+    } catch (err) {
+      // console.error('Error fetching employee data:', err);
+      throw err; // Rethrow the error to indicate the failure 
+    }
 
+  }
+
+  async getAllToEmployeesByUnit(req: ToEmpReq): Promise<CommonResponse> {
+    
+    try {
+      let query = `select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,e.department,
+      e.gender,e.date_of_birth AS dateOfBirth,e.address ,d.department_name AS departmentName,s.section_name AS section, de.designation,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unit from shahi_employees e
+      left join shahi_department d on d.id = e.department 
+      left join shahi_designation de on de.designation_id = e.designation
+	    left join shahi_sections s on s.section_id = e.section
+      left join shahi_units u on u.unit_code = e.unit `
+      if (req.unitId > 0) {
+        query = query + ' where u.id = ' + req.unitId;
+      }
+      if (req.departmentId > 0) {
+        query = query + ' and e.department = ' + req.departmentId;
+      };
+      const employeeData = await this.employeeRepo.query(query)
+      
+
+      return new CommonResponse(true, 221, 'Data retrieved', employeeData);
+
+    } catch (err) {
+      throw err; 
+    }
+
+  }
 
   async getEmployeeById(employeeId: number): Promise<any> {
     const response = await this.employeeRepo.findOne({

@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
-import { CreateEmployeeDto, } from "libs/shared-models/src";
+import { CreateEmployeeDto, UnitReq, } from "libs/shared-models/src";
 
 
 export class EmployeeService extends CommonAxiosServicePms {
@@ -18,7 +18,14 @@ export class EmployeeService extends CommonAxiosServicePms {
         return await this.axiosGetCall(this.EmployeeController + '/getAllEmployees')
     }
 
-    
+    async getAllEmployeesByUnit(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.EmployeeController +'/getAllEmployeesByUnit', req);
+    }
+
+    async getAllToEmployeesByUnit(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.EmployeeController +'/getAllToEmployeesByUnit', req);
+    }
+
     async activateOrDeactivateEmployee(createDto: CreateEmployeeDto): Promise<any> {
         return await this.axiosPostCall(this.EmployeeController +'/activateOrDeactivateEmployee', createDto);
     }
