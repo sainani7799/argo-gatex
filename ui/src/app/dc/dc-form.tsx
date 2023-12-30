@@ -47,6 +47,13 @@ const DCForm = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [loadingWarehouses, setLoadingWarehouses] = useState(true);
     const { TextArea } = Input;
+    const [manualEntry, setManualEntry] = useState(false);
+
+    const toggleManualEntry = () => {
+        setManualEntry(!manualEntry);
+        // Reset form values when switching between manual and automatic entry
+        itemForm.resetFields();
+    };
 
     const navigate = useNavigate()
     let tableData: any[] = [];
@@ -90,12 +97,12 @@ const DCForm = () => {
         getAllToAddressByUnit(radioValue);
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
-        form.setFieldsValue({ requestedBy:  authdata.employeeId})
+        form.setFieldsValue({ requestedBy: authdata.employeeId })
     }, [])
     useEffect(() => {
         getGatePassData();
     }, []);
-    
+
     const getGatePassData = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
@@ -127,7 +134,7 @@ const DCForm = () => {
         const addresserNameId = form.getFieldValue('addresserNameId');
         // const toDepartmentId = form.getFieldValue('toDepartmentId');
 
-        if ( addresserNameId) {
+        if (addresserNameId) {
             // getAllToEmployees();
         }
     }, [form.getFieldValue('addresserNameId'), form.getFieldValue('toDepartmentId')]);
@@ -233,9 +240,9 @@ const DCForm = () => {
         const req = new ToEmpReq();
         req.unitId = form.getFieldValue('addresserNameId');
         req.departmentId = form.getFieldValue('toDepartmentId');
-    
+
         console.log(req);
-    
+
         employeeService.getAllToEmployeesByUnit(req)
             .then(res => {
                 if (res && res.data && res.data.length > 0) {
@@ -447,7 +454,7 @@ const DCForm = () => {
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData,'',AcceptableEnum.NO,null,form.getFieldValue('attentionPerson'),form.getFieldValue('toDepartmentId'))
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId'))
                 console.log(req)
                 dcService.createDc(req).then(res => {
                     if (res.status) {
@@ -560,7 +567,7 @@ const DCForm = () => {
                                 >
                                     {employee.map(app => {
                                         return (
-                                            <Option key={app.employeeId} value={app.employeeId }>
+                                            <Option key={app.employeeId} value={app.employeeId}>
                                                 {app.employeeName}
                                             </Option>
                                         )
@@ -611,20 +618,20 @@ const DCForm = () => {
                                         { required: true },
                                     ]}>
                                         <Select
-                                    showSearch
-                                    placeholder="Select Dept "
-                                    optionFilterProp="children"
-                                    allowClear
-                                    onChange={getAllToEmployees}
-                                >
-                                    {deps?.map(dep => {
-                                        return (
-                                            <Option key={dep.id} value={dep.id}>
-                                                {dep.departmentName}
-                                            </Option>
-                                        )
-                                    })}
-                                </Select>
+                                            showSearch
+                                            placeholder="Select Dept "
+                                            optionFilterProp="children"
+                                            allowClear
+                                            onChange={getAllToEmployees}
+                                        >
+                                            {deps?.map(dep => {
+                                                return (
+                                                    <Option key={dep.id} value={dep.id}>
+                                                        {dep.departmentName}
+                                                    </Option>
+                                                )
+                                            })}
+                                        </Select>
                                     </Form.Item>
                                     <Form.Item name="attentionPerson" label="Attention Person(Receiver side)">
                                         <Select
@@ -632,7 +639,7 @@ const DCForm = () => {
                                             placeholder="Select Received Person"
                                             optionFilterProp="children"
                                             allowClear
-                                            
+
                                         >
                                             {toEmployee.map(app => (
                                                 <Option key={app.employeeId} value={app.employeeId}>
@@ -643,7 +650,7 @@ const DCForm = () => {
                                     </Form.Item>
                                 </>
                             )}
-                            
+
                             {/* <Form.Item name="vehicleNo" label="Vehicle Number">
                                 <Input placeholder="Enter Vehicle Number" />
                             </Form.Item> */}
@@ -680,8 +687,8 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
-                           
-                            
+
+
                         </Col>
                     </Row>
                     <Row gutter={24} >
@@ -691,7 +698,7 @@ const DCForm = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={5}>
-                        <Form.Item  name="weight" label="Weight (KGS)" rules={[
+                            <Form.Item name="weight" label="Weight (KGS)" rules={[
                                 { required: true },
                                 {
                                     pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
@@ -769,53 +776,109 @@ const DCForm = () => {
                 <br />
                 <Card>
 
-                    <Form layout="vertical" onFinish={onItemAdd} form={itemForm}> <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>Item DETAILS</h1>
+                    <Form layout="vertical" onFinish={onItemAdd} form={itemForm}> <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>ITEM DETAILS</h1>
                         <Row gutter={14}>
                             <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-                                <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code' }]}>
-                                    <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
-                                        {itemData.map(e => {
-                                            return (
-                                                <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
+                                <Button type="primary" onClick={toggleManualEntry}>
+                                    {manualEntry ? 'Switch to Master Entry' : 'Switch to Manual Entry'}
+                                </Button>
                             </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
-                                <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name' }]}>
-                                    <Input disabled />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
-                                <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
-                                    <Input disabled />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                                <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
-                                    <Input disabled />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                                <Form.Item name='qty' label='Qty' rules={[
-                                    { required: true, message: 'Qty required' },
-                                ]}>
-                                    <Input onChange={calculateAmount} />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
-                                <Form.Item name='rate' label='Rate' rules={[
-                                    { required: true, message: 'Rate is required' },
-                                ]}>
-                                    <Input onChange={calculateAmount} />
-                                </Form.Item>
-                            </Col>
-                            <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
-                                <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
-                                    <Input disabled />
-                                </Form.Item>
-                            </Col>
+                        </Row>
+                        <Row gutter={14}>
+                            {
+                                manualEntry ? (
+                                    <>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code required' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name is required' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                                            <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='qty' label='Qty' rules={[
+                                                { required: true, message: 'Qty required' },
+                                            ]}>
+                                                <Input onChange={calculateAmount} />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='rate' label='Rate' rules={[
+                                                { required: true, message: 'Rate is required' },
+                                            ]}>
+                                                <Input onChange={calculateAmount} />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code is required' }]}>
+                                                <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
+                                                    {itemData.map(e => {
+                                                        return (
+                                                            <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
+                                                        );
+                                                    })}
+                                                </Select>
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                                            <Form.Item name='description' label='Description' rules={[{ required: false, message: 'Description is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='qty' label='Qty' rules={[
+                                                { required: true, message: 'Qty required' },
+                                            ]}>
+                                                <Input onChange={calculateAmount} />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='rate' label='Rate' rules={[
+                                                { required: true, message: 'Rate is required' },
+                                            ]}>
+                                                <Input onChange={calculateAmount} />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                    </>
+                                )
+                            }
+
                         </Row>
                         <Row justify={'end'}>
                             <Button type='primary' htmlType="submit">{btnType}</Button>
