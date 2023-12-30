@@ -135,10 +135,10 @@ export class DcEntity {
   acceptedUser: number;
 
   @Column('int', {
-    name: 'responsible_person',
+    name: 'attention_person',
     nullable: false
   })
-  responsiblePerson: number;
+  attentionPerson: number;
 
   @Column('int', {
     name: 'to_department_id',
@@ -197,12 +197,23 @@ export class DcEntity {
   })
   updatedUser: string | null;
 
+  @Column("varchar", {
+    nullable: true,
+    name: "security_user"
+  })
+  securityUser: string | null;
 
   @VersionColumn({
     default: 1,
     name: "version_flag"
   })
   versionFlag: number;
+
+  @UpdateDateColumn({
+    name: "checkout_time",
+    type: 'datetime'
+  })
+  checkoutTime: Date;
 
   @UpdateDateColumn({
     name: "received_date",

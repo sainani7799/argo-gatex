@@ -23,9 +23,9 @@ export class DcReq{
     updatedUser?:string;
     isAssignable?:AcceptableEnum;
     assignBy?:number;
-    responsiblePerson?:number;
+    attentionPerson?:number;
     toDepartmentId?:number;
-    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,responsiblePerson?:number,toDepartmentId?:number){
+    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,attentionPerson?:number,toDepartmentId?:number){
         this.fromUnitId = fromUnitId;
         this.warehouseId = warehouseId;
         this.departmentId = departmentId;
@@ -46,7 +46,7 @@ export class DcReq{
         this.updatedUser = updatedUser;
         this.isAssignable = isAssignable;
         this.assignBy = assignBy;
-        this.responsiblePerson = responsiblePerson;
+        this.attentionPerson = attentionPerson;
         this.toDepartmentId = toDepartmentId;
     }
 }

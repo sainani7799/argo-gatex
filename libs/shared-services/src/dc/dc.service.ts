@@ -1,4 +1,4 @@
-import { AcceptReq, AssignReq, DcIdReq, DcReq, ReceivedDcReq, RejectDcReq, UnitReq } from "libs/shared-models";
+import { AcceptReq, AssignReq, DcIdReq, DcReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "libs/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { CommonResponse } from "libs/shared-models/src/common";
 
@@ -39,6 +39,16 @@ export class DcService extends CommonAxiosServicePms {
 
     async receivedDc(dto: ReceivedDcReq): Promise<any> {
         return await this.axiosPostCall(this.DcController + '/receivedDc', dto);
+
+    }
+
+    async securityCheckDone(dto: SecurityCheckReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/securityCheckDone', dto);
+
+    }
+
+    async getSecurityGatePass(dto: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getSecurityGatePass', dto);
 
     }
     

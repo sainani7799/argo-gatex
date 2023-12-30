@@ -84,4 +84,21 @@ export class DcController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+
+  @Post('/securityCheckDone')
+  async securityCheckDone(@Body() dto: any,): Promise<CommonResponse> {
+    try {
+      return await this.dcService.securityCheckDone(dto);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+  @Post('/getSecurityGatePass')
+  async getSecurityGatePass(@Body() dto: any,): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getSecurityGatePass(dto);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
 }

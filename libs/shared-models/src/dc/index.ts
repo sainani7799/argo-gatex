@@ -6,3 +6,4 @@ export * from './dc-mail.req';
 export * from './dc-accept-re';
 export * from './received-dc-req';
 export * from './reject-dc-req';
+export * from './security.req';

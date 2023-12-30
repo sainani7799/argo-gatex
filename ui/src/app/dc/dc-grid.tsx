@@ -290,14 +290,13 @@ const DCGrid = () => {
             dataIndex: "toAddresserName"
         },
         {
-            title: "Mode Of Transport",
-            dataIndex: "modeOfTransport"
-        },
-        {
             title: "Requested By",
             dataIndex: "requestedBy"
         },
-
+        {
+            title: "Attention Person",
+            dataIndex: "attentionPerson"
+        },
         {
             title: "created User",
             dataIndex: "created_user"

@@ -46,6 +46,7 @@ const DCForm = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [loadingWarehouses, setLoadingWarehouses] = useState(true);
+    const { TextArea } = Input;
 
     const navigate = useNavigate()
     let tableData: any[] = [];
@@ -446,7 +447,7 @@ const DCForm = () => {
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData,'',AcceptableEnum.NO,null,form.getFieldValue('responsiblePerson'),form.getFieldValue('toDepartmentId'))
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData,'',AcceptableEnum.NO,null,form.getFieldValue('attentionPerson'),form.getFieldValue('toDepartmentId'))
                 console.log(req)
                 dcService.createDc(req).then(res => {
                     if (res.status) {
@@ -547,12 +548,31 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="poNo" label="PO Number">
+                            <Form.Item name="requestedBy" label="Requested By" rules={[
+                                { required: true },
+                            ]}>
+                                <Select
+                                    showSearch
+                                    placeholder="Select Name"
+                                    optionFilterProp="children"
+                                    allowClear
+                                    disabled
+                                >
+                                    {employee.map(app => {
+                                        return (
+                                            <Option key={app.employeeId} value={app.employeeId }>
+                                                {app.employeeName}
+                                            </Option>
+                                        )
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            {/* <Form.Item name="poNo" label="PO Number">
                                 <Input placeholder="Enter PO Number" />
                             </Form.Item>
                             <Form.Item name="modeOfTransport" label="Mode of Transport">
                                 <Input placeholder="Enter Mode of Transport" />
-                            </Form.Item>
+                            </Form.Item> */}
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item name="toAddresser" initialValue={radioValue} label="Unit / Buyer /Supplier" rules={[
@@ -606,7 +626,7 @@ const DCForm = () => {
                                     })}
                                 </Select>
                                     </Form.Item>
-                                    <Form.Item name="responsiblePerson" label="Responsible Person(Receiver side)">
+                                    <Form.Item name="attentionPerson" label="Attention Person(Receiver side)">
                                         <Select
                                             showSearch
                                             placeholder="Select Received Person"
@@ -623,18 +643,10 @@ const DCForm = () => {
                                     </Form.Item>
                                 </>
                             )}
-                            <Form.Item name="weight" label="Weight" rules={[
-                                { required: true },
-                                {
-                                    pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
-                                    message: 'Please enter a valid numeric value with up to 2 decimal places.',
-                                },
-                            ]}>
-                                <Input placeholder="Enter Weight" />
-                            </Form.Item>
-                            <Form.Item name="vehicleNo" label="Vehicle Number">
+                            
+                            {/* <Form.Item name="vehicleNo" label="Vehicle Number">
                                 <Input placeholder="Enter Vehicle Number" />
-                            </Form.Item>
+                            </Form.Item> */}
 
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -668,31 +680,25 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="requestedBy" label="Requested By" rules={[
-                                { required: true },
-                            ]}>
-                                <Select
-                                    showSearch
-                                    placeholder="Select Name"
-                                    optionFilterProp="children"
-                                    allowClear
-                                    disabled
-                                >
-                                    {employee.map(app => {
-                                        return (
-                                            <Option key={app.employeeId} value={app.employeeId }>
-                                                {app.employeeName}
-                                            </Option>
-                                        )
-                                    })}
-                                </Select>
-                            </Form.Item>
+                           
+                            
                         </Col>
                     </Row>
-                    <Row gutter={24} style={{ width: '100%' }}>
-                        <Col style={{ width: "80%" }}>
+                    <Row gutter={24} >
+                        <Col xs={24} sm={24} md={8} lg={8} xl={18}>
                             <Form.Item name="remarks" label="Remarks">
-                                <Input placeholder="Enter Remarks" />
+                                <TextArea placeholder="Enter Remarks" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={5}>
+                        <Form.Item  name="weight" label="Weight (KGS)" rules={[
+                                { required: true },
+                                {
+                                    pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
+                                    message: 'Please enter a valid numeric value with up to 2 decimal places.',
+                                },
+                            ]}>
+                                <Input placeholder="Enter Weight" />
                             </Form.Item>
                         </Col>
                     </Row>

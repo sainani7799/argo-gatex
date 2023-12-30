@@ -29,7 +29,7 @@ export class DcAdapter
         dcEntity.remarks = dcDto.remarks;
         dcEntity.isAccepted = dcDto.isAccepted;
         dcEntity.assignBy = dcDto.assignBy;
-        dcEntity.responsiblePerson = dcDto.responsiblePerson
+        dcEntity.attentionPerson = dcDto.attentionPerson
         dcEntity.toDepartmentId = dcDto.toDepartmentId
         dcEntity.isAssignable = dcDto.isAssignable;
         dcEntity.createdAt = dcDto.createdAt;
@@ -75,7 +75,7 @@ export class DcAdapter
             const itemData = new DcItemsDto(dcItems.dcItemId,dcItems.itemCode,dcItems.itemName,dcItems.description,dcItems.uom,dcItems.qty,dcItems.rate,dcItems.amount,dcItems.isActive,dcItems.createdAt,dcItems.createdUser,dcItems.updatedAt,dcItems.updatedUser);
             itemDto.push(itemData)
         }
-        const dcDto = new DcDto(dcObject.dcId,dcObject.dcNumber,dcObject.fromUnitId,dcObject.warehouseId,dcObject.departmentId,dcObject.poNo,dcObject.modeOfTransport,dcObject.toAddresser,dcObject.addresserNameId,dcObject.weight,dcObject.vehicleNo,dcObject.returnable,dcObject.purpose,dcObject.value,dcObject.status,dcObject.requestedBy,dcObject.remarks,dcObject.isAccepted,dcObject.isAssignable,dcObject.assignBy,itemDto,dcObject.createdAt,dcObject.createdUser,dcObject.updatedAt,dcObject.updatedUser,dcObject.isActive,dcObject.versionFlag,dcObject.acceptedUser,dcObject.responsiblePerson,dcObject.toDepartmentId) 
+        const dcDto = new DcDto(dcObject.dcId,dcObject.dcNumber,dcObject.fromUnitId,dcObject.warehouseId,dcObject.departmentId,dcObject.poNo,dcObject.modeOfTransport,dcObject.toAddresser,dcObject.addresserNameId,dcObject.weight,dcObject.vehicleNo,dcObject.returnable,dcObject.purpose,dcObject.value,dcObject.status,dcObject.requestedBy,dcObject.remarks,dcObject.isAccepted,dcObject.isAssignable,dcObject.assignBy,itemDto,dcObject.createdAt,dcObject.createdUser,dcObject.updatedAt,dcObject.updatedUser,dcObject.isActive,dcObject.versionFlag,dcObject.acceptedUser,dcObject.attentionPerson,dcObject.toDepartmentId) 
         return dcDto
     }
 }

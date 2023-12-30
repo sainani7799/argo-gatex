@@ -1,6 +1,6 @@
-import { CheckOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
+import { CheckOutlined, ExclamationCircleOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Divider, Drawer, Form, Input, Popconfirm, Row, Select, Switch, Table, Tooltip, message } from "antd";
-import { AcceptableEnum, ReceivedDcReq, StatusEnum } from "libs/shared-models";
+import { AcceptableEnum, ReceivedDcReq, SecurityCheckReq, StatusEnum } from "libs/shared-models";
 import { DcService, EmailService } from "libs/shared-services";
 import moment from "moment";
 import React, { useRef } from "react";
@@ -11,7 +11,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 const { Option } = Select;
 
 
-const DCReceived = () => {
+const DCSecurity = () => {
 
     const [form] = Form.useForm();
     const [responseData, setResponseData] = useState<any>([]);
@@ -32,7 +32,7 @@ const DCReceived = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
         console.log(req)
-        service.getIntransAndCompleteGatePass(req).then((res: any) => {
+        service.getSecurityGatePass(req).then((res: any) => {
             if (res.status) {
                 setResponseData(res.data);
             }
@@ -111,12 +111,23 @@ const DCReceived = () => {
                 : null
     });
 
-    const receivedDc = (rowData) => {
+    const securityDone = (rowData) => {
+
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        const status = rowData.returnable ==='N'? StatusEnum.CLOSED : StatusEnum.RECEIVED
-        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,authdata.userName,)
+        let status;
+
+        if (rowData.toAddresser === 'supplier') {
+            status = StatusEnum.CLOSED;
+        } else {
+            status = StatusEnum.READY_TO_RECEIVE;
+        }
+        status = status
+        const dto = new SecurityCheckReq()
+        dto.dcId = rowData.dcId;
+        dto.securityUser = authdata.userName;
+        dto.status = status
         console.log(dto)
-        service.receivedDc(dto).then(res => {
+        service.securityCheckDone(dto).then(res => {
             if (res.status) {
                 message.success('Updated Successfully');
                 setDrawerVisible(false);
@@ -165,6 +176,11 @@ const DCReceived = () => {
             dataIndex: "attentionPerson"
         },
         {
+            title: "DC Approved By",
+            dataIndex: "acceptedUser"
+        },
+
+        {
             title: "created User",
             dataIndex: "created_user"
         },
@@ -188,6 +204,7 @@ const DCReceived = () => {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
+            fixed:"right",
             render: (text, rowData, index) => (
                 <span>
                     <Tooltip placement="top" title="Detail View">
@@ -203,24 +220,27 @@ const DCReceived = () => {
 
                     </Tooltip>
                     <Divider type="vertical" />
-                    {rowData.received_dc === 'NO' ? (
-                  <Popconfirm 
-                  onConfirm={e =>{receivedDc(rowData)}}
-                  title={
-                    rowData.received_dc === 'NO'
-                      ? 'Are you sure to Receive The Dc ?'
-                      :  ''
-                  }
-                >
-                  <Switch  size="default"
-                      className={ rowData.received_dc ==='YES'? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.received_dc ==='YES'}
-                    />
-                  
-                </Popconfirm>):(
-                        <Tooltip placement='top' title="DC Received">
+                    {rowData.status === 'SENT FOR SECURITY CHECK' ? (
+                        <Popconfirm
+                            onConfirm={e => { securityDone(rowData) }}
+                            title={
+                                rowData.status === 'SENT FOR SECURITY CHECK'
+                                    ? 'Are You Done Checking(ನೀವು ಪರೀಕ್ಷಿಸಲು ಮುಗಿದಿದ್ದೀರಾ?)'
+                                    : ''
+                            }
+                            okText="YES(ಹೌದು)"  // "Yes" in Kannada
+                            cancelText="NO(ಇಲ್ಲ)"  // "No" in Kannada
+                            icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
+                        >
+                            <Switch size="default"
+                                className={rowData.status === status ? 'toggle-activated' : 'toggle-deactivated'}
+                                checkedChildren={<RightSquareOutlined type="check" />}
+                                unCheckedChildren={<RightSquareOutlined type="close" />}
+                                checked={rowData.status === status}
+                            />
+
+                        </Popconfirm>) : (
+                        <Tooltip placement='top' title="Checking Done">
                             <CheckOutlined
                                 onClick={() => {
                                     // Handle click for the other icon
@@ -287,29 +307,7 @@ const DCReceived = () => {
                                 </Form.Item>
                             </Col>
 
-                            {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
 
-                                <Form.Item name="assignBy" label="Approval User"
-                                    rules={[
-                                        { required: true },
-                                    ]}>
-                                    <Select
-                                        showSearch
-                                        placeholder="Select User "
-                                        optionFilterProp="children"
-                                        allowClear
-                                        onChange={getAllApprovalIdUser}
-                                    >
-                                        {user.map(u => {
-                                            return (
-                                                <Option key={u.approvalUserId} value={u.approvalUserId}>
-                                                    {u.approvalUser}
-                                                </Option>
-                                            )
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col> */}
                             <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} >
                                 <Form.Item name="emailId" label="Email Id"
                                     rules={[
@@ -330,4 +328,4 @@ const DCReceived = () => {
         </Card>
     );
 }
-export default DCReceived
+export default DCSecurity

@@ -4,7 +4,7 @@ import { ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/icon
 import { Link, Outlet, Route, useNavigate } from 'react-router-dom';
 import { CommonHeader } from './header/header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileExport, faLocationPin, faPerson, faShirt, faTruckArrowRight, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
+import { faFileExport, faInbox, faLocationPin, faPerson, faShieldAlt, faShirt, faTruckArrowRight, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from 'antd/es/layout/layout';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -113,8 +113,11 @@ export default function BasicLayout() {
                         <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                             <Link to="/dc-view"><span>GatePass</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                        <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
                             <Link to="/dc-received"><span>Received DC</span></Link>
+                        </Menu.Item>
+                        <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                            <Link to="/dc-security"><span>Security Check</span></Link>
                         </Menu.Item>
                     </SubMenu>
                 </Menu>

@@ -22,6 +22,7 @@ import { DcEmailModel } from "libs/shared-models";
 import { DcMail } from "./dc/dc-mail";
 import DCReceived from "./dc/dc-recived";
 import DcRejectMail from "./dc/dc-mail-reject";
+import DCSecurity from "./dc/dc-security";
 
 
 
@@ -87,6 +88,7 @@ const AppRoutes = () => {
                     <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/dc-view" element={<DCGrid />} />
                     <Route path="/dc-received" element={<DCReceived />} />
+                    <Route path="/dc-security" element={<DCSecurity />} />
                     <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm

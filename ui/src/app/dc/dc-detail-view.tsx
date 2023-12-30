@@ -218,9 +218,7 @@ export const DcDetailsView = (props: DcViewProps) => {
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Purpose</span>}>{data[0]?.purpose}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Status</span>}>{data[0]?.status}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Requested By</span>}>{data[0]?.requestedBy}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Responsible Person</span>}>{data[0]?.responsiblePerson}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Mode Of Transport</span>}>{data[0]?.modeOfTransport}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>vehicle No</span>}>{data[0]?.vehicleNo}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Attention Person</span>}>{data[0]?.attentionPerson}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Dc Assign</span>}>{data[0]?.isDcAssign}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Assign By</span>}>{data[0]?.assignBy}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Email</span>}>{data[0]?.emailId}</DescriptionsItem>
