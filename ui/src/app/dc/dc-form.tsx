@@ -98,6 +98,7 @@ const DCForm = () => {
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
         form.setFieldsValue({ requestedBy: authdata.employeeId })
+        
     }, [])
     useEffect(() => {
         getGatePassData();
@@ -128,7 +129,8 @@ const DCForm = () => {
         };
 
         getWarehouses();
-    }, []);
+        
+    }, [form.setFieldsValue({ warehouseId: warehouses[0]?.warehouseId})]);
 
     useEffect(() => {
         const addresserNameId = form.getFieldValue('addresserNameId');
@@ -507,6 +509,7 @@ const DCForm = () => {
                                     optionFilterProp="children"
                                     allowClear
                                     disabled
+                                    // onChange={getWarehouses}
                                 >
                                     {addressData.map(unit => {
                                         return (

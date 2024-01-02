@@ -64,7 +64,7 @@ const SupplierForm = (props:SupplierFormProps) => {
 
 
     return (
-        <Card title={<span style={{ color: 'white' }}>Buyer Form</span>}
+        <Card title={<span style={{ color: 'white' }}>Buyer/Supplier Form</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/supplier-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
             <Form
                 form={form}
@@ -78,15 +78,15 @@ const SupplierForm = (props:SupplierFormProps) => {
                         <Input hidden />
                     </Form.Item>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="supplierCode" label="Buyer Code"
+                        <Form.Item name="supplierCode" label="Buyer /Supplier Code"
                             rules={[
                                 { required: true },
                             ]}>
-                            <Input placeholder=" Enter Buyer Code" disabled={props.isUpdate} />
+                            <Input placeholder=" Enter Buyer/Supplier Code" disabled={props.isUpdate} />
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="supplierName" label="Buyer Name"
+                        <Form.Item name="supplierName" label="Buyer /Supplier Name"
                             rules={[
                                 { required: true },
                             ]}>

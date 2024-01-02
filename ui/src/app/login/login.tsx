@@ -89,7 +89,7 @@ export default function Login() {
                                 </Col>
                             </Row>
                             <Row style={{ paddingTop: '10px' }}>
-                                <Button onClick={onLogin} style={{
+                                <Button onClick={onLogin} htmlType="submit" style={{
                                     width: '100%',
                                     backgroundColor: '#1890ff',  // Change the background color
                                     color: '#fff',               // Change the text color

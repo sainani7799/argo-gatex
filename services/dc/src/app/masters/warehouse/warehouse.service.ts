@@ -15,9 +15,9 @@ export class WarehouseService {
 
   ) { }
   
-  async getWarehouseWithoutRelations(warehouseName: string, unitId: number): Promise<WarehouseEntity> {
+  async getWarehouseWithoutRelations(unitId: number): Promise<WarehouseEntity> {
     const warehouseResponse = await this.warehouseRepo.findOne({
-      where: { warehouseName, unitId },
+      where: {unitId },
     });
     if (warehouseResponse) {
       return warehouseResponse;
@@ -35,21 +35,21 @@ export class WarehouseService {
 
       if (!isUpdate) {
 
-        const warehouseEntity = await this.getWarehouseWithoutRelations(warehouseDto.warehouseName, warehouseDto.unitId);
+        const warehouseEntity = await this.getWarehouseWithoutRelations(warehouseDto.unitId);
         if (warehouseEntity) {
           console.log(warehouseEntity, '------')
-          throw new CommonResponse(false, 11104, 'warehouse Entity already exists');
+          throw new CommonResponse(false, 11104, 'warehouse Entity already exists in this unit');
         }
       }
       else {
         const certificatePrevious = await this.warehouseRepo.findOne({
-          where: { warehouseName: warehouseDto.warehouseName, unitId: warehouseDto.unitId },
-        }); if (certificatePrevious) {
-          previousValue = { warehouseName: certificatePrevious.warehouseName, unitId: certificatePrevious.unitId };
+          where: {unitId: warehouseDto.unitId },
+        }); 
+        if (certificatePrevious) {
+          previousValue = { unitId: certificatePrevious.unitId };
           console.log(previousValue, 'previousValue');
 
           const warehouseEntity = await this.getWarehouseWithoutRelations(
-            warehouseDto.warehouseName,
             warehouseDto.unitId
           );
 
@@ -57,7 +57,7 @@ export class WarehouseService {
 
           // Compare individual properties directly
           if (warehouseEntity &&
-            (warehouseEntity.warehouseName !== previousValue.warehouseName || warehouseEntity.unitId !== previousValue.unitId)
+            (warehouseEntity.unitId !== previousValue.unitId)
           ) {
             throw new CommonResponse(false, 11104, 'warehouse already exists in this unit');
           }
@@ -71,7 +71,7 @@ export class WarehouseService {
       warehouseDtos.push(savedWarehouseEntity)
       console.log(savedWarehouseEntity, 'saved');
       if (savedWarehouseEntity) {
-        const presentValue = warehouseDto.warehouseName && warehouseDto.unitId;
+        const presentValue = warehouseDto.unitId;
         //generating resposnse
         const response = new CommonResponse(true, 1, isUpdate ? 'Warehouse Updated Successfully' : 'Warehouse created Successfully')
         const name = isUpdate ? 'updated' : 'created'
