@@ -47,7 +47,7 @@ const DCForm = () => {
     const [isPopupVisible, setIsPopupVisible] = useState(false);
     const [loadingWarehouses, setLoadingWarehouses] = useState(true);
     const { TextArea } = Input;
-    const [manualEntry, setManualEntry] = useState(false);
+    const [manualEntry, setManualEntry] = useState(true);
 
     const toggleManualEntry = () => {
         setManualEntry(!manualEntry);
@@ -98,7 +98,7 @@ const DCForm = () => {
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
         form.setFieldsValue({ requestedBy: authdata.employeeId })
-        
+        form.setFieldsValue({ departmentId: Number(authdata.department) })
     }, [])
     useEffect(() => {
         getGatePassData();

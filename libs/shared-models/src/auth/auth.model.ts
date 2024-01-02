@@ -7,6 +7,7 @@ export class AuthModel {
     unitCode:string
     roleId:number
     roleName:string
+    department?:number
 
 /**
  * 
@@ -28,7 +29,8 @@ export class AuthModel {
         unitName:string,
         unitCode:string,
         roleId:number,
-        roleName:string
+        roleName:string,
+        department?:number
     ) {
         this.userName = userName;
         this.employeeId = employeeId;
@@ -37,7 +39,8 @@ export class AuthModel {
         this.unitName = unitName;
         this.unitCode = unitCode;
         this.roleId = roleId;
-        this.roleName =roleName
+        this.roleName =roleName;
+        this.department = department
     }
 
 }
