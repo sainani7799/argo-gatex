@@ -274,17 +274,7 @@ export function DcPrint(props: DcPrintProps) {
                         </Col>
                         <Col span={8}>
                             <div style={{ fontFamily: 'serif' }}>
-                                <h4>Authorised Signatory</h4>
-                                <br />
-                                {data[0]?.sign_path && (
-                                    <img
-                                        src={'http://172.20.50.169/delivery-chalan/dist/services/dc/upload-files/' + data[0]?.user_signature}
-                                        alt={`Signature of ${sign}`}
-                                        style={{ maxWidth: '100%', height: 'auto', marginTop: '10px' }}
-                                    />
-
-                                )}
-                                For Shahi Exports Pvt. Ltd
+                                <h4>Authorised Signatory : <br/>{data[0]?.acceptedUser.toUpperCase()}<br/>({data[0]?.department})<br/>For Shahi Exports Pvt. Ltd</h4>
                             </div>
                         </Col>
                     </Row>
