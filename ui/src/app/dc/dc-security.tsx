@@ -257,7 +257,7 @@ const DCSecurity = () => {
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>GatePass</span>}
+            title={<span style={{ color: "white" }}>SECURITY CHECK</span>}
 
 
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>

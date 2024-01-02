@@ -15,6 +15,7 @@ export default function BasicLayout() {
     const [subMenu, setSubmenu] = useState<string[]>([]);
     const navigate = useNavigate();
     type MenuItem = Required<MenuProps>['items'][number];
+    const authdata = JSON.parse(localStorage.getItem('userName'))
 
 
     const toggle = () => {
@@ -72,6 +73,8 @@ export default function BasicLayout() {
                     defaultSelectedKeys={['/']}
                     style={{ paddingTop: '20px' }}
                 >
+                   {
+                    authdata.roleId === 1 ?
                     <SubMenu
                         key="masters" icon={<UserOutlined />}
                         title={
@@ -102,6 +105,9 @@ export default function BasicLayout() {
                             <Link to="/item-grid"><span>Items</span></Link>
                         </Menu.Item>
                     </SubMenu>
+                        : <></>
+                   } 
+                   
                     <SubMenu
                         key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
                         title={

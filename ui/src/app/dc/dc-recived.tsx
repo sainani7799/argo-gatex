@@ -237,7 +237,7 @@ const DCReceived = () => {
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>GatePass</span>}
+            title={<span style={{ color: "white" }}>Received GatePass's</span>}
 
 
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
