@@ -160,12 +160,12 @@ export function DcPrint(props: DcPrintProps) {
                                 <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.returnable} </h4>
                             </div>
                             <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
-                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Mode Of Transport </b>
-                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.modeOfTransport} </h4>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>To Department </b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.toDepartment} </h4>
                             </div>
                             <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
-                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Vehicle No  </b>
-                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.vehicleNo} </h4>
+                                <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Attention Person</b>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.attentionPerson.toUpperCase()} </h4>
                             </div>
                         </Col>
                     </Row>
