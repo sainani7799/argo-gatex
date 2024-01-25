@@ -64,18 +64,18 @@ const SupplierGrid = () => {
 
     const columnsSkelton:any = [
         {
-            key: "1",
             title: "Buyer/Supplier Code",
             dataIndex: "supplierCode"
         },
         {
-            key: "2",
             title: "Buyer/Supplier Name",
             dataIndex: "supplierName"
         },
-
         {
-            key: "3",
+            title: "Type",
+            dataIndex: "type"
+        },
+        {
             title: "Created user ",
             dataIndex: "createdUser"
         },

@@ -16,6 +16,11 @@ export class SupplierEntity  {
     })
     supplierCode: string;
 
+    @Column('varchar', {
+        name: 'type',
+    })
+    type: string;
+
     @CreateDateColumn({
         name: "created_at",
         type: "datetime"

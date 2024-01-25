@@ -16,7 +16,8 @@ export default function BasicLayout() {
     const navigate = useNavigate();
     type MenuItem = Required<MenuProps>['items'][number];
     const authdata = JSON.parse(localStorage.getItem('userName'))
-
+     
+    console.log(authdata)
 
     const toggle = () => {
         setCollapsed(prevCollapsed => !prevCollapsed);
@@ -108,7 +109,11 @@ export default function BasicLayout() {
                         : <></>
                    } 
                    
-                    <SubMenu
+                    
+
+                        {
+                            authdata.roleId === 1 && (
+                                <SubMenu
                         key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
                         title={
                             <span>
@@ -116,16 +121,57 @@ export default function BasicLayout() {
                             </span>
                         }
                     >
-                        <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                            <Link to="/dc-view"><span>GatePass</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                            <Link to="/dc-received"><span>Received DC</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                            <Link to="/dc-security"><span>Security Check</span></Link>
-                        </Menu.Item>
-                    </SubMenu>
+                                <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-view"><span>GatePass</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
+                                <Link to="/dc-received"><span>Received DC</span></Link>
+                            </Menu.Item>
+                            
+                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                <Link to="/dc-security"><span>Security Check</span></Link>
+                            </Menu.Item>
+                            </SubMenu>
+                            )
+                        }
+
+{
+                            authdata.roleId === 2 && (
+                                <SubMenu
+                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                        title={
+                            <span>
+                                <span>Dc</span>
+                            </span>
+                        }
+                    >
+                                <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-view"><span>GatePass</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
+                                <Link to="/dc-received"><span>Received DC</span></Link>
+                            </Menu.Item>
+                            </SubMenu>
+                            )
+                        }
+                        {
+                            authdata.roleId === 3 && (
+                                <SubMenu
+                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                        title={
+                            <span>
+                                <span>Dc</span>
+                            </span>
+                        }
+                    >
+                            
+                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                <Link to="/dc-security"><span>Security Check</span></Link>
+                            </Menu.Item>
+                            </SubMenu>
+                            )
+                        }
+                    
                 </Menu>
             </Sider>
             <CommonHeader key={Date.now()} toggle={toggle} collapsed={collapsed} />

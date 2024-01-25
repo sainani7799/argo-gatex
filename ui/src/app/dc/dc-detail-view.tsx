@@ -20,18 +20,19 @@ export const DcDetailsView = (props: DcViewProps) => {
   const service = new DcService();
   const addressService = new AddressService();
   const [toAddressData, setToAddressData] = useState<any>([]);
-  const { id } = useParams();
+  const { id ,security } = useParams();
 
   const location = useLocation();
   const currentRoute = location.pathname;
-  console.log(currentRoute, 'current route')
+  
   useEffect(() => {
     getDc();
-  }, [props.dcId])
+  }, [id])
+
+console.log(id,security)
 
   const getDc = () => {
     const req = new DcIdReq(Number(id))
-    console.log(req, '-----------');
     service.getDcDetailsById(req).then(res => {
       if (res.status) {
         setData(res.data)
@@ -190,6 +191,7 @@ export const DcDetailsView = (props: DcViewProps) => {
     setIsModalVisible(true);
   }
   const isDetailView = location.pathname === '/dc-detail-view';
+  
 
   return (
     <div>
@@ -200,7 +202,11 @@ export const DcDetailsView = (props: DcViewProps) => {
           </Button> : ''}
           <Button
             className='panel_button'
-            onClick={() => navigate('/dc-view')}
+            onClick={() => 
+              {
+                const routePath = security ? `/dc-security` : `/dc-view`;
+              navigate(routePath)
+            }}
           >
             BACK
           </Button>

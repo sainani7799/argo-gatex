@@ -72,12 +72,11 @@ const UserForm = (props: UserFormProps) => {
 
     const handleReset = () => {
         form.resetFields();
-
     };
 
     return (
         <Card type="inner" title="User-Form"
-            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }} extra={<Link to='/users' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>}>
+            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }} extra={<Link to='/users' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>}>
             <Form
                 name="user-form"
                 autoComplete='off'

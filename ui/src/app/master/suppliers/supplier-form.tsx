@@ -19,6 +19,7 @@ export interface SupplierFormProps {
 
 const SupplierForm = (props:SupplierFormProps) => {
     const { token: { colorPrimary } } = useToken()
+    const Option = Select;
     const [form] = Form.useForm();
     const service = new SupplierService();
     const navigate = useNavigate();
@@ -42,12 +43,8 @@ const SupplierForm = (props:SupplierFormProps) => {
                 message.success('Created Successfully')
                 navigate('/supplier-view')
             } else {
-                console.log(res.internalMessage, "**********");
-                message.error('Not Created')
+                message.error(res.internalMessage)
             }
-        }).catch(err => {
-            setDisable(false)
-            message.error('Item code already exist')
         })
     }
 
@@ -65,7 +62,7 @@ const SupplierForm = (props:SupplierFormProps) => {
 
     return (
         <Card title={<span style={{ color: 'white' }}>Buyer/Supplier Form</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/supplier-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/supplier-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
             <Form
                 form={form}
                 onFinish={saveData}
@@ -91,6 +88,17 @@ const SupplierForm = (props:SupplierFormProps) => {
                                 { required: true },
                             ]}>
                             <Input placeholder=" Enter Buyer Name" />
+                        </Form.Item>
+                    </Col>
+                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                        <Form.Item name="type" label="Type"
+                            rules={[
+                                { required: true },
+                            ]}>
+                            <Select placeholder='Select Type'> 
+                               <Option value={'BUYER'}>Buyer</Option>
+                               <Option value={'SUPPLIER'}>Supplier</Option>
+                            </Select>
                         </Form.Item>
                     </Col>
                   

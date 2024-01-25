@@ -297,10 +297,10 @@ const DCGrid = () => {
             title: "Attention Person",
             dataIndex: "attentionPerson"
         },
-        {
-            title: "created User",
-            dataIndex: "created_user"
-        },
+        // {
+        //     title: "created User",
+        //     dataIndex: "created_user"
+        // },
         {
             title: "Created Date",
             dataIndex: "createdDate",
@@ -327,13 +327,11 @@ const DCGrid = () => {
                         <EyeOutlined
                             onClick={() => {
                                 console.log(rowData.dcId);
-
-                                navigate(`/dc-detail-view/${rowData.dcId}`, { state: rowData.dcId })
+                                navigate(`/dc-detail-view/${rowData.dcId}`)
                             }}
                             style={{ color: "blue", fontSize: 20 }}
                         />
                         <Divider type='vertical' />
-
                     </Tooltip>
                     {rowData.isDcAssign === 'NO' ? (
                         <Tooltip placement='top' title="ASSIGN DC TO USER">

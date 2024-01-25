@@ -110,7 +110,8 @@ export class DcService {
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
             LEFT JOIN shahi_department td ON d.id = dc.to_department_id
             LEFT JOIN shahi_employees er ON er.employee_id = dc.attention_person
-            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}`;
+            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId} 
+            GROUP BY dc.dc_id ORDER BY dc.created_at DESC`;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {
@@ -192,7 +193,7 @@ export class DcService {
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            WHERE dc.status = 'SENT FOR SECURITY CHECK' AND to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}`;
+            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId}`;
             const data = await this.userRepo.query(query)
             return new CommonResponse(true, 111, 'data retried successfully', data)
         } catch (error) {

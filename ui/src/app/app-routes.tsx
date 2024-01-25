@@ -90,6 +90,7 @@ const AppRoutes = () => {
                     <Route path="/dc-received" element={<DCReceived />} />
                     <Route path="/dc-security" element={<DCSecurity />} />
                     <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+                    <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}

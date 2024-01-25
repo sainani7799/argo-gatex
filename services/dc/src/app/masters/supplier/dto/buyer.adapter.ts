@@ -9,6 +9,7 @@ export class SupplierAdapter {
         buyer.supplierId = dto.supplierId;
         buyer.supplierCode = dto.supplierCode;
         buyer.supplierName = dto.supplierName;
+        buyer.type = dto.type;
         buyer.createdAt = dto.createdAt;
         buyer.createdUser = dto.createdUser;
         buyer.isActive = dto.isActive == undefined ? true : dto.isActive;
@@ -27,6 +28,7 @@ export class SupplierAdapter {
         dto.supplierId = entity.supplierId;
         dto.supplierCode = entity.supplierCode;
         dto.supplierName = entity.supplierName;
+        dto.type = entity.type;
         dto.createdUser = entity.createdUser;
         dto.isActive = entity.isActive;
         dto.updatedUser = entity.updatedUser;

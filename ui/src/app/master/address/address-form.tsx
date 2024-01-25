@@ -101,7 +101,7 @@ const AddressForm = (props: AddressFormProps) => {
     console.log(props.addressData)
     return (
         <Card title={<span style={{ color: 'white' }}>Add Address</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/address-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/address-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
             <Form
                 form={form}
                 initialValues={props.addressData}

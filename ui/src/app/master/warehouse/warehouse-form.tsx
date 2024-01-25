@@ -66,7 +66,7 @@ const WarehouseForm = (props:warehouseFormProps) => {
 
     return (
         <Card title={<span style={{ color: 'white' }}>Warehouse Form</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/warehouse-grid' ><span style={{ color: 'white' }} ><Button className='panel_button' >View </Button> </span></Link>} >
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/warehouse-grid' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
             <Form
                 form={form}
                 onFinish={saveData}

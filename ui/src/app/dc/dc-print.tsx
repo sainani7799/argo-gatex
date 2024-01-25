@@ -3,8 +3,8 @@ import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
 import { AddressService, DcService } from "libs/shared-services";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-// import html2pdf from 'html2pdf.js';
-import { PrinterOutlined } from "@ant-design/icons";
+import html2pdf from 'html2pdf.js';
+import { DownloadOutlined, PrinterOutlined } from "@ant-design/icons";
 import moment from "moment";
 import './dc-print.css';
 import sign from '../../../../ui/src/assets/WhatsApp Image 2023-12-14 at 12-8731.jpeg'
@@ -19,7 +19,6 @@ export function DcPrint(props: DcPrintProps) {
     const [data, setData] = useState<any[]>([])
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
     const page = 1
-    const navigate = useNavigate();
     const location = useLocation()
     const [addressData, setAddressData] = useState<any>([]);
     const service = new DcService();
@@ -79,6 +78,23 @@ export function DcPrint(props: DcPrintProps) {
             message.error("Something went wrong");
         })
     };
+
+    const pdfDownloadDc = () => {
+        setTimeout(() => {
+            const printableElements = document.getElementById('printme').innerHTML;
+            const orderHTML = '<html><head><title></title></head><body>' + printableElements + '</body></html>';
+    
+            // Convert HTML to PDF
+            html2pdf(orderHTML, {
+                margin: 10,
+                filename: 'gate_pass.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            });
+        }, 1000);
+    };
+
     const printDc = () => {
         setTimeout(() => {
             const printableElements = document.getElementById('printme').innerHTML;
@@ -102,8 +118,11 @@ export function DcPrint(props: DcPrintProps) {
     return (
         <Card title='GATE PASS PRINT'
             style={{ textAlign: 'center' }}
-            headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0, color: '#fff' }} extra={<span style={{ color: 'white' }} ><Button onClick={printDc} className='panel_button'><PrinterOutlined /> Print</Button>
-                {/* <Button className='panel_button' onClick={downloadAsPDF}>Download PDF</Button> */}
+            headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0, color: '#fff' }} extra={<span style={{ color: 'white' }} >
+                <>
+                <Button onClick={printDc} className='panel_button'><PrinterOutlined /> Print</Button>
+                <Button className='panel_button' onClick={pdfDownloadDc}><DownloadOutlined />Download</Button> 
+                </>
             </span>}>
             <html>
                 <body id='printme'>
