@@ -10,7 +10,7 @@ import './dc-print.css';
 import sign from '../../../../ui/src/assets/WhatsApp Image 2023-12-14 at 12-8731.jpeg'
 import { numberToWords } from "amount-to-words";
 export interface DcPrintProps {
-    dcId: number
+    dcId: any
     // printDc: () => void
 }
 
@@ -25,13 +25,13 @@ export function DcPrint(props: DcPrintProps) {
     const addressService = new AddressService();
     const [toAddressData, setToAddressData] = useState<any>([]);
 
-
+   console.log(props.dcId)
     useEffect(() => {
         getDc();
     }, [props.dcId])
 
     const getDc = () => {
-        const req = new DcIdReq(location.state)
+        const req = new DcIdReq(props.dcId)
         console.log(req, '-----------');
         service.getDcDetailsById(req).then(res => {
             if (res.status) {
@@ -110,7 +110,7 @@ export function DcPrint(props: DcPrintProps) {
     const totalQty = data.reduce((sum, item) => sum + parseFloat(item.qty || 0), 0);
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
     const titleCase = (str) => str.toLowerCase().split(' ')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .map(word => word.charAt(0)?.toUpperCase() + word.slice(1))
         .join(' ');
     const normalizeImagePath = (path) => {
         return path.replace(/\\/g, '/');
@@ -184,7 +184,7 @@ export function DcPrint(props: DcPrintProps) {
                             </div>
                             <div className="issued-to" style={{ marginBottom: '0px', display: 'flex' }}>
                                 <b style={{ fontSize: "15px", textAlign: 'left', width: '134px' }}>Attention Person</b>
-                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.attentionPerson.toUpperCase()} </h4>
+                                <h4 style={{ textAlign: 'left', fontFamily: 'serif', margin: '0' }}> : {data[0]?.attentionPerson?.toUpperCase()} </h4>
                             </div>
                         </Col>
                     </Row>

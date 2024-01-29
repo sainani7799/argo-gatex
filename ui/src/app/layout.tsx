@@ -53,7 +53,7 @@ export default function BasicLayout() {
                 trigger={null}
                 breakpoint='lg'
                 collapsedWidth={35}  // Adjust the collapsed width for mobile view
-                width={200}
+                width={210}
                 style={{
                     overflow: 'auto',
                     height: '100vh',
@@ -122,10 +122,10 @@ export default function BasicLayout() {
                         }
                     >
                                 <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-view"><span>GatePass</span></Link>
+                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC</span></Link>
+                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
                             </Menu.Item>
                             
                             <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
@@ -146,10 +146,10 @@ export default function BasicLayout() {
                         }
                     >
                                 <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-view"><span>GatePass</span></Link>
+                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC</span></Link>
+                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
                             </Menu.Item>
                             </SubMenu>
                             )

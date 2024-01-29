@@ -296,7 +296,7 @@ console.log(id,security)
                 ]}
               >
 
-                <DcPrint dcId={props.dcId}/>
+                <DcPrint dcId={id}/>
               </Modal> : ""}
           </Col>
         </Row>
