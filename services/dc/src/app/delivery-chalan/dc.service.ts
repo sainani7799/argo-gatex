@@ -125,7 +125,7 @@ export class DcService {
             w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
-            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user
+            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user,ea.employee_name AS attentionPerson
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
