@@ -25,23 +25,20 @@ export function DcPrint(props: DcPrintProps) {
     const addressService = new AddressService();
     const [toAddressData, setToAddressData] = useState<any>([]);
 
-   console.log(props.dcId)
     useEffect(() => {
         getDc();
     }, [props.dcId])
 
     const getDc = () => {
         const req = new DcIdReq(props.dcId)
-        console.log(req, '-----------');
         service.getDcDetailsById(req).then(res => {
             if (res.status) {
                 setData(res.data)
             }
         })
     }
-    console.log(data)
+    
     useEffect(() => {
-        console.log(data)
         if (data) {
             console.log(data)
             getFromAddress(data[0]?.fromUnitId),
@@ -64,8 +61,8 @@ export function DcPrint(props: DcPrintProps) {
             message.error("Something went wrong");
         })
     };
+
     const getAllToAddressByUnit = async (val) => {
-        console.log(val)
         const req = new ToAddressReq()
         req.addresser = data[0]?.toAddresser
         req.addresserNameId = data[0]?.toAddresserNameId
@@ -140,7 +137,7 @@ export function DcPrint(props: DcPrintProps) {
                                 </div>
                             </Col>
                             <Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '5px' }}>
-                                <QRCode type="svg" value={`http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${location.state}`} />
+                                <QRCode type="svg" value={`http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${props.dcId}`} />
                             </Col>
                         </Row>
                     </div>

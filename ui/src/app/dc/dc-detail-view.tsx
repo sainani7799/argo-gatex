@@ -29,8 +29,6 @@ export const DcDetailsView = (props: DcViewProps) => {
     getDc();
   }, [id])
 
-console.log(id,security)
-
   const getDc = () => {
     const req = new DcIdReq(Number(id))
     service.getDcDetailsById(req).then(res => {
@@ -39,11 +37,9 @@ console.log(id,security)
       }
     })
   }
-  console.log(data)
+
   useEffect(() => {
-    console.log(data)
     if (data) {
-      console.log(data)
       getFromAddress(data[0]?.fromUnitId),
 
         getAllToAddressByUnit(data)
@@ -65,7 +61,6 @@ console.log(id,security)
     })
   };
   const getAllToAddressByUnit = async (val) => {
-    console.log(val)
     const req = new ToAddressReq()
     req.addresser = data[0]?.toAddresser
     req.addresserNameId = data[0]?.toAddresserNameId
