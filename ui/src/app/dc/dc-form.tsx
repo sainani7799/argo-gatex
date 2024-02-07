@@ -114,23 +114,23 @@ const DCForm = () => {
         });
     };
     useEffect(() => {
-        const getWarehouses = async () => {
-            try {
-                const unitValue = authdata.unitId;
-                const req = { unitId: unitValue };
-                const res = await warehouseService.getAllWarehousesByUnit(req);
-                const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
-                setWarehouses(activeWarehouses);
-                setLoadingWarehouses(false);
-            } catch (error) {
-                message.error("Something went wrong");
-                setLoadingWarehouses(false);
-            }
-        };
-
         getWarehouses();
-        
-    }, [form.setFieldsValue({ warehouseId: warehouses[0]?.warehouseId})]);
+    }, []);
+
+    const getWarehouses = async () => {
+        try {
+            const unitValue = authdata.unitId;
+            const req = { unitId: unitValue };
+            const res = await warehouseService.getAllWarehousesByUnit(req);
+            const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
+            form.setFieldsValue({ warehouseId: activeWarehouses[0]?.warehouseId})
+            setWarehouses(activeWarehouses);
+            setLoadingWarehouses(false);
+        } catch (error) {
+            message.error("Something went wrong");
+            setLoadingWarehouses(false);
+        }
+    };
 
     useEffect(() => {
         const addresserNameId = form.getFieldValue('addresserNameId');
@@ -502,7 +502,7 @@ const DCForm = () => {
                             </Form.Item>
                             <Form.Item name="fromUnitId" label="Unit" rules={[
                                 { required: true },
-                            ]}>
+                            ]} >
                                 <Select
                                     showSearch
                                     placeholder="Select Unit "

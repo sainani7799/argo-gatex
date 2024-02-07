@@ -122,6 +122,10 @@ export class EmployeeService {
     // return data
   }
 
+  async updateEmployees(req:any) : Promise<CommonResponse>{
+    const update = await this.employeeRepo.update({employeeId:req.employeeId},{})
+    return
+  }
 
   async getAllEmployeesByUnit(req: UnitReq): Promise<CommonResponse> {
     try {

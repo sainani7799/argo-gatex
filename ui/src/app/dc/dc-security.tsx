@@ -49,10 +49,12 @@ const DCSecurity = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const searchInput = useRef(null);
   const service = new DcService();
+  const [unitsDrop,setUnitsDrop] = useState([])
 
   let navigate = useNavigate();
   useEffect(() => {
     getReceivedGatePassData();
+    getAllUnits();
   }, []);
 
   const getReceivedGatePassData = () => {
@@ -65,6 +67,14 @@ const DCSecurity = () => {
       }
     });
   };
+
+  const getAllUnits=()=>{
+    service.getAllUnitsData().then((res)=>{
+      if(res.data){
+        setUnitsDrop(res.data)
+      }
+    })
+  }
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -157,7 +167,7 @@ const DCSecurity = () => {
   const securityDone = (rowData) => {
     const authdata = JSON.parse(localStorage.getItem('userName'));
     let status;
-
+    console.log(authdata)
     if (rowData.toAddresser === 'supplier') {
       status = StatusEnum.CLOSED;
     } else {
@@ -302,23 +312,151 @@ const DCSecurity = () => {
     },
   ];
 
+  const completedColumns :any =[
+    {
+      title: 'S No',
+      key: 'sno',
+      width: 60,
+      responsive: ['sm'],
+      render: (text, object, index) => (page - 1) * 10 + (index + 1),
+    },
+    {
+      title: 'DC Number',
+      dataIndex: 'dcNumber',
+      ...getColumnSearchProps('dcNumber'),
+    },
+    {
+      title: 'Returnable',
+      dataIndex: 'returnable',
+      ...getColumnSearchProps('returnable'),
+    },
+    {
+      title: 'From Unit',
+      dataIndex: 'fromUnit',
+    },
+    {
+      title: 'To Unit',
+      dataIndex: 'toAddresserName',
+    },
+    {
+      title: 'Requested By',
+      dataIndex: 'requestedBy',
+    },
+    {
+      title: 'Attention Person',
+      dataIndex: 'attentionPerson',
+    },
+    {
+      title: 'DC Approved By',
+      dataIndex: 'acceptedUser',
+    },
+    {
+      title:'Checked BY',
+      dataIndex:'CheckedUser'
+    },
+    {
+      title:'Checked Date',
+      dataIndex:'secUserDate',
+      render:(val,rec) =>{
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-'
+      }
+    },
+
+    // {
+    //     title: "created User",
+    //     dataIndex: "created_user"
+    // },
+    {
+      title: 'Created Date',
+      dataIndex: 'createdDate',
+      render: (text, record) => {
+        const createdDate = record.createdDate;
+        if (createdDate) {
+          return moment(createdDate).format('DD-MM-YYYY');
+        } else {
+          return '-';
+        }
+      },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+    },
+    {
+      title: 'Action',
+      dataIndex: 'requestNumber',
+      align: 'center',
+      fixed: 'right',
+      render: (text, rowData, index) => (
+        <span>
+          <Tooltip placement="top" title="Detail View">
+            <EyeOutlined
+              onClick={() => {
+                navigate(`/dc-detail-view-security/${rowData.dcId}/security`);
+              }}
+              style={{ color: 'blue', fontSize: 20 }}
+            />
+            <Divider type="vertical" />
+          </Tooltip>
+          {/* <Divider type="vertical" /> */}
+          {rowData.status === 'SENT FOR SECURITY CHECK' ? (
+            <Popconfirm
+              onConfirm={(e) => {
+                securityDone(rowData);
+              }}
+              title={
+                rowData.status === 'SENT FOR SECURITY CHECK'
+                  ? 'Are You Done Checking'
+                  : ''
+              }
+              okText="YES"
+              cancelText="NO"
+              icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
+            >
+              <Switch
+                size="default"
+                className={
+                  rowData.status === status
+                    ? 'toggle-activated'
+                    : 'toggle-deactivated'
+                }
+                checkedChildren={<RightSquareOutlined type="check" />}
+                unCheckedChildren={<RightSquareOutlined type="close" />}
+                checked={rowData.status === status}
+              />
+            </Popconfirm>
+          ) : (
+            <Tooltip placement="top" title="Checking Done">
+              <CheckOutlined
+                onClick={() => {
+                  // Handle click for the other icon
+                }}
+                style={{ color: 'gray', fontSize: 20 }}
+              />
+            </Tooltip>
+          )}
+        </span>
+      ),
+    },
+  ]
+
   return (
     <Card title={<span style={{ color: 'white' }}>SECURITY CHECK</span>} headStyle={{ backgroundColor: '#7d33a2', color: 'black' }} >
-      <Tabs defaultActiveKey="1">
-        <TabPane tab="Security Checked Dc's" key="1">
-          <Table
-            columns={columnsSkelton}
-            dataSource={responseData.filter(
-              (item) => item.status !== 'SENT FOR SECURITY CHECK'
-            )}
-            scroll={{ x: 1400, y: 400 }}
-          />
-        </TabPane>
-        <TabPane tab="Security Pending" key="2">
+      <Tabs defaultActiveKey="2">
+      <TabPane tab="Security Pending" key="2">
           <Table
             columns={columnsSkelton}
             dataSource={responseData.filter(
               (item) => item.status === 'SENT FOR SECURITY CHECK'
+            )}
+            scroll={{ x: 1400, y: 400 }}
+          />
+        </TabPane>
+        <TabPane tab="Security Checked Dc's" key="1">
+          <Table
+            columns={completedColumns}
+            dataSource={responseData.filter(
+              (item) => item.status !== 'SENT FOR SECURITY CHECK'
             )}
             scroll={{ x: 1400, y: 400 }}
           />

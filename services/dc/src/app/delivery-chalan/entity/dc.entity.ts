@@ -221,6 +221,13 @@ export class DcEntity {
   })
   receivedDate: Date;
 
+  @Column({
+    type: 'timestamp',
+    name: 'sec_checked_date',
+    nullable: true 
+   })
+   securityCheckedDate: Date;
+
   @OneToMany(type => DcItemEntity, items => items.itemInfo, { cascade: true })
   dcItemInfo: DcItemEntity[];
 }

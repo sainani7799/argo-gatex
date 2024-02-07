@@ -23,6 +23,7 @@ import { DcMail } from "./dc/dc-mail";
 import DCReceived from "./dc/dc-recived";
 import DcRejectMail from "./dc/dc-mail-reject";
 import DCSecurity from "./dc/dc-security";
+import SecurityHeadReport from "./dc/security-head-report";
 
 
 
@@ -89,6 +90,7 @@ const AppRoutes = () => {
                     <Route path="/dc-view" element={<DCGrid />} />
                     <Route path="/dc-received" element={<DCReceived />} />
                     <Route path="/dc-security" element={<DCSecurity />} />
+                    <Route path="/security-report" element={<SecurityHeadReport />} />
                     <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />

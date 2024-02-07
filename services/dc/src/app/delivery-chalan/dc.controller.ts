@@ -101,4 +101,22 @@ export class DcController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+
+  @Post('/securityReport')
+  async securityReport(@Body() dto: any,): Promise<CommonResponse> {
+    try {
+      return await this.dcService.securityReport(dto);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/getAllUnitsData')
+  async getAllUnitsData(): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getAllUnitsData();
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
 }

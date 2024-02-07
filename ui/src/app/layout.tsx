@@ -171,6 +171,26 @@ export default function BasicLayout() {
                             </SubMenu>
                             )
                         }
+                        {
+                         authdata.roleId === 4 && (
+                                    <SubMenu
+                            key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                            title={
+                                <span>
+                                    <span>Dc</span>
+                                </span>
+                            }
+                        >
+                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                <Link to="/dc-security"><span>Security Check</span></Link>
+                            </Menu.Item>
+                                <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                    <Link to="/security-report"><span>Security Report</span></Link>
+                                </Menu.Item>
+                                </SubMenu>
+                                )
+                            
+                        }
                     
                 </Menu>
             </Sider>
