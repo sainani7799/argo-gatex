@@ -37,10 +37,9 @@ import { useEffect, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const { Option } = Select;
-
 const DCSecurity = () => {
   const [form] = Form.useForm();
+  const { Option } = Select;
   const [responseData, setResponseData] = useState<any>([]);
   const authdata = JSON.parse(localStorage.getItem('userName'));
   const [page, setPage] = React.useState(1);
