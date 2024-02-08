@@ -42,7 +42,6 @@ const EmployeeGrid = () => {
         })
     }
 
-
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -111,6 +110,30 @@ const EmployeeGrid = () => {
                 : null
     })
 
+    const updateEmployee =(val:CreateEmployeeDto)=>{
+        service.updateEmployee(val).then((res)=>{
+            if(res.status){
+                message.success('Updated Successfully');
+                setDrawerVisible(false);
+                getAllEmployees()
+            }else{
+                message.error(res.internalMessage);
+            }
+        })
+    }
+
+    const openFormWithData=(viewData: CreateEmployeeDto)=>{
+        setDrawerVisible(true);
+        setSelectedEmployeeData(viewData);
+    }
+
+    const closeDrawer = () => {
+        setDrawerVisible(false);
+      }
+
+    const deleteEmployee =(val)=>{
+
+    }
 
     const columnsSkelton: any = [
         {
@@ -151,12 +174,12 @@ const EmployeeGrid = () => {
         },
         {
             title: 'Section',
-            dataIndex: 'section',
+            dataIndex: 'sectionName',
             align: 'center'
         },
         {
             title: 'Designation',
-            dataIndex: 'designation',
+            dataIndex: 'designationName',
             align: 'center'
         },
         {
@@ -187,6 +210,29 @@ const EmployeeGrid = () => {
             dataIndex: 'emailId',
             align: 'center'
         },
+        {
+            title:`Action`,
+            dataIndex: 'action',
+            align:"center",
+            render: (text, rowData) => (
+              <span>  
+               <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
+                    onClick={() => {
+                console.log(rowData)
+                      if (rowData.isActive) {
+                        openFormWithData(rowData);
+                      } else {
+                        message.error('You Cannot Edit Deactivated Employee');
+                      }
+                    }}
+                    style={{ color: '#1890ff', fontSize: '14px' }}
+                  />      
+                  
+                
+                <Divider type="vertical" />
+              </span>
+            )
+          }
 
     ]
     return (
@@ -196,25 +242,23 @@ const EmployeeGrid = () => {
                 extra={<Link to="/employee-form"  ><span style={{ color: 'white' }} ><Button className='panel_button' >Create </Button>
                 </span></Link>}>
                 <br></br>
-                <Row gutter={40}>
-
-                </Row>
-                <br></br>
                 <Table
-                    // rowKey={record => record.employeeId}
                     columns={columnsSkelton}
                     dataSource={employeeData}
                     scroll={{ x: 1400, y: 400 }}
                     sticky={true}
-                    // pagination={{
-                    //     onChange(current) {
-                    //         setPage(current);
-                    //     }
-                    // }}
-                    // onChange={onChange}
                     bordered
                 />
-
+            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
+              onClose={closeDrawer} visible={drawerVisible} closable={true}>
+              <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
+                <EmployeeForm key={Date.now()}
+                  updateDetails={updateEmployee}
+                  isUpdate={true}
+                  employeeData={selectedEmployeeData}
+                  closeForm={closeDrawer} />
+              </Card>
+            </Drawer>
             </Card>
         </div>
     )

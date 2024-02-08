@@ -61,7 +61,6 @@ const EmployeeForm = (props: EmployeeFormProps) => {
     const getAllSectionsForDrop = () => {
         const department = form.getFieldValue('department');
         const Req = {departmentId : department}
-        console.log(Req)
         departmentService.getAllSectionsForDrop(Req).then((res) => {
             if (res) {
                 setSection(res.data);
@@ -72,11 +71,9 @@ const EmployeeForm = (props: EmployeeFormProps) => {
         unitService.getAllUnits().then((res) => {
             if (res) {
                 setUnit(res.data);
-                console.log(res.data)
             }
         })
     }
-
 
     const fetchEmployeeNames = () => {
         service.getAllEmployees().then((res) => {
@@ -94,7 +91,6 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                 message.success('Created Successfully')
                 navigate('/employee-view')
             } else {
-                console.log(res.internalMessage, "**********");
                 message.error('Not Created')
             }
         }).catch(err => {
@@ -103,14 +99,13 @@ const EmployeeForm = (props: EmployeeFormProps) => {
     }
 
     const saveData = (values: CreateEmployeeDto) => {
-        console.log('va', values);
         if (props.isUpdate) {
             props.updateDetails(values);
         } else {
             save(values);
         }
     };
-
+console.log(props.employeeData)
     return (
         <Card title={<span style={{ color: 'white' }}>Employee Form</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/employee-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
@@ -120,7 +115,6 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                 onFinish={saveData}
                 layout='vertical'
             >
-
                 <Row gutter={24}   >
                     <Form.Item name="employeeId" style={{ display: "none" }}>
                         <Input hidden />

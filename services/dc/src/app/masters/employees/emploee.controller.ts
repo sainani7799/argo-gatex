@@ -17,7 +17,7 @@ export class EmployeeController {
     @Post('/createEmployee')
     async createEmployee(@Body() createDto: any, isUpdate: boolean = false): Promise<any> {
         try {
-            return await this.service.createEmployee(createDto);
+            return await this.service.createEmployee(createDto,false);
         } catch (error) {
             return (error);
         }
@@ -26,7 +26,7 @@ export class EmployeeController {
     @Post('/updateEmployee')
     async updateEmployee(@Body() createDto: any, isUpdate: boolean = false): Promise<any> {
         try {
-            return await this.service.createEmployee(createDto);
+            return await this.service.createEmployee(createDto,true);
         } catch (error) {
             return (error)
         }

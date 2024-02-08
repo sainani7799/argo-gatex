@@ -145,11 +145,8 @@ export default function BasicLayout() {
                             </span>
                         }
                     >
-                                <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
                             </Menu.Item>
                             </SubMenu>
                             )
@@ -164,7 +161,9 @@ export default function BasicLayout() {
                             </span>
                         }
                     >
-                            
+                             <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
+                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
+                            </Menu.Item>
                             <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                 <Link to="/dc-security"><span>Security Check</span></Link>
                             </Menu.Item>
@@ -181,6 +180,9 @@ export default function BasicLayout() {
                                 </span>
                             }
                         >
+                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
+                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
+                            </Menu.Item>
                             <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                 <Link to="/dc-security"><span>Security Check</span></Link>
                             </Menu.Item>

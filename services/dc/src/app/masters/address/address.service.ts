@@ -15,69 +15,6 @@ export class AddressService {
 
   ) { }
 
-  // async createAddress(dto:CreateAddressDto | CreateAddressDto[],isUpdate:boolean):Promise<CommonResponse>{
-  //   try{
-  //     const address = Array.isArray(dto) ? dto : [dto];
-  //     if(!isUpdate){
-  //       for( const obj of address){
-  //         const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
-  //         if(existingAddress){
-  //             return await new CommonResponse(false,444,'already address created for this name',existingAddress)
-  //         }
-  //       }
-  //     }else{
-  //       for( const obj of address){
-  //         const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
-  //         if(existingAddress){
-  //             return await new CommonResponse(false,444,'already address created for this name',existingAddress)
-  //         }else{
-  //             for(const obj of address){
-  //                 const entity = new AddressEntity()
-  //                 entity.addressId = obj.addressId;
-  //                 entity.addresser = obj.addresser;
-  //                 entity.addresserName = obj.addresserName;
-  //                 entity.lineOne = obj.lineOne;
-  //                 entity.lineTwo = obj.lineTwo;
-  //                 entity.city = obj.city;
-  //                 entity.dist = obj.dist;
-  //                 entity.pinCode = obj.pinCode;
-  //                 entity.state = obj.state;
-  //                 entity.country = obj.country;
-  //                 entity.createdUser = obj.createdUser;
-  //                 const save = await this.addressRepo.save(entity)
-  //                 return new CommonResponse(true,555,'create successfully ',save)
-  //             }
-  //         }
-  //     }
-  //     }
-  //       for( const obj of address){
-  //           const existingAddress = await this.addressRepo.findOne({where:{addresser:obj.addresser,addresserName:obj.addresserName}})
-  //           if(existingAddress){
-  //               return await new CommonResponse(false,444,'already address created for this name',existingAddress)
-  //           }else{
-  //               for(const obj of address){
-  //                   const entity = new AddressEntity()
-  //                   entity.addressId = obj.addressId;
-  //                   entity.addresser = obj.addresser;
-  //                   entity.addresserName = obj.addresserName;
-  //                   entity.lineOne = obj.lineOne;
-  //                   entity.lineTwo = obj.lineTwo;
-  //                   entity.city = obj.city;
-  //                   entity.dist = obj.dist;
-  //                   entity.pinCode = obj.pinCode;
-  //                   entity.state = obj.state;
-  //                   entity.country = obj.country;
-  //                   entity.createdUser = obj.createdUser;
-  //                   const save = await this.addressRepo.save(entity)
-  //                   return new CommonResponse(true,555,'create successfully ',save)
-  //               }
-  //           }
-  //       }
-  //   }catch(error){
-  //       console.log(error)
-  //   }
-  // }
-
   async getAddressWithoutRelations(addresserNameId: number): Promise<AddressEntity> {
     const addressResponse = await this.addressRepo.findOne({
       where: { addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`) },
@@ -92,7 +29,6 @@ export class AddressService {
 
 
   async createAddress(addressDto: CreateAddressDto, isUpdate: boolean): Promise<CommonResponse> {
-    console.log('isUpdate============', isUpdate)
     try {
       let previousValue
       const addressDtos: CreateAddressDto[] = [];
@@ -101,7 +37,6 @@ export class AddressService {
 
         const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
         if (addressEntity) {
-          console.log(addressEntity, '------')
           throw new CommonResponse(false, 11104, 'addressEntity already exists');
         }
       }
@@ -117,19 +52,12 @@ export class AddressService {
       }
       const convertedAddressEntity: AddressEntity = this.addressAdapter.convertDtoToEntity(addressDto, isUpdate);
 
-      console.log(convertedAddressEntity);
       const savedAddressEntity: AddressEntity = await this.addressRepo.save(convertedAddressEntity);
       const savedHeadDto: CreateAddressDto = this.addressAdapter.convertEntityToDto(savedAddressEntity);
       addressDtos.push(savedAddressEntity)
-      console.log(savedAddressEntity, 'saved');
       if (savedAddressEntity) {
-        const presentValue = addressDto.addresserNameId;
         //generating resposnse
         const response = new CommonResponse(true, 1, isUpdate ? 'Address Updated Successfully' : 'Address created Successfully')
-        const name = isUpdate ? 'updated' : 'created'
-        const displayValue = isUpdate ? 'Address Updated Successfully' : 'Address Created Successfully'
-        const userName = isUpdate ? savedHeadDto.updatedUser : savedHeadDto.createdUser;
-        console.log(response, '9999999999999999');
         return response;
       } else {
         throw new CommonResponse(false, 11106, 'Address saved but issue while transforming into DTO');

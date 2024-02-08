@@ -208,7 +208,7 @@ const AddressGrid = () => {
                       if (rowData.isActive) {
                         openFormWithData(rowData);
                       } else {
-                        message.error('You Cannot Edit Deactivated Payment mode');
+                        message.error('You Cannot Edit Deactivated Address');
                       }
                     }}
                     style={{ color: '#1890ff', fontSize: '14px' }}

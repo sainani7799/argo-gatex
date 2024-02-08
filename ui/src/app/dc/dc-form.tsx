@@ -48,6 +48,7 @@ const DCForm = () => {
     const [loadingWarehouses, setLoadingWarehouses] = useState(true);
     const { TextArea } = Input;
     const [manualEntry, setManualEntry] = useState(true);
+    const [addVisible,setAddVisible] = useState(true)
 
     const toggleManualEntry = () => {
         setManualEntry(!manualEntry);
@@ -444,12 +445,17 @@ const DCForm = () => {
 
     const calculateAmount = () => {
         const qty = itemForm.getFieldValue('qty');
-        const rate = itemForm.getFieldValue('rate');
-        const amount = (qty * rate).toString();
-
-        itemForm.setFieldsValue({
-            amount: isNaN(Number(amount)) ? 0 : Number(amount),
-        });
+        if(qty > 50) {
+            setAddVisible(true)
+            return message.info('Qty will not exceed 50')
+        }else{
+            const rate = itemForm.getFieldValue('rate');
+            const amount = (qty * rate).toString();
+            setAddVisible(false)
+            itemForm.setFieldsValue({
+                amount: isNaN(Number(amount)) ? 0 : Number(amount),
+            });
+        }
     };
 
     const onSubmit = () => {
@@ -884,7 +890,7 @@ const DCForm = () => {
 
                         </Row>
                         <Row justify={'end'}>
-                            <Button type='primary' htmlType="submit">{btnType}</Button>
+                            <Button disabled={addVisible} type='primary' htmlType="submit">{btnType}</Button>
                         </Row>
                     </Form>
                 </Card>

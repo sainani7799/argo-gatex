@@ -1,9 +1,5 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { EmployeeDto } from './dto/employee.dto';
 import { EmployeeRepository } from './repo/employee.repo';
-import { EmployeeEntity } from './entity/employee.entity';
 import { EmployeeAdapter } from './adapter/employee.adapter';
 import { EmployeeRequest } from './dto/employee.request';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
@@ -11,96 +7,53 @@ import { ReportingRequest } from './dto/reporting-manager.dto';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { CreateEmployeeDto, GetAllEmployeeResponse, ToEmpReq, UnitReq } from 'libs/shared-models';
 
-
 @Injectable()
 export class EmployeeService {
 
   constructor(
-    // @InjectRepository(EmployeeEntity)
     private employeeRepo: EmployeeRepository,
     private adapter: EmployeeAdapter,
-    // @InjectDataSource() private dataSource: DataSource,
   ) { }
 
-  async createEmployee(createDto: CreateEmployeeDto): Promise<GetAllEmployeeResponse> {
+  async createEmployee(createDto: CreateEmployeeDto,isUpdate: boolean): Promise<GetAllEmployeeResponse> {
     try {
-      const save = this.adapter.convertDtoToEntity(createDto);
-      console.log('Received DTO:', createDto);
-      console.log('Converted Entity:', save);
-
-      let internalMessage: string;
-
-      if (createDto.employeeId) {
-        const findRecord = await this.employeeRepo.findOne({ where: { employeeId: createDto.employeeId } });
-
-        if (findRecord && findRecord.versionFlag !== createDto.versionFlag) {
-          // Handle versionFlag mismatch if necessary
+      const findRecord = await this.employeeRepo.findOne({ where: { employeeId: createDto.employeeId } });
+      if(findRecord){
+        if(createDto.employeeId){
+          if(createDto.employeeId != findRecord.employeeId){
+            throw new ErrorResponse(1111, "Employee details is Already exsits");
+          }
+        }else{
+            throw new ErrorResponse(1111, "Employee details is Already exsits");
+          }
         }
-
-        internalMessage = 'Updated Successfully';
-      } else {
-        internalMessage = 'Created Successfully';
-      }
+      const save = this.adapter.convertDtoToEntity(createDto);
 
       const savedData = await this.employeeRepo.save(save);
-
-      console.log('Saved Data:', savedData);
-
-      return new GetAllEmployeeResponse(true, 454, 'success', savedData);
+      return new GetAllEmployeeResponse(true, 1, isUpdate ? 'Employee Updated Successfully' : 'Employee created Successfully');
     } catch (error) {
       console.error('Error creating/updating employee:', error);
       throw new InternalServerErrorException('Internal server error');
     }
   }
 
-
-  // async createEmployee(createDto: CreateEmployeeDto): Promise<CommonResponse> {
-  //   try{
-  //     const save = this.adapter.convertDtoToEntity(createDto);
-  //     console.log(createDto,'createDto')
-  //     console.log(save,'save')
-  //     let internalMessage: string;
-  //     if (createDto.employeeId) {
-  //       internalMessage = "Updated Successfully"
-  //       const findRecord = await projectPlanningDataSource.getRepository(EmployeeEntity).findOne({ where: { employeeId: createDto.employeeId } });
-  //       if (findRecord.versionFlag !== createDto.versionFlag) {
-  //   }
-  //     } else {
-  //       internalMessage = "Created Successfully"
-  //     }
-  //     const savedData = await projectPlanningDataSource.getRepository(EmployeeEntity).save(save);
-  //   console.log(savedData,'savedData')
-  //   return { data: savedData, message: internalMessage }
-  //   }catch (error) {
-  //     console.error('Error creating/updating employee:', error);
-  //     throw new InternalServerErrorException('Internal server error'); // or handle the error in an appropriate way
-  //   }
-
-
-
-  // }
-
-
-
   async getAllEmployees(): Promise<CommonResponse> {
     try {
-      const employeeData = await this.employeeRepo.query(`select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
-      e.gender,e.date_of_birth AS dateOfBirth,e.address ,d.department_name AS departmentName,s.section_name AS section, de.designation,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unit from shahi_employees e
+      const query = `select e.is_active AS isActive, e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
+      e.gender,e.date_of_birth AS dateOfBirth,e.address ,e.department,d.department_name AS departmentName,s.section_name AS sectionName,e.section ,e.designation,de.designation AS designationName,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unitName ,e.unit from shahi_employees e
       left join shahi_department d on d.id = e.department 
       left join shahi_designation de on de.designation_id = e.designation
 	    left join shahi_sections s on s.section_id = e.section
-      left join shahi_units u on u.unit_code = e.unit`);
-      // console.log(employeeData, 'employeeData');
+      left join shahi_units u on u.unit_code = e.unit`
+      const employeeData = await this.employeeRepo.query(query);
       if (employeeData.length > 0) {
         return new CommonResponse(true, 221, 'Data retrieved', employeeData);
       } else {
         return new CommonResponse(false, 0, 'No data found');
       }
     } catch (err) {
-      // console.error('Error fetching employee data:', err);
-      throw err; // Rethrow the error to indicate the failure 
+      throw err;
     }
-
   }
 
   async getAllActiveEmployees(): Promise<any> {
@@ -115,16 +68,6 @@ export class EmployeeService {
     let query = `SELECT employee_id AS employeeId, employee_name AS employeeName FROM Employees WHERE reporting_manager = ${req.reportingManager}`
     const data = await this.employeeRepo.query(query);
     return data
-
-
-    // const data = await this.employeeRepo.find({where:{reportingManager:createDto.employeeId}});
-
-    // return data
-  }
-
-  async updateEmployees(req:any) : Promise<CommonResponse>{
-    const update = await this.employeeRepo.update({employeeId:req.employeeId},{})
-    return
   }
 
   async getAllEmployeesByUnit(req: UnitReq): Promise<CommonResponse> {
@@ -135,21 +78,18 @@ export class EmployeeService {
       left join shahi_designation de on de.designation_id = e.designation
 	    left join shahi_sections s on s.section_id = e.section
       left join shahi_units u on u.unit_code = e.unit where u.id = ${req.unitId}`);
-      // console.log(employeeData, 'employeeData');
       if (employeeData.length > 0) {
         return new CommonResponse(true, 221, 'Data retrieved', employeeData);
       } else {
         return new CommonResponse(false, 0, 'No data found');
       }
     } catch (err) {
-      // console.error('Error fetching employee data:', err);
-      throw err; // Rethrow the error to indicate the failure 
+      throw err;  
     }
 
   }
 
   async getAllToEmployeesByUnit(req: ToEmpReq): Promise<CommonResponse> {
-    
     try {
       let query = `select e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,e.department,
       e.gender,e.date_of_birth AS dateOfBirth,e.address ,d.department_name AS departmentName,s.section_name AS section, de.designation,e.mobile_number AS mobileNumber,u.id as unitId,u.unit_name AS unit from shahi_employees e
@@ -164,14 +104,10 @@ export class EmployeeService {
         query = query + ' and e.department = ' + req.departmentId;
       };
       const employeeData = await this.employeeRepo.query(query)
-      
-
       return new CommonResponse(true, 221, 'Data retrieved', employeeData);
-
     } catch (err) {
       throw err; 
     }
-
   }
 
   async getEmployeeById(employeeId: number): Promise<any> {
@@ -196,7 +132,6 @@ export class EmployeeService {
             { employeeId: employeeReq.employeeId },
             {
               isActive: employeeReq.isActive,
-              //  updatedUser: employeeReq.updatedUser 
             }
           );
           if (employeeExists.isActive) {
@@ -222,12 +157,6 @@ export class EmployeeService {
       throw err;
     }
   }
-
-  // async getManagerByOperator(req:EmployeeRequest) : Promise<any>{
-  //   let query = `SELECT emp.employee_name AS employeeName , emp.employee_id AS employeeId FROM employee_manager_relation er LEFT JOIN employees emp ON emp.employee_id = er.relation_id WHERE er.employee_id = ${req.employeeId}`
-  //   const data = await this.dataSource.query(query);
-  //   return data;
-  // }
 
 
 }

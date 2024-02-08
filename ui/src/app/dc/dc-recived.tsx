@@ -165,8 +165,15 @@ const DCReceived = () => {
             dataIndex: "attentionPerson"
         },
         {
-            title: "created User",
-            dataIndex: "created_user"
+            title: "Received By",
+            dataIndex: "receivedBy"
+        },
+        {
+            title: "Received Date",
+            dataIndex: "receivedDate",
+            render :(val,rec) =>{
+                return val ? moment(val).format('YYYY-MM-DD HH:mm') :'-'
+            }
         },
         {
             title: "Created Date",
