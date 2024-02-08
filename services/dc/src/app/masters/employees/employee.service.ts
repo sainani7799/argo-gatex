@@ -37,6 +37,12 @@ export class EmployeeService {
     }
   }
 
+  async deactiveEmployee(req:any):Promise<CommonResponse>{
+     const deactiveEmployee = await this.employeeRepo.update({employeeId:req.employeeId},{isActive: false})
+     if(deactiveEmployee.affected) return new CommonResponse(true,1,'Employee deleted') 
+    return new CommonResponse(false,0,'Error while deleting employee')
+  }
+
   async getAllEmployees(): Promise<CommonResponse> {
     try {
       const query = `select e.is_active AS isActive, e.employee_id AS employeeId, e.employee_name AS employeeName,e.employee_code AS employeeCode,e.card_no AS cardNo,e.email_id AS emailId,
@@ -44,7 +50,7 @@ export class EmployeeService {
       left join shahi_department d on d.id = e.department 
       left join shahi_designation de on de.designation_id = e.designation
 	    left join shahi_sections s on s.section_id = e.section
-      left join shahi_units u on u.unit_code = e.unit`
+      left join shahi_units u on u.unit_code = e.unit WHERE e.is_active = 1 `
       const employeeData = await this.employeeRepo.query(query);
       if (employeeData.length > 0) {
         return new CommonResponse(true, 221, 'Data retrieved', employeeData);

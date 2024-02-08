@@ -1,4 +1,4 @@
-import { CheckCircleOutlined, CloseCircleOutlined, EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons'
 import { Button, Card, Col, Divider, Drawer, Input, Popconfirm, Row, Space, Switch, Table, Tag, Tooltip, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -122,6 +122,17 @@ const EmployeeGrid = () => {
         })
     }
 
+    const deactiveEmployee =(val:any)=>{
+        service.deactiveEmployee(val).then((res)=>{
+            if(res.status){
+                message.success(res.internalMessage);
+                getAllEmployees()
+            }else{
+                message.error(res.internalMessage);
+            }
+        })
+    }
+
     const openFormWithData=(viewData: CreateEmployeeDto)=>{
         setDrawerVisible(true);
         setSelectedEmployeeData(viewData);
@@ -227,9 +238,16 @@ const EmployeeGrid = () => {
                     }}
                     style={{ color: '#1890ff', fontSize: '14px' }}
                   />      
-                  
-                
                 <Divider type="vertical" />
+                <Popconfirm onConfirm={e =>{deactiveEmployee(rowData);}}
+                  title={
+                    rowData.isActive
+                      ? 'Are you sure to Delete Address ?'
+                      :  'Are you sure to Delete Address ?'
+                  }
+                >
+                    <DeleteOutlined />
+                </Popconfirm>
               </span>
             )
           }

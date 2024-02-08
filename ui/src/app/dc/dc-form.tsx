@@ -37,7 +37,6 @@ const DCForm = () => {
     const [employee, setEmployee] = useState<any>([]);
     const [toEmployee, setToEmployee] = useState<any>([]);
     const [responseData, setResponseData] = useState<any>([]);
-    console.log(authdata)
     const itemService = new ItemService()
     const [form] = Form.useForm();
     const [itemForm] = Form.useForm()
@@ -48,7 +47,8 @@ const DCForm = () => {
     const [loadingWarehouses, setLoadingWarehouses] = useState(true);
     const { TextArea } = Input;
     const [manualEntry, setManualEntry] = useState(true);
-    const [addVisible,setAddVisible] = useState(true)
+    const [addVisible,setAddVisible] = useState(true);
+    const [totalQty,setTotalQty] = useState(Number)
 
     const toggleManualEntry = () => {
         setManualEntry(!manualEntry);
@@ -58,33 +58,6 @@ const DCForm = () => {
 
     const navigate = useNavigate()
     let tableData: any[] = [];
-
-
-    const handlePopupClose = () => {
-        setIsPopupVisible(false);
-    };
-
-    const saveData = (data: any) => {
-        console.log(data.unitOrSupplier);
-    };
-
-    const uploadItemProps: UploadProps = {
-        // alert();
-        multiple: false,
-        onRemove: file => {
-            setItemFieldList([]);
-        },
-
-        progress: {
-            strokeColor: {
-                '0%': '#108ee9',
-                '100%': '#87d068',
-            },
-            strokeWidth: 3,
-            format: percent => `${parseFloat(percent.toFixed(2))}%`,
-        },
-        fileList: itemFiledList,
-    };
 
     useEffect(() => {
         // getWarehouses();
@@ -145,7 +118,6 @@ const DCForm = () => {
     const getUnits = () => {
         unitService.getAllUnits().then(res => {
             if (res) {
-                // console.log(res);
                 setUnits(res.data);
             }
         }).catch(err => {
@@ -171,14 +143,12 @@ const DCForm = () => {
                 const activeItems = res.data.filter(item => item.isActive === true);
                 setWarehouses(activeItems)
                 setItemData(res.data);
-                // console.log(res.data)
             }
         })
     }
     const getAllItemsByCode = () => {
         const req = new itemCode()
         req.itemCode = itemForm.getFieldValue('itemCode')
-        console.log(req)
         itemService.getAllItemsByCode(req).then((res) => {
             if (res) {
                 // setItemData(res.data);
@@ -192,9 +162,7 @@ const DCForm = () => {
     const getAllToAddressByUnit = async (radioValue) => {
         const req = new ToAddressReq()
         req.addresser = radioValue
-        console.log(req.addresser)
         req.addresserNameId = form.getFieldValue('addresserNameId')
-        console.log(req.addresserNameId)
         addressService.getAllToAddressByUnit(req).then(res => {
             if (res) {
                 const activeToAddress = res.data.filter(address => address.isActive === 1);
@@ -232,8 +200,6 @@ const DCForm = () => {
     const getDeps = () => {
         departmentService.getAllDepartments().then(res => {
             if (res) {
-                console.log("This is Departments");
-                // console.log(res);
                 setDeps(res.data);
             }
         })
@@ -243,9 +209,6 @@ const DCForm = () => {
         const req = new ToEmpReq();
         req.unitId = form.getFieldValue('addresserNameId');
         req.departmentId = form.getFieldValue('toDepartmentId');
-
-        console.log(req);
-
         employeeService.getAllToEmployeesByUnit(req)
             .then(res => {
                 if (res && res.data && res.data.length > 0) {
@@ -258,15 +221,12 @@ const DCForm = () => {
             })
             .catch(error => {
                 // Handle error if needed
-                console.error("Error fetching employees:", error);
             });
     };
 
     const getApprovedUsers = () => {
         approvedService.getAllApprovalUser().then(res => {
             if (res) {
-                console.log("This Is Approval");
-                // console.log(res);
                 setApproval(res.data);
             }
         })
@@ -282,7 +242,6 @@ const DCForm = () => {
     };
 
     const setEditForm = (rowData: any, index: any) => {
-        console.log(rowData);
         setDefaultItemFormData(rowData)
         setItemIndexVal(index)
         setBtnType("Update")
@@ -290,8 +249,9 @@ const DCForm = () => {
 
 
 
-    const deleteData = (index: any) => {
+    const deleteData = (index: any,val) => {
         tableData = [...itemTableData]
+        setTotalQty((Number(totalQty) - Number(val.qty)))
         tableData.splice(index, 1)
         setItemTableData(tableData)
         if (tableData.length == 0) {
@@ -301,7 +261,6 @@ const DCForm = () => {
 
     useEffect(() => {
         if (defaultItemFormData) {
-            console.log(defaultItemFormData)
             itemForm.setFieldsValue({
                 itemId: defaultItemFormData.itemId,
                 itemCode: defaultItemFormData.itemCode,
@@ -402,7 +361,7 @@ const DCForm = () => {
 
                     <Tooltip placement="top" title='delete'>
                         <Tag >
-                            <Popconfirm title='Sure to delete?' onConfirm={e => { deleteData(index); }}>
+                            <Popconfirm title='Sure to delete?' onConfirm={e => { deleteData(index ,rowData); }}>
                                 <MinusCircleOutlined
 
                                     style={{ color: '#1890ff', fontSize: '14px' }} />
@@ -416,10 +375,8 @@ const DCForm = () => {
 
     const onItemAdd = (values) => {
         itemForm.validateFields().then(() => {
-            console.log(itemIndexVal)
-            console.log(values)
+            setTotalQty(totalQty +  Number(values.qty))
             if (itemIndexVal !== undefined) {
-                console.log(itemIndexVal)
                 itemTableData[itemIndexVal] = values;
                 tableData = [...itemTableData]
                 setItemIndexVal(itemIndexVal + 1)
@@ -445,7 +402,7 @@ const DCForm = () => {
 
     const calculateAmount = () => {
         const qty = itemForm.getFieldValue('qty');
-        if(qty > 50) {
+        if(Number(qty) > 50 || (Number(totalQty) + Number(qty)) > 50) {
             setAddVisible(true)
             return message.info('Qty will not exceed 50')
         }else{
@@ -463,7 +420,6 @@ const DCForm = () => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
                 const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId'))
-                console.log(req)
                 dcService.createDc(req).then(res => {
                     if (res.status) {
                         navigate('/dc-view')

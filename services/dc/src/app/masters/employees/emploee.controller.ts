@@ -89,5 +89,14 @@ export class EmployeeController {
     //     }
     // }
 
+    @Post('/deactiveEmployee')
+    async deactiveEmployee(@Body() req: any): Promise<CommonResponse> {
+        try {
+            return await this.service.deactiveEmployee(req);
+        } catch (error) {
+            return (error);
+        }
+    }
+
 
 }

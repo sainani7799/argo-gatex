@@ -30,6 +30,10 @@ export class EmployeeService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.EmployeeController +'/activateOrDeactivateEmployee', createDto);
     }
 
+    async deactiveEmployee(req: any): Promise<any> {
+        return await this.axiosPostCall(this.EmployeeController +'/deactiveEmployee', req);
+    }
+
     
 }
 

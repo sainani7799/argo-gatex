@@ -455,7 +455,7 @@ const DCSecurity = () => {
           <Table
             columns={completedColumns}
             dataSource={responseData.filter(
-              (item) => item.status !== 'SENT FOR SECURITY CHECK'
+              (item) => item.status === 'READY TO RECEIVE'
             )}
             scroll={{ x: 1400, y: 400 }}
           />
