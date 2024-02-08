@@ -56,26 +56,39 @@ export class UserMangementService {
     }
   }
 
-  async create(userDto: CreateUserDto): Promise<CommonResponse> {
-    const { userId, userName, password, employeeId ,cardNo,unitId,roleId } = userDto;
-
+  async create(userDto: CreateUserDto,isUpdate: boolean): Promise<CommonResponse> {
     const userInDb = await this.userRepo.findOne({
       where: { cardNo: userDto.cardNo }
     });
-    console.log(userInDb,'userInDb');
-    if (userInDb) {
-      console.log('user exists')
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+    if(userInDb){
+      if(userDto.userId){
+        if(userDto.userId != userInDb.userId){
+          throw new CommonResponse(false,1111, "User details is Already exsits");
+        }
+      }else{
+          throw new CommonResponse(false,1111, "Employee details is Already exsits");
+        }
+      }
+    const entity = new UserEntity()
+    entity.userName = userDto.userName
+    entity.password = userDto.password
+    entity.employeeId = userDto.employeeId
+    entity.cardNo = userDto.cardNo
+    entity.unitId = userDto.unitId
+    entity.roleId = userDto.roleId
+    if(userDto.userId){
+       entity.userId = userDto.userId
     }
-
-    const user: UserEntity = await this.userRepo.create({ userName, password, employeeId , cardNo,unitId,roleId});
-    await this.userRepo.save(user);
-    return toUserDto(user);
+ 
+    const save = await this.userRepo.save(entity)
+    if(save) return new CommonResponse(true, 1, isUpdate ? 'User Updated Successfully' : 'User created Successfully');
+    return new CommonResponse(false,1,isUpdate ? 'User Updation failed' : 'User creation failed')
 }
 
-  async register(userDto: CreateUserDto): Promise<any> {
+  async register(userDto: CreateUserDto,isUpdate: boolean): Promise<any> {
     try {
-      const user = await this.create(userDto);
+
+      const user = await this.create(userDto,true);
       return {
         success: true,
         message: 'User registered',
@@ -89,9 +102,9 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.id as userId, us.user_name AS userName ,emp.employee_code , emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive FROM shahi_user us 
+    let query = `SELECT us.employee_id AS employeeId, us.id as userId, us.user_name AS userName ,emp.employee_code AS empCode, emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive ,us.password AS password ,us.card_no AS cardNo ,us.unit_id AS unitId ,us.role_id AS roleId FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
-    LEFT JOIN shahi_units u ON u.id = us.unit_id`
+    LEFT JOIN shahi_units u ON u.id = us.unit_id WHERE us.is_active = 1 `
     const data = await this.userRepo.query(query)
     return (data)
 
@@ -99,39 +112,50 @@ export class UserMangementService {
 
   async activateOrDeactivateUser(req: CreateUserDto): Promise<CommonResponse> {
     try {
-      const userExists = await this.getUsersById(req.userId);
-      
-      if (userExists) {
-        if (!userExists) {
-          throw new CommonResponse(false, 10113, 'Someone updated the current user information.Refresh and try again');
-        } else {
-
-          const userStatus = await this.userRepo.update(
-            { userId: req.userId },
-            { isActive: req.isActive });
-          if (userExists.isActive) {
-            if (userStatus.affected) {
-              const userResponse: CommonResponse = new CommonResponse(true, 10115, 'user  is de-activated successfully');
-              return userResponse;
-            } else {
-              throw new CommonResponse(false, 10111, 'user is already deactivated');
-            }
-          } else {
-            if (userStatus.affected) {
-              const userResponse: CommonResponse = new CommonResponse(true, 10114, 'user is activated successfully');
-              return userResponse;
-            } else {
-              throw new CommonResponse(false, 10112, 'user  is already  activated');
-            }
-          }
-        }
-      } else {
-        throw new CommonResponse(false, 99998, 'No Records Found');
-      }
+      console.log(req)
+      const deactiveEmployee = await this.userRepo.update({userId:req.userId},{isActive: false})
+      if(deactiveEmployee.affected) return new CommonResponse(true,1,'User deleted') 
+     return new CommonResponse(false,0,'Error while deleting employee')
     } catch (err) {
       return err;
     }
   }
+
+  // async activateOrDeactivateUser(req: CreateUserDto): Promise<CommonResponse> {
+  //   try {
+  //     const userExists = await this.getUsersById(req.userId);
+      
+  //     if (userExists) {
+  //       if (!userExists) {
+  //         throw new CommonResponse(false, 10113, 'Someone updated the current user information.Refresh and try again');
+  //       } else {
+
+  //         const userStatus = await this.userRepo.update(
+  //           { userId: req.userId },
+  //           { isActive: req.isActive });
+  //         if (userExists.isActive) {
+  //           if (userStatus.affected) {
+  //             const userResponse: CommonResponse = new CommonResponse(true, 10115, 'user  is de-activated successfully');
+  //             return userResponse;
+  //           } else {
+  //             throw new CommonResponse(false, 10111, 'user is already deactivated');
+  //           }
+  //         } else {
+  //           if (userStatus.affected) {
+  //             const userResponse: CommonResponse = new CommonResponse(true, 10114, 'user is activated successfully');
+  //             return userResponse;
+  //           } else {
+  //             throw new CommonResponse(false, 10112, 'user  is already  activated');
+  //           }
+  //         }
+  //       }
+  //     } else {
+  //       throw new CommonResponse(false, 99998, 'No Records Found');
+  //     }
+  //   } catch (err) {
+  //     return err;
+  //   }
+  // }
 
 async getUsersById(userId: number): Promise<UserEntity> {
     const Response = await this.userRepo.findOne({

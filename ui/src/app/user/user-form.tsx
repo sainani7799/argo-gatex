@@ -8,7 +8,7 @@ const { Option } = Select;
 
 export interface UserFormProps {
     userData: CreateUserDto;
-    // updateDetails: (userData: CreateUserDto) => void;
+    updateDetails: (userData: CreateUserDto) => void;
     isUpdate: boolean;
     closeForm: () => void;
 }
@@ -23,8 +23,7 @@ const UserForm = (props: UserFormProps) => {
     const [form] = Form.useForm();
 
 
-    const clickHandler = () => { };
-
+console.log(props.userData)
     const handleEmployeeIdChange = (value) => {
         setSelectedEmployeeId(value);
         const selectedEmployee = employeeNames.find((employee) => employee.employeeId === value);
@@ -67,11 +66,16 @@ const UserForm = (props: UserFormProps) => {
             }
         })
     }
-
-
-
     const handleReset = () => {
         form.resetFields();
+    };
+
+    const saveData = (values: any) => {
+        if (props.isUpdate) {
+            props.updateDetails(values);
+        } else {
+            onFinish(values);
+        }
     };
 
     return (
@@ -80,10 +84,11 @@ const UserForm = (props: UserFormProps) => {
             <Form
                 name="user-form"
                 autoComplete='off'
-                onFinish={onFinish}
+                onFinish={saveData}
                 layout="vertical"
                 style={{ maxWidth: '400px', margin: '0 auto' }}
                 form={form}
+                initialValues={props.userData}
             >
                 <Card>
                     <Form.Item name="userId" style={{ display: "none" }}>

@@ -141,11 +141,7 @@ const EmployeeGrid = () => {
     const closeDrawer = () => {
         setDrawerVisible(false);
       }
-
-    const deleteEmployee =(val)=>{
-
-    }
-
+      
     const columnsSkelton: any = [
         {
             title: 'S No',

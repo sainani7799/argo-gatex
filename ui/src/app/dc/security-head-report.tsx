@@ -1,5 +1,6 @@
 import {
   CheckOutlined,
+  DownloadOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
   RightOutlined,
@@ -10,6 +11,7 @@ import {
   Button,
   Card,
   Col,
+  DatePicker,
   Divider,
   Drawer,
   Form,
@@ -26,18 +28,21 @@ import {
 import TabPane from 'antd/es/tabs/TabPane';
 import {
   AcceptableEnum,
+  DcReportReq,
   ReceivedDcReq,
   SecurityCheckReq,
   StatusEnum,
 } from 'libs/shared-models';
-import { DcService, EmailService } from 'libs/shared-services';
+import { DcService, EmailService, EmployeeService } from 'libs/shared-services';
 import moment from 'moment';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Excel } from 'antd-table-saveas-excel';
 
 export default function SecurityHeadReport() {
+  const { RangePicker } = DatePicker  ;
   const [form] = Form.useForm();
   const [responseData, setResponseData] = useState<any>([]);
   const authdata = JSON.parse(localStorage.getItem('userName'));
@@ -47,20 +52,95 @@ export default function SecurityHeadReport() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const searchInput = useRef(null);
   const service = new DcService();
+  const [units, setUnits] = useState([]);
+  const [dcDataDrop, setDcDataDrop] = useState([]);
+  const [dcItemsDrop,setDcItemDrop]= useState([]);
+  const [selectedEstimatedFromDate, setSelectedEstimatedFromDate] = useState(undefined);
+  const [selectedEstimatedToDate, setSelectedEstimatedToDate] = useState(undefined);
+  const [employeeData, setEmployeeData] = useState<any[]>([]);
+  const empService = new EmployeeService();
+  const Option = Select;
   let navigate = useNavigate();
 
-  useEffect(()=>{
-    securityReport()
-  },[])
+  useEffect(() => {
+    // securityReport();
+    getAllUnits();
+    getDcDrop();
+    getItemDrop();
+    getEmpDrop();
+  }, []);
 
+  const EstimatedETDDate = (value) => {
+    if (value) {
+      const fromDate = new Date(value[0].format('YYYY-MM-DD'));
+      const toDate = new Date(value[1].format('YYYY-MM-DD'));
+      setSelectedEstimatedFromDate(fromDate)
+      setSelectedEstimatedToDate(toDate)
+    }
+  }
 
-  const securityReport = () => {
-    const unitValue = authdata.unitId;
-    const req = { unitId: unitValue };
-    console.log(req);
+  const securityReport = (onReset?: boolean) => {
+   const req = new DcReportReq();
+   req.dcId = form.getFieldValue('dcNumber')
+   req.dcFromDate =  moment(selectedEstimatedFromDate).format('YYYY-MM-DD');
+   req.dcToDate =  moment(selectedEstimatedToDate).format('YYYY-MM-DD');
+   req.itemCodeId = form.getFieldValue('itemCode')
+   req.approvedBy = form.getFieldValue('approvedBy')
+   req.checkedBy = form.getFieldValue('checkedBy')
+   req.receivedBy = form.getFieldValue('receivedBy')
+   req.createdBy = form.getFieldValue('createdBy')
+   req.fromUnit = form.getFieldValue('fromUnit')
+   req.toUnit = form.getFieldValue('toUnit')
+   req.purpose = form.getFieldValue('purpose')
     service.securityReport(req).then((res: any) => {
       if (res.status) {
         setResponseData(res.data);
+      }
+    });
+  };
+
+  const getEmpDrop = () => {
+    service.getEmpDrop().then(res => {
+        if (res) {
+            setEmployeeData(res.data);
+        } else {
+            if (res.data) {
+                setEmployeeData([]);
+                // AlertMessages.getErrorMessage(res.internalMessage);
+            } else {
+                //  AlertMessages.getErrorMessage(res.internalMessage);
+            }
+        }
+    }).catch(err => {
+        setEmployeeData([]);
+        // AlertMessages.getErrorMessage(err.message);
+    })
+}
+
+  const getAllUnits = () => {
+    service.getAllUnitsData().then((res) => {
+      if (res.data) {
+        setUnits(res.data);
+      }
+    });
+  };
+
+  const getDcDrop = () => {
+    service.getDcDrop().then((res) => {
+      if (res.data) {
+        setDcDataDrop(res.data);
+      } else {
+        setDcDataDrop([]);
+      }
+    });
+  };
+
+  const getItemDrop = () => {
+    service.getItemDrop().then((res) => {
+      if (res.data) {
+        setDcItemDrop(res.data);
+      } else {
+        setDcItemDrop([]);
       }
     });
   };
@@ -149,6 +229,104 @@ export default function SecurityHeadReport() {
       ) : null,
   });
 
+  const data = [
+    {
+      title: 'DC Number',
+      dataIndex: 'dcNumber',
+    },
+    {
+      title: 'DC Date',
+      dataIndex: 'dcDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
+    {
+      title: 'From Unit',
+      dataIndex: 'fromUnit',
+    },
+    {
+      title: 'To Unit',
+      dataIndex: 'toUnit',
+    },
+    {
+      title: 'Buyer',
+      dataIndex: 'buyer',
+    },
+    {
+      title: 'Item Code',
+      dataIndex: 'itemCode',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'qty',
+    },
+    {
+      title: 'UOM',
+      dataIndex: 'uom',
+    },
+    {
+      title: 'Rate',
+      dataIndex: 'rate',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+    },
+    {
+      title: 'Created By',
+      dataIndex: 'createdBy',
+    },
+    {
+      title: 'Approved BY',
+      dataIndex: 'approvedBy',
+    },
+    {
+      title: 'Checked By',
+      dataIndex: 'checkedBy',
+    },
+    {
+      title: 'Checked Date & Time',
+      dataIndex: 'checkedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
+    {
+      title: 'Received By',
+      dataIndex: 'receivedBy',
+    },
+    {
+      title: 'Received Date & Time',
+      dataIndex: 'receivedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
+    {
+      title: 'Purpose',
+      dataIndex: 'purpose',
+    },
+
+    {
+      title: 'Remarks',
+      dataIndex: 'remarks',
+    },
+  ]
+
+  const exportExcel = () => {
+    const excel = new Excel();
+    excel
+      .addSheet('gatePassDc')
+      .addColumns(data)
+      .addDataSource(responseData,{str2num:true})
+      .saveAs('gate-pass-dc.xlsx');
+  }
+
   const columnsSkelton: any = [
     {
       title: 'S No',
@@ -163,9 +341,11 @@ export default function SecurityHeadReport() {
       ...getColumnSearchProps('dcNumber'),
     },
     {
-      title: 'Returnable',
-      dataIndex: 'returnable',
-      ...getColumnSearchProps('returnable'),
+      title: 'DC Date',
+      dataIndex: 'dcDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
     },
     {
       title: 'From Unit',
@@ -173,133 +353,264 @@ export default function SecurityHeadReport() {
     },
     {
       title: 'To Unit',
-      dataIndex: 'toAddresserName',
+      dataIndex: 'toUnit',
     },
     {
-      title: 'Requested By',
-      dataIndex: 'requestedBy',
+      title: 'Buyer',
+      dataIndex: 'buyer',
     },
     {
-      title: 'Attention Person',
-      dataIndex: 'attentionPerson',
+      title: 'Item Code',
+      dataIndex: 'itemCode',
     },
     {
-      title: 'DC Approved By',
-      dataIndex: 'acceptedUser',
+      title: 'Description',
+      dataIndex: 'description',
     },
-
-    // {
-    //     title: "created User",
-    //     dataIndex: "created_user"
-    // },
     {
-      title: 'Created Date',
-      dataIndex: 'createdDate',
-      render: (text, record) => {
-        const createdDate = record.createdDate;
-        if (createdDate) {
-          return moment(createdDate).format('DD-MM-YYYY');
-        } else {
-          return '-';
-        }
+      title: 'Qty',
+      dataIndex: 'qty',
+    },
+    {
+      title: 'UOM',
+      dataIndex: 'uom',
+    },
+    {
+      title: 'Rate',
+      dataIndex: 'rate',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+    },
+    {
+      title: 'Created By',
+      dataIndex: 'createdBy',
+    },
+    {
+      title: 'Approved BY',
+      dataIndex: 'approvedBy',
+    },
+    {
+      title: 'Checked By',
+      dataIndex: 'checkedBy',
+    },
+    {
+      title: 'Checked Date & Time',
+      dataIndex: 'checkedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
+      title: 'Received By',
+      dataIndex: 'receivedBy',
     },
-    // {
-    //   title: 'Action',
-    //   dataIndex: 'requestNumber',
-    //   align: 'center',
-    //   fixed: 'right',
-    //   render: (text, rowData, index) => (
-    //     <span>
-    //       <Tooltip placement="top" title="Detail View">
-    //         <EyeOutlined
-    //           onClick={() => {
-    //             navigate(`/dc-detail-view-security/${rowData.dcId}/security`);
-    //           }}
-    //           style={{ color: 'blue', fontSize: 20 }}
-    //         />
-    //         <Divider type="vertical" />
-    //       </Tooltip>
-    //       {/* <Divider type="vertical" /> */}
-    //       {rowData.status === 'SENT FOR SECURITY CHECK' ? (
-    //         <Popconfirm
-    //           onConfirm={(e) => {
-    //             securityDone(rowData);
-    //           }}
-    //           title={
-    //             rowData.status === 'SENT FOR SECURITY CHECK'
-    //               ? 'Are You Done Checking'
-    //               : ''
-    //           }
-    //           okText="YES"
-    //           cancelText="NO"
-    //           icon={<ExclamationCircleOutlined style={{ color: 'red' }} />}
-    //         >
-    //           <Switch
-    //             size="default"
-    //             className={
-    //               rowData.status === status
-    //                 ? 'toggle-activated'
-    //                 : 'toggle-deactivated'
-    //             }
-    //             checkedChildren={<RightSquareOutlined type="check" />}
-    //             unCheckedChildren={<RightSquareOutlined type="close" />}
-    //             checked={rowData.status === status}
-    //           />
-    //         </Popconfirm>
-    //       ) : (
-    //         <Tooltip placement="top" title="Checking Done">
-    //           <CheckOutlined
-    //             onClick={() => {
-    //               // Handle click for the other icon
-    //             }}
-    //             style={{ color: 'gray', fontSize: 20 }}
-    //           />
-    //         </Tooltip>
-    //       )}
-    //     </span>
-    //   ),
-    // },
+    {
+      title: 'Received Date & Time',
+      dataIndex: 'receivedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
+    {
+      title: 'Purpose',
+      dataIndex: 'purpose',
+      ...getColumnSearchProps('purpose'),
+    },
+
+    {
+      title: 'Remarks',
+      dataIndex: 'remarks',
+    },
   ];
+
+  const onReset = () => {
+    form.resetFields();
+    EstimatedETDDate(undefined);
+    setSelectedEstimatedFromDate(undefined);
+    setSelectedEstimatedToDate(undefined);
+  }
+  console.log(dcDataDrop)
 
   return (
     <>
-        <Card title={<span style={{ color: 'white' }}>SECURITY REPORT</span>} headStyle={{ backgroundColor: '#7d33a2', color: 'black' }} >
-            <Form  form={form}
-            layout="vertical">
-                <Row gutter={24}>
-                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }}
-              >
-                <Form.Item
-                  name="fromUnit"
-                  label="From Unit"
-                  rules={[{ required: true }]}
-                >
-                  <Input  />
-                </Form.Item>
+      <Card
+        title={<span style={{ color: 'white' }}>GATE PASS DC</span>}
+        headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}
+      >
+        <Form form={form} layout="vertical">
+          <Row gutter={24}>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="fromUnit" label="From Unit">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {units.map((u) => {
+                    return <Option value={u.id}>{u.unitName}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="toUnit" label="To Unit">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {units.map((u) => {
+                    return <Option value={u.id}>{u.unitName}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="dcNumber" label="Dc Number">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcDataDrop.map((d) => {
+                    return <Option value={d.dcId}>{d.dcNumber}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="itemCode" label="Item Code">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcItemsDrop.map((d) => {
+                    return <Option value={d.dcItemId}>{d.itemCode}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="date" label="DC Date">
+                <RangePicker onChange={EstimatedETDDate} />
+              </Form.Item>
+            </Col>
+            <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="approvedBy" label="Approved By">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {employeeData.map((d) => {
+                    return <Option value={d.employeeId}>{d.employeeName}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
               </Col>
-              <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }}
-              >
-                <Form.Item
-                  name="toUnit"
-                  label="To Unit"
-                  rules={[{ required: true }]}
-                >
-                  <Input  />
-                </Form.Item>
+              <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="checkedBy" label="Checked By">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcDataDrop.map((d) => {
+                    return <Option value={d.securityUser}>{d.securityUser}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
               </Col>
-                </Row>
-            </Form>
-      <Table
-        columns={columnsSkelton}
-        dataSource={responseData}
-        scroll={{ x: 1400, y: 400 }}
-      />
-        </Card>
+              <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="receivedBy" label="Received By">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcDataDrop.map((d) => {
+                    return <Option value={d.receivedUser}>{d.receivedUser}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+              </Col>
+              <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="purpose" label="Purpose">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcDataDrop.map((d) => {
+                    return <Option value={d.purpose}>{d.purpose}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+              </Col>
+              <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="createdBy" label="Created By">
+                <Select allowClear showSearch placeholder={'Select'}>
+                  {dcDataDrop.map((d) => {
+                    return <Option value={d.createdUser}>{d.createdUser}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+              </Col>
+          </Row>
+          <Row justify={'end'} gutter={24}>
+              <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 2 }}>
+                <Button onClick={() => securityReport()} type='primary'>Submit</Button>
+              </Col>
+              <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 2 }}>
+                <Button onClick={onReset}>Reset</Button>
+              </Col>
+              <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 2 }}>
+                <Button onClick={exportExcel} icon={<DownloadOutlined />}>Excel</Button>
+              </Col>
+          </Row>
+        </Form>
+        {
+          responseData.length > 0 && (
+            <Table
+            columns={columnsSkelton}
+            dataSource={responseData}
+            scroll={{ x: 2500, y: 400 }}
+          />
+            )
+        }
+
+      </Card>
     </>
   );
 }

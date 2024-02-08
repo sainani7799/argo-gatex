@@ -53,7 +53,7 @@ const AppRoutes = () => {
                         userData={undefined}
                         isUpdate={false}
                         closeForm={() => { }}
-                        // updateDetails={(undefined) => { }}
+                        updateDetails={(undefined) => { }}
                     />} />
                     <Route path="/users" element={<UserFormGrid />} />
                     <Route path="/employee-view" element={<EmployeeGrid />} />

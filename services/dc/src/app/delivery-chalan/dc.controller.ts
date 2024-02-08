@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, Res } from "@nestjs/common";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { DcService } from "./dc.service";
 import { CommonResponse } from "libs/shared-models/src/common";
-import { ApiTags } from "@nestjs/swagger";
-import { UnitReq } from "libs/shared-models";
+import { Response } from 'express';
 
 @Controller("dc")
 export class DcController {
@@ -119,4 +118,50 @@ export class DcController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+  @Post('/downloadExcel')
+    async downloadExcel(@Body() req: any, @Res() res: Response) {
+      try {
+        const buffer = await this.dcService.ticketsExcelDownload(req);
+  
+        // Set the response headers
+        res.setHeader(
+          'Content-Type',
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        res.setHeader('Content-Disposition', 'attachment; filename=example.xlsx');
+        res.setHeader('Content-Length', buffer.length);
+  
+        // Send the buffer as the response
+        res.send(buffer);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+
+    @Post('/getDcDrop')
+    async getDcDrop(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getDcDrop();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+
+    @Post('/getItemDrop')
+    async getItemDrop(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getItemDrop();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+
+    @Post('/getEmpDrop')
+    async getEmpDrop(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getEmpDrop();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
 }

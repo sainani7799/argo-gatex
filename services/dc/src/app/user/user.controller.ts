@@ -46,15 +46,34 @@ export class UserManagementController {
     }
   }
 
-  @Post('register')  
-  public async register(@Body() createUserDto: any): Promise<any> {    
-    const result: 
-    any = await this.companyService.register(createUserDto,);
-    if (!result.success) {
-        throw new HttpException(result.message, HttpStatus.BAD_REQUEST);    
-    }
-    // console.log(result);
-    return result;  
+  // @Post('/register')  
+  // public async register(@Body() createUserDto: any): Promise<any> {    
+  //   const result: 
+  //   any = await this.companyService.create(createUserDto,false);
+  //   if (!result.success) {
+  //       throw new HttpException(result.message, HttpStatus.BAD_REQUEST);    
+  //   }
+  //   // console.log(result);
+  //   return result;  
+  // }
+
+  @Post('/register')
+  async register(@Body() createDto: any): Promise<any> {
+      try {
+          return await this.companyService.create(createDto,true);
+      } catch (error) {
+          return (error)
+      }
+  }
+
+  
+  @Post('/updateUsers')
+  async updateUsers(@Body() createDto: any): Promise<any> {
+      try {
+          return await this.companyService.create(createDto,true);
+      } catch (error) {
+          return (error)
+      }
   }
 
   @Post('/getUsers')

@@ -518,7 +518,6 @@ const DCSecurity = () => {
                   <Input disabled />
                 </Form.Item>
               </Col>
-
               <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }}
               >
                 <Form.Item

@@ -6,15 +6,18 @@ import { CommonResponse } from "libs/shared-models/src/common";
 import { DcEntity } from "./entity/dc.entity";
 import { DcAdapter } from "./adapter/dc.adapter";
 import { error } from "console";
-import { AcceptReq, AssignReq, DcIdReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "libs/shared-models";
+import { AcceptReq, AssignReq, DcIdReq, DcReportReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "libs/shared-models";
 import { UnitRepository } from "../masters/branch/repo/unit-repo";
+import * as XLSX from 'xlsx';
+import { DcItemEntityRepository } from "./repository/dc-items.repo";
 
 @Injectable()
 export class DcService {
     constructor(
         private userRepo: DcEntityRepository,
         private dcAdapter: DcAdapter,
-        private unitsRepo: UnitRepository
+        private unitsRepo: UnitRepository,
+        private dcItemSRepo : DcItemEntityRepository
 
     ) { }
 
@@ -204,13 +207,24 @@ export class DcService {
         }
     }
 
-    async securityReport(req:any):Promise<CommonResponse>{
+    async ticketsExcelDownload(values): Promise<Buffer> {
+        const res = await this.securityReport(values);
+        const ws = XLSX.utils.json_to_sheet(res.data);
+        // Create a workbook
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1');
+        // Save the workbook to a buffer
+        const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+        return buffer;
+    }
+
+    async securityReport(req:DcReportReq):Promise<CommonResponse>{
     try{
-        const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
-        w.warehouse_name AS warehouseName,
-        CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
-        po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
-        weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user
+        let query = `SELECT dc.dc_number AS dcNumber,dc.created_at AS dcDate , u.unit_name AS fromUnit ,
+        CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name END AS toUnit,
+        CASE WHEN to_addresser = 'supplier' THEN s.supplier_name END AS buyer ,
+        it.item_code AS itemCode , it.description AS description , it.qty AS qty , it.uom AS uom , 
+        it.rate AS rate , it.amount AS amount , dc.created_user AS createdBy, dc.accepted_user AS approvedBy ,dc.security_user as checkedBy , dc.sec_checked_date AS checkedDate , dc.received_user AS receivedBy , dc.received_date AS receivedDate , dc.purpose AS purpose , dc.remarks AS remarks
          FROM shahi_dc dc
         LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
         LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
@@ -220,7 +234,37 @@ export class DcService {
         LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
         LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
         LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-        WHERE to_addresser IN ('unit', 'supplier') AND dc.status IN ('READY TO RECEIVE', 'CLOSED') ORDER BY dc.created_at DESC`
+        LEFT JOIN shahi_dc_items it ON it.dc_id = dc.dc_id
+        WHERE dc.dc_id > 0`
+        if(req.dcId){
+            query = query + ' AND dc.dc_id = '+ req.dcId
+        }
+        if (req.dcFromDate != undefined) {
+            query = query + ' and DATE(dc.created_at) between  "' + req.dcFromDate + '" and "' + req.dcToDate + '"';
+        }
+        if(req.fromUnit){
+            query = query + ' AND dc.from_unit_id = ' + req.fromUnit;
+        }
+        if(req.toUnit){
+            query = query + ' AND dc.addresser_name_id = '+ req.toUnit;
+        }
+        if(req.itemCodeId){
+            query = query + ' AND it.dc_item_id = ' + req.itemCodeId;
+        }
+        if(req.approvedBy){
+            query = query + ' AND dc.accepted_user = ' + req.approvedBy;
+        }
+        if(req.receivedBy){
+            query = query + ` AND dc.received_user =   '${req.receivedBy}'`;
+        }
+        if(req.checkedBy){
+            query = query + ` AND dc.security_user = '${ req.checkedBy}'`;
+        }
+        if(req.purpose){
+             query = query + ` AND dc.purpose =  '${req.purpose}'`;
+        }
+        query = query + '  ORDER BY dc.created_at DESC';
+        console.log(query)
         const data = await this.userRepo.query(query)
         return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
@@ -228,10 +272,29 @@ export class DcService {
     }
     }
 
-
     async getAllUnitsData():Promise<CommonResponse>{
          const data = await this.unitsRepo.find()
          if(data.length) return new CommonResponse(true,1,'data retrived',data)
         return new CommonResponse(false,0,'No data found')
     }
+
+    async getDcDrop():Promise<CommonResponse>{
+        const data = await this.userRepo.find()
+        if(data.length) return new CommonResponse(true,1,'data retrived',data)
+        return new CommonResponse(false,0,'No data found')
+    }
+
+    async getItemDrop():Promise<CommonResponse>{
+        const data = await this.dcItemSRepo.find()
+        if(data.length) return new CommonResponse(true,1,'data retrived',data)
+        return new CommonResponse(false,0,'No data found')
+    }
+
+    async getEmpDrop(): Promise<any> {
+        let query = `SELECT sd.accepted_user AS employeeId, se.employee_name AS employeeName FROM shahi_dc sd 
+        LEFT JOIN shahi_employees se ON se.employee_id = sd.accepted_user `
+        const data = await this.userRepo.query(query);
+        if(data.length) return new CommonResponse(true,1,'data retrived',data)
+        return new CommonResponse(false,0,'No data found')
+      }
 }

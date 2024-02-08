@@ -58,6 +58,18 @@ export class DcService extends CommonAxiosServicePms {
     async getAllUnitsData(): Promise<any> {
         return await this.axiosPostCall(this.DcController + '/getAllUnitsData');
     }
+
+    async getDcDrop(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getDcDrop');
+    }
+
+    async getItemDrop(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getItemDrop');
+    }
+
+    async getEmpDrop(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getEmpDrop');
+    }
     
 }
 

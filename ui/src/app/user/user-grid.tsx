@@ -34,11 +34,12 @@ const UserFormGrid = () => {
         });
     };
     const deleteUser = (dto: CreateUserDto) => {
-        dto.isActive = dto.isActive ? false : true;
+        // dto.isActive = dto.isActive ? false : true;
         service.activateOrDeactivateUser(dto).then(res => {
             console.log(res);
             if (res.status) {
-                message.success('Success');
+                message.success(res.internalMessage);
+                getUsers()
             } else {
                 message.error(res.internalMessage);
             }
@@ -46,9 +47,24 @@ const UserFormGrid = () => {
             message.error(err.message);
         })
     }
-
+    const updateUser =(val:CreateUserDto)=>{
+        service.updateUser(val).then((res)=>{
+            if(res.status){
+                message.success('Updated Successfully');
+                setDrawerVisible(false);
+                getUsers()
+            }else{
+                message.error(res.internalMessage);
+            }
+        })
+    }
     const closeDrawer = () => {
         setDrawerVisible(false);
+    }
+
+    const openFormWithData=(viewData: CreateUserDto)=>{
+        setDrawerVisible(true);
+        setSelectedUsers(viewData);
     }
 
     const columnsSkelton: any = [
@@ -66,7 +82,7 @@ const UserFormGrid = () => {
         {
             key: "3",
             title: "Employee Code",
-            dataIndex: "employee_code",
+            dataIndex: "empCode",
         },
         {
             key: "4",
@@ -85,20 +101,26 @@ const UserFormGrid = () => {
             align: "center",
             render: (text, rowData) => (
                 <span>
+                <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
+                    onClick={() => {
+                      if (rowData.isActive) {
+                        openFormWithData(rowData);
+                      } else {
+                        message.error('You Cannot Edit Deactivated User');
+                      }
+                    }}
+                    style={{ color: '#1890ff', fontSize: '14px' }}
+                  /> 
+                    <Divider type="vertical" />
                     <Popconfirm
                         onConfirm={e => { deleteUser(rowData); }}
                         title={
                             rowData.isActive
-                                ? 'Are you sure to Deactivate user ?'
+                                ? 'Are you sure to Delete user ?'
                                 : 'Are you sure to Activate user ?'
                         }
                     >
-                        <Switch size="default"
-                            className={rowData.isActive ? 'toggle-activated' : 'toggle-deactivated'}
-                            checkedChildren={<RightSquareOutlined type="check" />}
-                            unCheckedChildren={<RightSquareOutlined type="close" />}
-                            checked={rowData.isActive}
-                        />
+                        <DeleteOutlined />
 
                     </Popconfirm>
                 </span>
@@ -130,7 +152,7 @@ const UserFormGrid = () => {
                     onClose={closeDrawer} visible={drawerVisible} closable={true}>
                     <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
                         <UserForm key={Date.now()}
-                        // updateDetails={updateSuppliers}
+                        updateDetails={updateUser}
                         isUpdate={true}
                         userData={selectedUsers}
                         closeForm={closeDrawer} />
