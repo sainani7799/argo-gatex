@@ -68,6 +68,9 @@ export default function SecurityHeadReport() {
     getDcDrop();
     getItemDrop();
     getEmpDrop();
+    form.setFieldsValue({
+      date: [(moment(moment().format("YYYY-MM-DD")).subtract(1,'months')),moment(moment().format("YYYY-MM-DD"))] 
+    })
   }, []);
 
   const EstimatedETDDate = (value) => {
