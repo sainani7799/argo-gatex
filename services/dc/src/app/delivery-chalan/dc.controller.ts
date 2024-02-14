@@ -164,4 +164,48 @@ export class DcController {
         return this.applicationExceptionHandler.returnException(CommonResponse, error);
       }
     }
+
+    @Post('/getApprovedBy')
+    async getApprovedBy(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getApprovedBy();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+
+    @Post('/getCheckedBy')
+    async getCheckedBy(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getCheckedBy();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+
+    @Post('/getReceivedBy')
+    async getReceivedBy(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getReceivedBy();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+    
+    @Post('/getPurpose')
+    async getPurpose(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getPurpose();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+    @Post('/getCreated')
+    async getCreated(): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getCreated();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
 }

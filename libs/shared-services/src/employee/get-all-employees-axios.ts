@@ -1,12 +1,12 @@
 import { AxiosRequestConfig } from "axios";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
-import { CreateEmployeeDto, UnitReq, } from "libs/shared-models/src";
+import { CreateEmployeeDto, GetAllEmployeeResponse, UnitReq, } from "libs/shared-models/src";
 
 
 export class EmployeeService extends CommonAxiosServicePms {
     private EmployeeController ='/employees'
 
-    async createEmployee(createDto: CreateEmployeeDto, config?: AxiosRequestConfig): Promise<any> {
+    async createEmployee(createDto: CreateEmployeeDto, config?: AxiosRequestConfig): Promise<GetAllEmployeeResponse> {
         return await this.axiosPostCall(this.EmployeeController +'/createEmployee', createDto, config);
     }
 

@@ -17,15 +17,10 @@ export class EmployeeService {
 
   async createEmployee(createDto: CreateEmployeeDto,isUpdate: boolean): Promise<GetAllEmployeeResponse> {
     try {
-      const findRecord = await this.employeeRepo.findOne({ where: { employeeId: createDto.employeeId } });
-      if(findRecord){
-        if(createDto.employeeId){
-          if(createDto.employeeId != findRecord.employeeId){
-            throw new ErrorResponse(1111, "Employee details is Already exsits");
-          }
-        }else{
-            throw new ErrorResponse(1111, "Employee details is Already exsits");
-          }
+      const findRecord = await this.employeeRepo.find({ where: { employeeCode: createDto.employeeCode }});
+      console.log(findRecord,'find record')
+      if(findRecord.length){
+            return new GetAllEmployeeResponse(false,1111, "Employee details is Already exsits");
         }
       const save = this.adapter.convertDtoToEntity(createDto);
 

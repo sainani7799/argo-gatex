@@ -86,12 +86,12 @@ const EmployeeForm = (props: EmployeeFormProps) => {
 
     const save = (employeeData: CreateEmployeeDto) => {
         service.createEmployee(employeeData).then(res => {
-            if (res) {
+            if (res.status) {
                 onReset();
-                message.success('Created Successfully')
+                message.success(res.internalMessage)
                 navigate('/employee-view')
             } else {
-                message.error('Not Created')
+                message.error(res.internalMessage)
             }
         }).catch(err => {
             message.error('')

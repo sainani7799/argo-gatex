@@ -57,17 +57,13 @@ export class UserMangementService {
   }
 
   async create(userDto: CreateUserDto,isUpdate: boolean): Promise<CommonResponse> {
-    const userInDb = await this.userRepo.findOne({
+    console.log(userDto,'------------------user dto')
+    const userInDb = await this.userRepo.find({
       where: { cardNo: userDto.cardNo }
     });
-    if(userInDb){
-      if(userDto.userId){
-        if(userDto.userId != userInDb.userId){
-          throw new CommonResponse(false,1111, "User details is Already exsits");
-        }
-      }else{
-          throw new CommonResponse(false,1111, "Employee details is Already exsits");
-        }
+    console.log(userInDb,'user data from db-------------------')
+    if(userInDb.length){
+          return new CommonResponse(false,1111, "User details is Already exsits");
       }
     const entity = new UserEntity()
     entity.userName = userDto.userName
@@ -79,7 +75,7 @@ export class UserMangementService {
     if(userDto.userId){
        entity.userId = userDto.userId
     }
- 
+    console.log(entity,'save data-------------')
     const save = await this.userRepo.save(entity)
     if(save) return new CommonResponse(true, 1, isUpdate ? 'User Updated Successfully' : 'User created Successfully');
     return new CommonResponse(false,1,isUpdate ? 'User Updation failed' : 'User creation failed')
@@ -87,7 +83,6 @@ export class UserMangementService {
 
   async register(userDto: CreateUserDto,isUpdate: boolean): Promise<any> {
     try {
-
       const user = await this.create(userDto,true);
       return {
         success: true,

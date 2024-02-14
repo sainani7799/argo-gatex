@@ -67,8 +67,28 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/getItemDrop');
     }
 
-    async getEmpDrop(): Promise<any> {
+    async getEmpDrop(): Promise<CommonResponse> {
         return await this.axiosPostCall(this.DcController + '/getEmpDrop');
+    }
+
+    async getApprovedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getApprovedBy');
+    }
+
+    async getCheckedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getCheckedBy');
+    }
+
+    async getReceivedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getReceivedBy');
+    }
+
+    async getPurpose(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getPurpose');
+    }
+
+    async getCreated(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getCreated');
     }
     
 }

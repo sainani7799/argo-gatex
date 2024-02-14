@@ -58,7 +58,7 @@ console.log(props.userData)
 
     const onFinish = (val: any) => {
         userService.register(val).then(res => {
-            if (res) {
+            if (res.status) {
                 message.success('Created successfully')
                 navigate('/users')
             } else {

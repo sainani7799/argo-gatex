@@ -58,6 +58,11 @@ export default function SecurityHeadReport() {
   const [selectedEstimatedFromDate, setSelectedEstimatedFromDate] = useState(undefined);
   const [selectedEstimatedToDate, setSelectedEstimatedToDate] = useState(undefined);
   const [employeeData, setEmployeeData] = useState<any[]>([]);
+  const [approvedData,setApprovedData] = useState([])
+  const [checkedData,setCheckedData] = useState([])
+  const [receivedData,setReceivedData] = useState([])
+  const [purposeData,setPurposedata] = useState([])
+  const [createdData,setCreatedData] = useState([])
   const empService = new EmployeeService();
   const Option = Select;
   let navigate = useNavigate();
@@ -68,6 +73,11 @@ export default function SecurityHeadReport() {
     getDcDrop();
     getItemDrop();
     getEmpDrop();
+    getApprovedBy();
+    getCheckedBy();
+    getReceivedBy();
+    getPurpose();
+    getCreated();
     form.setFieldsValue({
       date: [(moment(moment().format("YYYY-MM-DD")).subtract(1,'months')),moment(moment().format("YYYY-MM-DD"))] 
     })
@@ -81,6 +91,57 @@ export default function SecurityHeadReport() {
       setSelectedEstimatedToDate(toDate)
     }
   }
+
+
+  const getApprovedBy = () => {
+    service.getApprovedBy().then((res) => {
+      if (res.data) {
+        setApprovedData(res.data);
+      } else {
+        setApprovedData([]);
+      }
+    });
+  };
+
+  const getCheckedBy = () => {
+    service.getCheckedBy().then((res) => {
+      if (res.data) {
+        setCheckedData(res.data);
+      } else {
+        setCheckedData([]);
+      }
+    });
+  };  
+
+  const getReceivedBy = () => {
+    service.getReceivedBy().then((res) => {
+      if (res.data) {
+        setReceivedData(res.data);
+      } else {
+        setReceivedData([]);
+      }
+    });
+  };
+  
+  const getPurpose = () => {
+    service.getPurpose().then((res) => {
+      if (res.data) {
+        setPurposedata(res.data);
+      } else {
+        setPurposedata([]);
+      }
+    });
+  };
+
+  const getCreated = () => {
+    service.getCreated().then((res) => {
+      if (res.data) {
+        setCreatedData(res.data);
+      } else {
+        setCreatedData([]);
+      }
+    });
+  };
 
   const securityReport = (onReset?: boolean) => {
    const req = new DcReportReq();
@@ -439,7 +500,7 @@ export default function SecurityHeadReport() {
   return (
     <>
       <Card
-        title={<span style={{ color: 'white' }}>GATE PASS DC</span>}
+        title={<span style={{ color: 'white' }}> Gate Pass DC Transaction reports</span>}
         headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}
       >
         <Form form={form} layout="vertical">
@@ -524,7 +585,7 @@ export default function SecurityHeadReport() {
             >
               <Form.Item name="approvedBy" label="Approved By">
                 <Select allowClear showSearch placeholder={'Select'}>
-                  {employeeData.map((d) => {
+                  {approvedData.map((d) => {
                     return <Option value={d.employeeId}>{d.employeeName}</Option>;
                   })}
                 </Select>
@@ -539,7 +600,7 @@ export default function SecurityHeadReport() {
             >
               <Form.Item name="checkedBy" label="Checked By">
                 <Select allowClear showSearch placeholder={'Select'}>
-                  {dcDataDrop.map((d) => {
+                  {checkedData.map((d) => {
                     return <Option value={d.securityUser}>{d.securityUser}</Option>;
                   })}
                 </Select>
@@ -554,7 +615,7 @@ export default function SecurityHeadReport() {
             >
               <Form.Item name="receivedBy" label="Received By">
                 <Select allowClear showSearch placeholder={'Select'}>
-                  {dcDataDrop.map((d) => {
+                  {receivedData.map((d) => {
                     return <Option value={d.receivedUser}>{d.receivedUser}</Option>;
                   })}
                 </Select>
@@ -569,7 +630,7 @@ export default function SecurityHeadReport() {
             >
               <Form.Item name="purpose" label="Purpose">
                 <Select allowClear showSearch placeholder={'Select'}>
-                  {dcDataDrop.map((d) => {
+                  {purposeData.map((d) => {
                     return <Option value={d.purpose}>{d.purpose}</Option>;
                   })}
                 </Select>
@@ -584,7 +645,7 @@ export default function SecurityHeadReport() {
             >
               <Form.Item name="createdBy" label="Created By">
                 <Select allowClear showSearch placeholder={'Select'}>
-                  {dcDataDrop.map((d) => {
+                  {createdData.map((d) => {
                     return <Option value={d.createdUser}>{d.createdUser}</Option>;
                   })}
                 </Select>

@@ -24,6 +24,7 @@ import DCReceived from "./dc/dc-recived";
 import DcRejectMail from "./dc/dc-mail-reject";
 import DCSecurity from "./dc/dc-security";
 import SecurityHeadReport from "./dc/security-head-report";
+import DcEmailDetailsView from "./dc/email-detail-view";
 
 
 
@@ -102,7 +103,7 @@ const AppRoutes = () => {
                 </Route>
 
                 <Route path="/login" element={<Login />} />
-                <Route path="/dc-email-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+                <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
                 <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
                 <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
             </Routes>
