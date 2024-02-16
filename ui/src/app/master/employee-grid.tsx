@@ -18,6 +18,7 @@ const EmployeeGrid = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
+    const [loading, setLoading] = useState<boolean>(false)
 
     useEffect(() => {
         getAllEmployees();
@@ -25,6 +26,7 @@ const EmployeeGrid = () => {
 
 
     const getAllEmployees = () => {
+        setLoading(true)
         service.getAllEmployees().then(res => {
             if (res) {
                 setEmployeeData(res.data);
@@ -39,6 +41,8 @@ const EmployeeGrid = () => {
         }).catch(err => {
             setEmployeeData([]);
             // AlertMessages.getErrorMessage(err.message);
+        }).finally(() => {
+            setLoading(false)
         })
     }
 
@@ -110,38 +114,38 @@ const EmployeeGrid = () => {
                 : null
     })
 
-    const updateEmployee =(val:CreateEmployeeDto)=>{
-        service.updateEmployee(val).then((res)=>{
-            if(res.status){
+    const updateEmployee = (val: CreateEmployeeDto) => {
+        service.updateEmployee(val).then((res) => {
+            if (res.status) {
                 message.success('Updated Successfully');
                 setDrawerVisible(false);
                 getAllEmployees()
-            }else{
+            } else {
                 message.error(res.internalMessage);
             }
         })
     }
 
-    const deactiveEmployee =(val:any)=>{
-        service.deactiveEmployee(val).then((res)=>{
-            if(res.status){
+    const deactiveEmployee = (val: any) => {
+        service.deactiveEmployee(val).then((res) => {
+            if (res.status) {
                 message.success(res.internalMessage);
                 getAllEmployees()
-            }else{
+            } else {
                 message.error(res.internalMessage);
             }
         })
     }
 
-    const openFormWithData=(viewData: CreateEmployeeDto)=>{
+    const openFormWithData = (viewData: CreateEmployeeDto) => {
         setDrawerVisible(true);
         setSelectedEmployeeData(viewData);
     }
 
     const closeDrawer = () => {
         setDrawerVisible(false);
-      }
-      
+    }
+
     const columnsSkelton: any = [
         {
             title: 'S No',
@@ -218,35 +222,35 @@ const EmployeeGrid = () => {
             align: 'center'
         },
         {
-            title:`Action`,
+            title: `Action`,
             dataIndex: 'action',
-            align:"center",
+            align: "center",
             render: (text, rowData) => (
-              <span>  
-               <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
-                    onClick={() => {
-                console.log(rowData)
-                      if (rowData.isActive) {
-                        openFormWithData(rowData);
-                      } else {
-                        message.error('You Cannot Edit Deactivated Employee');
-                      }
-                    }}
-                    style={{ color: '#1890ff', fontSize: '14px' }}
-                  />      
-                <Divider type="vertical" />
-                <Popconfirm onConfirm={e =>{deactiveEmployee(rowData);}}
-                  title={
-                    rowData.isActive
-                      ? 'Are you sure to Delete Address ?'
-                      :  'Are you sure to Delete Address ?'
-                  }
-                >
-                    <DeleteOutlined />
-                </Popconfirm>
-              </span>
+                <span>
+                    <EditOutlined className={'editSamplTypeIcon'} type="edit"
+                        onClick={() => {
+                            console.log(rowData)
+                            if (rowData.isActive) {
+                                openFormWithData(rowData);
+                            } else {
+                                message.error('You Cannot Edit Deactivated Employee');
+                            }
+                        }}
+                        style={{ color: '#1890ff', fontSize: '14px' }}
+                    />
+                    <Divider type="vertical" />
+                    <Popconfirm onConfirm={e => { deactiveEmployee(rowData); }}
+                        title={
+                            rowData.isActive
+                                ? 'Are you sure to Delete Address ?'
+                                : 'Are you sure to Delete Address ?'
+                        }
+                    >
+                        <DeleteOutlined />
+                    </Popconfirm>
+                </span>
             )
-          }
+        }
 
     ]
     return (
@@ -257,22 +261,23 @@ const EmployeeGrid = () => {
                 </span></Link>}>
                 <br></br>
                 <Table
+                    loading={loading}
                     columns={columnsSkelton}
                     dataSource={employeeData}
                     scroll={{ x: 1400, y: 400 }}
                     sticky={true}
                     bordered
                 />
-            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
-              onClose={closeDrawer} visible={drawerVisible} closable={true}>
-              <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
-                <EmployeeForm key={Date.now()}
-                  updateDetails={updateEmployee}
-                  isUpdate={true}
-                  employeeData={selectedEmployeeData}
-                  closeForm={closeDrawer} />
-              </Card>
-            </Drawer>
+                <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
+                    onClose={closeDrawer} visible={drawerVisible} closable={true}>
+                    <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
+                        <EmployeeForm key={Date.now()}
+                            updateDetails={updateEmployee}
+                            isUpdate={true}
+                            employeeData={selectedEmployeeData}
+                            closeForm={closeDrawer} />
+                    </Card>
+                </Drawer>
             </Card>
         </div>
     )

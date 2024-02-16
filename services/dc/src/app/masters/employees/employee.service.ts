@@ -15,13 +15,15 @@ export class EmployeeService {
     private adapter: EmployeeAdapter,
   ) { }
 
-  async createEmployee(createDto: CreateEmployeeDto,isUpdate: boolean): Promise<GetAllEmployeeResponse> {
+  async createEmployee(createDto: CreateEmployeeDto, isUpdate: boolean): Promise<GetAllEmployeeResponse> {
     try {
-      const findRecord = await this.employeeRepo.find({ where: { employeeCode: createDto.employeeCode }});
-      console.log(findRecord,'find record')
-      if(findRecord.length){
-            return new GetAllEmployeeResponse(false,1111, "Employee details is Already exsits");
+      if (createDto.employeeId ==undefined) {
+        const findRecord = await this.employeeRepo.find({ where: { employeeCode: createDto.employeeCode } });
+        console.log(findRecord, 'find record')
+        if (findRecord.length) {
+          return new GetAllEmployeeResponse(false, 1111, "Employee details is Already exsits");
         }
+      }
       const save = this.adapter.convertDtoToEntity(createDto);
 
       const savedData = await this.employeeRepo.save(save);
@@ -32,10 +34,10 @@ export class EmployeeService {
     }
   }
 
-  async deactiveEmployee(req:any):Promise<CommonResponse>{
-     const deactiveEmployee = await this.employeeRepo.update({employeeId:req.employeeId},{isActive: false})
-     if(deactiveEmployee.affected) return new CommonResponse(true,1,'Employee deleted') 
-    return new CommonResponse(false,0,'Error while deleting employee')
+  async deactiveEmployee(req: any): Promise<CommonResponse> {
+    const deactiveEmployee = await this.employeeRepo.update({ employeeId: req.employeeId }, { isActive: false })
+    if (deactiveEmployee.affected) return new CommonResponse(true, 1, 'Employee deleted')
+    return new CommonResponse(false, 0, 'Error while deleting employee')
   }
 
   async getAllEmployees(): Promise<CommonResponse> {
@@ -85,7 +87,7 @@ export class EmployeeService {
         return new CommonResponse(false, 0, 'No data found');
       }
     } catch (err) {
-      throw err;  
+      throw err;
     }
 
   }
@@ -107,7 +109,7 @@ export class EmployeeService {
       const employeeData = await this.employeeRepo.query(query)
       return new CommonResponse(true, 221, 'Data retrieved', employeeData);
     } catch (err) {
-      throw err; 
+      throw err;
     }
   }
 

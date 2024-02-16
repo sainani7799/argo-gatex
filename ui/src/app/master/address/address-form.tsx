@@ -98,7 +98,7 @@ const AddressForm = (props: AddressFormProps) => {
 
         }
     };
-    console.log(props.addressData)
+    console.log(selectedAddressType)
     return (
         <Card title={<span style={{ color: 'white' }}>Add Address</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/address-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
@@ -125,7 +125,8 @@ const AddressForm = (props: AddressFormProps) => {
                                     onChange={handleAddressTypeChange}
                                 >
                                     <Select.Option value="unit">Unit</Select.Option>
-                                    <Select.Option value="supplier">Supplier</Select.Option>
+                                    <Select.Option value="SUPPLIER">Supplier</Select.Option>
+                                    <Select.Option value="BUYER">Buyer</Select.Option>
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -144,7 +145,7 @@ const AddressForm = (props: AddressFormProps) => {
                                                 {rec.unitName}
                                             </Select.Option>
                                         ))
-                                        : supplier.map((rec: any) => (
+                                        : supplier.filter((v) =>  v.type == selectedAddressType).map((rec: any) => (
                                             <Select.Option key={rec.supplierId} value={rec.supplierId}>
                                                 {rec.supplierName}
                                             </Select.Option>

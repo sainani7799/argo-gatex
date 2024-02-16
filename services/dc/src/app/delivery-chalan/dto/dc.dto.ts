@@ -60,7 +60,7 @@ export class DcDto {
     @ApiProperty()
     acceptedUser?: number;
     @ApiProperty()
-    attentionPerson?: number;
+    attentionPerson?: string;
     toDepartmentId?:number;
     /**
      * 
@@ -89,7 +89,7 @@ export class DcDto {
      * @param isActive 
      * @param versionFlag 
      */
-    constructor( dcId: number, dcNumber: string, fromUnitId: number, warehouseId: number, departmentId: number, poNo: string, modeOfTransport: string, toAddresser: string, addresserNameId: number, weight: string, vehicleNo: string, returnable: string, purpose: string, value: string, status: StatusEnum, requestedBy: number, remarks: string, isAccepted:AcceptableEnum, isAssignable:AcceptableEnum,assignBy:number,dcItemDetails: DcItemsDto[], createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null, isActive?: boolean, versionFlag?: number,acceptedUser?: number,attentionPerson?: number,toDepartmentId?:number
+    constructor( dcId: number, dcNumber: string, fromUnitId: number, warehouseId: number, departmentId: number, poNo: string, modeOfTransport: string, toAddresser: string, addresserNameId: number, weight: string, vehicleNo: string, returnable: string, purpose: string, value: string, status: StatusEnum, requestedBy: number, remarks: string, isAccepted:AcceptableEnum, isAssignable:AcceptableEnum,assignBy:number,dcItemDetails: DcItemsDto[], createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null, isActive?: boolean, versionFlag?: number,acceptedUser?: number,attentionPerson?: string,toDepartmentId?:number
     ){
         this.dcId = dcId;
         this.dcNumber = dcNumber;

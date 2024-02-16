@@ -15,9 +15,9 @@ export class AddressService {
 
   ) { }
 
-  async getAddressWithoutRelations(addresserNameId: number): Promise<AddressEntity> {
+  async getAddressWithoutRelations(addresserNameId: number,addresser:string): Promise<AddressEntity> {
     const addressResponse = await this.addressRepo.findOne({
-      where: { addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`) },
+      where: { addresserNameId: Raw(alias => `addresser_name_Id = '${addresserNameId}'`),addresser:addresser },
     });
     if (addressResponse) {
       return addressResponse;
@@ -35,15 +35,15 @@ export class AddressService {
 
       if (!isUpdate) {
 
-        const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
+        const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId,addressDto.addresser);
         if (addressEntity) {
-          throw new CommonResponse(false, 11104, 'addressEntity already exists');
+          throw new CommonResponse(false, 11104, 'Address already exists');
         }
       }
       else {
         const certificatePrevious = await this.addressRepo.findOne({ where: { addressId: addressDto.addressId } })
         previousValue = (certificatePrevious.addresserNameId)
-        const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId);
+        const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId,addressDto.addresser);
         if (addressEntity) {
           if (addressEntity.addresserNameId != addressDto.addresserNameId) {
             throw new CommonResponse(false, 11104, 'Address already exists');
@@ -68,7 +68,9 @@ export class AddressService {
   }
 
   async getAllAddress(): Promise<CommonResponse> {
+
     try {
+
       const query = `SELECT a.address_id AS addressId,addresser, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id as addresserNameId
       FROM shahi_address a
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'

@@ -134,11 +134,11 @@ export class DcEntity {
   })
   acceptedUser: number;
 
-  @Column('int', {
+  @Column('varchar', {
     name: 'attention_person',
     nullable: false
   })
-  attentionPerson: number;
+  attentionPerson: string;
 
   @Column('int', {
     name: 'to_department_id',

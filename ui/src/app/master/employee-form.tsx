@@ -139,7 +139,7 @@ console.log(props.employeeData)
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="cardNo" label="Card No"
                         rules={[
-                            { required: true },
+                            { required: props.isUpdate ?  false : true },
                         ]}>
                             <Input placeholder=" Enter Card No" />
                         </Form.Item>
@@ -156,7 +156,7 @@ console.log(props.employeeData)
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="gender" label="Gender:"
                             rules={[
-                                { required: true },
+                                { required: props.isUpdate ? true : false  },
                             ]}
                         >
                             <Select placeholder=" Select Gender" style={{ width: 210 }}
@@ -199,7 +199,7 @@ console.log(props.employeeData)
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="emailId" label="Email Id:"
                             rules={[
-                                { required: true },
+                                { required: props.isUpdate ? false : true  },
                             ]}
                         >
                             <Input placeholder=" Enter Email Id" />
@@ -210,7 +210,7 @@ console.log(props.employeeData)
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="designation" label="Designation"
                             rules={[
-                                { required: true },
+                                { required: props.isUpdate ?  false : true  },
                             ]}
                         >
                             <Select
@@ -234,7 +234,7 @@ console.log(props.employeeData)
 
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="department" label="Department" rules={[
-                                { required: true },
+                                { required: props.isUpdate ? false : true  },
                             ]}>
                             <Select
                                 showSearch
