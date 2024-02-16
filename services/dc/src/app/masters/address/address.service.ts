@@ -36,20 +36,21 @@ export class AddressService {
       if (!isUpdate) {
 
         const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId,addressDto.addresser);
+        console.log(addressEntity)
         if (addressEntity) {
           throw new CommonResponse(false, 11104, 'Address already exists');
         }
       }
-      else {
-        const certificatePrevious = await this.addressRepo.findOne({ where: { addressId: addressDto.addressId } })
-        previousValue = (certificatePrevious.addresserNameId)
-        const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId,addressDto.addresser);
-        if (addressEntity) {
-          if (addressEntity.addresserNameId != addressDto.addresserNameId) {
-            throw new CommonResponse(false, 11104, 'Address already exists');
-          }
-        }
-      }
+      // else {
+      //   const certificatePrevious = await this.addressRepo.findOne({ where: { addressId: addressDto.addressId } })
+      //   previousValue = (certificatePrevious.addresserNameId)
+      //   const addressEntity = await this.getAddressWithoutRelations(addressDto.addresserNameId,addressDto.addresser);
+      //   if (addressEntity) {
+      //     if (addressEntity.addresserNameId != addressDto.addresserNameId) {
+      //       throw new CommonResponse(false, 11104, 'Address already exists');
+      //     }
+      //   }
+      // }
       const convertedAddressEntity: AddressEntity = this.addressAdapter.convertDtoToEntity(addressDto, isUpdate);
 
       const savedAddressEntity: AddressEntity = await this.addressRepo.save(convertedAddressEntity);
@@ -71,11 +72,10 @@ export class AddressService {
 
     try {
 
-      const query = `SELECT a.address_id AS addressId,addresser, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id as addresserNameId
+      const query = `SELECT a.address_id AS addressId,addresser, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser IN ('SUPPLIER', 'BUYER')  THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id as addresserNameId
       FROM shahi_address a
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
-      LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
-      WHERE addresser IN ('unit', 'supplier')`;
+      LEFT JOIN shahi_suppliers s ON (s.supplier_id = a.addresser_name_id AND a.addresser IN ('SUPPLIER', 'BUYER')) `;
       const data = await this.addressRepo.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
     } catch (error) {
