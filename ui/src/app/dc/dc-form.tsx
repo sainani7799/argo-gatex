@@ -599,20 +599,20 @@ const DCForm = () => {
                                         </Select>
                                     </Form.Item>
                                     <Form.Item name="attentionPerson" label="Attention Person(Receiver side)">
-                                        <Select
+                                        {/* <Select
                                             showSearch
                                             placeholder="Select Received Person"
                                             optionFilterProp="children"
                                             allowClear
 
-                                        >
+                                        > */}
                                             {/* {toEmployee.map(app => (
                                                 <Option key={app.employeeId} value={app.employeeId}>
                                                     {app.employeeName}
                                                 </Option>
                                             ))} */}
                                             <Input />
-                                        </Select>
+                                        {/* </Select> */}
                                     </Form.Item>
                                 </>
                             )}
