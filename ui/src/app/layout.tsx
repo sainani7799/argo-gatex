@@ -132,7 +132,7 @@ export default function BasicLayout() {
                                 <Link to="/dc-security"><span>Security Check</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC</span></Link>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
                                 </Menu.Item>
                             </SubMenu>
                             )
@@ -152,7 +152,7 @@ export default function BasicLayout() {
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC</span></Link>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
                                 </Menu.Item>
                             </SubMenu>
                             )
@@ -174,7 +174,7 @@ export default function BasicLayout() {
                                 <Link to="/dc-security"><span>Security Check</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC</span></Link>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
                                 </Menu.Item>
                             </SubMenu>
                             )
@@ -196,7 +196,7 @@ export default function BasicLayout() {
                                 <Link to="/dc-security"><span>Security Check</span></Link>
                             </Menu.Item>
                                 <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC</span></Link>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
                                 </Menu.Item>
                                 </SubMenu>
                                 )

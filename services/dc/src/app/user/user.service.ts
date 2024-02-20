@@ -58,13 +58,15 @@ export class UserMangementService {
 
   async create(userDto: CreateUserDto,isUpdate: boolean): Promise<CommonResponse> {
     console.log(userDto,'------------------user dto')
-    const userInDb = await this.userRepo.find({
-      where: { cardNo: userDto.cardNo }
-    });
-    console.log(userInDb,'user data from db-------------------')
-    if(userInDb.length){
-          return new CommonResponse(false,1111, "User details is Already exsits");
-      }
+    if(!isUpdate){
+      const userInDb = await this.userRepo.find({
+        where: { cardNo: userDto.cardNo }
+      });
+      console.log(userInDb,'user data from db-------------------')
+      if(userInDb.length){
+            return new CommonResponse(false,1111, "User details is Already exsits");
+        }
+    }
     const entity = new UserEntity()
     entity.userName = userDto.userName
     entity.password = userDto.password

@@ -1,14 +1,14 @@
 
-import { DeleteOutlined, EditOutlined, RightSquareOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Switch, message, Divider, Drawer } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { UserManagementServices } from 'libs/shared-services/src';
 import { CreateUserDto } from 'libs/shared-models';
 import UserForm from './user-form';
-
+import Highlighter from 'react-highlight-words'
 
 
 const UserFormGrid = () => {
@@ -19,11 +19,82 @@ const UserFormGrid = () => {
     const service = new UserManagementServices();
     const [loading, setLoading] = useState(true);
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const searchInput = useRef(null);
     const { Search } = Input;
 
     useEffect(() => {
         getUsers();
     }, []);
+
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex: string) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+            <div style={{ padding: 8 }}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{ width: 188, marginBottom: 8, display: 'block' }}
+                />
+                <Button
+                    type="primary"
+                    onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    icon={<SearchOutlined />}
+                    size="small"
+                    style={{ width: 90, marginRight: 8 }}
+                >
+                    Search
+                </Button>
+                <Button size="small" style={{ width: 90 }}
+                    onClick={() => {
+                        handleReset(clearFilters)
+                        setSearchedColumn(dataIndex);
+                        confirm({ closeDropdown: true });
+                    }}>
+                    Reset
+                </Button>
+            </div>
+        ),
+        filterIcon: filtered => (
+            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+        ),
+        onFilter: (value, record) =>
+            record[dataIndex]
+                ? record[dataIndex]
+                    .toString()
+                    .toLowerCase()
+                    .includes(value.toLowerCase())
+                : false,
+        onFilterDropdownVisibleChange: visible => {
+            if (visible) { setTimeout(() => searchInput.current.select()); }
+        },
+        render: text =>
+            text ? (
+                searchedColumn === dataIndex ? (
+                    <Highlighter
+                        highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                        searchWords={[searchText]}
+                        autoEscape
+                        textToHighlight={text.toString()}
+                    />
+                ) : text
+            )
+                : null
+    })
 
     const getUsers = () => {
         service.getUsers().then((res: any) => {
@@ -73,26 +144,31 @@ const UserFormGrid = () => {
             key: "1",
             title: "User Name",
             dataIndex: "userName",
+            ...getColumnSearchProps('userName'),
         },
         {
             key: "2",
             title: "Employee Name",
             dataIndex: "employee_name",
+            ...getColumnSearchProps('employee_name'),
         },
         {
             key: "3",
             title: "Employee Code",
             dataIndex: "empCode",
+            ...getColumnSearchProps('empCode'),
         },
         {
             key: "4",
             title: "Email",
             dataIndex: "email_id",
+            ...getColumnSearchProps('email_id'),
         },
         {
             key: "5",
             title: "Unit",
             dataIndex: "unit_name",
+            ...getColumnSearchProps('unit_name'),
         },
         {
             key: "6",

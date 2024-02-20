@@ -1,5 +1,6 @@
 import { AuthResponseModel,CreateUserDto,LoginDto, UserModel } from 'libs/shared-models/src'
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
+import { CommonResponse } from 'libs/shared-models/src/common';
 
 export class UserManagementServices extends CommonAxiosServicePms {
     private userManagementController = '/user-management';
@@ -12,7 +13,7 @@ export class UserManagementServices extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.userManagementController + '/getAllUsers')
     }
 
-    async register(dto:CreateUserDto): Promise<any> {
+    async register(dto:CreateUserDto): Promise<CommonResponse> {
         return await this.axiosPostCall(this.userManagementController + '/register',dto)
     }
 

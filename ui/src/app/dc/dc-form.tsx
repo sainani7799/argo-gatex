@@ -587,7 +587,7 @@ const DCForm = () => {
                                             placeholder="Select Dept "
                                             optionFilterProp="children"
                                             allowClear
-                                            onChange={getAllToEmployees}
+                                            // onChange={getAllToEmployees}
                                         >
                                             {deps?.map(dep => {
                                                 return (
@@ -623,14 +623,14 @@ const DCForm = () => {
 
                         </Col>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
-                            <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
-                                { required: true },
+                            {/* <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
+                                { required: false },
                             ]}>
                                 <Radio.Group onChange={returnOnChange} value={returnaValue} defaultValue={"N"}>
-                                    <Radio value={"Y"}>Yes</Radio>
-                                    <Radio value={"N"}>No</Radio>
+                                    <Radio value={"YES"}>Yes</Radio>
+                                    <Radio value={"NO"}>No</Radio>
                                 </Radio.Group>
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item name="purpose" label="Purpose" rules={[
                                 { required: true },
                             ]}>

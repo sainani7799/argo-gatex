@@ -40,6 +40,7 @@ import { useEffect, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Excel } from 'antd-table-saveas-excel';
+import dayjs from 'dayjs';
 
 export default function SecurityHeadReport() {
   const { RangePicker } = DatePicker  ;
@@ -63,6 +64,7 @@ export default function SecurityHeadReport() {
   const [receivedData,setReceivedData] = useState([])
   const [purposeData,setPurposedata] = useState([])
   const [createdData,setCreatedData] = useState([])
+  const [initialDate, setInitialDate] = useState([dayjs(), dayjs()]);
   const empService = new EmployeeService();
   const Option = Select;
   let navigate = useNavigate();
@@ -78,15 +80,15 @@ export default function SecurityHeadReport() {
     getReceivedBy();
     getPurpose();
     getCreated();
-    form.setFieldsValue({
-      date: [(moment(moment().format("YYYY-MM-DD")).subtract(1,'months')),moment(moment().format("YYYY-MM-DD"))] 
-    })
+    // form.setFieldsValue({
+    //   date: [(moment(moment().format("YYYY-MM-DD")).subtract(1,'months')),moment(moment().format("YYYY-MM-DD"))] 
+    // })
   }, []);
 
   const EstimatedETDDate = (value) => {
     if (value) {
-      const fromDate = new Date(value[0].format('YYYY-MM-DD'));
-      const toDate = new Date(value[1].format('YYYY-MM-DD'));
+      const fromDate = (dayjs(value[0]).format('YYYY-MM-DD'));
+      const toDate = (dayjs(value[1]).format('YYYY-MM-DD'));
       setSelectedEstimatedFromDate(fromDate)
       setSelectedEstimatedToDate(toDate)
     }
@@ -572,7 +574,7 @@ export default function SecurityHeadReport() {
               lg={{ span: 5, offset: 1 }}
               xl={{ span: 5, offset: 1 }}
             >
-              <Form.Item name="date" label="DC Date">
+              <Form.Item name="date" label="DC Date" initialValue={initialDate}>
                 <RangePicker onChange={EstimatedETDDate} />
               </Form.Item>
             </Col>

@@ -70,7 +70,8 @@ export class DcEntity {
 
   @Column('varchar', {
     name: 'returnable',
-    nullable: false
+    nullable: false,
+    default:'NO'
   })
   returnable: string;
 

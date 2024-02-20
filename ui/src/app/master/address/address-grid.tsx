@@ -156,24 +156,29 @@ const AddressGrid = () => {
 
         {
             title: "Addresser Name",
-            dataIndex: "addresserName"
+            dataIndex: "addresserName",
+            ...getColumnSearchProps('addresserName')
         },
         {
             title: "GST No",
-            dataIndex: "gstNo"
+            dataIndex: "gstNo",
+            ...getColumnSearchProps('gstNo')
         },
         {
             title: "CST No",
-            dataIndex: "cstNo"
+            dataIndex: "cstNo",
+            ...getColumnSearchProps('cstNo')
         },
         {
             title: "Line One",
-            dataIndex: "lineOne"
+            dataIndex: "lineOne",
+            ...getColumnSearchProps('lineOne')
         },
 
         {
             title: "Line Two",
-            dataIndex: "lineTwo"
+            dataIndex: "lineTwo",
+            ...getColumnSearchProps('lineTwo')
         },
         {
             title: "City",

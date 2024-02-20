@@ -176,7 +176,7 @@ const EmployeeGrid = () => {
             title: 'Card No',
             dataIndex: 'cardNo',
             align: 'center',
-            ...getColumnSearchProps('card'),
+            ...getColumnSearchProps('cardNo'),
         },
         {
             title: 'Department',
