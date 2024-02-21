@@ -530,7 +530,7 @@ export default function SecurityHeadReport() {
               xl={{ span: 5, offset: 1 }}
             >
               <Form.Item name="toUnit" label="To Unit">
-                <Select allowClear showSearch placeholder={'Select'}>
+                <Select mode='multiple' allowClear showSearch placeholder={'Select'}>
                   {units.map((u) => {
                     return <Option value={u.id}>{u.unitName}</Option>;
                   })}

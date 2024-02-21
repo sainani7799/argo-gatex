@@ -309,7 +309,10 @@ export class DcService {
         query = query + ' AND dc.from_unit_id = ' + req.fromUnit;
       }
       if (req.toUnit) {
-        query = query + ' AND dc.addresser_name_id = ' + req.toUnit;
+        let toUnitFilter = req.toUnit.map((uf) => {
+          return `'${uf}'`;
+        });
+        query = query + ' AND dc.addresser_name_id IN (' + toUnitFilter + ')';
       }
       if (req.itemCodeId) {
         query = query + ' AND it.dc_item_id = ' + req.itemCodeId;

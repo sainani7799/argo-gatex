@@ -195,14 +195,14 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
           {data[0]?.is_accepted === 'YES' ? <Button className='panel_button' onClick={openPrint}>
             Print
           </Button> : ''}
-          <Button
+          {/* <Button
             className='panel_button'
             onClick={() => 
               navigate(`/dc-view`)
             }
           >
             BACK
-          </Button>
+          </Button> */}
         </span>
       } >
         <Descriptions size='small' column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>

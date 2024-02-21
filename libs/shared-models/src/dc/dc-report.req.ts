@@ -4,7 +4,7 @@ export class DcReportReq{
     dcFromDate:any;
     dcToDate:any;
     fromUnit:number;
-    toUnit:number;
+    toUnit:number[];
     approvedBy:number;
     checkedBy:number;
     buyer:number;
