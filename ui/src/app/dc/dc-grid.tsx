@@ -286,7 +286,7 @@ const DCGrid = () => {
             dataIndex: "fromUnit"
         },
         {
-            title: "To Unit",
+            title: "To Unit/Supplier/Buyer",
             dataIndex: "toAddresserName"
         },
         {
