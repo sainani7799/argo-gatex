@@ -20,6 +20,7 @@ const DCForm = () => {
     const [units, setUnits] = useState<any>([]);
     const [deps, setDeps] = useState<any>([]);
     const [suppliers, setSuppliers] = useState<any>([]);
+    const [buyers, setBuyers] = useState<any>([]);
     const [warehouses, setWarehouses] = useState<any>([]);
     const [radioValue, setRadioValue] = useState("unit");
     const [returnaValue, setReturnaValue] = useState("N");
@@ -68,7 +69,6 @@ const DCForm = () => {
         getAllAddressByUnit();
         getAllItems();
         getAllEmployees();
-        getAllToAddressByUnit(radioValue);
         form.setFieldsValue({ fromUnitId: authdata.unitId })
         form.setFieldsValue({ createdUser: authdata.userName })
         form.setFieldsValue({ requestedBy: authdata.employeeId })
@@ -164,6 +164,7 @@ const DCForm = () => {
         req.addresser = radioValue
         req.addresserNameId = form.getFieldValue('addresserNameId')
         addressService.getAllToAddressByUnit(req).then(res => {
+            console.log(res)
             if (res) {
                 const activeToAddress = res.data.filter(address => address.isActive === 1);
                 setToAddressData(activeToAddress);
@@ -176,8 +177,10 @@ const DCForm = () => {
     const getSuppliers = () => {
         supplierService.getAllSuppliers().then(res => {
             if (res) {
-                const activeSuppliers = res.data.filter(suppliers => suppliers.isActive === true);
+                const activeSuppliers = res.data.filter(suppliers => suppliers.isActive === true && suppliers.type === "SUPPLIER");
                 setSuppliers(activeSuppliers);
+                const activeBuyers = res.data.filter(buyer => buyer.isActive === true && buyer.type === "BUYER")
+                setBuyers(activeBuyers)
             }
         }).catch(err => {
             message.error("Something went wrong");
@@ -205,25 +208,6 @@ const DCForm = () => {
         })
     };
 
-    const getAllToEmployees = () => {
-        const req = new ToEmpReq();
-        req.unitId = form.getFieldValue('addresserNameId');
-        req.departmentId = form.getFieldValue('toDepartmentId');
-        employeeService.getAllToEmployeesByUnit(req)
-            .then(res => {
-                if (res && res.data && res.data.length > 0) {
-                    setToEmployee(res.data);
-                } else {
-                    // Handle case when the response is empty
-                    // For example, display an error message
-                    message.error("No employees found in this department");
-                }
-            })
-            .catch(error => {
-                // Handle error if needed
-            });
-    };
-
     const getApprovedUsers = () => {
         approvedService.getAllApprovalUser().then(res => {
             if (res) {
@@ -234,7 +218,6 @@ const DCForm = () => {
 
     const radioOnChange = (e: RadioChangeEvent) => {
         setRadioValue(e.target.value);
-        getAllToAddressByUnit(e.target.value)
     };
 
     const returnOnChange = (e: RadioChangeEvent) => {
@@ -552,7 +535,8 @@ const DCForm = () => {
                             ]}>
                                 <Radio.Group onChange={radioOnChange} value={radioValue} defaultValue={"unit"}>
                                     <Radio value={"unit"}>Unit</Radio>
-                                    <Radio value={"supplier"}>Buyer/Supplier</Radio>
+                                    <Radio value={"supplier"}>Supplier</Radio>
+                                    <Radio value={"buyer"}>Buyer</Radio>
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item name="addresserNameId" label="To" rules={[
@@ -569,11 +553,18 @@ const DCForm = () => {
                                         <Option key={unit.id} value={unit.id}>
                                             {unit.unitName}
                                         </Option>
-                                    )) : suppliers.map(supplier => (
+                                    ))    : radioValue === "buyer" 
+                                    ? buyers.map(buyer => (
+                                        <Option key={buyer.supplierId} value={buyer.supplierId}>
+                                            {buyer.supplierName}
+                                        </Option>
+                                    ))
+                                    : suppliers.map(supplier => (
                                         <Option key={supplier.supplierId} value={supplier.supplierId}>
                                             {supplier.supplierName}
                                         </Option>
-                                    ))}
+                                    )) 
+                                    }
                                 </Select>
                             </Form.Item>
 

@@ -320,6 +320,10 @@ export default function SecurityHeadReport() {
       dataIndex: 'buyer',
     },
     {
+      title: 'Supplier',
+      dataIndex: 'supplier',
+    },
+    {
       title: 'Item Code',
       dataIndex: 'itemCode',
     },
@@ -424,6 +428,10 @@ export default function SecurityHeadReport() {
     {
       title: 'Buyer',
       dataIndex: 'buyer',
+    },
+    {
+      title: 'Supplier',
+      dataIndex: 'supplier',
     },
     {
       title: 'Item Code',
