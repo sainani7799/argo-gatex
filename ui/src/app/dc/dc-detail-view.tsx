@@ -6,6 +6,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DcPrint from './dc-print'
+import moment from "moment";
 
 export interface DcViewProps {
   dcId: number
@@ -37,7 +38,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       }
     })
   }
-
+console.log(data)
   useEffect(() => {
     if (data) {
       getFromAddress(data[0]?.fromUnitId),
@@ -209,7 +210,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       } >
         <Descriptions size='small' column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{data[0]?.createdDate}</DescriptionsItem>
+          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{moment(data[0]?.createdDate)?.format('YYYY-MM-DD')}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created By</span>}>{data[0]?.created_user}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Value</span>}>{data[0]?.value}</DescriptionsItem>

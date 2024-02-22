@@ -342,8 +342,6 @@ const DCGrid = () => {
                                     form.setFieldValue('dcNumber', rowData.dcNumber);
                                     form.setFieldValue('fromUnit', rowData.fromUnit);
                                     form.setFieldValue('toAddresserName', rowData.toAddresserName);
-                                    console.log(rowData.dcId);
-                                    console.log(rowData.dcNumber);
                                 }}
                                 style={{ color: "blue", fontSize: 20 }}
                             />

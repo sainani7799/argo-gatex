@@ -99,10 +99,11 @@ export class AddressService {
   }
   async getAllToAddressByUnit(req: ToAddressReq): Promise<CommonResponse> {
     try {
-      const query = `SELECT a.address_id AS addressId,addresser,a.addresser_name_id AS addresserNameId, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
+      const query = `SELECT a.address_id AS addressId,addresser,a.addresser_name_id AS addresserNameId, CASE WHEN addresser = 'unit' THEN u.unit_name WHEN addresser = 'supplier' THEN s.supplier_name WHEN addresser = 'buyer' THEN b.supplier_name END AS addresserName, line_one AS lineOne, line_two AS lineTwo, city, dist, pin_code AS pinCode, state, country, a.created_at AS createdAt ,a.gst_no AS gstNo,a.cst_no AS cstNo , a.is_active AS isActive, a.addresser_name_id AS addresserNameId
       FROM shahi_address a
       LEFT JOIN shahi_units u ON u.id = a.addresser_name_id AND a.addresser = 'unit'
       LEFT JOIN shahi_suppliers s ON s.supplier_id = a.addresser_name_id AND a.addresser = 'supplier'
+      LEFT JOIN shahi_suppliers b ON b.supplier_id = a.addresser_name_id AND a.addresser = 'buyer'
       WHERE addresser = '${req.addresser}' AND a.addresser_name_id = '${req.addresserNameId}'`;
       const data = await this.addressRepo.query(query)
       return new CommonResponse(true, 111, 'data retried successfully', data)
