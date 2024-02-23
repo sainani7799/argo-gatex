@@ -226,7 +226,9 @@ const DCReceived = () => {
                       checked={rowData.received_dc ==='YES'}
                     />
                   
-                </Popconfirm>):(
+                </Popconfirm>
+                )
+                :(
                         <Tooltip placement='top' title="DC Received">
                             <CheckOutlined
                                 onClick={() => {
@@ -241,7 +243,7 @@ const DCReceived = () => {
         },
 
     ];
-
+console.log(responseData)
     return (
         <Card
             title={<span style={{ color: "white" }}>Received GatePass's</span>}
@@ -249,7 +251,9 @@ const DCReceived = () => {
 
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData}
+            <Table columns={columnsSkelton} dataSource={responseData.filter(
+              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED'
+            )}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} open={drawerVisible} closable={true}>
