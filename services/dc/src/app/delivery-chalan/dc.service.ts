@@ -246,7 +246,7 @@ export class DcService {
     try {
       const query = `SELECT dc.security_user as CheckedUser , dc.sec_checked_date as secUserDate ,dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
             w.warehouse_name AS warehouseName,
-            CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name END AS toAddresserName ,
+            CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN dc.to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user
              FROM shahi_dc dc
@@ -255,10 +255,11 @@ export class DcService {
             LEFT JOIN shahi_department d ON d.id = dc.department_id
             LEFT JOIN shahi_units au ON au.id = dc.addresser_name_id AND dc.to_addresser = 'unit'
             LEFT JOIN shahi_suppliers s ON s.supplier_id = dc.addresser_name_id AND dc.to_addresser = 'supplier'
+            LEFT JOIN shahi_suppliers b ON b.supplier_id = dc.addresser_name_id AND dc.to_addresser = 'buyer'
             LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
             LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
-            WHERE to_addresser IN ('unit', 'supplier') AND dc.from_unit_id = ${req.unitId} ORDER BY dc.created_at DESC`;
+            WHERE to_addresser IN ('unit', 'supplier','buyer') AND dc.from_unit_id = ${req.unitId} ORDER BY dc.created_at DESC`;
       const data = await this.userRepo.query(query);
       return new CommonResponse(true, 111, 'data retried successfully', data);
     } catch (error) {
