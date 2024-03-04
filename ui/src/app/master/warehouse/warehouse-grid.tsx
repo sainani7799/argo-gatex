@@ -4,7 +4,7 @@ import { SupplierService, WarehouseService } from 'libs/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import WarehouseForm from './warehouse-form';
-import { CreateWarehouseDto } from 'libs/shared-models';
+import { CreateWarehouseDto, UnitReq } from 'libs/shared-models';
 import Highlighter from 'react-highlight-words'
 
 const WarehouseGrid = () => {
@@ -110,13 +110,26 @@ const WarehouseGrid = () => {
         dto.isActive=dto.isActive?false:true;
         service.activateOrDeactivateWarehouse(dto).then(res => { console.log(res);
           if (res.status) {
-            message.success('Success'); 
+            message.success(res.internalMessage); 
           } else {
               message.error(res.internalMessage);
             }
         }).catch(err => {
           message.error(err.message);
         })
+      }
+
+      const activateOrDeactivateUnits = (val:UnitReq) =>{
+        val.isActive=val.isActive?false:true;
+        service.activateOrDeactivateUnits(val).then((res) =>{
+            if (res.status) {
+                message.success(res.internalMessage); 
+              } else {
+                  message.error(res.internalMessage);
+                }
+            }).catch(err => {
+              message.error(err.message);
+            })
       }
 
 
@@ -150,7 +163,7 @@ const WarehouseGrid = () => {
                             if (rowData.isActive) {
                                 openFormWithData(rowData);
                             } else {
-                                message.error('You Cannot Edit Deactivated Warehouse');
+                                message.error('You Cannot Edit Deactivated Warehouse-Unit');
                             }
                         }}
                         style={{ color: '#1890ff', fontSize: '14px' }}
@@ -158,11 +171,11 @@ const WarehouseGrid = () => {
 
 
                     <Divider type="vertical" />
-                    <Popconfirm onConfirm={e =>{deleteWarehouse(rowData);}}
+                    <Popconfirm onConfirm={e =>{activateOrDeactivateUnits(rowData);}}
                   title={
                     rowData.isActive
-                      ? 'Are you sure to Deactivate Warehouse ?'
-                      :  'Are you sure to Activate Warehouse ?'
+                      ? 'Are you sure to Deactivate Warehouse-Unit ?'
+                      :  'Are you sure to Activate Warehouse-Unit ?'
                   }
                 >
                   <Switch  size="default"

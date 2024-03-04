@@ -25,6 +25,7 @@ import DcRejectMail from "./dc/dc-mail-reject";
 import DCSecurity from "./dc/dc-security";
 import SecurityHeadReport from "./dc/security-head-report";
 import DcEmailDetailsView from "./dc/email-detail-view";
+import ApproverGrid from "./master/authorised/authorised-grid";
 
 
 
@@ -100,7 +101,8 @@ const AppRoutes = () => {
                         isUpdate={false}
                         closeForm={() => { }}
                         updateApprovalUser={(undefined) => { }} />} />
-                </Route>
+                     </Route>
+                     <Route path="/approval-user" element={<ApproverGrid />} />
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />

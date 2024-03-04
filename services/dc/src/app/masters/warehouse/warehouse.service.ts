@@ -91,7 +91,7 @@ export class WarehouseService {
 
   async getAllWarehouses(): Promise<CommonResponse> {
     try {
-      const query = `select w.warehouse_id as warehouseId, w.warehouse_name as warehouseName , w.unit_id  AS unitId,u.unit_name as unitName, created_user as createdUser,updated_user as updatedUser, w.is_active AS isActive from shahi_warehouse w
+      const query = `select w.warehouse_id as warehouseId, w.warehouse_name as warehouseName , w.unit_id  AS unitId,u.unit_name as unitName, created_user as createdUser,updated_user as updatedUser, u.is_active AS isActive from shahi_warehouse w
       left join shahi_units u on u.id = w.unit_id`
       const warehouseData = await this.warehouseRepo.query(query)
       return new CommonResponse(true, 2222, 'warehouse data retrieved successfully', warehouseData)
@@ -109,6 +109,7 @@ export class WarehouseService {
     }
   }
   async activateOrDeactivateWarehouse(req: CreateWarehouseDto): Promise<CommonResponse> {
+    console.log(req,'---------unit req')
     try {
       const warehouseExists = await this.getWarehouseById(req.warehouseId);
       if (warehouseExists) {

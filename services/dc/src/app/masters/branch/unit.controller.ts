@@ -36,5 +36,14 @@ export class UnitController {
     }
   }
 
+  @Post('/activateOrDeactivateUnits')
+  async activateOrDeactivateUnits( @Body() request:any ): Promise<CommonResponse> {
+    try {
+      return await this.service.activateOrDeactivateUnits(request);
+    } catch (error) {
+      return (error);
+    }
+  }
+
 
 }
