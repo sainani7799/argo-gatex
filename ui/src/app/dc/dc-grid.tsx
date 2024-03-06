@@ -134,7 +134,7 @@ const DCGrid = () => {
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -146,7 +146,7 @@ const DCGrid = () => {
             >View Details of GatePass</a
           >
           <a
-          href="http://172.20.50.169/del-chalan_app/#/dc-email/${form.getFieldValue('dcId')}"
+          href="http://gpdc.seplcloud.com/#/dc-email/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -158,7 +158,7 @@ const DCGrid = () => {
           >Accept DC</a
         >
         <a
-          href="http://172.20.50.169/del-chalan_app/#/dc-reject-mail/${form.getFieldValue('dcId')}"
+          href="http://gpdc.seplcloud.com/#/dc-reject-mail/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;

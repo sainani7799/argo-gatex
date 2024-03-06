@@ -67,6 +67,7 @@ export class DcService {
         throw new Error('DC saved but issue while transforming into DTO');
       }
     } catch (error) {
+      console.log('dc creation log')
       console.log(error)
       throw error;
     }

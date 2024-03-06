@@ -137,7 +137,7 @@ export function DcPrint(props: DcPrintProps) {
                                 </div>
                             </Col>
                             <Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '5px' }}>
-                                <QRCode type="svg" value={`http://172.20.50.169/del-chalan_app/#/dc-email-detail-view/${props.dcId}`} />
+                                <QRCode type="svg" value={`http://gpdc.seplcloud.com/#/dc-email-detail-view/${props.dcId}`} />
                             </Col>
                         </Row>
                     </div>

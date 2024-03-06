@@ -16,10 +16,10 @@ import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm
 
 export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
-    host: '172.20.50.169',
-    username: 'internal_apps',
-    password: 'Schemax@2023',
-    database: 'internal_apps',
+    host: 'localhost',
+    username: 'sql_gpdc_seplclo',
+    password: 'thFFTBh2WrWkBWDC',
+    database: 'sql_gpdc_seplclo',
     synchronize: false,
     logging:true,
     entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]

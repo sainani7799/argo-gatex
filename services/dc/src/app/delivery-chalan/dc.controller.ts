@@ -3,12 +3,16 @@ import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/app
 import { DcService } from "./dc.service";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { Response } from 'express';
+import { ApiProperty } from "@nestjs/swagger";
+import { DcDto } from "./dto/dc.dto";
+import { MailerService } from "./send-mail";
 
 @Controller("dc")
 export class DcController {
   applicationExceptionHandler: any;
   constructor(
     private readonly dcService: DcService ,
+    private readonly mailService : MailerService
   ) { }
 
   @Post('/createDc')
@@ -204,6 +208,15 @@ export class DcController {
     async getCreated(): Promise<CommonResponse> {
       try {
         return await this.dcService.getCreated();
+      } catch (error) {
+        return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      }
+    }
+
+    @Post('/sendDcMail')
+    async sendDcMail(@Body() req: any): Promise<CommonResponse> {
+      try {
+        return await this.mailService.sendDcMail(req);
       } catch (error) {
         return this.applicationExceptionHandler.returnException(CommonResponse, error);
       }

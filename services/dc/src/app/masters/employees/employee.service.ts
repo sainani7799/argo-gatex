@@ -30,7 +30,7 @@ export class EmployeeService {
       return new GetAllEmployeeResponse(true, 1, isUpdate ? 'Employee Updated Successfully' : 'Employee created Successfully');
     } catch (error) {
       console.error('Error creating/updating employee:', error);
-      throw new InternalServerErrorException('Internal server error');
+      return new GetAllEmployeeResponse(false,0,'Internal server error');
     }
   }
 

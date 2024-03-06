@@ -36,14 +36,15 @@ export const CommonHeader = (props: IProps) => {
     localStorage.clear()
     navigate('/login')
   }
-  useEffect(() => {
-    Object.values(events).forEach((item) => {
-      window.addEventListener(item, () => {
-        resetTimer();
-        handleLogoutTimer();
-      });
-    });
-  }, []);
+  
+  // useEffect(() => {
+  //   Object.values(events).forEach((item) => {
+  //     window.addEventListener(item, () => {
+  //       resetTimer();
+  //       // handleLogoutTimer();
+  //     });
+  //   });
+  // }, []);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)
@@ -52,18 +53,18 @@ export const CommonHeader = (props: IProps) => {
   const resetTimer = () => {
     if (timer) clearTimeout(timer);
   };
-  const handleLogoutTimer = () => {
-    timer = setTimeout(() => {
-      // clears any pending timer.
-      resetTimer();
-      // Listener clean up. Removes the existing event listener from the window
-      Object.values(events).forEach((item) => {
-        window.removeEventListener(item, resetTimer);
-      });
-      // logs out user
-      logoutHandler();
-    }, 900000); //15 minutes
-  }
+  // const handleLogoutTimer = () => {
+  //   timer = setTimeout(() => {
+  //     // clears any pending timer.
+  //     resetTimer();
+  //     // Listener clean up. Removes the existing event listener from the window
+  //     Object.values(events).forEach((item) => {
+  //       window.removeEventListener(item, resetTimer);
+  //     });
+  //     // logs out user
+  //     logoutHandler();
+  //   }, 900000); //15 minutes
+  // }
   const menu = (
     <Menu >
       <Menu.Item>
