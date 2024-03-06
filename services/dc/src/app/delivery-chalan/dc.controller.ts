@@ -17,7 +17,7 @@ export class DcController {
       return await this.dcService.createDc(dto, false);
     } catch (error) {
       console.log(error)
-      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+      return await this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
 

@@ -30,6 +30,7 @@ export class DcService {
   ) {}
 
   async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+    console.log('-create api call')
     try {
       const slNo = await this.userRepo.count();
       const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(
@@ -48,12 +49,12 @@ export class DcService {
         req,
         isUpdate
       );
-      console.log(convertedDcEntity);
+      console.log(convertedDcEntity,'----coneverted entity');
       const savedDcEntity: DcEntity = await this.userRepo.save(
         convertedDcEntity
       );
-      const savedDcDto: DcDto =
-        this.dcAdapter.convertEntityToDto(savedDcEntity);
+      console.log(savedDcEntity,'--save dc entity')
+      const savedDcDto: DcDto =this.dcAdapter.convertEntityToDto(savedDcEntity);
       if (savedDcDto) {
         const response = new CommonResponse(
           true,
@@ -66,6 +67,7 @@ export class DcService {
         throw new Error('DC saved but issue while transforming into DTO');
       }
     } catch (error) {
+      console.log(error)
       throw error;
     }
   }
