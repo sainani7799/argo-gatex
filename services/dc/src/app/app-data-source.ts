@@ -20,6 +20,10 @@ export const typeOrmConfig: DataSourceOptions ={
     username: 'sql_gpdc_seplclo',
     password: 'thFFTBh2WrWkBWDC',
     database: 'sql_gpdc_seplclo',
+    // host: '172.20.50.169',
+    // username: 'internal_apps',
+    // password: 'Schemax@2023',
+    // database: 'internal_apps',
     synchronize: false,
     logging:true,
     entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]

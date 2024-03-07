@@ -218,6 +218,9 @@ export class DcController {
       try {
         return await this.mailService.sendDcMail(req);
       } catch (error) {
+        console.log('----------error in send mail controller')
+        console.log(error)
+        console.log('-------End in Controller')
         return this.applicationExceptionHandler.returnException(CommonResponse, error);
       }
     }

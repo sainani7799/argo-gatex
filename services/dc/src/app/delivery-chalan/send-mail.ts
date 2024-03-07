@@ -60,7 +60,6 @@ export class MailerService {
   }
 
 
-
   async send(req: SendOptions): Promise<CommonResponse> {
     try {
       await this.transporter.sendMail(req);
@@ -77,14 +76,22 @@ export class MailerService {
     }
   }
   async sendDcMail(req: any) {
-    const sendDcMail = await this.transporter.sendMail({
-      from: '"GATE PASS" <no-reply@shahi.co.in>',
-      to: req.to,
-      dcNo:req.dcNo,
-      subject: req.subject,
-      html : req.html
-    });
-    return new CommonResponse(true, 1111, 'Mail sent sucessfully');
+    console.log(req,'-------mail req')
+    try{
+      const sendDcMail = await this.transporter.sendMail({
+        from: '"GATE PASS" <no-reply@shahi.co.in>',
+        to: req.to,
+        dcNo:req.dcNo,
+        subject: req.subject,
+        html : req.html
+      });
+      return new CommonResponse(true, 1111, 'Mail sent sucessfully');
+    }catch(err){
+      console.log('------send mail error in service')
+      console.log(err)
+      console.log('-------End in service')
+       throw err
+    }
   }
 
 }
