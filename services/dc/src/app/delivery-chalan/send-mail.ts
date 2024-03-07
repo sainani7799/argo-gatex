@@ -7,7 +7,7 @@ import * as fs from 'fs';
 @Injectable()
 export class MailerService {
   private transporter: nodemailer.Transporter;
-  private readonly filePath: string = 'dcErrorLog.docx';
+  private readonly filePath: string = 'dist/services/dc/dcErrorLog.docx';
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -98,7 +98,7 @@ export class MailerService {
     }
   }
 
- async logError(error: Error) {
+ async logError(error: any) {
   console.log(error,'error')
     const errorMessage = `${new Date().toISOString()}: ${error}\n`;
     // Append error message to the file
