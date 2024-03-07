@@ -26,6 +26,7 @@ import DCSecurity from "./dc/dc-security";
 import SecurityHeadReport from "./dc/security-head-report";
 import DcEmailDetailsView from "./dc/email-detail-view";
 import ApproverGrid from "./master/authorised/authorised-grid";
+import DCApprovalGrid from "./dc/dc-approval-screen";
 
 
 
@@ -90,6 +91,7 @@ const AppRoutes = () => {
                     <Route path="/item-grid" element={<ItemGrid />} />
                     <Route path="/dc-form" element={<DCForm />} />
                     <Route path="/dc-view" element={<DCGrid />} />
+                    <Route path="/dc-approval-grid" element={<DCApprovalGrid />} />
                     <Route path="/dc-received" element={<DCReceived />} />
                     <Route path="/dc-security" element={<DCSecurity />} />
                     <Route path="/security-report" element={<SecurityHeadReport />} />
