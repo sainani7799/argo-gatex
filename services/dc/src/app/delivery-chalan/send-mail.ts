@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import nodemailer from 'nodemailer';
 import { SendOptions } from './dto/send-mail';
+import * as fs from 'fs';
 
 @Injectable()
 export class MailerService {
   private transporter: nodemailer.Transporter;
+  private readonly filePath: string = 'dcErrorLog.docx';
 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -65,6 +67,7 @@ export class MailerService {
       await this.transporter.sendMail(req);
       return new CommonResponse(true, 1111, "Mail sent successfully");
     } catch (error) {
+      await this.logError(error.code)
       // Check specific Nodemailer error types and handle them accordingly
       if (error.code === 'EENVELOPE' || error.code === 'ECONNECTION' || error.code === 'EMESSAGE') {
         return new CommonResponse(false, 500, "Failed to send mail: Invalid email configuration");
@@ -76,8 +79,8 @@ export class MailerService {
     }
   }
   async sendDcMail(req: any) {
-    console.log(req,'-------mail req')
     try{
+      await this.logError(req.subject)
       const sendDcMail = await this.transporter.sendMail({
         from: '"GATE PASS" <no-reply@shahi.co.in>',
         to: req.to,
@@ -87,11 +90,23 @@ export class MailerService {
       });
       return new CommonResponse(true, 1111, 'Mail sent sucessfully');
     }catch(err){
+      await this.logError(err)
       console.log('------send mail error in service')
       console.log(err)
       console.log('-------End in service')
        throw err
     }
+  }
+
+ async logError(error: Error) {
+  console.log(error,'error')
+    const errorMessage = `${new Date().toISOString()}: ${error}\n`;
+    // Append error message to the file
+    fs.appendFile(this.filePath, errorMessage, (err) => {
+      if (err) {
+        console.error('Error logging to file:', err);
+      }
+    });
   }
 
 }
