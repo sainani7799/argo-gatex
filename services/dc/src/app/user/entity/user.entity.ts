@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, VersionColumn,PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, CreateDateColumn, UpdateDateColumn, VersionColumn,PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
 
 @Entity('shahi_user') 
 export class UserEntity  {
@@ -16,6 +16,15 @@ export class UserEntity  {
         name: 'password',
     })
     password: string;
+
+    // @Column({ 
+    //     type: 'varchar', 
+    //     nullable: false 
+    // }) 
+    // password?: string;  @Column({ 
+    //     type: 'varchar', 
+    //     nullable: false 
+    // })
     
     @Column("int", { name: 'employee_id' })
     employeeId: number;
@@ -42,7 +51,14 @@ export class UserEntity  {
         name: "is_active",
     })
     isActive: boolean;
+    // @BeforeInsert()  
+    // // @BeforeUpdate()
+    //     async hashPassword() {
+    //         if(this.password){
 
+    //             this.password = await bcrypt.hash(this.password, 10);  
+    //         }
+    // }
 
     @CreateDateColumn({
         name: "created_at",

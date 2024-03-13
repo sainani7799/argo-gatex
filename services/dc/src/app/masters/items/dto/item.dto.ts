@@ -14,6 +14,9 @@ export class CreateItemDto {
     description: string;
 
     @ApiProperty()
+    itemType:string;
+
+    @ApiProperty()
     uom: string;
 
     @ApiProperty()

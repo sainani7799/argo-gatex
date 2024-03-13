@@ -124,7 +124,7 @@ export class ItemService {
     }
     async getAllItemsByCode(req: itemCode): Promise<CommonResponse> {
         try {
-            const query = `select item_id AS itemId, item_code AS itemCode ,item_name AS itemName,description ,uom FROM shahi_items where item_code = '${req.itemCode}'`
+            const query = `select item_id AS itemId, item_code AS itemCode ,item_name AS itemName,description,item_type AS itemType ,uom FROM shahi_items where item_code = '${req.itemCode}'`
             const data = await this.itemRepo.query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         } catch (error) {

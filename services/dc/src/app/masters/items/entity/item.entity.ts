@@ -17,11 +17,16 @@ export class ItemEntity  {
         length: 50
     })
     itemName: string;
-
+    
     @Column('varchar', {
         name: 'description',
     })
     description: string;
+
+    @Column('varchar', {
+        name: 'item_type',
+    })
+    itemType:string;
 
     @Column('varchar', {
         name: 'uom',

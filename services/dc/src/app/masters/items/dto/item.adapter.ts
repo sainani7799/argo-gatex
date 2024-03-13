@@ -13,6 +13,7 @@ export class itemsAdapter {
         item.uom = dto.uom;
         item.createdAt = dto.createdAt;
         item.createdUser = dto.createdUser;
+        item.itemType = dto.itemType;
         item.isActive = dto.isActive == undefined ? true : dto.isActive;
         if (isUpdate) {
             item.updatedUser = dto.updatedUser;
@@ -29,6 +30,7 @@ export class itemsAdapter {
         dto.itemName = entity.itemName;
         dto.uom = entity.uom;
         dto.description = entity.description;
+        dto.itemType = entity.itemType;
         dto.createdUser = entity.createdUser;
         dto.isActive = entity.isActive;
         dto.updatedUser = entity.updatedUser;

@@ -100,12 +100,18 @@ const ItemGrid = () => {
         },
         {
             key: "3",
+            title: "Item Type",
+            dataIndex: "itemType",
+            ...getColumnSearchProps('itemType')
+        },
+        {
+            key: "4",
             title: "Created User",
             dataIndex: "createdUser",
             ...getColumnSearchProps('createdUser')
         },
         {
-            key: "3",
+            key: "5",
             title: "Description",
             dataIndex: "description"
         },

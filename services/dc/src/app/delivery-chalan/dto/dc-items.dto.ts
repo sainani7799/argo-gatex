@@ -10,6 +10,8 @@ export class DcItemsDto{
     @ApiProperty()
     description:string;
     @ApiProperty()
+    itemType:string;
+    @ApiProperty()
     uom:string;
     @ApiProperty()
     qty:number;
@@ -27,12 +29,13 @@ export class DcItemsDto{
     updatedAt?: Date;
     @ApiProperty()
     updatedUser?: string | null;
-    constructor(dcItemId:number, itemCode:string, itemName:string, description:string, uom:string, qty:number, rate:number, amount:string, isActive?: boolean, createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null,
+    constructor(dcItemId:number, itemCode:string, itemName:string, description:string,itemType:string, uom:string, qty:number, rate:number, amount:string, isActive?: boolean, createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null,
     ){
         this.dcItemId = dcItemId 
         this.itemCode = itemCode 
         this.itemName = itemName
         this.description = description
+        this.itemType = itemType;
         this.uom = uom
         this.qty = qty
         this.rate = rate

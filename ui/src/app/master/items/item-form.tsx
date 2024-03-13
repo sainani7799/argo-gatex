@@ -1,4 +1,5 @@
 import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import { ItemDto } from 'libs/shared-models';
 import { ItemService } from 'libs/shared-services';
 import { useEffect, useState } from 'react';
@@ -14,7 +15,7 @@ export interface ItemsFormProps {
 }
 
 const ItemForm = (props:ItemsFormProps) => {
-
+    const {Option} = Select
     const service = new ItemService();
     const [form] = Form.useForm();
     const [disable, setDisable] = useState<boolean>(false);
@@ -92,11 +93,22 @@ const ItemForm = (props:ItemsFormProps) => {
                     </Col>
                 </Row>
                 <Row gutter={24}>
-                    <Col style={{width:'100%'}}>
+                <Col style={{width:'50%'}}>
+                        <Form.Item label="Item Type" name="itemType" rules={[
+                            { required: true },
+                        ]} style={{ width: '95%' }}>
+                            <Select placeholder='Select Item Type'>
+                                <Option value={'garment'}>Garment</Option>
+                                <Option value={'fabric'}>Fabric</Option>
+                                <Option value={'trim'}>Trim</Option>
+                            </Select>
+                        </Form.Item>
+                    </Col>
+                    <Col style={{width:'50%'}}>
                         <Form.Item label="Description" name="description" rules={[
                             { required: true },
                         ]} style={{ width: '95%' }}>
-                            <Input placeholder="Enter Description" />
+                            <TextArea placeholder="Enter Description" />
                         </Form.Item>
                     </Col>
                 </Row>

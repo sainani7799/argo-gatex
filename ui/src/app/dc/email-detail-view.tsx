@@ -92,6 +92,14 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
       style: { fontSize: '14px' },
     },
     {
+      title: 'Item Type',
+      key: 'Item Type',
+      dataIndex: 'itemType',
+      // responsive: ['lg'],
+      hideOnXs: true,
+      hideOnSm: true,
+    },
+    {
       title: 'Item Code',
       key: 'itemCode',
       dataIndex: 'itemCode',

@@ -57,13 +57,15 @@ console.log(props.userData)
     }
 
     const onFinish = (val: any) => {
-        userService.register(val).then(res => {
-            if (res.status) {
-                message.success(res.internalMessage)
-                navigate('/users')
-            } else {
-                message.error(res.internalMessage)
-            }
+        form.validateFields(val).then(res =>{
+            userService.register(val).then(res => {
+                if (res.status) {
+                    message.success(res.internalMessage)
+                    navigate('/users')
+                } else {
+                    message.error(res.internalMessage)
+                }
+            })
         })
     }
     const handleReset = () => {
@@ -108,6 +110,7 @@ console.log(props.userData)
                         rules={[
                             { required: true, message: 'Please enter your password' },
                             { min: 6, message: 'Password must be at least 6 characters' },
+                            { pattern: /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+}{"':;?/>.<,])(?=.*[a-z]).{6,}$/, message: 'Password must contain at least one uppercase letter and one special character' },
                         ]}
                     >
                         <Input.Password placeholder="Enter your password" />

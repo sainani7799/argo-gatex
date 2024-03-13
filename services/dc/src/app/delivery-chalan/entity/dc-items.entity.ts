@@ -27,6 +27,11 @@ export class DcItemEntity {
     description: string;
 
     @Column('varchar', {
+        name: 'item_type',
+    })
+    itemType:string;
+
+    @Column('varchar', {
         name: 'uom',
         nullable: false
     })

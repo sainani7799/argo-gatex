@@ -214,7 +214,7 @@ export class DcService {
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy,
-            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount , 
+            dci.dc_item_id,dci.item_code AS itemCode ,dci.item_name AS itemName,dci.description,dci.uom,dci.qty,dci.rate,dci.amount ,dci.item_type AS itemType,
             dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by,
              eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,dc.purpose,dc.vehicle_no AS vehicleNo ,
               dc.email_id AS emailId ,sa.sign_path,sa.user_signature ,dc.to_department_id,td.department_name AS toDepartment,

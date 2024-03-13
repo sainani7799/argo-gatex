@@ -155,6 +155,7 @@ const DCForm = () => {
                 itemForm.setFieldValue('itemName', res.data[0].itemName)
                 itemForm.setFieldValue('description', res.data[0].description)
                 itemForm.setFieldValue('uom', res.data[0].uom)
+                itemForm.setFieldValue('itemType',res.data[0].itemType)
             }
         })
     }
@@ -253,7 +254,7 @@ const DCForm = () => {
                 qty: defaultItemFormData.qty,
                 rate: defaultItemFormData.rate,
                 amount: defaultItemFormData.amount,
-
+                itemType : defaultItemFormData.itemType
             })
         }
 
@@ -274,7 +275,10 @@ const DCForm = () => {
         {
             title: 'Item Name',
             dataIndex: 'itemName',
-
+        },
+        {
+            title: 'Item Type',
+            dataIndex: 'itemType',
         },
         {
             title: 'Description',
@@ -385,17 +389,20 @@ const DCForm = () => {
 
     const calculateAmount = () => {
         const qty = itemForm.getFieldValue('qty');
-        if(Number(qty) > 50 || (Number(totalQty) + Number(qty)) > 50) {
-            setAddVisible(true)
-            return message.info('Qty will not exceed 50')
-        }else{
-            const rate = itemForm.getFieldValue('rate');
-            const amount = (qty * rate).toString();
-            setAddVisible(false)
-            itemForm.setFieldsValue({
-                amount: isNaN(Number(amount)) ? 0 : Number(amount),
-            });
-        }
+        const trim = itemForm.getFieldValue('itemType')
+          if(trim != 'trim'){
+            if(Number(qty) > 50 || (Number(totalQty) + Number(qty)) > 50) {
+                setAddVisible(true)
+                return message.info('Qty will not exceed 50')
+            }
+          }
+                const rate = itemForm.getFieldValue('rate');
+                const amount = (qty * rate).toString();
+                setAddVisible(false)
+                itemForm.setFieldsValue({
+                    amount: isNaN(Number(amount)) ? 0 : Number(amount),
+                });
+            
     };
 
     const onSubmit = () => {
@@ -745,6 +752,15 @@ const DCForm = () => {
                             {
                                 manualEntry ? (
                                     <>
+                                           <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemType' label='Item Type' rules={[{ required: true, message: 'Item Type required' }]}>
+                                            <Select placeholder='Select Item Type'>
+                                                <Option value={'garment'}>Garment</Option>
+                                                <Option value={'fabric'}>Fabric</Option>
+                                                <Option value={'trim'}>Trim</Option>
+                                            </Select>
+                                            </Form.Item>
+                                        </Col>
                                         <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                                             <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code required' }]}>
                                                 <Input />
@@ -800,6 +816,11 @@ const DCForm = () => {
                                         </Col>
                                         <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                                             <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemType' label='Item Type' rules={[{ required: true, message: 'Item Type required' }]}>
                                                 <Input disabled />
                                             </Form.Item>
                                         </Col>
