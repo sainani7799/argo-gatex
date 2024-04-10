@@ -112,10 +112,10 @@ const DCReceived = () => {
     });
 
     const receivedDc = (rowData) => {
+        const receivedDate = new Date();
         const authdata = JSON.parse(localStorage.getItem('userName'))
         const status = rowData.returnable ==='N'? StatusEnum.CLOSED : StatusEnum.RECEIVED
-        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,authdata.userName,)
-        console.log(dto)
+        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,authdata.userName,String(receivedDate))
         service.receivedDc(dto).then(res => {
             if (res.status) {
                 message.success('Updated Successfully');
