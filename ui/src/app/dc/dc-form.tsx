@@ -124,7 +124,6 @@ const DCForm = () => {
             message.error("Something went wrong");
         })
     };
-
     const getAllAddressByUnit = () => {
         const unitValue = authdata.unitId;
         const req = { unitId: unitValue };
@@ -556,7 +555,7 @@ const DCForm = () => {
                                     allowClear
                                     onChange={(value, option) => getAllToAddressByUnit(radioValue)}
                                 >
-                                    {radioValue === "unit" ? units.map(unit => (
+                                    {radioValue === "unit" ? units.filter((i)=> i.id !== authdata.unitId).map(unit => (
                                         <Option key={unit.id} value={unit.id}>
                                             {unit.unitName}
                                         </Option>
