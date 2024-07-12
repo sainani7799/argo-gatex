@@ -381,6 +381,10 @@ export default function SecurityHeadReport() {
       title: 'Purpose',
       dataIndex: 'purpose',
     },
+    {
+      title: 'Status',
+      dataIndex: 'dcStatus',
+    },
 
     {
       title: 'Remarks',
@@ -492,7 +496,10 @@ export default function SecurityHeadReport() {
       dataIndex: 'purpose',
       ...getColumnSearchProps('purpose'),
     },
-
+    {
+      title: 'Status',
+      dataIndex: 'dcStatus',
+    },
     {
       title: 'Remarks',
       dataIndex: 'remarks',

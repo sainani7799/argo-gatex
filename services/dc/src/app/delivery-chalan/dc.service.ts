@@ -287,8 +287,9 @@ export class DcService {
         CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name END AS toUnit,
         CASE WHEN to_addresser = 'supplier' THEN s.supplier_name END AS supplier ,
         CASE WHEN to_addresser = 'buyer' THEN s.supplier_name END AS buyer ,
-        it.item_code AS itemCode , it.description AS description , it.qty AS qty , it.uom AS uom , 
-        it.rate AS rate , it.amount AS amount , dc.created_user AS createdBy, dc.accepted_user AS approvedBy ,dc.security_user as checkedBy , dc.sec_checked_date AS checkedDate , dc.received_user AS receivedBy , dc.received_date AS receivedDate , dc.purpose AS purpose , dc.remarks AS remarks
+        it.item_code AS itemCode , it.description AS DESCRIPTION , it.qty AS qty , it.uom AS uom , 
+        it.rate AS rate , it.amount AS amount , dc.created_user AS createdBy, ea.employee_name AS approvedBy ,dc.security_user AS checkedBy , dc.sec_checked_date AS checkedDate , dc.received_user AS receivedBy , dc.received_date AS receivedDate , dc.purpose AS purpose , dc.remarks AS remarks,
+        dc.status AS dcStatus
          FROM shahi_dc dc
         LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
         LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
