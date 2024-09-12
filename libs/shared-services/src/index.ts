@@ -13,3 +13,4 @@ export * from './item';
 export * from './dc';
 export * from './email';
 export * from './roles';
+export * from './buyerTeam';

@@ -58,7 +58,8 @@ const EmployeeForm = (props: EmployeeFormProps) => {
             }
         })
     }
-    const getAllSectionsForDrop = () => {
+    const getAllSectionsForDrop = (departmentId: number) => {
+        // console.log(departmentId ,'iddd')
         const department = form.getFieldValue('department');
         const Req = {departmentId : department}
         departmentService.getAllSectionsForDrop(Req).then((res) => {
@@ -105,7 +106,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
             save(values);
         }
     };
-console.log(props.employeeData)
+// console.log(props.employeeData)
     return (
         <Card title={<span style={{ color: 'white' }}>Employee Form</span>}
             style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={props.isUpdate == true ? "" : <Link to='/employee-view' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>} >
@@ -176,7 +177,7 @@ console.log(props.employeeData)
                             >
                                 <Option key={1} value={'Married'}>Married</Option>
                                 <Option key={2} value={'UnMarried'}>UnMarried </Option>
-                                <Option key={3} value={'Others'}>Others </Option>
+                                {/* <Option key={3} value={'Others'}>Others </Option> */}
                             </Select>
                         </Form.Item>
                     </Col>
@@ -241,6 +242,7 @@ console.log(props.employeeData)
                                 placeholder="Select Department "
                                 dropdownMatchSelectWidth={false}
                                 optionFilterProp="children"
+                                // onChange={(val) => getAllSectionsForDrop(Number(val))}
                                 onChange={getAllSectionsForDrop}
                                 allowClear
                             >

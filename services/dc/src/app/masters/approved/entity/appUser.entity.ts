@@ -50,4 +50,10 @@ export class ApprovedUserEntity {
       name: "version_flag"
   })
   versionFlag: number;
+
+  @Column('varchar', {
+    name: 'buyer_team',
+})
+ buyerTeam: string;
+
   }

@@ -1,9 +1,10 @@
 import { Button, Card, Input, Space } from "antd";
 import { SearchOutlined , EditOutlined , DeleteOutlined } from '@ant-design/icons';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
 import { Table } from "antd/lib";
 import { Link } from "react-router-dom";
+import { ApprovalUserService } from "libs/shared-services";
 
 
 export default function ApproverGrid(){
@@ -11,6 +12,23 @@ export default function ApproverGrid(){
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [selectedRecord, setSelectedRecord] = useState<any | null>(null);
+    const [data, setData] = useState([])
+    const Service = new ApprovalUserService();
+
+    useEffect(() => {
+      getData()
+    },[])
+
+  function getData(){
+    Service.getAllApprovalUser().then((res) => {
+      console.log(res)
+      if(res){
+        setData(res.data)
+      }
+    })
+  }
+    
+
 
 
     const getColumnSearchProps = (dataIndex: string, columnTitle: string) => ({
@@ -78,28 +96,34 @@ export default function ApproverGrid(){
         },
         {
             title:'Approver Name',
-            dataIndex:'approver_name',
-        ...getColumnSearchProps('approver_name', 'Approver Name'),
+            dataIndex:'approvalUser',
+        ...getColumnSearchProps('approvalUser', 'Approver Name'),
         },
         {
             title:'Email ID',
-            dataIndex:'email_id',
-        ...getColumnSearchProps('email_id', 'Email ID'),
+            dataIndex:'emailId',
+        ...getColumnSearchProps('emailId', 'Email ID'),
         },
         {
-            title: 'Actions',
-            dataIndex: 'actions',
-            render: (_, record) => (
-              <Space>
-                <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-                  {/* Edit */}
-                </Button>
-                <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
-                  {/* Delete */}
-                </Button>
-              </Space>
-            ),
-          },
+          title:'Buyer Team',
+          dataIndex:'buyerTeam',
+      ...getColumnSearchProps('buyerTeam', 'Buyer Id'),
+          render:(text) => text ? text : '-'
+      },
+        // {
+        //     title: 'Actions',
+        //     dataIndex: 'actions',
+        //     render: (_, record) => (
+        //       <Space>
+        //         <Button type="primary" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+        //           {/* Edit */}
+        //         </Button>
+        //         <Button danger icon={<DeleteOutlined />} onClick={() => handleDelete(record)}>
+        //           {/* Delete */}
+        //         </Button>
+        //       </Space>
+        //     ),
+        //   },
     ];
 
     return (
@@ -116,7 +140,7 @@ export default function ApproverGrid(){
             <Table
               rowKey={(record) => record.key}
               columns={columns}
-            //   dataSource={data}       
+              dataSource={data}       
             //  locale={{ emptyText: 'No Data' }}     
             ></Table>
           </Card>

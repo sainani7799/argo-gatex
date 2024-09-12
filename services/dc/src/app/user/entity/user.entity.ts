@@ -73,4 +73,11 @@ export class UserEntity  {
     })
     versionFlag: number;
 
+    @Column("varchar", {
+        nullable: false,
+        name: "buyer_team",
+        length: 50
+    })
+    buyerTeam: string | null;
+
 }

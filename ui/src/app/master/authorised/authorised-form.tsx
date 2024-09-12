@@ -3,7 +3,7 @@ import { Form, Input, Button, Select, Card, Row, Col, message, Typography, Uploa
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
 import { ApprovedUserDto } from "libs/shared-models";
-import { ApprovalUserService, EmployeeService } from "libs/shared-services";
+import { ApprovalUserService, BuyerTeamService, EmployeeService } from "libs/shared-services";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,6 +26,9 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
   const [employee, setEmployee] = useState<any>([]);
   const authdata = JSON.parse(localStorage.getItem('userName'))
   const employeeService = new EmployeeService();
+  const service = new BuyerTeamService();
+  const [buyersTeamData , setBuyerTeamData] = useState([])
+
 
 
   const Service = new ApprovalUserService();
@@ -39,6 +42,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
 
   useEffect(() => {
     getAllEmployees();
+    getAllbuyerTeam();
     form.setFieldsValue({ createdUser: authdata.userName })
   }, [])
   const getAllEmployees = () => {
@@ -51,6 +55,14 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     })
   };
 
+  const getAllbuyerTeam = () => {
+    service.getAllActiveBuyer().then(res => {
+        console.log(res)
+        if (res) {
+          setBuyerTeamData(res.data);
+        }
+    });
+}
   useEffect(() => {
     if (props.data) {
       const updateImage = 'http://localhost/DELIVERY_CHALAN/upload-files' + props.data.sigImageName
@@ -88,11 +100,12 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     setDisable(true);
     // const file:any = data.fabricWeaveImageName
     // const abc:string =file.file.name
-    const req = new ApprovedUserDto(data.approvedId, data.approvedUserName, data.emailId, data.isActive, data.createdUser, data.versionFlag)
+    console.log(data, 'dataa  ')
+    const req = new ApprovedUserDto(data.approvedId, data.approvedUserName, data.emailId, data.isActive, data.createdUser, data.versionFlag , data.buyersTeam)
     Service.createApprovalUser(req).then((res) => {
-      // console.log(req,'req');
+      console.log(req,'req');
       setDisable(false);
-      console.log(res)
+      // console.log(res)
       if (res.status) {
         message.success('User Created Successfully');
         if (fileList.length > 0) {
@@ -109,7 +122,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
 
           })
         }
-        //   navigate("/masters/fabric-weave/fabric-weave-view")
+          navigate("/approval-user")
         onReset();
       } else {
         message.error(res.internalMessage);
@@ -126,8 +139,10 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
     if (props.isUpdate) {
       props.updateApprovalUser(values, fileList);
     } else {
+      // console.log(values, 'values')
       setDisable(false);
       saveApprovedUser(values);
+      
     }
   };
 
@@ -226,7 +241,31 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
                     <Input placeholder="Enter Email Id " />
                   </Form.Item>
                 </Col>
-
+                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 10 }}>
+                  <Form.Item name='buyersTeam' label='Users Buyers Team'
+                    rules={[{
+                      required: true,
+                      message: 'Buyer Is Required'
+                    }]}>
+                    <Select
+                      showSearch
+                      placeholder="Select Buyer"
+                      optionFilterProp="children"
+                      allowClear
+                    >
+                      {buyersTeamData?.map(e => {
+                        return (
+                          <Option key={e.buyerTeamId} value={e.buyerTeamId}>
+                            {e.buyerTeam}
+                          </Option>
+                        )
+                      })}
+                      {/* <Option  value={'eddie'} >{'Eddie Buyer'}</Option>
+                      <Option  value={'denim'} >{'H & M denim'}</Option>
+                      <Option  value={'nonDenim'} >{'H & M NonDenim'}</Option> */}
+                    </Select>
+                  </Form.Item>
+                </Col>
                 <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 12 }}>
                   <Form.Item name="sigImageName" label='Signature Image(Upload the image in landscape)'
                    rules={[{

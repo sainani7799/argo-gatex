@@ -29,6 +29,7 @@ export class ApprovedUserService {
                         entity.sigImageName = obj.sigImageName;
                         entity.signPath = obj.signPath;
                         entity.createdUser = obj.createdUser;
+                        entity.buyerTeam = obj.buyersTeam
                         const create = await this.repo.save(entity)
                         console.log(create)
                         return await new CommonResponse(true, 111, 'Approved User created successfully', create)
@@ -64,8 +65,11 @@ export class ApprovedUserService {
     }
     async getAllApprovalUser():Promise<CommonResponse>{
         try{
-            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId FROM shahi_approved_users a
-            LEFT JOIN shahi_employees e ON e. employee_id = a.approved_user_name`
+            const query = `SELECT a.approved_id AS approvedId , a.approved_user_name AS approvalUserId,e.employee_name AS approvalUser,a.email_id AS emailId,b.buyer_team AS buyerTeam
+            FROM shahi_approved_users a
+            LEFT JOIN shahi_employees e ON e. employee_id = a.approved_user_name
+            LEFT JOIN shahi_buyer b ON b.buyer_team_id = a.buyer_team 
+            `
             const data = await this.repo.query(query)
             return await new CommonResponse(true, 111, 'Data Retrieved successfully', data)
         }catch(error){

@@ -67,9 +67,9 @@ const DCGrid = () => {
     const update = (dto: AssignReq) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
         dto.updatedUser = authdata.userName,
-            dto.status = StatusEnum.SENT_FOR_APPROVAL,
-            dto.isAssignable = AcceptableEnum.YES,
-            dto.assignBy = form.getFieldValue('assignBy')
+        dto.status = StatusEnum.SENT_FOR_APPROVAL,
+        dto.isAssignable = AcceptableEnum.YES,
+        dto.assignBy = form.getFieldValue('assignBy')
         dto.emailId = form.getFieldValue('emailId')
         dto.dcId = form.getFieldValue('dcId')
         console.log(dto)
@@ -93,6 +93,7 @@ const DCGrid = () => {
         const dcDetails = new DcEmailModel();
         dcDetails.dcNo = form.getFieldValue('dcNumber');
         dcDetails.to = form.getFieldValue('emailId');
+        // dcDetails.to = 'kushal.siddegowda@shahi.co.in'
         dcDetails.html = `
         <html>
         <head>
@@ -129,6 +130,8 @@ const DCGrid = () => {
             Some items moved from Address: ${form.getFieldValue('fromUnit')} to
             Address: ${form.getFieldValue('toAddresserName')}
           </p>
+          <p>DC created user name : ${form.getFieldValue('created_user')}</p>
+          <p>Purpose of this DC : ${form.getFieldValue('purpose')}</p>
           <p>Please click the link below for details:</p>
           <input type="hidden" id="assignBy" value=${form.getFieldValue('assignBy')} /> 
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
@@ -295,7 +298,17 @@ const DCGrid = () => {
         },
         {
             title: "Attention Person",
-            dataIndex: "attentionPerson"
+            dataIndex: "attentionPerson",
+            render:(item) =>  item ? item : '-' 
+        },
+        {
+            title: "Users Buyer Team",
+            dataIndex: "buyerTeam",
+            render:(item) =>  item ? item : '-' 
+        },
+        {
+            title: "Purpose",
+            dataIndex: "purpose",
         },
         // {
         //     title: "created User",
@@ -342,6 +355,8 @@ const DCGrid = () => {
                                     form.setFieldValue('dcNumber', rowData.dcNumber);
                                     form.setFieldValue('fromUnit', rowData.fromUnit);
                                     form.setFieldValue('toAddresserName', rowData.toAddresserName);
+                                    form.setFieldValue('purpose', rowData.purpose)
+                                    form.setFieldValue('created_user', rowData.created_user)
                                 }}
                                 style={{ color: "blue", fontSize: 20 }}
                             />
@@ -456,6 +471,16 @@ const DCGrid = () => {
                                     <Input disabled />
                                 </Form.Item>
                             </Col>
+                            <Form.Item name="created_user" label="Created User"  
+                                style={{ display: 'none' }}
+                                >
+                                <Input disabled />
+                            </Form.Item>
+                            <Form.Item name="purpose" label="Purpose"
+                                style={{ display: 'none' }}
+                                >
+                                <Input disabled />
+                            </Form.Item>
                         </Row >
                         <Button type="primary" htmlType="submit">
                             Submit

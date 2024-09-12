@@ -23,16 +23,19 @@ export class UserMangementService {
 
   async login(dto: LoginDto): Promise<AuthResponseModel> {
     console.log(dto,'DTO')
-    const query = `SELECT u.user_name AS userName, u.password,u.employee_id AS employeeId,u.unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,u.card_no AS cardNo,u.role_id AS roleId ,r.role_name ,se.department FROM shahi_user u 
+    const query = `SELECT u.user_name AS userName, u.password,u.employee_id AS employeeId,u.unit_id AS unitId, un.unit_name AS unitName,un.unit_code AS unitCode,un.factory_code ,u.card_no AS cardNo,u.role_id AS roleId ,r.role_name ,se.department , b.buyer_team AS buyerTeam
+    FROM shahi_user u 
     LEFT JOIN shahi_units un ON un.id = u.unit_id 
     LEFT JOIN shahi_role r ON r.role_id = u.role_id 
-    LEFT JOIN shahi_employees se ON se.employee_id = u.employee_id WHERE u.is_active = 1 AND u.user_name = '${dto.userName}' AND u.password = '${dto.password}'`;
+    LEFT JOIN shahi_employees se ON se.employee_id = u.employee_id 
+    LEFT JOIN shahi_buyer b ON b.buyer_team_id = u.buyer_team
+    WHERE u.is_active = 1 AND u.user_name = '${dto.userName}' AND u.password = '${dto.password}'`;
     try {
       const validateUser = await this.userRepo.query(query);
       console.log(validateUser, 'user data');
 
       if (validateUser.length > 0) {
-        const authModel = new AuthModel(validateUser[0].userName,validateUser[0].employeeId,validateUser[0].cardNo,validateUser[0].unitId,validateUser[0].unitName,validateUser[0].unitCode,validateUser[0].roleId,validateUser[0].roleName,validateUser[0]?.department);
+        const authModel = new AuthModel(validateUser[0].userName,validateUser[0].employeeId,validateUser[0].cardNo,validateUser[0].unitId,validateUser[0].unitName,validateUser[0].unitCode,validateUser[0].roleId,validateUser[0].roleName,validateUser[0]?.department,validateUser[0]?.buyerTeam);
         return new AuthResponseModel(true, 1111, 'Successfully logged in', authModel);
       } else {
         return new AuthResponseModel(false, 401, 'Invalid credentials', null);
@@ -74,13 +77,16 @@ export class UserMangementService {
     entity.cardNo = userDto.cardNo
     entity.unitId = userDto.unitId
     entity.roleId = userDto.roleId
+    entity.buyerTeam = userDto.buyerTeam
     if(userDto.userId){
        entity.userId = userDto.userId
     }
     console.log(entity,'save data-------------')
     const save = await this.userRepo.save(entity)
-    if(save) return new CommonResponse(true, 1, isUpdate ? 'User Updated Successfully' : 'User created Successfully');
-    return new CommonResponse(false,1,isUpdate ? 'User Updation failed' : 'User creation failed')
+    // if(save) return new CommonResponse(true, 1, isUpdate ? 'User Updated Successfully' : 'User created Successfully');
+    if(save) return new CommonResponse(true, 1, isUpdate ? 'User created Successfully' : 'User Updated Successfully');
+    // return new CommonResponse(false,1,isUpdate ? 'User Updation failed' : 'User creation failed')
+    return new CommonResponse(false,1,isUpdate ? 'User creation failed' : 'User Updation failed')
 }
 
   async register(userDto: CreateUserDto,isUpdate: boolean): Promise<any> {
@@ -99,9 +105,13 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.employee_id AS employeeId, us.id as userId, us.user_name AS userName ,emp.employee_code AS empCode, emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive ,us.password AS password ,us.card_no AS cardNo ,us.unit_id AS unitId ,us.role_id AS roleId FROM shahi_user us 
+    let query = `SELECT us.employee_id AS employeeId, us.id AS userId, us.user_name AS userName ,emp.employee_code AS empCode, emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive ,us.password AS PASSWORD ,us.card_no AS cardNo ,us.unit_id AS unitId ,r.role_name AS role , b.buyer_team AS buyerTeam , us.role_id AS roleId
+    FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
-    LEFT JOIN shahi_units u ON u.id = us.unit_id WHERE us.is_active = 1 `
+    LEFT JOIN shahi_units u ON u.id = us.unit_id 
+    LEFT JOIN shahi_role r ON r.role_id = us.role_id
+    LEFT JOIN shahi_buyer b ON b.buyer_team_id = us.buyer_team
+    WHERE us.is_active = 1 `
     const data = await this.userRepo.query(query)
     return (data)
 

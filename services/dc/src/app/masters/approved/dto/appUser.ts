@@ -27,4 +27,7 @@ export class ApprovedUserDto {
 
   @ApiProperty()
   versionFlag : number;
+
+  @ApiProperty()
+  buyersTeam : string;
 }

@@ -5,8 +5,9 @@ export class ApprovedUserDto {
     isActive: boolean;
     createdUser : string;
     versionFlag : number;
+    buyersTeam : string;
     sigImageName ?: string;
-    signPath ?: string
+    signPath ?: string;
 
     constructor(
     approvedId: number,
@@ -15,6 +16,7 @@ export class ApprovedUserDto {
     isActive: boolean,
     createdUser : string,
     versionFlag : number,
+    buyersTeam : string,
     sigImageName ?: string,
     signPath ?: string,
     ){
@@ -26,6 +28,7 @@ export class ApprovedUserDto {
         this.isActive = isActive
         this.createdUser = createdUser
         this.versionFlag = versionFlag
+        this.buyersTeam = buyersTeam
     }
 }
 

@@ -38,16 +38,29 @@ const DCApprovalGrid = () => {
 
     const acceptDc = (rec) => {
         console.log(rec)
+       const email = rec.emailId
+       const dcNumber = rec.dcNumber
+       console.log(email , 'email')
+       const approvedBy = authdata.userName
+       const currentDate = new Date();
+       const approvedDate = moment(currentDate).format('YYYY-MM-DD')
+       const fromUnit = rec.fromUnit
+       const toUnit = rec.toAddresserName
+       const dcId = rec.dcId
+
+        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId)
+
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
             acceptedUser: authdata.employeeId,
             dcId: Number(rec.dcId),
             status: StatusEnum.SENT_FOR_SECURITY_CHECK,
         };
-        // console.log(dto);
+        console.log(dto);
+        
         service.acceptDc(dto).then(res => {
             if (res.status) {
-                message.success('User Accept Successfully');
+                message.success('DC Accept Successfully');
                 getGatePassData()
             } else {
                 // message.error(res.internalMessage);
@@ -87,6 +100,7 @@ const DCApprovalGrid = () => {
             }
         });
     };
+
     const getAllApprovalUser = () => {
         approvalService.getAllApprovalUser().then((res: any) => {
             if (res.status) {
@@ -95,6 +109,7 @@ const DCApprovalGrid = () => {
             }
         })
     }
+
     const getAllApprovalIdUser = () => {
         const req = new ApprovalIdReq()
         req.approvedUserId = form.getFieldValue('assignBy')
@@ -120,7 +135,7 @@ const DCApprovalGrid = () => {
         service.updateDc(dto).then(res => {
             if (res.status) {
                 message.success('Updated Successfully');
-                sendDcMailForGatePass()
+                // sendDcMailForGatePass()
                 setDrawerVisible(false);
                 getGatePassData()
             } else {
@@ -133,10 +148,10 @@ const DCApprovalGrid = () => {
     }
 
     let mailerSent = false;
-    async function sendDcMailForGatePass() {
+    async function sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId) {
         const dcDetails = new DcEmailModel();
-        dcDetails.dcNo = form.getFieldValue('dcNumber');
-        dcDetails.to = form.getFieldValue('emailId');
+        // dcDetails.to = form.getFieldValue('emailId');
+        dcDetails.to = email;
         dcDetails.html = `
         <html>
         <head>
@@ -166,19 +181,19 @@ const DCApprovalGrid = () => {
           </style>
         </head>
         <body>
-          <p>Dear team,</p>
+          <p>Dear User,</p>
           <p>Please find the Gate Pass details below:</p>
-          <p>DC NO: ${form.getFieldValue('dcNumber')}</p>
+          <p>DC NO: ${dcNumber}</p>
           <p>
-            Some items moved from Address: ${form.getFieldValue('fromUnit')} to
-            Address: ${form.getFieldValue('toAddresserName')}
+            Some items moved from Address: ${fromUnit} to
+            Address: ${toUnit}
           </p>
+          <p>Approved By : ${approvedBy}</p>
+          <p>Approved Date : ${approvedDate}</p>
           <p>Please click the link below for details:</p>
-          <input type="hidden" id="assignBy" value=${form.getFieldValue('assignBy')} /> 
-          <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -189,34 +204,10 @@ const DCApprovalGrid = () => {
             "
             >View Details of GatePass</a
           >
-          <a
-          href="http://gpdc.seplcloud.com/#/dc-email/${form.getFieldValue('dcId')}"
-          style="
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #108f1a;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-          "
-          >Accept DC</a
-        >
-        <a
-          href="http://gpdc.seplcloud.com/#/dc-reject-mail/${form.getFieldValue('dcId')}"
-          style="
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #ff001e;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-          "
-          >Reject DC</a
-        >
         </body>
       </html>
       `
-        dcDetails.subject = "Gate Pass : " + form.getFieldValue('dcNumber')
+        dcDetails.subject = "Gate Pass : " + dcNumber
         const res = await mailService.sendDcMail(dcDetails)
         console.log(res)
         if (res.status == 201) {

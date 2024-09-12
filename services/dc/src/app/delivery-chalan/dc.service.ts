@@ -53,7 +53,7 @@ export class DcService {
       const savedDcEntity: DcEntity = await this.userRepo.save(
         convertedDcEntity
       );
-      console.log(savedDcEntity,'--save dc entity')
+      // console.log(savedDcEntity,'--save dc entity')
       const savedDcDto: DcDto =this.dcAdapter.convertEntityToDto(savedDcEntity);
       if (savedDcDto) {
         const response = new CommonResponse(
@@ -162,7 +162,7 @@ export class DcService {
       const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId, w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN dc.to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
-            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,td.department_name AS toDepartment,dc.received_date AS receivedData,dc.attention_person AS attentionPerson
+            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at as createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,td.department_name AS toDepartment,dc.received_date AS receivedData,dc.attention_person AS attentionPerson , dc.buyer_team AS buyerTeam , dc.purpose , e.email_id AS emailId
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
@@ -289,7 +289,7 @@ export class DcService {
         CASE WHEN to_addresser = 'buyer' THEN s.supplier_name END AS buyer ,
         it.item_code AS itemCode , it.description AS DESCRIPTION , it.qty AS qty , it.uom AS uom , 
         it.rate AS rate , it.amount AS amount , dc.created_user AS createdBy, ea.employee_name AS approvedBy ,dc.security_user AS checkedBy , dc.sec_checked_date AS checkedDate , dc.received_user AS receivedBy , dc.received_date AS receivedDate , dc.purpose AS purpose , dc.remarks AS remarks,
-        dc.status AS dcStatus
+        dc.status AS dcStatus , dc.buyer_team AS buyerTeam
          FROM shahi_dc dc
         LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
         LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id

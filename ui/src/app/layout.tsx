@@ -17,7 +17,7 @@ export default function BasicLayout() {
     type MenuItem = Required<MenuProps>['items'][number];
     const authdata = JSON.parse(localStorage.getItem('userName'))
      
-    console.log(authdata)
+    // console.log(authdata)
 
     const toggle = () => {
         setCollapsed(prevCollapsed => !prevCollapsed);
@@ -96,14 +96,17 @@ export default function BasicLayout() {
                         <Menu.Item key="/address-view" icon={<FontAwesomeIcon icon={faLocationPin} />}>
                             <Link to="/address-view"><span>Address</span></Link>
                         </Menu.Item>
-                        <Menu.Item key="/approval-user-from" icon={<FontAwesomeIcon icon={faUserShield} />}>
-                            <Link to="/approval-user-from"><span>Approval Users</span></Link>
+                        <Menu.Item key="/approval-user" icon={<FontAwesomeIcon icon={faUserShield} />}>
+                            <Link to="/approval-user"><span>Approval Users</span></Link>
                         </Menu.Item>
                         <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faWarehouse} />}>
                             <Link to="/warehouse-grid"><span>Warehouse</span></Link>
                         </Menu.Item>
                         <Menu.Item key="/item-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
                             <Link to="/item-grid"><span>Items</span></Link>
+                        </Menu.Item>
+                        <Menu.Item key="/buyerteam-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
+                            <Link to="/buyerteam-grid"><span>Userwise (Buyer Team)</span></Link>
                         </Menu.Item>
                     </SubMenu>
                         : <></>
@@ -154,9 +157,9 @@ export default function BasicLayout() {
                             <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
                             </Menu.Item>
-                            <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                            {/* <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                     <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
-                            </Menu.Item>
+                            </Menu.Item> */}
                             <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                     <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
                             </Menu.Item>
@@ -208,6 +211,47 @@ export default function BasicLayout() {
                                 </SubMenu>
                                 )
                             
+                        }
+                        {
+                            authdata.roleId === 5 && (
+                                <SubMenu
+                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                        title={
+                            <span>
+                                <span>Dc</span>
+                            </span>
+                        }
+                    >
+                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                    <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
+                            </Menu.Item>
+
+                            </SubMenu>
+                            )
+                        }
+                        {
+                            authdata.roleId === 6 && (
+                                <SubMenu
+                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
+                        title={
+                            <span>
+                                <span>Dc</span>
+                            </span>
+                        }
+                    >
+                            
+                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
+                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
+                            </Menu.Item>
+
+                            </SubMenu>
+                            )
                         }
                     
                 </Menu>

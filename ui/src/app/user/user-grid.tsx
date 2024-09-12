@@ -134,6 +134,7 @@ const UserFormGrid = () => {
     }
 
     const openFormWithData=(viewData: CreateUserDto)=>{
+        console.log(viewData, 'view data')
         setDrawerVisible(true);
         setSelectedUsers(viewData);
     }
@@ -169,6 +170,18 @@ const UserFormGrid = () => {
             title: "Unit",
             dataIndex: "unit_name",
             ...getColumnSearchProps('unit_name'),
+        },
+        {
+            key: "5",
+            title: "Role",
+            dataIndex: "role",
+            ...getColumnSearchProps('role'),
+        },
+        {
+            key: "5",
+            title: "Buyers Team",
+            dataIndex: "buyerTeam",
+            ...getColumnSearchProps('buyerTeam'),
         },
         {
             key: "6",

@@ -30,4 +30,7 @@ export class CreateUserDto {
 
     @ApiProperty()
     versionFlag: number;
+
+    @ApiProperty()
+    buyerTeam: string;
 }

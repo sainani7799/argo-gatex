@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message } from 'antd';
-import { EmployeeService, RoleService, UserManagementServices } from 'libs/shared-services';
+import { BuyerTeamService, EmployeeService, RoleService, UserManagementServices } from 'libs/shared-services';
 import { Link, useNavigate } from 'react-router-dom';
 import { CreateUserDto } from 'libs/shared-models';
 
@@ -21,9 +21,11 @@ const UserForm = (props: UserFormProps) => {
     const [roleData, setRoleData] = useState<any>([]);
     const navigate = useNavigate();
     const [form] = Form.useForm();
+  const [buyersTeamData , setBuyerTeamData] = useState([])
+  const buyerService = new BuyerTeamService();
 
 
-console.log(props.userData)
+    // console.log(props.userData)
     const handleEmployeeIdChange = (value) => {
         setSelectedEmployeeId(value);
         const selectedEmployee = employeeNames.find((employee) => employee.employeeId === value);
@@ -36,7 +38,8 @@ console.log(props.userData)
 
     useEffect(() => {
         fetchEmployeeNames();
-        getAllRoleEntity()
+        getAllRoleEntity();
+        getAllbuyerTeam();
     }, []);
 
     const fetchEmployeeNames = () => {
@@ -47,17 +50,27 @@ console.log(props.userData)
         })
     }
 
+    const getAllbuyerTeam = () => {
+        buyerService.getAllActiveBuyer().then(res => {
+            console.log(res)
+            if (res) {
+              setBuyerTeamData(res.data);
+            }
+        });
+    }
+
     const getAllRoleEntity = () => {
         roleServices.getAllRoleEntity().then((res) => {
             if (res) {
                 setRoleData(res)
-                console.log(res)
+                // console.log(res)
             }
         })
     }
 
     const onFinish = (val: any) => {
-        form.validateFields(val).then(res =>{
+        form.validateFields(val).then(res => {
+            console.log(val, 'valll')
             userService.register(val).then(res => {
                 if (res.status) {
                     message.success(res.internalMessage)
@@ -68,6 +81,7 @@ console.log(props.userData)
             })
         })
     }
+
     const handleReset = () => {
         form.resetFields();
     };
@@ -82,7 +96,14 @@ console.log(props.userData)
 
     return (
         <Card type="inner" title="User-Form"
-            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }} extra={<Link to='/users' ><span style={{ color: 'white' }} ><Button className='panel_button' >Back </Button> </span></Link>}>
+            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }}
+            extra={<Link to='/users' >
+                {props.isUpdate === false && (
+                    <span style={{ color: 'white' }} >
+                        <Button className='panel_button' >Back </Button>
+                    </span>
+                )}
+            </Link>}>
             <Form
                 name="user-form"
                 autoComplete='off'
@@ -171,13 +192,15 @@ console.log(props.userData)
                             allowClear
                             disabled={selectedEmployeeId}
                         >
-                            {employeeNames.map((rec: any) => {
+                            {[...new Set(employeeNames.map((rec: any) => rec.unitId))].map((uniqueUnitId) => {
+                                const rec = employeeNames.find((rec: any) => rec.unitId === uniqueUnitId);
                                 return (
                                     <Option key={rec.employeeId} value={rec.unitId}>
                                         {rec.unit}
                                     </Option>
                                 )
                             })}
+
                         </Select>
                     </Form.Item>
                     <Form.Item
@@ -208,17 +231,46 @@ console.log(props.userData)
 
                         {/* <Input placeholder='Enter Paid To Employee' /> */}
                     </Form.Item>
+                    <Form.Item
+                        label="Buyers Team"
+                        name="buyerTeam"
+                        rules={[
+                            { required: true, message: "Please Select BUyer" }
+                        ]}
+                    >
+                        <Select
+                            showSearch
+                            placeholder="Select Buyer Team  "
+                            optionFilterProp="children"
+                            allowClear
+                        >
+                             {buyersTeamData?.map(e => {
+                        return (
+                          <Option key={e.buyerTeamId} value={e.buyerTeamId}>
+                            {e.buyerTeam}
+                          </Option>
+                        )
+                      })}
+                            {/* <Option value={'eddie'} >{'Eddie Buyer'}</Option>
+                            <Option value={'denim'} >{'H & M denim'}</Option>
+                            <Option value={'nonDenim'} >{'H & M NonDenim'}</Option> */}
+                        </Select>
+
+                        {/* <Input placeholder='Enter Paid To Employee' /> */}
+                    </Form.Item>
 
                     <Form.Item>
                         <Button type='primary' htmlType="submit" style={{ width: '100%', backgroundColor: '#7d33a2' }}>
                             Submit
                         </Button>
                     </Form.Item>
-                    <Form.Item>
-                        <Button type='text' htmlType="reset" onClick={handleReset} style={{ width: '100%' }}>
-                            Reset
-                        </Button>
-                    </Form.Item>
+                    {props.isUpdate === false && (
+                        <Form.Item>
+                            <Button type='text' htmlType="reset" onClick={handleReset} style={{ width: '100%' }}>
+                                Reset
+                            </Button>
+                        </Form.Item>
+                    )}
                 </Card>
             </Form>
         </Card>

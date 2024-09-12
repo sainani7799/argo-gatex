@@ -15,9 +15,10 @@ import { ApprovedUserModule } from './masters/approved/approval-user.module';
 import { DcModule } from './delivery-chalan/dc.module';
 import { DatabaseModule } from './app.datasourse-db-module';
 import { RoleModule } from './masters/role/role.module';
+import { BuyerTeamModule } from './masters/buyer_team/buyer_team.module';
 
 @Module({
-  imports: [DatabaseModule,DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule,ApprovedUserModule,DcModule,RoleModule],
+  imports: [DatabaseModule,DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule,ApprovedUserModule,DcModule,RoleModule,BuyerTeamModule],
   controllers: [AppController],
   providers: [AppService],
 })

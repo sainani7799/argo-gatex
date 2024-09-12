@@ -259,6 +259,13 @@ const DCForm = () => {
 
     }, [defaultItemFormData])
 
+    const userData = localStorage.getItem('userName');
+    const parsedUserData  = JSON.parse(userData)
+    const buyerTeam = parsedUserData.buyerTeam;
+
+
+
+
     const columns: ColumnProps<any>[] = [
         {
             title: 'S No',
@@ -405,10 +412,12 @@ const DCForm = () => {
     };
 
     const onSubmit = () => {
+        // console.log(form.getFieldValue('buyerTeam'))
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId'))
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId') , form.getFieldValue('buyerTeam') )
+                console.log(req, 'reqq')
                 dcService.createDc(req).then(res => {
                     if (res.status) {
                         navigate('/dc-view')
@@ -446,6 +455,9 @@ const DCForm = () => {
                     form={form}
                     layout='vertical'
                     style={{ width: '100%', margin: '0px auto 0px auto' }}
+                    initialValues={{
+                        buyerTeam : buyerTeam
+                    }}
                 >
                     <Row gutter={24} style={{ width: "100%", justifyContent: "space-around" }}>
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
@@ -650,8 +662,11 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
-
-
+                            <Form.Item name="buyerTeam" label="Users Buyer Teamm" rules={[
+                                { required: true },
+                            ]}>
+                                <Input disabled />
+                            </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={24} >

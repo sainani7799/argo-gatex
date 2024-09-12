@@ -27,6 +27,8 @@ import SecurityHeadReport from "./dc/security-head-report";
 import DcEmailDetailsView from "./dc/email-detail-view";
 import ApproverGrid from "./master/authorised/authorised-grid";
 import DCApprovalGrid from "./dc/dc-approval-screen";
+import BuyerTeamForm from "./master/buyerTeam/buyerTeam-form";
+import BuyerTeamGrid from "./master/buyerTeam/buyerTeam-grid";
 
 
 
@@ -82,6 +84,13 @@ const AppRoutes = () => {
                         updateDetails={(undefined) => { }}
                     />} />
                     <Route path="/warehouse-grid" element={<WarehouseGrid />} />
+                    <Route path="/buyerteam-form" element={<BuyerTeamForm 
+                        data={undefined}
+                        isUpdate={false}
+                        closeForm={() => { }}
+                        updateDetails={(undefined) => { }}
+                    />} />
+                    <Route path="/buyerteam-grid" element={<BuyerTeamGrid />} />
                     <Route path="/address-view" element={<AddressGrid />} />
                     <Route path="/item-form" element={<ItemForm itemData={undefined}
                         isUpdate={false}
@@ -98,13 +107,13 @@ const AppRoutes = () => {
                     <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
                     <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
+                    <Route path="/approval-user" element={<ApproverGrid />} />
                     <Route path="/approval-user-from" element={<ApprovedUserForm
                         data={undefined}
                         isUpdate={false}
                         closeForm={() => { }}
                         updateApprovalUser={(undefined) => { }} />} />
                      </Route>
-                     <Route path="/approval-user" element={<ApproverGrid />} />
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />

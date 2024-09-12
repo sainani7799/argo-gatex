@@ -38,7 +38,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       }
     })
   }
-console.log(data)
+// console.log(data)
   useEffect(() => {
     if (data) {
       getFromAddress(data[0]?.fromUnitId),
@@ -75,7 +75,7 @@ console.log(data)
     })
   };
 
-  console.log(addressData)
+  // console.log(addressData)
 
   const itemColumns: any = [
     {

@@ -6,7 +6,10 @@ export class CreateUserDto {
     employeeId: Number;
     cardNo: string;
     unitId: number;
+    roleId : string;
+    buyer : string
     isActive?: boolean;
+
     
    /**
     * 
@@ -20,14 +23,24 @@ export class CreateUserDto {
     */
 
 
-    constructor(userId: Number, userName: string, password: string, employeeId: Number, cardNo: string,
-        unitId: number, isActive?: boolean) {
+    constructor(userId: Number, 
+        userName: string, 
+        password: string, 
+        employeeId: Number, 
+        cardNo: string,
+        unitId: number, 
+        roleId : string , 
+        buyer : string ,
+        isActive?: boolean , 
+    ) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.employeeId = employeeId;
         this.cardNo = cardNo;
         this.unitId = unitId;
+        this.roleId = roleId
+        this.buyer = buyer
         this.isActive = isActive;
     }
 }

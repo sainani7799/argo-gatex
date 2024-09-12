@@ -229,6 +229,12 @@ export class DcEntity {
    })
    securityCheckedDate: Date;
 
+   @Column('varchar', {
+    name: 'buyer_team',
+    nullable: true
+  })
+  buyerTeam: string;
+
   @OneToMany(type => DcItemEntity, items => items.itemInfo, { cascade: true })
   dcItemInfo: DcItemEntity[];
 }

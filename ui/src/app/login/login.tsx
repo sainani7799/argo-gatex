@@ -24,11 +24,12 @@ export default function Login() {
             service.login(loginDto).then((res) => {
                 if (res.status) {
                     localStorage.setItem('userName', JSON.stringify(res.data))
-                    console.log(localStorage.setItem('userName', JSON.stringify(res.data)), 'log')
+                    console.log( JSON.stringify(res.data), 'log')
                     setAuthState([{ userName: values.username, isAuthenticated: true }]);
                     console.log(setAuthState, 'setAuthState')
                     message.success(res.internalMessage)
-                    navigate('/dc-view')
+                    // navigate('/dc-view')
+                    navigate('/')
                 } else {
                     message.error(res.internalMessage)
                 }

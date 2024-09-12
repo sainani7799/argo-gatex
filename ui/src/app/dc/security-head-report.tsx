@@ -382,6 +382,10 @@ export default function SecurityHeadReport() {
       dataIndex: 'purpose',
     },
     {
+      title: "Users Buyer Team",
+      dataIndex: "buyerTeam",
+    },
+    {
       title: 'Status',
       dataIndex: 'dcStatus',
     },
@@ -497,6 +501,10 @@ export default function SecurityHeadReport() {
       ...getColumnSearchProps('purpose'),
     },
     {
+      title: "Users Buyer Team",
+      dataIndex: "buyerTeam",
+    },
+    {
       title: 'Status',
       dataIndex: 'dcStatus',
     },
@@ -511,6 +519,7 @@ export default function SecurityHeadReport() {
     EstimatedETDDate(undefined);
     setSelectedEstimatedFromDate(undefined);
     setSelectedEstimatedToDate(undefined);
+    setResponseData([])
   }
   console.log(dcDataDrop)
 
