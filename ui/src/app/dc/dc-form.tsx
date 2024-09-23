@@ -709,7 +709,7 @@ const DCForm = (props : DCFormProps) => {
                                     })}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="buyerTeam" label="Users Buyer Teamm" rules={[
+                            <Form.Item name="buyerTeam" label="Users Buyer Team" rules={[
                                 // { required: true },
                             ]}>
                                 <Input disabled />
