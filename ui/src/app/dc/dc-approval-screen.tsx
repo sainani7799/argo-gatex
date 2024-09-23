@@ -47,8 +47,9 @@ const DCApprovalGrid = () => {
        const fromUnit = rec.fromUnit
        const toUnit = rec.toAddresserName
        const dcId = rec.dcId
+       const status = 'Approved ✅'
 
-        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId)
+        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId,status)
 
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
@@ -72,6 +73,18 @@ const DCApprovalGrid = () => {
 
     const rejectDc = (rec) => {
         console.log(rec)
+        const email = rec.emailId
+       const dcNumber = rec.dcNumber
+       console.log(email , 'email')
+       const approvedBy = authdata.userName
+       const currentDate = new Date();
+       const approvedDate = moment(currentDate).format('YYYY-MM-DD')
+       const fromUnit = rec.fromUnit
+       const toUnit = rec.toAddresserName
+       const dcId = rec.dcId
+       const status = 'Rejected ❌'
+
+        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId,status)
         const dto: RejectDcReq = {
             dcId: Number(rec.dcId),
             isAccepted: AcceptableEnum.REJECT,
@@ -148,10 +161,11 @@ const DCApprovalGrid = () => {
     }
 
     let mailerSent = false;
-    async function sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId) {
+    async function sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId , status) {
         const dcDetails = new DcEmailModel();
         // dcDetails.to = form.getFieldValue('emailId');
         dcDetails.to = email;
+        // dcDetails.to = 'kushal.siddegowda@shahi.co.in';
         dcDetails.html = `
         <html>
         <head>
@@ -182,14 +196,19 @@ const DCApprovalGrid = () => {
         </head>
         <body>
           <p>Dear User,</p>
-          <p>Please find the Gate Pass details below:</p>
+          <p>Please find ${status} the Gate Pass details below:</p>
           <p>DC NO: ${dcNumber}</p>
           <p>
             Some items moved from Address: ${fromUnit} to
             Address: ${toUnit}
           </p>
-          <p>Approved By : ${approvedBy}</p>
-          <p>Approved Date : ${approvedDate}</p>
+          ${status === 'Approved ✅' ? `
+            <p>Approved By: ${approvedBy}</p>
+            <p>Approved Date: ${approvedDate}</p>
+          ` : `
+            <p>Rejected By: ${approvedBy}</p>
+            <p>Rejected Date: ${approvedDate}</p>
+          `}
           <p>Please click the link below for details:</p>
       
           <a
@@ -218,7 +237,7 @@ const DCApprovalGrid = () => {
                 message.success("Mail sent successfully")
             }
         } else {
-            message.success("Mail also sent successfully")
+            message.success("Mail  sent successfully")
         }
     }
 

@@ -7,7 +7,7 @@ const { Option } = Select;
 
 export interface buyerTeamFormProps {
     data: BuyerTeameDto;
-    updateDetails: (warehouseData: BuyerTeameDto) => void;
+    updateDetails: (data: BuyerTeameDto) => void;
     isUpdate: boolean;
     closeForm: () => void;
 }

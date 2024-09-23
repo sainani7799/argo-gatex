@@ -7,11 +7,14 @@ export class ReceivedDcReq{
     status:StatusEnum;
     receivedUser:string;
     receivedDate?:string;
-    constructor(dcId:number,receivedDc : AcceptableEnum,status:StatusEnum,receivedUser:string,receivedDate?:string){
+    returnedDate?:string;
+
+    constructor(dcId:number,receivedDc : AcceptableEnum,status:StatusEnum,receivedUser:string,receivedDate?:string ,returnedDate?:string){
             this.dcId = dcId;
             this.receivedDc = receivedDc;
             this.status = status;
             this.receivedUser = receivedUser;
             this.receivedDate = receivedDate;
+            this.returnedDate = returnedDate
         }
 }

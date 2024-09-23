@@ -25,7 +25,15 @@ export class UserManagementServices extends CommonAxiosServicePms {
         return this.axiosPostCall(this.userManagementController + '/activateOrDeactivateUser', req)
       }
 
-      async updateUser(dto:CreateUserDto): Promise<any> {
+    async updateUser(dto:CreateUserDto): Promise<any> {
         return await this.axiosPostCall(this.userManagementController + '/register',dto)
+    }
+
+    async getPassword(req : any): Promise<any> {
+        return await this.axiosPostCall(this.userManagementController + '/getPassword' , req)
+    }
+
+    async updatePassword(req : any): Promise<any> {
+        return await this.axiosPostCall(this.userManagementController + '/updatePassword' , req)
     }
 }

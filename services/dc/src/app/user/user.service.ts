@@ -177,5 +177,25 @@ async getUsersById(userId: number): Promise<UserEntity> {
     }
 }
 
+async getPassword(userName :any):Promise<CommonResponse>{
+  console.log(userName.user , 'userName')
+  let query = `SELECT PASSWORD 
+                FROM shahi_user
+                WHERE user_name  = '${userName.user}'`
+  const res = await this.userRepo.query(query)
+  if(res){
+    return res
+  }else{
+    return new CommonResponse(false,0,'please enter correct User Name')
+  }
+}
+
+async updatePassword(req:any):Promise<CommonResponse>{
+  console.log(req , 'req')
+  const updatePassword = await this.userRepo.update({userName:req.user},{password:req.newPassword})
+  if(updatePassword.affected) return new CommonResponse(true,1,'Password Updated')  
+  return new CommonResponse(false,0,'Updation failed please enter correct User Name')
+}
+
 
 }

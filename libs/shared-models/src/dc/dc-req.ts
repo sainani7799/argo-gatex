@@ -26,7 +26,10 @@ export class DcReq{
     attentionPerson?:string;
     toDepartmentId?:number;
     buyerTeam?:string;
-    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,attentionPerson?:string,toDepartmentId?:number,buyerTeam?:string ){
+    dcType?:string;
+    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,attentionPerson?:string,toDepartmentId?:number,buyerTeam?:string , dcType?:string
+
+    ){
         this.fromUnitId = fromUnitId;
         this.warehouseId = warehouseId;
         this.departmentId = departmentId;
@@ -50,5 +53,6 @@ export class DcReq{
         this.attentionPerson = attentionPerson;
         this.toDepartmentId = toDepartmentId;
         this.buyerTeam = buyerTeam
+        this.dcType = dcType
     }
 }

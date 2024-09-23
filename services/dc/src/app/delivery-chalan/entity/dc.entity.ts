@@ -235,6 +235,24 @@ export class DcEntity {
   })
   buyerTeam: string;
 
+   @Column('varchar', {
+    name: 'dc_type',
+    nullable: true
+  })
+  dcType: string;
+
+   @Column('varchar', {
+    name: 'returned_by',
+    nullable: true
+  })
+  returnedBy: string;
+
+  @UpdateDateColumn({
+    name: "returned_date",
+    type: 'datetime'
+  })
+  returnedDate: Date;
+
   @OneToMany(type => DcItemEntity, items => items.itemInfo, { cascade: true })
   dcItemInfo: DcItemEntity[];
 }

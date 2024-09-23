@@ -9,17 +9,24 @@ import AppRoutes from './app-routes';
 export function App() {
   const [load, setLoad] = useState<any>();
 
-
+ let act =0
   axios.interceptors.request.use(request => {
+    // act++
       setLoad(true);
       return request;
   });
 
   axios.interceptors.response.use(response => {
-      setLoad(false);
+    act--
+    if (act == 0){
+        setLoad(false);
+    }
       return response;
   }, error => {
-      setLoad(false);
+    // act--
+    if (act == 0){
+        setLoad(false);
+    }
       throw error;
   });
 

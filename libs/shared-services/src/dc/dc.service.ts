@@ -90,6 +90,18 @@ export class DcService extends CommonAxiosServicePms {
     async getCreated(): Promise<CommonResponse> {
         return await this.axiosPostCall(this.DcController + '/getCreated');
     }
+
+    async getAllGatePassTounit(req:UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassTounit',req);
+    }
+
+    async updateRetunableData(req:any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/updateRetunableData',req);
+    }
+
+    async getAllGatePassReturnable(req:UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassReturnable',req);
+    }
     
 }
 

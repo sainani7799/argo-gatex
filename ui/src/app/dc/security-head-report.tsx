@@ -394,6 +394,21 @@ export default function SecurityHeadReport() {
       title: 'Remarks',
       dataIndex: 'remarks',
     },
+    {
+      title: 'DC Type',
+      dataIndex: 'dcType',
+    },
+    {
+      title: 'Returned By',
+      dataIndex: 'returnedBy',
+    },
+    {
+      title: 'Returned Date & Time',
+      dataIndex: 'returnedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
   ]
 
   const exportExcel = () => {
@@ -511,6 +526,21 @@ export default function SecurityHeadReport() {
     {
       title: 'Remarks',
       dataIndex: 'remarks',
+    },
+    {
+      title: 'DC Type',
+      dataIndex: 'dcType',
+    },
+    {
+      title: 'Returned By',
+      dataIndex: 'returnedBy',
+    },
+    {
+      title: 'Returned Date & Time',
+      dataIndex: 'returnedDate',
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
     },
   ];
 
@@ -677,6 +707,20 @@ export default function SecurityHeadReport() {
                 </Select>
               </Form.Item>
               </Col>
+              {/* <Col
+              xs={{ span: 24 }}
+              sm={{ span: 24 }}
+              md={{ span: 5, offset: 1 }}
+              lg={{ span: 5, offset: 1 }}
+              xl={{ span: 5, offset: 1 }}
+            >
+              <Form.Item name="dcType" label="DC Type">
+                <Select allowClear showSearch placeholder={'Select'}>
+                <Option value='returnable'>{'Returnable'}</Option>
+                <Option value='nonReturnable'>{'Non-Returnable'}</Option>
+                </Select>
+              </Form.Item>
+              </Col> */}
           </Row>
           <Row justify={'end'} gutter={24}>
               <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 2 }}>
@@ -695,7 +739,7 @@ export default function SecurityHeadReport() {
             <Table
             columns={columnsSkelton}
             dataSource={responseData}
-            scroll={{ x: 2500, y: 400 }}
+            scroll={{ x: 3000, y: 400 }}
           />
             )
         }

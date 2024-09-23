@@ -38,7 +38,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       }
     })
   }
-// console.log(data)
+console.log(data , 'data')
   useEffect(() => {
     if (data) {
       getFromAddress(data[0]?.fromUnitId),
@@ -67,7 +67,7 @@ export const DcDetailsView = (props: DcViewProps) => {
     req.addresserNameId = data[0]?.toAddresserNameId
     addressService.getAllToAddressByUnit(req).then(res => {
       if (res) {
-        // console.log(res);
+        console.log(res , 'resss');
         setToAddressData(res.data);
       }
     }).catch(err => {
@@ -75,7 +75,11 @@ export const DcDetailsView = (props: DcViewProps) => {
     })
   };
 
-  // console.log(addressData)
+  console.log(toAddressData ,'to')
+
+
+ const dcType = data[0]?.dcType
+ console.log(dcType , 'dccc')
 
   const itemColumns: any = [
     {
@@ -157,6 +161,31 @@ export const DcDetailsView = (props: DcViewProps) => {
       hideOnSm: true,
     },
   ];
+
+  if (dcType === 'returnable') {
+    itemColumns.push(
+      {
+          title: 'Return Quantity',
+          key: 'returningQty',
+          dataIndex: 'returningQty',
+          align: 'right',
+
+        
+      },
+      {
+        title: 'Return Remarks',
+        key: 'returnRemarks',
+        dataIndex: 'returnRemarks',
+        align: 'right',
+      },
+      {
+        title: 'Write Off Qty',
+        key: 'writeOffQty',
+        dataIndex: 'writeOffQty',
+        align: 'right',
+      }
+    );
+  }
 
   const handleCancel = () => {
     setIsModalVisible(false);

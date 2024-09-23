@@ -170,7 +170,11 @@ const DCSecurity = () => {
     if (rowData.toAddresser === 'supplier') {
       status = StatusEnum.CLOSED;
     } else {
-      status = StatusEnum.READY_TO_RECEIVE;
+      if (rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK) {
+        status = StatusEnum.READY_TO_RE_RECIEVE;
+      } else {
+        status = StatusEnum.READY_TO_RECEIVE;
+      }    
     }
     status = status;
     const dto = new SecurityCheckReq();
@@ -208,10 +212,10 @@ const DCSecurity = () => {
       ...getColumnSearchProps('dcNumber'),
     },
     {
-      title: 'Returnable',
-      dataIndex: 'returnable',
-      ...getColumnSearchProps('returnable'),
-    },
+      title: "DC Type",
+      dataIndex: "dcType",
+      ...getColumnSearchProps('dcType')
+  },
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
@@ -270,13 +274,13 @@ const DCSecurity = () => {
             <Divider type="vertical" />
           </Tooltip>
           {/* <Divider type="vertical" /> */}
-          {rowData.status === 'SENT FOR SECURITY CHECK' ? (
+          {rowData.status === 'SENT FOR SECURITY CHECK' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK  ? (
             <Popconfirm
               onConfirm={(e) => {
                 securityDone(rowData);
               }}
               title={
-                rowData.status === 'SENT FOR SECURITY CHECK'
+                rowData.status === 'SENT FOR SECURITY CHECK' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK 
                   ? 'Are You Done Checking'
                   : ''
               }
@@ -325,10 +329,10 @@ const DCSecurity = () => {
       ...getColumnSearchProps('dcNumber'),
     },
     {
-      title: 'Returnable',
-      dataIndex: 'returnable',
-      ...getColumnSearchProps('returnable'),
-    },
+      title: "DC Type",
+      dataIndex: "dcType",
+      ...getColumnSearchProps('dcType')
+  },
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
@@ -398,7 +402,7 @@ const DCSecurity = () => {
             <Divider type="vertical" />
           </Tooltip>
           {/* <Divider type="vertical" /> */}
-          {rowData.status === 'SENT FOR SECURITY CHECK' ? (
+          {rowData.status === 'SENT FOR SECURITY CHECK'  || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK ? (
             <Popconfirm
               onConfirm={(e) => {
                 securityDone(rowData);
@@ -446,7 +450,9 @@ const DCSecurity = () => {
           <Table
             columns={columnsSkelton}
             dataSource={responseData.filter(
-              (item) => item.status === 'SENT FOR SECURITY CHECK'
+              (item) => item.status === 'SENT FOR SECURITY CHECK'||
+                        item.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK
+                      
             )}
             scroll={{ x: 1400, y: 400 }}
           />
@@ -455,7 +461,7 @@ const DCSecurity = () => {
           <Table
             columns={completedColumns}
             dataSource={responseData.filter(
-              (item) => item.status === 'READY TO RECEIVE' || item.status === 'CLOSED'
+              (item) => item.status === 'READY TO RECEIVE' || item.status === 'CLOSED' || item.status === StatusEnum.READY_TO_RE_RECIEVE
             )}
             scroll={{ x: 1400, y: 400 }}
           />

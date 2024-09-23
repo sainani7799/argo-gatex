@@ -224,4 +224,31 @@ export class DcController {
         return this.applicationExceptionHandler.returnException(CommonResponse, error);
       }
     }
+
+    @Post('/getAllGatePassTounit')
+    async getAllGatePassTounit(@Body() req:any): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getAllGatePassTounit(req);
+      } catch (error) {
+        return (error);
+      }
+    }
+
+    @Post('/updateRetunableData')
+    async updateRetunableData(@Body() req:any): Promise<CommonResponse> {
+      try {
+        return await this.dcService.updateRetunableData(req);
+      } catch (error) {
+        return (error);
+      }
+    }
+
+    @Post('/getAllGatePassReturnable')
+    async getAllGatePassReturnable(@Body() req:any): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getAllGatePassReturnable(req);
+      } catch (error) {
+        return (error);
+      }
+    }
 }

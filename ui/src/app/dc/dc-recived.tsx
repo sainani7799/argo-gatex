@@ -1,6 +1,6 @@
 import { CheckOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Divider, Drawer, Form, Input, Popconfirm, Row, Select, Switch, Table, Tooltip, message } from "antd";
-import { AcceptableEnum, ReceivedDcReq, StatusEnum } from "libs/shared-models";
+import { AcceptableEnum, DcEmailModel, ReceivedDcReq, StatusEnum } from "libs/shared-models";
 import { DcService, EmailService } from "libs/shared-services";
 import moment from "moment";
 import React, { useRef } from "react";
@@ -22,6 +22,8 @@ const DCReceived = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const searchInput = useRef(null);
     const service = new DcService()
+    const mailService = new EmailService()
+
 
     let navigate = useNavigate();
     useEffect(() => {
@@ -112,10 +114,32 @@ const DCReceived = () => {
     });
 
     const receivedDc = (rowData) => {
-        const receivedDate = new Date();
+        const date = new Date();
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        const status = rowData.returnable ==='N'? StatusEnum.CLOSED : StatusEnum.RECEIVED
-        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,authdata.userName,String(receivedDate))
+        console.log(rowData , 'rowData')
+        // const status = rowData.returnable ==='N' ? StatusEnum.CLOSED : StatusEnum.RECEIVED
+        let status 
+        let returnedDate = null;
+        let receivedDate = null;
+        if (rowData.status === StatusEnum.READY_TO_RE_RECIEVE) {
+            status = StatusEnum.RETURNED;
+            returnedDate = String(date);
+            console.log(returnedDate , 'rettt')
+            sendDcMailForGatePass(rowData.emailId , rowData.dcNumber , rowData.created_user , rowData.dcId , rowData.fromUnit , rowData.toAddresserName)
+          } else {
+            status = rowData.returnable === 'N' ? StatusEnum.CLOSED : StatusEnum.RECEIVED;
+            receivedDate = String(date)
+          }
+          console.log('Final Received Date:', receivedDate);
+          console.log('Final Returned Date:', returnedDate);
+
+        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,
+        authdata.userName,
+        receivedDate,
+        returnedDate
+    )
+        console.log(dto , 'dto')
+        // dto.logAllProperties()
         service.receivedDc(dto).then(res => {
             if (res.status) {
                 message.success('Updated Successfully');
@@ -127,6 +151,80 @@ const DCReceived = () => {
         }).catch(err => {
             message.error(err.message);
         })
+    }
+
+    async function sendDcMailForGatePass(email , dcNumber , createdUser , dcId , fromUnit , toUnit) {
+        console.log(email , 'email')
+        const dcDetails = new DcEmailModel();
+        dcDetails.dcNo = dcNumber
+        dcDetails.to = email
+        // dcDetails.to = 'kushal.siddegowda@shahi.co.in'
+        dcDetails.html = `
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <style>
+            #acceptDcLink {
+                  display: inline-block;
+                  padding: 10px 20px;
+                  background-color: #28a745;
+                  color: #fff;
+                  text-decoration: none;
+                  border-radius: 5px;
+                  margin-top: 10px;
+                  transition: background-color 0.3s ease, color 0.3s ease;
+                  cursor: pointer;
+              }
+      
+              #acceptDcLink.accepted {
+                  background-color: #6c757d;
+                  cursor: not-allowed;
+              }
+      
+              #acceptDcLink:hover {
+                  background-color: #218838;
+                  color: #fff;
+              }
+          </style>
+        </head>
+        <body>
+          <p>Dear team,</p>
+          <p>Please find the Returned Gate Pass details below:</p>
+          <p>DC NO: ${dcNumber} </p>
+            Some items Returned from Address: ${fromUnit} to
+            Address: ${toUnit}
+          <p>Please click the link below for details:</p>
+          <input type="hidden" id="assignBy" value=${form.getFieldValue('assignBy')} /> 
+          <input type="hidden" id="dcId" value=${dcId} />
+      
+          <a
+            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${dcId}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #007bff;
+              color: #fff;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >View Details of GatePass</a
+            >
+        </body>
+      </html>
+      `
+        dcDetails.subject = "Gate Pass : " + dcNumber
+        const res = await mailService.sendDcMail(dcDetails)
+        console.log(res)
+        if (res.status == 201) {
+            if (res.data.status) {
+                message.success("Mail sent successfully")
+                // mailerSent = true;
+            } else {
+                message.success("Mail sent successfully")
+            }
+        } else {
+            message.success("Mail  sent successfully")
+        }
     }
 
 
@@ -144,9 +242,9 @@ const DCReceived = () => {
             ...getColumnSearchProps('dcNumber')
         },
         {
-            title: "Returnable",
-            dataIndex: "returnable",
-            ...getColumnSearchProps('returnable')
+            title: "DC Type",
+            dataIndex: "dcType",
+            ...getColumnSearchProps('dcType')
         },
         {
             title: "From Unit",
@@ -210,20 +308,20 @@ const DCReceived = () => {
 
                     </Tooltip>
                     <Divider type="vertical" />
-                    {rowData.received_dc === 'NO' ? (
+                    {rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE ? (
                   <Popconfirm 
                   onConfirm={e =>{receivedDc(rowData)}}
                   title={
-                    rowData.received_dc === 'NO'
+                    rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE
                       ? 'Are you sure to Receive The Dc ?'
                       :  ''
                   }
                 >
                   <Switch  size="default"
-                      className={ rowData.received_dc ==='YES'? 'toggle-activated' : 'toggle-deactivated' }
+                      className={ rowData.received_dc ==='YES' && rowData.status !== StatusEnum.READY_TO_RE_RECIEVE ? 'toggle-activated' : 'toggle-deactivated' }
                       checkedChildren={<RightSquareOutlined type="check" />}
                       unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.received_dc ==='YES'}
+                      checked={rowData.received_dc ==='YES' && rowData.status !== StatusEnum.READY_TO_RE_RECIEVE  } 
                     />
                   
                 </Popconfirm>
@@ -252,7 +350,7 @@ console.log(responseData)
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData.filter(
-              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED'
+              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE
             )}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}

@@ -1,13 +1,16 @@
 import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select } from 'antd';
-import { AddressService, ApprovalUserService, DcService, EmailService, } from 'libs/shared-services';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio, Tabs } from 'antd';
+import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
-import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcReq, StatusEnum, UnitReq } from 'libs/shared-models';
+import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, DcReq, StatusEnum, ToAddressReq, UnitReq } from 'libs/shared-models';
 import DCForm from './dc-form';
 import moment from 'moment';
+import TextArea from 'antd/es/input/TextArea';
+import DescriptionsItem from 'antd/es/descriptions/Item';
+import TabPane from 'antd/es/tabs/TabPane';
 const { Option } = Select;
 
 const DCGrid = () => {
@@ -25,14 +28,36 @@ const DCGrid = () => {
     const [user, setUser] = useState<any>([]);
     const searchInput = useRef(null);
     const mailService = new EmailService()
-    
+    const [editDrawerVisible, setEditDrawerVisible] = useState(false);
+    const [selectedDc, setSelectedDc] = useState<any>(undefined);
+    const [data , setData] = useState([])
+    const [radioValue , setRadioValue] = useState({})
+    const addressService = new AddressService();
+    const [ addressData ,setAddressData] = useState([])
+    const [ toAddressData ,setToAddressData] = useState([])
+    const [deps, setDeps] = useState<any>([]);
+    const [toData , setToData] = useState([])
+    const departmentService = new DepartmentService();
+
 
     let navigate = useNavigate();
     
     useEffect(() => {
         getGatePassData();
         getAllApprovalUser();
+        getAllGatePassReturnableData();
+        getDeps();
     }, []);
+
+    useEffect(() => {
+        if (selectedDc) {
+            console.log(selectedDc , 'inside useEffect')
+          getFromAddress(selectedDc?.toAddresserNameId),
+    
+            getAllToAddressByUnit(selectedDc)
+        }
+    
+      }, [selectedDc])
 
     const getGatePassData = () => {
         const unitValue = authdata.unitId;
@@ -43,6 +68,17 @@ const DCGrid = () => {
             }
         });
     };
+
+    const getAllGatePassReturnableData = () => {
+        const unitValue = authdata.unitId;
+        const req = { unitId: unitValue };
+        service.getAllGatePassReturnable(req).then((res: any) => {
+            if (res.status) {
+                setToData(res.data);
+            }
+        });
+    };
+
     const getAllApprovalUser = () => {
         approvalService.getAllApprovalUser().then((res: any) => {
             if (res.status) {
@@ -186,7 +222,7 @@ const DCGrid = () => {
                 message.success("Mail sent successfully")
             }
         } else {
-            message.success("Mail also sent successfully")
+            message.success("Mail  sent successfully")
         }
     }
 
@@ -206,6 +242,7 @@ const DCGrid = () => {
     }
     const closeDrawer = () => {
         setDrawerVisible(false);
+        setEditDrawerVisible(false)
     }
 
     const getColumnSearchProps = (dataIndex: string) => ({
@@ -265,6 +302,17 @@ const DCGrid = () => {
                 : null
     })
 
+    const Returnable = (val: any) => {
+            console.log(val , 'valll for returnable')
+    }
+
+    const drawerForReturnable = (data : any) => {
+        setSelectedDc(data)
+        setEditDrawerVisible(true)
+    }
+    console.log(selectedDc ,'selected DC')
+
+    const userUnitName = authdata.unitName;
 
     const columnsSkelton: any = [
         {
@@ -280,9 +328,9 @@ const DCGrid = () => {
             ...getColumnSearchProps('dcNumber')
         },
         {
-            title: "Returnable",
-            dataIndex: "returnable",
-            ...getColumnSearchProps('returnable')
+            title: "DC Type",
+            dataIndex: "dcType",
+            ...getColumnSearchProps('dcType')
         },
         {
             title: "From Unit",
@@ -291,6 +339,18 @@ const DCGrid = () => {
         {
             title: "To Unit/Supplier/Buyer",
             dataIndex: "toAddresserName"
+            // dataIndex: "addresserNameId",
+            // render: (text, record) => {
+            //     // Extract the name and keep the ID for editing
+            //     const [name] = text.split("-");  // Extract only the name part
+            //     const id = text.split("-")[1];   // Extract the hidden ID part (not displayed)
+                
+            //     return (
+            //       <span>
+            //         {name} {/* Show only the name */}
+            //       </span>
+            //     );
+            //   }
         },
         {
             title: "Requested By",
@@ -378,8 +438,59 @@ const DCGrid = () => {
 
     ];
 
+    const getAllToAddressByUnit = async (val) => {
+        const req = new ToAddressReq()
+        req.addresser = selectedDc?.toAddresser
+        req.addresserNameId = selectedDc?.fromUnitId
+        console.log(req , 'req')
+        
+        addressService.getAllToAddressByUnit(req).then(res => {
+          if (res) {
+            setToAddressData(res.data);
+          }
+        }).catch(err => {
+          message.error("Something went wrong");
+        })
+      };
+
+      const getFromAddress = (val) => {
+        const req = new UnitReq()
+        req.unitId = val
+        addressService.getAllAddressByUnit(req).then(res => {
+          if (res) {
+            setAddressData(res.data);
+    
+          }
+        }).catch(err => {
+          message.error("Something went wrong");
+        })
+      };
 
 
+
+      const getDeps = () => {
+        departmentService.getAllDepartments().then(res => {
+            if (res) {
+                setDeps(res.data);
+            }
+        })
+    };
+
+    const getDc = (id) => {
+        const req = new DcIdReq(Number(id))
+        service.getDcDetailsById(req).then(res => {
+          if (res.status) {
+            setData(res.data)
+          }
+        })
+      }
+      console.log(data , 'dataaa')
+
+    function onSubmit(val) {
+        console.log(val , 'val')
+    }
+
+      const radioValueInEdit  = selectedDc?.toAddresser || " "
     return (
         <Card
             title={<span style={{ color: "white" }}>GatePass</span>}
@@ -395,8 +506,25 @@ const DCGrid = () => {
 
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData}
-                scroll={{ x: 1400, y: 400 }} />
+            {/* <Table columns={columnsSkelton} dataSource={responseData}
+                scroll={{ x: 1400, y: 400 }} /> */}
+            <Tabs defaultActiveKey="1">
+            <TabPane tab="GatePass" key="1">
+          <Table
+            columns={columnsSkelton}
+            dataSource={responseData}
+            scroll={{x:1500}}
+          />
+        </TabPane>
+      <TabPane tab="GatePass Returnable Status" key="2">
+          <Table
+            columns={columnsSkelton}
+            dataSource={toData}
+            scroll={{ x: 1400, y: 400 }}
+          />
+        </TabPane>
+        
+      </Tabs>
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} open={drawerVisible} closable={true}>
                 <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
@@ -488,8 +616,336 @@ const DCGrid = () => {
                     </Form>
                 </Card>
             </Drawer>
+            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Returnable' width={window.innerWidth > 768 ? '95%' : '99%'}
+                onClose={closeDrawer} visible={editDrawerVisible} closable={true}>
+               <Card title={<span style={{ color: 'white' }}>DC Form</span>}
+                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>Back</Button></span>} >
+                <Form
+                    form={form}
+                    layout='vertical'
+                    style={{ width: '100%', margin: '0px auto 0px auto' }}
+                    
+                    initialValues={{
+                        fromUnitId: selectedDc?.toAddresserName || '',
+                        warehouseId : selectedDc?.warehouseName || '',
+                        departmentId : selectedDc?.department || '',
+                        requestedBy : selectedDc?.requestedBy || '',
+                        toAddresser: selectedDc?.toAddresser || "unit",
+                        addresserNameId: selectedDc?.fromUnit || " ",
+                        purpose: selectedDc?.purpose || " ",
+                        value: selectedDc?.value || " ",
+                        status: selectedDc?.status || " ",
+                        buyerTeam: selectedDc?.buyerTeam || " ",
+                        remarks: selectedDc?.remarks || " ",
+                        weight: selectedDc?.weight || " ",
+                    }}
+                    // onValuesChange={(changedValues, allValues) => {
+                    //     // if (selectedDc?.dcNumber) {
+                    //     //   form.setFieldsValue({
+                    //     //     fromUnitId: selectedDc.dcNumber
+                    //     //   });
+                    //     // }
+                    //   }}  
+                >
+                    <Row gutter={24} style={{ width: "100%", justifyContent: "space-around" }}>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                        <Form.Item style={{ display: "none" }} name="createdUser"  >
+                            </Form.Item>
+                        <Form.Item name="fromUnitId" label="Unit" rules={[
+                                { required: true },
+                            ]} >
+                                <Input style={{ textAlign: 'center' }} disabled />
+                            </Form.Item>
+                            <Form.Item name="warehouseId" label="Warehouse" rules={[
+                                { required: true },
+                            ]}>
+                                <Input style={{ textAlign: 'center' }} disabled />
+                            </Form.Item>
 
+                            <Form.Item name="departmentId" label="Department" rules={[
+                                { required: true },
+                            ]}>
+                                
+                                <Input style={{ textAlign: 'center' }} disabled />
 
+                            </Form.Item>
+                            <Form.Item name="requestedBy" label="Requested By" rules={[
+                                { required: true },
+                            ]}>
+                              <Input style={{ textAlign: 'center' }} disabled />
+
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            <Form.Item name="toAddresser"  label="Unit / Buyer /Supplier" rules={[
+                                { required: true },
+                            ]}>
+                                <Radio.Group 
+                                 onChange={(e) => {
+                                    setRadioValue(e.target.value)
+                                }}
+                                value={radioValue}
+                                disabled
+                                >
+                                    <Radio value={"unit"}>Unit</Radio>
+                                    <Radio value={"supplier"}>Supplier</Radio>
+                                    <Radio value={"buyer"}>Buyer</Radio>
+                                </Radio.Group>
+                            </Form.Item>
+                            <Form.Item name="addresserNameId" label="To" rules={[
+                                { required: true },
+                            ]}>
+                                <Input disabled/>
+                            </Form.Item>
+
+                            {radioValueInEdit === "unit" && (
+                                <>
+                                    <Form.Item name="toDepartmentId" label="To Department" rules={[
+                                        { required: true },
+                                    ]}>
+                                        <Select
+                                            showSearch
+                                            placeholder="Select Dept "
+                                            optionFilterProp="children"
+                                            allowClear
+                                            // onChange={getAllToEmployees}
+                                        >
+                                            {deps?.map(dep => {
+                                                return (
+                                                    <Option key={dep.id} value={dep.id}>
+                                                        {dep.departmentName}
+                                                    </Option>
+                                                )
+                                            })}
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item name="attentionPerson" label="Attention Person(Receiver side)">
+                                        {/* <Select
+                                            showSearch
+                                            placeholder="Select Received Person"
+                                            optionFilterProp="children"
+                                            allowClear
+
+                                        > */}
+                                            {/* {toEmployee.map(app => (
+                                                <Option key={app.employeeId} value={app.employeeId}>
+                                                    {app.employeeName}
+                                                </Option>
+                                            ))} */}
+                                            <Input />
+                                        {/* </Select> */}
+                                    </Form.Item>
+                                </>
+                             )} 
+
+                            {/* <Form.Item name="vehicleNo" label="Vehicle Number">
+                                <Input placeholder="Enter Vehicle Number" />
+                            </Form.Item> */}
+
+                        </Col>
+                        <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                            {/* <Form.Item name="returnable" initialValue={returnaValue} label="Returnable" rules={[
+                                { required: false },
+                            ]}>
+                                <Radio.Group onChange={returnOnChange} value={returnaValue} defaultValue={"N"}>
+                                    <Radio value={"YES"}>Yes</Radio>
+                                    <Radio value={"NO"}>No</Radio>
+                                </Radio.Group>
+                            </Form.Item> */}
+                            <Form.Item name="purpose" label="Purpose" rules={[
+                                { required: true },
+                            ]}>
+                                <Input disabled placeholder="Enter Purpose" />
+                            </Form.Item>
+                            <Form.Item name="value" label="Value">
+
+                                <Input placeholder="Enter Value" disabled />
+                            </Form.Item>
+                            <Form.Item name="status" label="Status" >
+                                <Input placeholder="Enter Value" disabled />
+                                
+                            </Form.Item>
+                            <Form.Item name="buyerTeam" label="Users Buyer Team" rules={[
+                                { required: true },
+                            ]}>
+                                <Input disabled />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24} >
+                        <Col xs={24} sm={24} md={8} lg={8} xl={18}>
+                            <Form.Item name="remarks" label="Remarks">
+                                <TextArea disabled placeholder="Enter Remarks" />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={24} sm={24} md={8} lg={8} xl={5}>
+                            <Form.Item name="weight" label="Weight (KGS)" rules={[
+                                { required: true },
+                                {
+                                    pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
+                                    message: 'Please enter a valid numeric value with up to 2 decimal places.',
+                                },
+                            ]}>
+                                <Input disabled placeholder="Enter Weight" />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row gutter={24}>
+                        <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
+                            <Card size='small' title={<span style={{ color: 'white' }}>From Address</span>}
+                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
+                                    <Descriptions.Item label="Line One">
+                                        {addressData[0]?.lineOne}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Line Two">
+                                        {addressData[0]?.lineTwo}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
+                                    <Descriptions.Item label="City">
+                                        {addressData[0]?.city}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Pin code">
+                                        {addressData[0]?.pinCode}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Dist">
+                                        {addressData[0]?.dist}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="State">
+                                        {addressData[0]?.state}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Country">
+                                        {addressData[0]?.country}
+                                    </Descriptions.Item>
+                                </Descriptions>
+
+                            </Card>
+                        </Col>
+                        <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
+                            <Card size='small' title={<span style={{ color: 'white' }}>To Address</span>}
+                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
+                                    <Descriptions.Item label="Line One">
+                                        {toAddressData[0]?.lineOne}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Line Two">
+                                        {toAddressData[0]?.lineTwo}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                                <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
+                                    <Descriptions.Item label="City">
+                                        {toAddressData[0]?.city}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Pin code">
+                                        {toAddressData[0]?.pinCode}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Dist">
+                                        {toAddressData[0]?.dist}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="State">
+                                        {toAddressData[0]?.state}
+                                    </Descriptions.Item>
+                                    <Descriptions.Item label="Country">
+                                        {toAddressData[0]?.country}
+                                    </Descriptions.Item>
+                                </Descriptions>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Form>
+                <br />
+                <>
+                {data.map((item, index) => (
+                <Card key={index}>
+                    <Form 
+                    layout="vertical" 
+                    initialValues={{
+                        itemType: item.itemType,
+                        itemCode: item.itemCode,
+                        itemName: item.itemName,
+                        description: item.description,
+                        uom: item.uom,
+                        qty: item.qty,
+                        rate: item.rate,
+                        amount: item.amount,
+                      }}
+                    > 
+                        <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>ITEM DETAILS</h1>
+                        <Row gutter={14}>
+                                    <>
+                                           <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemType' label='Item Type' rules={[{ required: true, message: 'Item Type required' }]}>
+                                            <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                                            <Form.Item name='itemName' label='Item Name' rules={[{ required: true, message: 'Item Name is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 6 }}>
+                                            <Form.Item name='description' label='Description' rules={[{ required: false, message: 'M3 Code is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='uom' label='UOM' rules={[{ required: true, message: 'UOM is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='qty' label='Qty' rules={[
+                                                { required: true, message: 'Qty required' },
+                                            ]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                            <Form.Item name='rate' label='Rate' rules={[
+                                                { required: true, message: 'Rate is required' },
+                                            ]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
+                                                <Input disabled />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='returnQty' label='Returning Qty' rules={[{ required: true, message: 'Amount is required' }]}>
+                                                <Input  />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='returnRemarks' label='Return Remarks' >
+                                                <Input  />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 3 }}>
+                                            <Form.Item name='writeOffQty' label='Write Off Qty' >
+                                                <Input  />
+                                            </Form.Item>
+                                        </Col>
+                                    </>
+                        </Row>
+                    </Form>
+                </Card>
+                ))}
+                </>
+                <Row style={{ paddingTop: "30px" }} justify={'end'}>
+                <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                    <Button type="primary" onClick={onSubmit}>Submit</Button>
+                </Col>
+                </Row>
+            </Card>
+            </Drawer>
         </Card>
     );
 };

@@ -7,7 +7,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const { Option } = Select;
 
-const DCForm = () => {
+export interface DCFormProps {
+    data: any;
+    updateDetails: (data: any) => void;
+    isUpdate: boolean;
+    closeForm: () => void;
+}
+
+const DCForm = (props : DCFormProps) => {
 
     const warehouseService = new WarehouseService();
     const unitService = new UnitService();
@@ -368,13 +375,22 @@ const DCForm = () => {
 
     const onItemAdd = (values) => {
         itemForm.validateFields().then(() => {
-            setTotalQty(totalQty +  Number(values.qty))
+            // setTotalQty(totalQty +  Number(values.qty))
+            let tableData = [...itemTableData];
+            const newQty = Number(values.qty) || 0;
+
             if (itemIndexVal !== undefined) {
                 itemTableData[itemIndexVal] = values;
                 tableData = [...itemTableData]
                 setItemIndexVal(itemIndexVal + 1)
+
+                const oldQty = Number(tableData[itemIndexVal].qty) || 0;
+                setTotalQty(prevTotalQty => prevTotalQty - oldQty + newQty);
+                tableData[itemIndexVal] = values;
             } else {
-                tableData = [...itemTableData, values]
+                setTotalQty(prevTotalQty => prevTotalQty + newQty);
+                tableData.push(values);
+                // tableData = [...itemTableData, values]
             }
             const sumOfAmounts = tableData.reduce((sum, item) => {
                 // Assuming 'amount' is the field name
@@ -388,35 +404,69 @@ const DCForm = () => {
             itemForm.resetFields()
             setItemTableVisible(true)
             setBtnType("Add")
+            setItemIndexVal(undefined);
         }).catch(() => {
             message.error('Please fill all required fields')
         })
     }
 
-    const calculateAmount = () => {
-        const qty = itemForm.getFieldValue('qty');
-        const trim = itemForm.getFieldValue('itemType')
-          if(trim != 'trim'){
-            if(Number(qty) > 50 || (Number(totalQty) + Number(qty)) > 50) {
-                setAddVisible(true)
-                return message.info('Qty will not exceed 50')
-            }
-          }
-                const rate = itemForm.getFieldValue('rate');
-                const amount = (qty * rate).toString();
-                setAddVisible(false)
-                itemForm.setFieldsValue({
-                    amount: isNaN(Number(amount)) ? 0 : Number(amount),
-                });
-            
-    };
+    // const calculateAmount = () => {
+    //     const qty = itemForm.getFieldValue('qty');
+    //     const trim = itemForm.getFieldValue('itemType')
 
+    //       if(trim != 'trim'){
+    //         const currentTotalQty = itemTableData.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+    //     const existingItemQty = itemIndexVal !== undefined && itemIndexVal < itemTableData.length
+    //         ? (Number(itemTableData[itemIndexVal].qty) || 0)
+    //         : 0;
+    //     const newTotalQty = currentTotalQty + Number(qty) - existingItemQty;
+    
+    //         if(Number(qty) > 50 || newTotalQty  > 50) {
+    //             setAddVisible(true)
+    //             return message.info('Qty will not exceed 50')
+    //         }
+    //       }
+    //             const rate = itemForm.getFieldValue('rate');
+    //             const amount = (qty * rate).toString();
+    //             setAddVisible(false)
+    //             itemForm.setFieldsValue({
+    //                 amount: isNaN(Number(amount)) ? 0 : Number(amount),
+    //             });
+            
+    // };
+
+    const calculateAmount = () => {
+        const qty = Number(itemForm.getFieldValue('qty')) || 0;
+        const trim = itemForm.getFieldValue('itemType');
+        const rate = Number(itemForm.getFieldValue('rate')) || 0;
+    
+        if (trim !== 'trim') {
+            const currentTotalQty = itemTableData.reduce((sum, item, index) => {
+                if (index !== itemIndexVal) {
+                    return sum + (Number(item.qty) || 0);
+                }
+                return sum;
+            }, 0);
+            const newTotalQty = currentTotalQty + qty;
+    
+            if (qty > 50 || newTotalQty > 50) {
+                setAddVisible(true);
+                return message.info('Qty will not exceed 50');
+            }
+        }
+    
+        const amount = (qty * rate).toFixed(2);
+        setAddVisible(false);
+        itemForm.setFieldsValue({
+            amount: Number(amount) || 0,
+        });
+    };
     const onSubmit = () => {
         // console.log(form.getFieldValue('buyerTeam'))
         form.validateFields().then(() => {
             const value = form.getFieldValue('value');
             if (parseFloat(value) <= 50000) {
-                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId') , form.getFieldValue('buyerTeam') )
+                const req = new DcReq(form.getFieldValue('fromUnitId'), form.getFieldValue('warehouseId'), form.getFieldValue('departmentId'), form.getFieldValue('poNo'), form.getFieldValue('modeOfTransport'), form.getFieldValue('toAddresser'), form.getFieldValue('addresserNameId'), form.getFieldValue('weight'), form.getFieldValue('vehicleNo'), form.getFieldValue('returnable'), form.getFieldValue('purpose'), form.getFieldValue('value'), StatusEnum.ASSIGN_TO_APPROVAL, form.getFieldValue('requestedBy'), form.getFieldValue('remarks'), form.getFieldValue('createdUser'), itemTableData, '', AcceptableEnum.NO, null, form.getFieldValue('attentionPerson'), form.getFieldValue('toDepartmentId') , form.getFieldValue('buyerTeam') , form.getFieldValue('dcType') )
                 console.log(req, 'reqq')
                 dcService.createDc(req).then(res => {
                     if (res.status) {
@@ -456,7 +506,8 @@ const DCForm = () => {
                     layout='vertical'
                     style={{ width: '100%', margin: '0px auto 0px auto' }}
                     initialValues={{
-                        buyerTeam : buyerTeam
+                        buyerTeam : buyerTeam,
+                        ...props.data
                     }}
                 >
                     <Row gutter={24} style={{ width: "100%", justifyContent: "space-around" }}>
@@ -483,6 +534,20 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
+
+                    <Form.Item name="dcType" label="DC Type" rules={[
+                            { required: true, message: 'Please Select DC Type' }
+                        ]} >
+                            <Select
+                                showSearch
+                                placeholder="Select DC Type"
+                                // optionFilterProp="children"
+                                allowClear
+                            >
+                                <Option value='returnable'>{'Returnable'}</Option>
+                                <Option value='nonReturnable'>{'Non-Returnable'}</Option>
+                            </Select>
+                        </Form.Item>
                             <Form.Item name="warehouseId" label="Warehouse" rules={[
                                 { required: true },
                             ]}>
@@ -521,25 +586,7 @@ const DCForm = () => {
                                     })}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="requestedBy" label="Requested By" rules={[
-                                { required: true },
-                            ]}>
-                                <Select
-                                    showSearch
-                                    placeholder="Select Name"
-                                    optionFilterProp="children"
-                                    allowClear
-                                    disabled
-                                >
-                                    {employee.map(app => {
-                                        return (
-                                            <Option key={app.employeeId} value={app.employeeId}>
-                                                {app.employeeName}
-                                            </Option>
-                                        )
-                                    })}
-                                </Select>
-                            </Form.Item>
+                            
                             {/* <Form.Item name="poNo" label="PO Number">
                                 <Input placeholder="Enter PO Number" />
                             </Form.Item>
@@ -663,14 +710,37 @@ const DCForm = () => {
                                 </Select>
                             </Form.Item>
                             <Form.Item name="buyerTeam" label="Users Buyer Teamm" rules={[
-                                { required: true },
+                                // { required: true },
                             ]}>
                                 <Input disabled />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row gutter={24} >
-                        <Col xs={24} sm={24} md={8} lg={8} xl={18}>
+                    <Col xs={24} sm={24} md={8} lg={8} xl={6}>
+
+                    <Form.Item name="requestedBy" label="Requested By" rules={[
+                                { required: true },
+                            ]}>
+                                <Select
+                                    showSearch
+                                    placeholder="Select Name"
+                                    optionFilterProp="children"
+                                    allowClear
+                                    disabled
+                                >
+                                    {employee.map(app => {
+                                        return (
+                                            <Option key={app.employeeId} value={app.employeeId}>
+                                                {app.employeeName}
+                                            </Option>
+                                        )
+                                    })}
+                                </Select>
+                            </Form.Item>
+                    </Col>
+                    
+                        <Col xs={24} sm={24} md={8} lg={8} xl={13}>
                             <Form.Item name="remarks" label="Remarks">
                                 <TextArea placeholder="Enter Remarks" />
                             </Form.Item>
@@ -685,7 +755,9 @@ const DCForm = () => {
                             ]}>
                                 <Input placeholder="Enter Weight" />
                             </Form.Item>
-                        </Col>
+                        </Col >
+                        
+                        
                     </Row>
                     <Row gutter={24}>
                         <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>

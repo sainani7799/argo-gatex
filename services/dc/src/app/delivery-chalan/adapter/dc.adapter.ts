@@ -36,6 +36,7 @@ export class DcAdapter
         dcEntity.createdUser = dcDto.createdUser;
         dcEntity.acceptedUser = dcDto.acceptedUser;
         dcEntity.buyerTeam = dcDto.buyerTeam
+        dcEntity.dcType = dcDto.dcType
         if(isUpdate){
             dcEntity.updatedUser = dcDto.updatedUser;
             dcEntity.assignBy = dcDto.assignBy;
@@ -77,7 +78,7 @@ export class DcAdapter
             const itemData = new DcItemsDto(dcItems.dcItemId,dcItems.itemCode,dcItems.itemName,dcItems.description,dcItems.itemType,dcItems.uom,dcItems.qty,dcItems.rate,dcItems.amount,dcItems.isActive,dcItems.createdAt,dcItems.createdUser,dcItems.updatedAt,dcItems.updatedUser);
             itemDto.push(itemData)
         }
-        const dcDto = new DcDto(dcObject.dcId,dcObject.dcNumber,dcObject.fromUnitId,dcObject.warehouseId,dcObject.departmentId,dcObject.poNo,dcObject.modeOfTransport,dcObject.toAddresser,dcObject.addresserNameId,dcObject.weight,dcObject.vehicleNo,dcObject.returnable,dcObject.purpose,dcObject.value,dcObject.status,dcObject.requestedBy,dcObject.remarks,dcObject.isAccepted,dcObject.isAssignable,dcObject.assignBy,itemDto,dcObject.createdAt,dcObject.createdUser,dcObject.updatedAt,dcObject.updatedUser,dcObject.isActive,dcObject.versionFlag,dcObject.acceptedUser,dcObject.attentionPerson,dcObject.toDepartmentId , dcObject.buyerTeam) 
+        const dcDto = new DcDto(dcObject.dcId,dcObject.dcNumber,dcObject.fromUnitId,dcObject.warehouseId,dcObject.departmentId,dcObject.poNo,dcObject.modeOfTransport,dcObject.toAddresser,dcObject.addresserNameId,dcObject.weight,dcObject.vehicleNo,dcObject.returnable,dcObject.purpose,dcObject.value,dcObject.status,dcObject.requestedBy,dcObject.remarks,dcObject.isAccepted,dcObject.isAssignable,dcObject.assignBy,itemDto,dcObject.createdAt,dcObject.createdUser,dcObject.updatedAt,dcObject.updatedUser,dcObject.isActive,dcObject.versionFlag,dcObject.acceptedUser,dcObject.attentionPerson,dcObject.toDepartmentId , dcObject.buyerTeam , dcObject.dcType) 
         return dcDto
     }
 }

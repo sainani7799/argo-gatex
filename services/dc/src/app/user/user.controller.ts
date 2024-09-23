@@ -94,5 +94,23 @@ export class UserManagementController {
       return this.applicationExceptionHandler.returnException(CommonResponse, error);
     }
   }
+
+  @Post('/getPassword')
+  async getPassword( @Body()request:any ): Promise<any> {
+    try {
+      return await this.companyService.getPassword(request);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/updatePassword')
+  async updatePassword( @Body()request:any ): Promise<any> {
+    try {
+      return await this.companyService.updatePassword(request);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(CommonResponse, error);
+    }
+  }
   
 }

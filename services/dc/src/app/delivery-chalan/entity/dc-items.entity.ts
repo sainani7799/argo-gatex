@@ -93,6 +93,22 @@ export class DcItemEntity {
     })
     versionFlag: number;
 
+    @Column('int', {
+        name: 'returning_qty',
+        nullable: false
+    })
+    returningQty: number;
+
+    @Column('varchar', {
+        name: 'return_remarks',
+    })
+    returnRemarks:string;
+
+    @Column('varchar', {
+        name: 'write_off_qty',
+    })
+    writeOffQty:string;
+
     @ManyToOne(type => DcEntity, i => i.dcItemInfo, { nullable: false, })
     @JoinColumn({ name: "dc_id" })
     itemInfo: DcEntity;

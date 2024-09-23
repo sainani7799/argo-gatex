@@ -127,6 +127,9 @@ export default function BasicLayout() {
                             <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
                             </Menu.Item>
+                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
+                            </Menu.Item>
                             <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                     <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
                             </Menu.Item>
@@ -156,6 +159,9 @@ export default function BasicLayout() {
                     >
                             <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
                             </Menu.Item>
                             {/* <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                     <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
@@ -224,6 +230,9 @@ export default function BasicLayout() {
                     >
                             <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
                                 <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
+                            </Menu.Item>
+                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
+                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
                             </Menu.Item>
                             <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
                                     <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
