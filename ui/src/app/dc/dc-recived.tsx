@@ -350,7 +350,7 @@ console.log(responseData)
             headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData.filter(
-              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE
+              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE || item.status === StatusEnum.RETURNED
             )}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}

@@ -746,7 +746,7 @@ const DCForm = (props : DCFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={8} lg={8} xl={5}>
-                            <Form.Item name="weight" label="Weight (KGS)" rules={[
+                            <Form.Item name="weight" label="Weight (KGS-Approximately)" rules={[
                                 { required: true },
                                 {
                                     pattern: /^[0-9]+(\.[0-9]{1,2})?$/, // Regular expression to allow numbers with up to 2 decimal places
