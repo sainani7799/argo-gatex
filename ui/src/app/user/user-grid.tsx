@@ -119,6 +119,7 @@ const UserFormGrid = () => {
         })
     }
     const updateUser =(val:CreateUserDto)=>{
+        console.log(val , 'val')
         service.updateUser(val).then((res)=>{
             if(res.status){
                 message.success('Updated Successfully');
@@ -180,8 +181,8 @@ const UserFormGrid = () => {
         {
             key: "5",
             title: "Buyers Team",
-            dataIndex: "buyerTeam",
-            ...getColumnSearchProps('buyerTeam'),
+            dataIndex: "buyerTeamName",
+            ...getColumnSearchProps('buyerTeamName'),
         },
         {
             key: "6",

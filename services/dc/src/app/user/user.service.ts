@@ -105,7 +105,7 @@ export class UserMangementService {
     }
   }
   async getUsers(): Promise<any> {
-    let query = `SELECT us.employee_id AS employeeId, us.id AS userId, us.user_name AS userName ,emp.employee_code AS empCode, emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive ,us.password AS PASSWORD ,us.card_no AS cardNo ,us.unit_id AS unitId ,r.role_name AS role , b.buyer_team AS buyerTeam , us.role_id AS roleId
+    let query = `SELECT us.employee_id AS employeeId, us.id AS userId, us.user_name AS userName ,emp.employee_code AS empCode, emp.employee_name,emp.email_id ,u.unit_name,us.is_active AS isActive ,us.password AS password ,us.card_no AS cardNo ,us.unit_id AS unitId ,r.role_name AS role , b.buyer_team AS buyerTeamName , us.role_id AS roleId,us.buyer_team as buyerTeam
     FROM shahi_user us 
     LEFT JOIN shahi_employees emp ON emp.employee_id = us.employee_id
     LEFT JOIN shahi_units u ON u.id = us.unit_id 

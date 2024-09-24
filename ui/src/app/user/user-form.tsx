@@ -25,7 +25,7 @@ const UserForm = (props: UserFormProps) => {
   const buyerService = new BuyerTeamService();
 
 
-    // console.log(props.userData)
+    console.log(props.userData)
     const handleEmployeeIdChange = (value) => {
         setSelectedEmployeeId(value);
         const selectedEmployee = employeeNames.find((employee) => employee.employeeId === value);
