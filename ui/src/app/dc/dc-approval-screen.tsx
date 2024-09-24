@@ -331,9 +331,9 @@ const DCApprovalGrid = () => {
             ...getColumnSearchProps('dcNumber')
         },
         {
-            title: "Returnable",
-            dataIndex: "returnable",
-            ...getColumnSearchProps('returnable')
+            title: "Dc Type",
+            dataIndex: "dcType",
+            ...getColumnSearchProps('dcType')
         },
         {
             title: "From Unit",

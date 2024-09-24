@@ -254,7 +254,7 @@ export class DcService {
             dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by,dc.dc_type AS dcType,
              eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser,dc.purpose,dc.vehicle_no AS vehicleNo ,
               dc.email_id AS emailId ,sa.sign_path,sa.user_signature ,dc.to_department_id,td.department_name AS toDepartment,
-              dc.attention_person AS attentionPerson,dc.received_date AS receivedData,dc.received_dc AS isDcReceived,dc.received_user , dci.returning_qty AS returningQty , dci.return_remarks AS returnRemarks , dci.write_off_qty AS writeOffQty
+              dc.attention_person AS attentionPerson,dc.received_date AS receivedData,dc.received_dc AS isDcReceived,dc.received_user , dci.returning_qty AS returningQty , dci.return_remarks AS returnRemarks , dci.write_off_qty AS writeOffQty  , se.email_id AS createdUserMail
              FROM shahi_dc dc
             LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
             LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
@@ -268,6 +268,7 @@ export class DcService {
             LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
             LEFT JOIN shahi_dc_items dci ON dci.dc_id = dc.dc_id
             LEFT JOIN shahi_approved_users sa ON sa.approved_user_name = dc.assign_by
+            LEFT JOIN shahi_employees se ON se.employee_id = dc.requested_by
             WHERE to_addresser IN ('unit', 'supplier','buyer') AND dc.dc_id = ${req.dcId}`;
       const dcData = await this.dcRepo.query(query);
       return await new CommonResponse(

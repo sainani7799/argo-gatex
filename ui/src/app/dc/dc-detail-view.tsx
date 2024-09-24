@@ -249,7 +249,7 @@ console.log(data , 'data')
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{moment(data[0]?.createdDate)?.format('YYYY-MM-DD')}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created By</span>}>{data[0]?.created_user}</DescriptionsItem>
-          <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem>
+          {/* <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem> */}
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Value</span>}>{data[0]?.value}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Department</span>}>{data[0]?.department}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>To Department</span>}>{data[0]?.toDepartment}</DescriptionsItem>

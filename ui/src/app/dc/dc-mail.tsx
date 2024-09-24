@@ -55,7 +55,7 @@ export const DcMail = (props: DcMailProps) => {
         service.acceptDc(dto).then(res => {
             if (res.status) {
                 message.success('User Accept Successfully');
-                sendDcMailForGatePass(data.emailId, data.dcNumber, approvedDate, data.assignBy, data.fromUnit, data.toAddresserName, data.dcId)
+                sendDcMailForGatePass(data.createdUserMail, data.dcNumber, approvedDate, data.assignBy, data.fromUnit, data.toAddresserName, data.dcId)
             } else {
                 // message.error(res.internalMessage);
             }
