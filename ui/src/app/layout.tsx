@@ -1,13 +1,19 @@
 import React, { useState } from 'react'
-import { Layout, Menu, MenuProps } from 'antd';
-import { ClusterOutlined, FileAddOutlined, UserOutlined } from '@ant-design/icons'
-import { Link, Outlet, Route, useNavigate } from 'react-router-dom';
-import { CommonHeader } from './header/header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileExport, faInbox, faLocationPin, faPerson, faShieldAlt, faShirt, faTruckArrowRight, faUserShield, faUserTie, faUsers, faWarehouse } from '@fortawesome/free-solid-svg-icons';
-import { Footer } from 'antd/es/layout/layout';
+import { Avatar, Button, Layout, Menu, MenuProps, Result } from 'antd';
+import { Footer, Header } from 'antd/es/layout/layout';
+import Icon, { DollarOutlined, ProjectOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons'
+import { Link, Navigate, Outlet, HashRouter as Router, useNavigate } from 'react-router-dom';
+import { get } from 'http';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
+import * as antdIcons from '@ant-design/icons';
+import schemax22 from './schemax22.jpg';
+import { useIAMClientState } from './common';
+import AssetManagementRouting from './basic-layout/asset-management-routing';
+import { AlertMessages } from './components/common';
+
+
+
 
 export default function BasicLayout() {
     const [collapsed, setCollapsed] = useState(true);
@@ -15,9 +21,10 @@ export default function BasicLayout() {
     const [subMenu, setSubmenu] = useState<string[]>([]);
     const navigate = useNavigate();
     type MenuItem = Required<MenuProps>['items'][number];
-    const authdata = JSON.parse(localStorage.getItem('userName'))
-     
-    // console.log(authdata)
+
+    const { IAMClientAuthContext, dispatch } = useIAMClientState();
+
+
 
     const toggle = () => {
         setCollapsed(prevCollapsed => !prevCollapsed);
@@ -39,245 +46,190 @@ export default function BasicLayout() {
     function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode, children?: MenuItem[], type?: 'group',): MenuItem {
         return { key, icon, children, label, type, } as MenuItem;
     }
+    const authdata = JSON.parse(localStorage.getItem('currentUser'))
 
 
-    const onCollapse = (collapsed) => {
-        setCollapsed(collapsed);
+
+    function renderIcon(iconType, iconName) {
+        // if (iconType === "antd") { 
+        const SpecificIcon = antdIcons["SolutionOutlined"];
+        return <SpecificIcon />
+        // }
+        // else {
+        //     const SpecificIcon = icons[iconName];
+        //     return <Icon component={SpecificIcon} style={{ fontSize: '20px' }} /
+
+    }
+
+    const getSubMenu = (route) => {
+
+        if (route && route.subMenuData && route.subMenuData.length) {
+            return (
+                <SubMenu key={route.menuId} title={<span> {renderIcon(route.iconType, route.iconName)} <span>{route.menuName}</span> </span>}  >
+                    <div style={{ backgroundColor: 'white', color: 'black' }}>
+
+                        {route.subMenuData.map(item => getSubMenu(item))}
+                    </div>
+                </SubMenu>
+            )
+        } else {
+            return (
+                <div style={key === route.subMenuId ? {backgroundColor:'#a3e1f5'} : {}}
+                // style={{ backgroundColor: 'white', color: 'black' }}
+                >
+                    <Menu.Item key={route.subMenuId} ><Link onClick={() => handleClick(route.subMenuId)} to={route.path}><span><span> {route.icon} <span>{route.subMenuName}</span> </span></span></Link> </Menu.Item>
+                </div>
+
+            )
+        }
+    }
+    const getAllSubMenus = () => {
+        // console.log(localStorage.getItem("currentUser"));
+        const subMenus = [];
+        const menu = IAMClientAuthContext.menuAccessObject ? IAMClientAuthContext.menuAccessObject : [];
+        // const menuAccess = localStorage.getItem("currentUser")? JSON.parse(localStorage.getItem("currentUser"))["menuAccessObject"]:[];
+        menu?.forEach(eachRoutes => {
+            subMenus.push(getSubMenu(eachRoutes));
+        });
+        return subMenus;
+    }
+
+    const [key, setKey] = useState("");
+
+    const handleClick = (e) => {
+        setKey(e)
+    }
+
+    const logOut = () => {
+      localStorage.clear();
+      window.location.reload();
+      <Navigate to="/" />;
+      AlertMessages.getSuccessMessage('Logging out');
+    };
+    const ifNotHaveAccess = () => {
+      return (
+        <Result
+          status="403"
+          title="403"
+          subTitle="Sorry, you are not authorized to access this page."
+        // extra={<Link to='' ><Button type="primary">Back Home</Button></Link>}
+        />
+      );
     };
 
     return (
-        <Layout className="site-layout" style={{ background: ' #f0f2f5' }}>
-            <Sider
-                collapsed={collapsed}
-                onCollapse={onCollapse}
-                trigger={null}
-                breakpoint='lg'
-                collapsedWidth={35}  // Adjust the collapsed width for mobile view
-                width={210}
-                style={{
-                    overflow: 'auto',
-                    height: '100vh',
-                    position: 'fixed',
-                    left: 0,
-                    background: '#fff',
-                    marginTop: '45px',
-                    borderRadius: '5px',
-                    boxShadow: '0 8px 24px -2px rgb(0 0 0 / 5%)',
-                }}
-            >
-                <Menu mode="inline"
-                    onClick={menu}
-                    openKeys={subMenu}
-                    defaultOpenKeys={[]}
-                    selectedKeys={[selectedMenu]}
-                    onOpenChange={onOpenChange}
-                    defaultSelectedKeys={['/']}
-                    style={{ paddingTop: '20px' }}
-                >
-                   {
-                    authdata.roleId === 1 ?
-                    <SubMenu
-                        key="masters" icon={<UserOutlined />}
-                        title={
-                            <span>
-                                <span>Masters</span>
-                            </span>
-                        }
-                    >
-                        <Menu.Item key="employee-view" icon={<FontAwesomeIcon icon={faUserTie} />}>
-                            <Link to="/employee-view"><span>Employee</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="users" icon={<FontAwesomeIcon icon={faUsers} />}>
-                            <Link to="/users"><span>Users</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="supplier-view" icon={<FontAwesomeIcon icon={faPerson} />}>
-                            <Link to="/supplier-view"><span>Buyers</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/address-view" icon={<FontAwesomeIcon icon={faLocationPin} />}>
-                            <Link to="/address-view"><span>Address</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/approval-user" icon={<FontAwesomeIcon icon={faUserShield} />}>
-                            <Link to="/approval-user"><span>Approval Users</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/warehouse-grid" icon={<FontAwesomeIcon icon={faWarehouse} />}>
-                            <Link to="/warehouse-grid"><span>Warehouse</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/item-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
-                            <Link to="/item-grid"><span>Items</span></Link>
-                        </Menu.Item>
-                        <Menu.Item key="/buyerteam-grid" icon={<FontAwesomeIcon icon={faShirt} />}>
-                            <Link to="/buyerteam-grid"><span>Userwise (Buyer Team)</span></Link>
-                        </Menu.Item>
-                    </SubMenu>
-                        : <></>
-                   } 
-                   
-                    
+  <Layout className="layout">
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="80"
+        className="noprint"
+        style={{
+          overflow: 'auto',
+          height: '100vh',
+          position: 'fixed',
+          left: 0,
+        }}
+        collapsible
+        onCollapse={(collapsed, type) => {
+          setCollapsed(true);
+        }}
+        collapsed={collapsed}
+        trigger={null}
+      >
+        <div className="logo">
+          {/* <img src={schemaxlogowhite} /> */}
+          {/* <h1 style={{ display: collapsed ? 'none' : 'block' }}>AquaX</h1> */}
 
-                        {
-                            authdata.roleId === 1 && (
-                                <SubMenu
-                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                        title={
-                            <span>
-                                <span>Dc</span>
-                            </span>
-                        }
-                    >
-                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
-                            </Menu.Item>
-                            
-                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                <Link to="/dc-security"><span>Security Check</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                            </Menu.Item>
-                            </SubMenu>
-                            )
-                        }
+          {collapsed ? (
+            <img src={schemax22} />
+          ) : (
+            <img src={schemax22} />
+          )}
 
-{
-                            authdata.roleId === 2 && (
-                                <SubMenu
-                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                        title={
-                            <span>
-                                <span>Dc</span>
-                            </span>
-                        }
-                    >
-                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
-                            </Menu.Item>
-                            {/* <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
-                            </Menu.Item> */}
-                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                            </Menu.Item>
+        </div>
+     <Menu
+          theme="dark"
+          mode="inline"
+          onClick={menu}
+          openKeys={subMenu}
+          defaultOpenKeys={[]}
+          style={{ paddingTop: '20px' }}
+          selectedKeys={[key]}
+          onOpenChange={onOpenChange}
+          defaultSelectedKeys={['/']}
+        >
+        
+{getAllSubMenus()}
 
-                            </SubMenu>
-                            )
-                        }
-                        {
-                            authdata.roleId === 3 && (
-                                <SubMenu
-                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                        title={
-                            <span>
-                                <span>Dc</span>
-                            </span>
-                        }
-                    >
-                             <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                <Link to="/dc-security"><span>Security Check</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                                </Menu.Item>
-                            </SubMenu>
-                            )
-                        }
-                        {
-                         authdata.roleId === 4 && (
-                                    <SubMenu
-                            key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                            title={
-                                <span>
-                                    <span>Dc</span>
-                                </span>
-                            }
-                        >
-                            <Menu.Item key="/dc-received" icon={<FontAwesomeIcon icon={faInbox} />}>
-                                <Link to="/dc-received"><span>Received DC(Receiver)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-security" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                <Link to="/dc-security"><span>Security Check</span></Link>
-                            </Menu.Item>
-                                <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                                </Menu.Item>
-                                </SubMenu>
-                                )
-                            
-                        }
-                        {
-                            authdata.roleId === 5 && (
-                                <SubMenu
-                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                        title={
-                            <span>
-                                <span>Dc</span>
-                            </span>
-                        }
-                    >
-                            <Menu.Item key="/dc-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-view"><span>GatePass(Creater)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-return-view" icon={<FontAwesomeIcon icon={faFileExport} />}>
-                                <Link to="/dc-return-view"><span>GatePass(Returnable)</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/dc-approval-grid" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/dc-approval-grid"><span>Gate Pass DC Approver</span></Link>
-                            </Menu.Item>
-                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                            </Menu.Item>
+        </Menu>
+      </Sider>
 
-                            </SubMenu>
-                            )
-                        }
-                        {
-                            authdata.roleId === 6 && (
-                                <SubMenu
-                        key="dc" icon={<FontAwesomeIcon icon={faTruckArrowRight} />}
-                        title={
-                            <span>
-                                <span>Dc</span>
-                            </span>
-                        }
-                    >
-                            
-                            <Menu.Item key="/security-report" icon={<FontAwesomeIcon icon={faShieldAlt} />}>
-                                    <Link to="/security-report"><span>Gate Pass DC Report</span></Link>
-                            </Menu.Item>
+      <Layout style={{ marginLeft: collapsed ? 80 : 230 }}>
+        <Header
+          style={{
+            background: '#fff',
+            padding: 0,
+          }}
+          className="noprint"
+        >
+          <div className="ant-pro-global-header">
+            <div className="samllLogo">
+              <img
+                style={{ display: collapsed ? 'block' : 'none' }}
+                src={schemax22}
+              />
+            </div>
+            <span className="ant-pro-global-header-trigger">
+              <antdIcons.MenuFoldOutlined
+                className="trigger"
+                type={collapsed ? 'menu-unfold' : 'menu-unfold'}
+                onClick={toggle}
+              />
+            </span>
 
-                            </SubMenu>
-                            )
-                        }
-                    
-                </Menu>
-            </Sider>
-            <CommonHeader key={Date.now()} toggle={toggle} collapsed={collapsed} />
-            <Content
-                className="site-layout-background"
-                style={{
-                    marginTop: '60px',
-                    padding: '6px',
-                    height: '90vh',
-                    marginLeft: collapsed ? '25px' : '198px'
+            <span>
+              <Button
+                type="primary"
+                style={{ float: 'right' }}
+                onClick={logOut}
+              >
+                <antdIcons.ExportOutlined />
+                <span className="l-rem">logout</span>
+              </Button>
+            </span>
+            <span>
+              <Button style={{ float: 'right', border: 'white' }}>
+                Hello!{' '}
+                {/* {username === ''
+                  ? user_name_local
+                  : props?.user?.user_data?.username} */}
+              </Button>
+            </span>
 
-                }}
-            >
-                <Outlet />
-            </Content>
-        </Layout>
+            <span>
+              <Avatar icon={<UserOutlined />} />
+            </span>
+          </div>
+        </Header>
+
+        <Content
+          style={{
+            margin: '5px 5px',
+            padding: 8,
+            background: '#fff',
+            minHeight: 280,
+            overflow: 'scroll',
+          }}
+        >
+          {/* <Routes> */}
+            <AssetManagementRouting/>
+          {/* </Routes> */}
+         
+        </Content>
+        <Footer style={{ textAlign: 'center' }} className="noprint">
+          Design © {new Date().getUTCFullYear()} Created by Schemaxtech
+        </Footer>
+      </Layout>
+    </Layout >
     )
 }
