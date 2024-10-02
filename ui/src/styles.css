@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+/* You can add global styles to this file, and also import other style files */
+
+.ant-input {
+    border-radius: 4px !important;
+}
+
+.ant-select-dropdown {
+    border-radius: 4px !important;
+}
+
+.ant-select-selector {
+    border-radius: 4px !important;
+}
+
+.maintenance-reapirs .ant-form-item .ant-form-item-label {
+    flex-grow: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: start;
+}
+
+.full-width-select .ant-select-selector {
+    width: 100% !important;
+  }

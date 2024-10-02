@@ -38,16 +38,11 @@ import { Content } from 'antd/es/layout/layout';
 import moment from 'moment';
 import { useState } from 'react';
 import { Link, Route, useNavigate } from 'react-router-dom';
-import { ReactComponent as DarkModeIcon } from '../assets/icons/dark-mode.svg';
-import { ReactComponent as LightModeIcon } from '../assets/icons/light-mode.svg';
-import userIcon from '../assets/images/user.jpg';
 import { logout, useIAMClientState } from '../common/iam-client-react';
 import { IconType } from '../common/iam-client-react/constants/icon-type';
 import { MenuItem, treeRouter } from '../common/utils';
 import { HeaderFullscreen, NotificationComponent, OnlineStatus } from '../components/common';
 import { components } from './all-components';
-import Asset from '../components/pages/asset-management/asset-management-components/assets-dashboard/src/lib/Assertxpert.png';
-
 
 import { svgIcons } from './all-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -641,7 +636,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
       >
         <ProLayout
           title=""
-          logo={<img src={dark ? Asset : Asset} />}
+          // logo={<img src={dark ? Asset : Asset} />}
           locale="en-US"
           siderWidth={240}
           colorPrimary={colorPrimary}
@@ -677,7 +672,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
             pathname,
           }}
           avatarProps={{
-            src: userIcon,
+            // src: userIcon,
             size: 'small',
             title: (
               <OnlineStatus>
@@ -718,7 +713,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
                 <NotificationComponent />
               </Tooltip>
                 <Tooltip placement="bottom" title={'Switch mode'}>
-                  {dark ? (
+                  {/* {dark ? (
                     <LightModeIcon
                       onClick={() => {
                         setDark(!dark);
@@ -730,7 +725,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
                         setDark(!dark);
                       }}
                       style={{ color: '#fff', fontSize: '30px' }} />
-                  )}
+                  )} */}
                   {/* <Button
     size="large"
     onClick={() => { setDark(!dark); }}
