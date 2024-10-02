@@ -2,7 +2,6 @@ import axios from "axios";
 import { ActionTypes } from "./action-types";
 import { IAMClientAuthActions } from "./reducers";
 import { LoginUserDto, UserPermissionsDto } from "./user-models";
-import { UnitcodeService } from "@assetx/shared-services";
 import MenuDivider from "antd/es/menu/MenuDivider";
 
 

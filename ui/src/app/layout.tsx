@@ -9,7 +9,6 @@ const { SubMenu } = Menu;
 import * as antdIcons from '@ant-design/icons';
 import schemax22 from './schemax22.jpg';
 import { useIAMClientState } from './common';
-import AssetManagementRouting from './basic-layout/asset-management-routing';
 import { AlertMessages } from './components/common';
 
 
@@ -222,7 +221,6 @@ export default function BasicLayout() {
           }}
         >
           {/* <Routes> */}
-            <AssetManagementRouting/>
           {/* </Routes> */}
          
         </Content>

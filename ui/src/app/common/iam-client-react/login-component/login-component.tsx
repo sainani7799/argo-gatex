@@ -18,7 +18,6 @@ import Axios from "axios";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import AlertMessages from '../../../../../ui/src/components/common/notifications/notification-messages';
 import SchemaxLogo from '../login-component-images/schemax-logo.png';
 import { LoginUserDto, UserPermissionsDto } from "../user-models";
 import { ActionTypes } from "../action-types";

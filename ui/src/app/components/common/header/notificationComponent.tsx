@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BellOutlined } from "@ant-design/icons";
 import { Badge, Modal, Card, Button, Tooltip, message } from "antd";
 import { useIAMClientState } from "ui/src/app/common";
+import { NotificationsReqModel, NotificationStatusReqModal } from "libs/shared-models/src/common";
 
 export const NotificationComponent = () => {
     const [data, setData] = useState([]);

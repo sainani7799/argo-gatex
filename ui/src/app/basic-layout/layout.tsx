@@ -8,7 +8,6 @@ const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 import * as antdIcons from '@ant-design/icons';
 import { useIAMClientState } from '../common';
-import AssetManagementRouting from './asset-management-routing';
 import schemax22 from './schemax22.jpg';
 import { AlertMessages } from '../components/common';
 
@@ -222,7 +221,6 @@ export default function BasicLayout() {
           }}
         >
           {/* <Routes> */}
-            <AssetManagementRouting/>
           {/* </Routes> */}
          
         </Content>

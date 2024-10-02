@@ -50,7 +50,6 @@ import Asset from '../components/pages/asset-management/asset-management-compone
 
 
 import { svgIcons } from './all-svg-icons';
-import AssetManagementRouting from './asset-management-routing';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap, faScrewdriverWrench, faUsersGear } from '@fortawesome/free-solid-svg-icons';
 
@@ -788,7 +787,6 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
           )}
         >
           <Content style={{ minHeight: '90vh' }}>
-            <AssetManagementRouting/>
           </Content>
         </ProLayout>
       </div>
