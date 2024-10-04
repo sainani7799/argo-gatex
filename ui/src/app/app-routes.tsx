@@ -32,6 +32,8 @@ import BuyerTeamGrid from "./master/buyerTeam/buyerTeam-grid";
 import DCReturnableGrid from "./dc/dc-returnable-grid";
 import newLogin from "./login/newLogin";
 import NewLogin from "./login/newLogin";
+import CustomProLayout from "./basic-layout/custom-pro-layout";
+import { LoginComponent } from "./common";
 
 
 
@@ -43,20 +45,19 @@ const AppRoutes = () => {
             <Route path='/' key='/' element={
                 <ChildProtectionWrapper>
                     <>
-                        <BasicLayout />
+                        <CustomProLayout />
                     </>
                 </ChildProtectionWrapper>
             } >
             </Route>
-            <Route path="/login" key='/login' element={<Login />} />
+            <Route path="/login" key='/login' element={<LoginComponent />} />
         </Route>
     ))
 
     return (
-        <Router>
 
             <Routes>
-                <Route path="/" element={<ChildProtectionWrapper><BasicLayout /></ChildProtectionWrapper>}>
+                <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
                     <Route path="/form9" element={<UserForm 
                         userData={undefined}
                         isUpdate={false}
@@ -124,12 +125,11 @@ const AppRoutes = () => {
                         updateApprovalUser={(undefined) => { }} />} />
                      </Route>
 
-                <Route path="/login" element={< NewLogin />} />
+                <Route path="/login" element={< LoginComponent />} />
                 <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
                 <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
                 <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
             </Routes>
-        </Router>
     );
 };
 

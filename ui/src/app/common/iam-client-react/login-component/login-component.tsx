@@ -109,32 +109,47 @@ const LoginComponent = () => {
     //     }
     // };
 
-
-
     const handleSubmit = async (values: any) => {
-        try {
-            const req = new LoginUserDto(values.username, values.password, IAMClientAuthContext.authServerUrl,IAMClientAuthContext.unitId)
-            let response = await loginUser(dispatch, req);
-            if (!response.user) return false;
-            const from = (location.state as LocationState)?.from;
-            if (from) {
-                navigate(from, { replace: true });
-            } else {
-                navigate("/asset-dashboard", { replace: true });
-            }
-            return true;
-        } catch (error: any) {
-            notification.config({ maxCount: 3, duration: 3, placement: 'top' });
-            notification.destroy();
-            notification.error(
-                {
-                    message: 'Error',
-                    description: error.message,
-                }
-            );
-            return false;
+        if (values.username === 'admin' && values.password === "admin") {
+            localStorage.setItem('auth', 'true');
+            localStorage.setItem('username', values.username);
+            navigate('/users', { replace: true });
+        } else if (values.username === 'patrolx' && values.password === "patrolx") {
+            localStorage.setItem('auth', 'true');
+            localStorage.setItem('username', values.username);
+            navigate('/users', { replace: true });
+        } else {
+
         }
     };
+
+
+
+    // const handleSubmit = async (values: any) => {
+    //     try {
+    //         const req = new LoginUserDto(values.username, values.password, IAMClientAuthContext.authServerUrl,IAMClientAuthContext.unitId)
+    //         let response = await loginUser(dispatch, req);
+    //         if (!response.user) return false;
+    //         const from = (location.state as LocationState)?.from;
+    //         if (from) {
+    //             navigate(from, { replace: true });
+    //         } else {
+    //             navigate("/asset-dashboard", { replace: true });
+    //         }
+    //         return true;
+    //     } catch (error: any) {
+    //         notification.config({ maxCount: 3, duration: 3, placement: 'top' });
+    //         notification.destroy();
+    //         notification.error(
+    //             {
+    //                 message: 'Error',
+    //                 description: error.message,
+    //             }
+    //         );
+    //         return false;
+    //     }
+    // };
+    
     const ProductsCards = [
         {
             title: 'Warehouse Mangemennt',

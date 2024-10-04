@@ -37,7 +37,7 @@ import { Dropdown, Tooltip, theme } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import moment from 'moment';
 import { useState } from 'react';
-import { Link, Route, useNavigate } from 'react-router-dom';
+import { Link, Outlet, Route, useNavigate } from 'react-router-dom';
 import { logout, useIAMClientState } from '../common/iam-client-react';
 import { IconType } from '../common/iam-client-react/constants/icon-type';
 import { MenuItem, treeRouter } from '../common/utils';
@@ -141,404 +141,91 @@ const getRoute = (route) => {
 };
 
 const menuData = [
-  // {
-  //   path: '/user-grid',
-  //   name: 'Users',
-  //   icon: <UserOutlined />,
-  // },
-  {
-    path: '/asset-dashboard',
-    name: 'Dashboard',
-    icon: <PieChartOutlined />,
-  },
   {
     path: '/masters',
     name: 'Masters',
     icon: <FontAwesomeIcon icon={faGraduationCap} />,
     children: [
       {
-        path: '/item-category-view',
-        name: 'Asset Categories',
+        path: '/employee-view',
+        name: 'Employee',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/item-sub-category-view',
-        name: 'Asset Sub Categories',
+        path: '/users',
+        name: 'Users',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/items-view',
-        name: 'Assets',
+        path: '/supplier-view',
+        name: 'Buyers',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/Asset-Location',
-        name: 'Asset Location',
+        path: '/address-view',
+        name: 'Address',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/item-damage-reasons-view',
-        name: 'Asset Damage Reasons',
+        path: '/approval-user',
+        name: 'Approval Users',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/vendorsView',
-        name: 'Vendors',
+        path: '/warehouse-grid',
+        name: 'Warehouse',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/reasonsView',
-        name: 'AMC Reasons',
+        path: '/item-grid',
+        name: 'Items',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/unitcode-view',
-        name: 'Plants',
-        icon: <PicCenterOutlined />,
-      },
-      {
-        path: '/certificates-view',
-        name: 'Certificates',
-        icon: <PicCenterOutlined />,
-      },
-      {
-        path: '/calibration-view',
-        name: 'Calibration',
+        path: '/buyerteam-grid',
+        name: 'Userwise (Buyer Team)',
         icon: <PicCenterOutlined />,
       },
 
     ],
   },
   {
-    path: '/employee-management',
-    name: 'Employee Management',
+    path: '/dc',
+    name: 'Gate Pass',
     icon: <FontAwesomeIcon icon={faUsersGear} />,
     children: [
       {
-        path: '/department-view',
-        name: 'Departments',
+        path: '/dc-view',
+        name: 'Creater',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/HRMS-employee_details-view',
-        name: 'Employees',
+        path: '/dc-return-view',
+        name: 'Returnable',
         icon: <PicCenterOutlined />,
       },
       {
-        path: '/Employee-training',
-        name: 'Employee Training',
+        path: '/dc-approval-grid',
+        name: 'Approver',
+        icon: <PicCenterOutlined />,
+      },
+      {
+        path: '/dc-received',
+        name: 'Receiver',
+        icon: <PicCenterOutlined />,
+      },
+      {
+        path: '/dc-security',
+        name: 'Security Check',
+        icon: <PicCenterOutlined />,
+      },
+      {
+        path: '/security-report',
+        name: 'Gate Pass Report',
         icon: <PicCenterOutlined />,
       },
     ],
-  },
-  {
-    path: '/request-transfer',
-    name: 'Request and Transfer',
-    icon: <RadiusSettingOutlined />,
-    children: [
-      {
-        path: '/view-asset-transfers',
-        name: 'Transfer',
-        icon: <TranslationOutlined />,
-      },
-      {
-        path: '/asset-requistion-grid',
-        name: 'Requistion',
-        icon: <PullRequestOutlined />,
-      },
-      // {
-      //   path: '/machines-requisition',
-      //   name: 'Machines Requisition',
-      //   icon: <PicCenterOutlined />,
-      // },
-    ],
-  },
-  {
-    path: '/asset-management',
-    name: 'Asset Management',
-    icon: <AppstoreOutlined />,
-    children: [
-      {
-        path: '/assets-form',
-        name: 'Add Asset',
-        icon: <AppstoreOutlined />,
-      },
-      {
-        path: '/asset-location-mapping-grid',
-        name: 'Location Mapping',
-        icon: <EnvironmentOutlined />,
-      },
-      {
-        path: '/asset-assignment',
-        name: 'Assignment',
-        icon: <FormOutlined />,
-      },
-      {
-        path: '/asset-maintainance',
-        name: 'Maintenance',
-        icon: <SettingOutlined />,
-      },
-      {
-        path: '/asset-decommission',
-        name: 'Retire',
-        icon: <DeleteOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/inventory',
-    name: 'Inventory',
-    icon: <FontAwesomeIcon icon={faUsersGear} />,
-    children: [
-      // {
-      //   path: '/assets-grid',
-      //   name: 'Assets',
-      //   icon: <PicCenterOutlined />,
-      // },
-      {
-        path: '/asset-history-report',
-        name: 'History',
-        icon: <HistoryOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/ams-service',
-    name: 'Asset Service',
-    icon: <FontAwesomeIcon icon={faScrewdriverWrench} />,
-    children: [
-      {
-        path: '/asset-service-grid',
-        name: 'Service',
-        icon: <SolutionOutlined />,
-      },
-      {
-        path: '/asset-service-calender',
-        name: 'Service Calender',
-        icon: <CalendarOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/ams-sale',
-    name: 'Sales',
-    icon: <DollarOutlined />,
-    children: [
-      {
-        path: '/asset-sale-grid',
-        name: 'Asset Sale',
-        icon: <AppstoreAddOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/ams-audit',
-    name: 'Audit',
-    icon: <FileSearchOutlined />,
-    children: [
-      {
-        path: '/location-audit-form',
-        name: 'Audit Form',
-        icon: <AppstoreAddOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/downtime-module',
-    name: 'Downtime',
-    icon: <FontAwesomeIcon icon={faScrewdriverWrench} />,
-    children: [
-      // {
-      //   path: '/down-time-dashboard',
-      //   name: 'Dashboard',
-      //   icon: <PicCenterOutlined />,
-      // },
-      // {
-      //   path: '/DownTimeReason-view',
-      //   name: 'Reason',
-      //   icon: <PicCenterOutlined />,
-      // },
-      {
-        path: '/downtimetracking-view',
-        name: 'Tracking',
-        icon: <PicCenterOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/license',
-    name: 'License',
-    icon: <FontAwesomeIcon icon={faScrewdriverWrench} />,
-    children: [
-      {
-        path: '/asset-license-view',
-        name: 'License',
-        icon: <PicCenterOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/reports',
-    name: 'Operational Reports',
-    icon: <EditOutlined />,
-    children: [
-      {
-        path: '/asset-report',
-        name: 'Asset Report',
-        icon: <AppstoreOutlined />,
-      },
-      {
-        path: '/asset-assignment-report',
-        name: 'Assignment Report',
-        icon: <FormOutlined />,
-      },
-      {
-        path: '/asset-maintenance',
-        name: 'Maintenance Report',
-        icon: <SettingOutlined />,
-      },
-      {
-        path: '/racinformation',
-        name: 'RACI Matrix Report',
-        icon: <ProfileOutlined />,
-      },
-      {
-        path: '/abstract-report',
-        name: 'Abstract Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/decomissioned-assets-report',
-        name: 'Retired Report',
-        icon: <DeleteOutlined />,
-      },
-      {
-        path: '/asset-service-report',
-        name: 'Service Report',
-        icon: <SolutionOutlined />,
-      },
-      {
-        path: '/insurance-report',
-        name: 'Insurance Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/warranty-report',
-        name: 'Warranty Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/depreciation-report',
-        name: 'Depreciation Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/vms-report',
-        name: 'VM Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/checklist-report',
-        name: 'Checklist Report',
-        icon: <FontColorsOutlined />,
-      },
-      // {
-      //   path: '/machines-inward-details',
-      //   name: 'Machines Inward Detailst Report',
-      //   icon: <FontColorsOutlined />,
-      // },
-    ],
-  },
-  {
-    path: '/audit-reports',
-    name: 'Audit Reports',
-    icon: <EditOutlined />,
-    children: [
-      {
-        path: '/asset-audit-report',
-        name: 'Rented Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/purchased-not-assigned',
-        name: 'Purchased Un-Assigned',
-        icon: <FormOutlined />,
-      },
-      {
-        path: '/asset-service-date-report',
-        name: 'Service Date Overdue Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/expired-date-assets-report',
-        name: 'Expired Date AssetsReport',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/employeeinactive-report',
-        name: 'Employee InActive Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/audit-report',
-        name: 'Audit Report',
-        icon: <FontColorsOutlined />,
-      },
-      {
-        path: '/asset-sale-report',
-        name: 'Asset Sale Report',
-        icon: <FontColorsOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/spare-parts',
-    name: 'Spare Parts',
-    icon: <SlidersOutlined/>,
-    children: [
-      {
-        path: '/uploading-m4-data',
-        name: 'Uploading',
-        icon: <FileSyncOutlined />,
-      },
-      {
-        path: '/m4-grid-data',
-        name: 'M4 Grid Data',
-        icon: <FileSearchOutlined />,
-      },
-      {
-        path: '/m4-stock-data',
-        name: 'M4 Stock Data',
-        icon: <FileSearchOutlined />,
-      },
-    ],
-  },
-  {
-    path: '/asset-configuration',
-    name: 'Asset Configuration',
-    icon: <FontAwesomeIcon icon={faUsersGear} />,
-    children: [
-      {
-        path: '/asset-config',
-        name: 'Add Assets',
-        icon: <PicCenterOutlined />,
-      },
-      
-    ],
-  },
-  {
-    path: '/asset-Maintenance',
-    name: 'Asset Maintenance',
-    icon: <FontAwesomeIcon icon={faUsersGear} />,
-    children: [
-      {
-        path: '/asset-Maintenance-info',
-        name: 'Asset Maintenance',
-        icon: <PicCenterOutlined />,
-      },
-      
-    ],
-  },
+  }
 ];
 
 export const CustomProLayout = (props: CustomProLayoutProps) => {
@@ -664,8 +351,8 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
             },
           }}
           menu={{
-            request: async () => treeRouter(getAllSubMenus()),
-            // request: async () => menuData,
+            // request: async () => treeRouter(getAllSubMenus()),
+            request: async () => menuData,
             collapsedShowGroupTitle: true,
           }}
           location={{
@@ -782,6 +469,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
           )}
         >
           <Content style={{ minHeight: '90vh' }}>
+            <Outlet/>
           </Content>
         </ProLayout>
       </div>

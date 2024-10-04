@@ -7,7 +7,6 @@ import { get } from 'http';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 import * as antdIcons from '@ant-design/icons';
-import schemax22 from './schemax22.jpg';
 import { useIAMClientState } from './common';
 import { AlertMessages } from './components/common';
 
@@ -139,11 +138,11 @@ export default function BasicLayout() {
           {/* <img src={schemaxlogowhite} /> */}
           {/* <h1 style={{ display: collapsed ? 'none' : 'block' }}>AquaX</h1> */}
 
-          {collapsed ? (
+          {/* {collapsed ? (
             <img src={schemax22} />
           ) : (
             <img src={schemax22} />
-          )}
+          )} */}
 
         </div>
      <Menu
@@ -175,7 +174,7 @@ export default function BasicLayout() {
             <div className="samllLogo">
               <img
                 style={{ display: collapsed ? 'block' : 'none' }}
-                src={schemax22}
+                // src={schemax22}
               />
             </div>
             <span className="ant-pro-global-header-trigger">
