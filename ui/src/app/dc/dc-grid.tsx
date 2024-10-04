@@ -60,7 +60,7 @@ const DCGrid = () => {
       }, [selectedDc])
 
     const getGatePassData = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         service.getAllGatePass(req).then((res: any) => {
             if (res.status) {
@@ -70,7 +70,7 @@ const DCGrid = () => {
     };
 
     const getAllGatePassReturnableData = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         service.getAllGatePassReturnable(req).then((res: any) => {
             if (res.status) {
@@ -312,7 +312,7 @@ const DCGrid = () => {
     }
     console.log(selectedDc ,'selected DC')
 
-    const userUnitName = authdata.unitName;
+    const userUnitName = 'Unit-7';
 
     const columnsSkelton: any = [
         {

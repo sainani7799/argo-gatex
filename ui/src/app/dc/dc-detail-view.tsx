@@ -51,7 +51,7 @@ console.log(data , 'data')
 
   const getFromAddress = (val) => {
     const req = new UnitReq()
-    req.unitId = val
+    req.unitId = 10
     addressService.getAllAddressByUnit(req).then(res => {
       if (res) {
         setAddressData(res.data);

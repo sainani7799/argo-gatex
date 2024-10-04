@@ -76,7 +76,7 @@ const DCForm = (props : DCFormProps) => {
         getAllAddressByUnit();
         getAllItems();
         getAllEmployees();
-        form.setFieldsValue({ fromUnitId: authdata.unitId })
+        form.setFieldsValue({ fromUnitId: 10 })
         form.setFieldsValue({ createdUser: authdata.userName })
         form.setFieldsValue({ requestedBy: authdata.employeeId })
         form.setFieldsValue({ departmentId: Number(authdata.department) })
@@ -86,7 +86,7 @@ const DCForm = (props : DCFormProps) => {
     }, []);
 
     const getGatePassData = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         dcService.getAllGatePass(req).then((res: any) => {
             if (res.status) {
@@ -100,7 +100,7 @@ const DCForm = (props : DCFormProps) => {
 
     const getWarehouses = async () => {
         try {
-            const unitValue = authdata.unitId;
+            const unitValue = 10;
             const req = { unitId: unitValue };
             const res = await warehouseService.getAllWarehousesByUnit(req);
             const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
@@ -132,7 +132,7 @@ const DCForm = (props : DCFormProps) => {
         })
     };
     const getAllAddressByUnit = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         addressService.getAllAddressByUnit(req).then(res => {
             if (res) {
@@ -195,7 +195,7 @@ const DCForm = (props : DCFormProps) => {
     };
 
     const getAllEmployees = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         employeeService.getAllEmployeesByUnit(req).then(res => {
             if (res) {

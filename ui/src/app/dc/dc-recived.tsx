@@ -31,7 +31,7 @@ const DCReceived = () => {
     }, [])
 
     const getReceivedGatePassData = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         console.log(req)
         service.getIntransAndCompleteGatePass(req).then((res: any) => {

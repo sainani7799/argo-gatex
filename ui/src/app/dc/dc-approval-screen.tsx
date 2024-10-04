@@ -105,7 +105,7 @@ const DCApprovalGrid = () => {
     };
 
     const getGatePassData = () => {
-        const unitValue = authdata.unitId;
+        const unitValue = 10;
         const req = { unitId: unitValue };
         service.getAllGatePass(req).then((res: any) => {
             if (res.status) {

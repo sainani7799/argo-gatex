@@ -57,7 +57,7 @@ const DCSecurity = () => {
   }, []);
 
   const getReceivedGatePassData = () => {
-    const unitValue = authdata.unitId;
+    const unitValue = 10;
     const req = { unitId: unitValue };
     console.log(req);
     service.getSecurityGatePass(req).then((res: any) => {
