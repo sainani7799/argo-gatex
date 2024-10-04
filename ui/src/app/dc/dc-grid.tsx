@@ -261,7 +261,7 @@ const DCGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -276,7 +276,7 @@ const DCGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -320,25 +320,40 @@ const DCGrid = () => {
             key: 'sno',
             width: 60,
             responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
             title: "DC Number",
             dataIndex: "dcNumber",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('dcNumber')
         },
         {
             title: "DC Type",
             dataIndex: "dcType",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('dcType')
         },
         {
             title: "From Unit",
-            dataIndex: "fromUnit"
+            dataIndex: "fromUnit",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "To Unit/Supplier/Buyer",
-            dataIndex: "toAddresserName"
+            dataIndex: "toAddresserName",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             // dataIndex: "addresserNameId",
             // render: (text, record) => {
             //     // Extract the name and keep the ID for editing
@@ -354,21 +369,33 @@ const DCGrid = () => {
         },
         {
             title: "Requested By",
-            dataIndex: "requestedBy"
+            dataIndex: "requestedBy",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Attention Person",
             dataIndex: "attentionPerson",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render:(item) =>  item ? item : '-' 
         },
         {
             title: "Users Buyer Team",
             dataIndex: "buyerTeam",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render:(item) =>  item ? item : '-' 
         },
         {
             title: "Purpose",
             dataIndex: "purpose",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         // {
         //     title: "created User",
@@ -377,6 +404,9 @@ const DCGrid = () => {
         {
             title: "Created Date",
             dataIndex: "createdDate",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, record) => {
                 const createdDate = record.createdDate;
                 if (createdDate) {
@@ -389,11 +419,17 @@ const DCGrid = () => {
         {
             title: "Status",
             dataIndex: "status",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData, index) => (
                 <span>
                     <Tooltip placement="top" title="Detail View">
@@ -504,7 +540,7 @@ const DCGrid = () => {
                 )
             }
 
-            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             {/* <Table columns={columnsSkelton} dataSource={responseData}
                 scroll={{ x: 1400, y: 400 }} /> */}

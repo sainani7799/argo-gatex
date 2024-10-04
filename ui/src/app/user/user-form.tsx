@@ -96,7 +96,7 @@ const UserForm = (props: UserFormProps) => {
 
     return (
         <Card type="inner" title="User-Form"
-            headStyle={{ backgroundColor: '#7d33a2', color: 'white' }}
+            headStyle={{ backgroundColor: '#047595', color: 'white' }}
             extra={<Link to='/users' >
                 {props.isUpdate === false && (
                     <span style={{ color: 'white' }} >
@@ -260,7 +260,7 @@ const UserForm = (props: UserFormProps) => {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type='primary' htmlType="submit" style={{ width: '100%', backgroundColor: '#7d33a2' }}>
+                        <Button type='primary' htmlType="submit" style={{ width: '100%', backgroundColor: '#047595' }}>
                             Submit
                         </Button>
                     </Form.Item>

@@ -245,7 +245,7 @@ export default function SecurityHeadReport() {
           onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
           icon={<SearchOutlined />}
           size="small"
-          style={{ width: 90, marginRight: 8 }}
+         style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
         >
           Search
         </Button>
@@ -299,6 +299,9 @@ export default function SecurityHeadReport() {
     {
       title: 'DC Number',
       dataIndex: 'dcNumber',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'DC Date',
@@ -306,62 +309,107 @@ export default function SecurityHeadReport() {
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'To Unit',
       dataIndex: 'toUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Buyer',
       dataIndex: 'buyer',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Supplier',
       dataIndex: 'supplier',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Item Code',
       dataIndex: 'itemCode',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Description',
       dataIndex: 'description',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'UOM',
       dataIndex: 'uom',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Rate',
       dataIndex: 'rate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Created By',
       dataIndex: 'createdBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Approved BY',
       dataIndex: 'approvedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Checked By',
       dataIndex: 'checkedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Checked Date & Time',
       dataIndex: 'checkedDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -369,10 +417,16 @@ export default function SecurityHeadReport() {
     {
       title: 'Received By',
       dataIndex: 'receivedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Received Date & Time',
       dataIndex: 'receivedDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -380,31 +434,52 @@ export default function SecurityHeadReport() {
     {
       title: 'Purpose',
       dataIndex: 'purpose',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: "Users Buyer Team",
       dataIndex: "buyerTeam",
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Status',
       dataIndex: 'dcStatus',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
 
     {
       title: 'Remarks',
       dataIndex: 'remarks',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'DC Type',
       dataIndex: 'dcType',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Returned By',
       dataIndex: 'returnedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Returned Date & Time',
       dataIndex: 'returnedDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -426,16 +501,25 @@ export default function SecurityHeadReport() {
       key: 'sno',
       width: 60,
       responsive: ['sm'],
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, object, index) => (page - 1) * 10 + (index + 1),
     },
     {
       title: 'DC Number',
       dataIndex: 'dcNumber',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       ...getColumnSearchProps('dcNumber'),
     },
     {
       title: 'DC Date',
       dataIndex: 'dcDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -443,34 +527,58 @@ export default function SecurityHeadReport() {
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'To Unit',
       dataIndex: 'toUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Buyer',
       dataIndex: 'buyer',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Supplier',
       dataIndex: 'supplier',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Item Code',
       dataIndex: 'itemCode',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Description',
       dataIndex: 'description',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'UOM',
       dataIndex: 'uom',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Rate',
@@ -479,18 +587,30 @@ export default function SecurityHeadReport() {
     {
       title: 'Amount',
       dataIndex: 'amount',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Created By',
       dataIndex: 'createdBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Approved BY',
       dataIndex: 'approvedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Checked By',
       dataIndex: 'checkedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Checked Date & Time',
@@ -502,6 +622,9 @@ export default function SecurityHeadReport() {
     {
       title: 'Received By',
       dataIndex: 'receivedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Received Date & Time',
@@ -514,18 +637,30 @@ export default function SecurityHeadReport() {
       title: 'Purpose',
       dataIndex: 'purpose',
       ...getColumnSearchProps('purpose'),
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: "Users Buyer Team",
       dataIndex: "buyerTeam",
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Status',
       dataIndex: 'dcStatus',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Remarks',
       dataIndex: 'remarks',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'DC Type',
@@ -534,10 +669,16 @@ export default function SecurityHeadReport() {
     {
       title: 'Returned By',
       dataIndex: 'returnedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Returned Date & Time',
       dataIndex: 'returnedDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -557,7 +698,7 @@ export default function SecurityHeadReport() {
     <>
       <Card
         title={<span style={{ color: 'white' }}> Gate Pass DC Transaction reports</span>}
-        headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}
+        headStyle={{ backgroundColor: '#047595', color: 'black' }}
       >
         <Form form={form} layout="vertical">
           <Row gutter={24}>

@@ -55,7 +55,7 @@ const UserFormGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -70,7 +70,7 @@ const UserFormGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -147,48 +147,72 @@ const UserFormGrid = () => {
             title: "User Name",
             dataIndex: "userName",
             ...getColumnSearchProps('userName'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "2",
             title: "Employee Name",
             dataIndex: "employee_name",
             ...getColumnSearchProps('employee_name'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "3",
             title: "Employee Code",
             dataIndex: "empCode",
             ...getColumnSearchProps('empCode'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "4",
             title: "Email",
             dataIndex: "email_id",
             ...getColumnSearchProps('email_id'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "5",
             title: "Unit",
             dataIndex: "unit_name",
             ...getColumnSearchProps('unit_name'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "5",
             title: "Role",
             dataIndex: "role",
             ...getColumnSearchProps('role'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "5",
             title: "Buyers Team",
             dataIndex: "buyerTeamName",
             ...getColumnSearchProps('buyerTeamName'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             key: "6",
             title: "Actions", 
             dataIndex: 'action',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData) => (
                 <span>
                 <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
@@ -234,7 +258,7 @@ const UserFormGrid = () => {
                     )
                 }
 
-                headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+                headStyle={{ backgroundColor: '#047595', color: 'black' }}>
                 {/* <Input.Search placeholder="Search" allowClear onChange={(e) => { setSearchedText(e.target.value) }} onSearch={(value) => { setSearchedText(value) }} style={{ width: 200, float: "right" }} />, */}
 
                 <Table columns={columnsSkelton} dataSource={responseData}></Table>

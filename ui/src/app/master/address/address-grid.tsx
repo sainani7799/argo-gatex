@@ -85,7 +85,7 @@ const AddressGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -100,7 +100,7 @@ const AddressGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -146,61 +146,97 @@ const AddressGrid = () => {
             key: 'sno',
             width: 60,
             responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
             title: "Addresser",
             dataIndex: "addresser",
-            ...getColumnSearchProps('addresser')
+            ...getColumnSearchProps('addresser'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
 
         {
             title: "Addresser Name",
             dataIndex: "addresserName",
-            ...getColumnSearchProps('addresserName')
+            ...getColumnSearchProps('addresserName'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "GST No",
             dataIndex: "gstNo",
-            ...getColumnSearchProps('gstNo')
+            ...getColumnSearchProps('gstNo'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "CST No",
             dataIndex: "cstNo",
-            ...getColumnSearchProps('cstNo')
+            ...getColumnSearchProps('cstNo'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Line One",
             dataIndex: "lineOne",
-            ...getColumnSearchProps('lineOne')
+            ...getColumnSearchProps('lineOne'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
 
         {
             title: "Line Two",
             dataIndex: "lineTwo",
-            ...getColumnSearchProps('lineTwo')
+            ...getColumnSearchProps('lineTwo'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "City",
-            dataIndex: "city"
+            dataIndex: "city",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
 
         {
             title: "Dist",
-            dataIndex: "dist"
+            dataIndex: "dist",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Pin Code",
-            dataIndex: "pinCode"
+            dataIndex: "pinCode",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "State",
-            dataIndex: "state"
+            dataIndex: "state",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
 
         {
             title: "Country",
-            dataIndex: "country"
+            dataIndex: "country",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title:`Action`,
@@ -257,7 +293,7 @@ const AddressGrid = () => {
                     )
                 }
 
-                headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+                headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData}
             scroll={{ x: 1400, y: 400 }} />

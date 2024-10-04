@@ -44,7 +44,7 @@ const ItemGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -59,7 +59,7 @@ const ItemGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -90,35 +90,53 @@ const ItemGrid = () => {
             key: "1",
             title: "Item Code",
             dataIndex: "itemCode",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('itemCode')
         },
         {
             key: "2",
             title: "Item Name",
             dataIndex: "itemName",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('itemName')
         },
         {
             key: "3",
             title: "Item Type",
             dataIndex: "itemType",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('itemType')
         },
         {
             key: "4",
             title: "Created User",
             dataIndex: "createdUser",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('createdUser')
         },
         {
             key: "5",
             title: "Description",
-            dataIndex: "description"
+            dataIndex: "description",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: `Action`,
             dataIndex: 'action',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData) => (
                 <span>
                     <EditOutlined className={'editSamplTypeIcon'} type="edit"
@@ -218,7 +236,7 @@ const ItemGrid = () => {
                     </Link>
                 )
             }
-            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'white' }}>
             <Table columns={columnsSkelton} dataSource={responseData}></Table>
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} visible={drawerVisible} closable={true}>

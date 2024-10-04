@@ -72,7 +72,7 @@ const DCReceived = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -87,7 +87,7 @@ const DCReceived = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -234,41 +234,68 @@ const DCReceived = () => {
             key: 'sno',
             width: 60,
             responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
             title: "DC Number",
             dataIndex: "dcNumber",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('dcNumber')
         },
         {
             title: "DC Type",
             dataIndex: "dcType",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('dcType')
         },
         {
             title: "From Unit",
-            dataIndex: "fromUnit"
+            dataIndex: "fromUnit",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "To Unit",
-            dataIndex: "toAddresserName"
+            dataIndex: "toAddresserName",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Requested By",
-            dataIndex: "requestedBy"
+            dataIndex: "requestedBy",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Attention Person",
-            dataIndex: "attentionPerson"
+            dataIndex: "attentionPerson",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Received By",
-            dataIndex: "receivedBy"
+            dataIndex: "receivedBy",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Received Date",
             dataIndex: "receivedDate",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render :(val,rec) =>{
                 return val ? moment(val).format('YYYY-MM-DD HH:mm') :'-'
             }
@@ -276,6 +303,9 @@ const DCReceived = () => {
         {
             title: "Created Date",
             dataIndex: "createdDate",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, record) => {
                 const createdDate = record.createdDate;
                 if (createdDate) {
@@ -288,10 +318,16 @@ const DCReceived = () => {
         {
             title: "Status",
             dataIndex: "status",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Action',
             dataIndex: 'requestNumber',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             align: "center",
             render: (text, rowData, index) => (
                 <span>
@@ -347,7 +383,7 @@ console.log(responseData)
             title={<span style={{ color: "white" }}>Received GatePass's</span>}
 
 
-            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData.filter(
               (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE || item.status === StatusEnum.RETURNED

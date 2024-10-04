@@ -113,7 +113,7 @@ const DCSecurity = () => {
           onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
           icon={<SearchOutlined />}
           size="small"
-          style={{ width: 90, marginRight: 8 }}
+         style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
         >
           Search
         </Button>
@@ -204,37 +204,61 @@ const DCSecurity = () => {
       key: 'sno',
       width: 60,
       responsive: ['sm'],
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, object, index) => (page - 1) * 10 + (index + 1),
     },
     {
       title: 'DC Number',
       dataIndex: 'dcNumber',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       ...getColumnSearchProps('dcNumber'),
     },
     {
       title: "DC Type",
       dataIndex: "dcType",
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       ...getColumnSearchProps('dcType')
   },
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'To Unit',
       dataIndex: 'toAddresserName',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Requested By',
       dataIndex: 'requestedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Attention Person',
       dataIndex: 'attentionPerson',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'DC Approved By',
       dataIndex: 'acceptedUser',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
 
     // {
@@ -244,6 +268,9 @@ const DCSecurity = () => {
     {
       title: 'Created Date',
       dataIndex: 'createdDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, record) => {
         const createdDate = record.createdDate;
         if (createdDate) {
@@ -256,12 +283,18 @@ const DCSecurity = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Action',
       dataIndex: 'requestNumber',
       align: 'center',
       fixed: 'right',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, rowData, index) => (
         <span>
           <Tooltip placement="top" title="Detail View">
@@ -321,45 +354,75 @@ const DCSecurity = () => {
       key: 'sno',
       width: 60,
       responsive: ['sm'],
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, object, index) => (page - 1) * 10 + (index + 1),
     },
     {
       title: 'DC Number',
       dataIndex: 'dcNumber',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       ...getColumnSearchProps('dcNumber'),
     },
     {
       title: "DC Type",
       dataIndex: "dcType",
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       ...getColumnSearchProps('dcType')
   },
     {
       title: 'From Unit',
       dataIndex: 'fromUnit',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'To Unit',
       dataIndex: 'toAddresserName',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Requested By',
       dataIndex: 'requestedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Attention Person',
       dataIndex: 'attentionPerson',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'DC Approved By',
       dataIndex: 'acceptedUser',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title:'Checked BY',
-      dataIndex:'CheckedUser'
+      dataIndex:'CheckedUser',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title:'Checked Date',
       dataIndex:'secUserDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render:(val,rec) =>{
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-'
       }
@@ -372,6 +435,9 @@ const DCSecurity = () => {
     {
       title: 'Created Date',
       dataIndex: 'createdDate',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, record) => {
         const createdDate = record.createdDate;
         if (createdDate) {
@@ -384,12 +450,18 @@ const DCSecurity = () => {
     {
       title: 'Status',
       dataIndex: 'status',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
     },
     {
       title: 'Action',
       dataIndex: 'requestNumber',
       align: 'center',
       fixed: 'right',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (text, rowData, index) => (
         <span>
           <Tooltip placement="top" title="Detail View">
@@ -444,7 +516,7 @@ const DCSecurity = () => {
   ]
 
   return (
-    <Card title={<span style={{ color: 'white' }}>SECURITY CHECK</span>} headStyle={{ backgroundColor: '#7d33a2', color: 'black' }} >
+    <Card title={<span style={{ color: 'white' }}>SECURITY CHECK</span>} headStyle={{ backgroundColor: '#047595', color: 'black' }} >
       <Tabs defaultActiveKey="2">
       <TabPane tab="Security Pending" key="2">
           <Table

@@ -56,7 +56,7 @@ export default function ApproverGrid(){
           </div>
         ),
         filterIcon: (filtered: boolean) => (
-          <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+          <SearchOutlined style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value: any, record: any) =>
           record[dataIndex] && 
@@ -93,21 +93,33 @@ export default function ApproverGrid(){
         {
             title: 'S.No',
             render: (_, record, index) => index + 1,
+            onHeaderCell: () => ({
+              style: { backgroundColor: '#047595', color: 'white' },
+            }),
         },
         {
             title:'Approver Name',
             dataIndex:'approvalUser',
         ...getColumnSearchProps('approvalUser', 'Approver Name'),
+        onHeaderCell: () => ({
+          style: { backgroundColor: '#047595', color: 'white' },
+        }),
         },
         {
             title:'Email ID',
             dataIndex:'emailId',
         ...getColumnSearchProps('emailId', 'Email ID'),
+        onHeaderCell: () => ({
+          style: { backgroundColor: '#047595', color: 'white' },
+        }),
         },
         {
           title:'Buyer Team',
           dataIndex:'buyerTeam',
       ...getColumnSearchProps('buyerTeam', 'Buyer Id'),
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
           render:(text) => text ? text : '-'
       },
         // {
@@ -130,7 +142,7 @@ export default function ApproverGrid(){
         <>
         <Card
         title={'Approvers'}
-        headStyle={{ backgroundColor: '#7d33a2', border: 0,color:'#fff' }}
+        headStyle={{ backgroundColor: '#047595', border: 0,color:'#fff' }}
         extra={
                 <Link to="/approval-user-from">
                 <Button>Create </Button>

@@ -44,7 +44,7 @@ const SupplierGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -59,7 +59,7 @@ const SupplierGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -139,25 +139,40 @@ const SupplierGrid = () => {
             title: "Buyer/Supplier Code",
             dataIndex: "supplierCode",
             ...getColumnSearchProps('supplierCode'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Buyer/Supplier Name",
             dataIndex: "supplierName",
             ...getColumnSearchProps('supplierName'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Type",
             dataIndex: "type",
             ...getColumnSearchProps('type'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: "Created user ",
-            dataIndex: "createdUser"
+            dataIndex: "createdUser",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: `Action`,
             dataIndex: 'action',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData) => (
                 <span>
                     <EditOutlined className={'editSamplTypeIcon'} type="edit"
@@ -207,7 +222,7 @@ const SupplierGrid = () => {
                 )
             }
 
-            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData}></Table>
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}

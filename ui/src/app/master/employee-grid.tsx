@@ -73,7 +73,7 @@ const EmployeeGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                    style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -88,7 +88,7 @@ const EmployeeGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -151,6 +151,9 @@ const EmployeeGrid = () => {
             title: 'S No',
             key: 'sno',
             width: 60,
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             responsive: ['sm'],
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
@@ -159,39 +162,60 @@ const EmployeeGrid = () => {
             dataIndex: 'unit',
             align: 'center',
             ...getColumnSearchProps('unit'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Employee Name',
             dataIndex: 'employeeName',
             align: 'center',
             ...getColumnSearchProps('employeeName'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Employee Code',
             dataIndex: 'employeeCode',
             align: 'center',
             ...getColumnSearchProps('employeeCode'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Card No',
             dataIndex: 'cardNo',
             align: 'center',
             ...getColumnSearchProps('cardNo'),
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Department',
             dataIndex: 'departmentName',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Section',
             dataIndex: 'sectionName',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Designation',
             dataIndex: 'designationName',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Date OF Birth',
@@ -204,27 +228,43 @@ const EmployeeGrid = () => {
                 } else {
                     return '-';
                 }
-            }
+            },
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Gender',
             dataIndex: 'gender',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
+
         {
             title: 'Mobile Number',
             dataIndex: 'mobileNumber',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: 'Email Id',
             dataIndex: 'emailId',
-            align: 'center'
+            align: 'center',
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
         },
         {
             title: `Action`,
             dataIndex: 'action',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData) => (
                 <span>
                     <EditOutlined className={'editSamplTypeIcon'} type="edit"
@@ -256,7 +296,7 @@ const EmployeeGrid = () => {
     return (
         <div>
             <Card title={<span style={{ color: 'white' }}>Employee Details</span>}
-                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }}
+                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', border: 0 }}
                 extra={<Link to="/employee-form"  ><span style={{ color: 'white' }} ><Button className='panel_button' >Create </Button>
                 </span></Link>}>
                 <br></br>

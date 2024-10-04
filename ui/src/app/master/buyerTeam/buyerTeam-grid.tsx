@@ -43,7 +43,7 @@ const BuyerTeamGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{ width: 90, marginRight: 8 }}
+                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -58,7 +58,7 @@ const BuyerTeamGrid = () => {
             </div>
         ),
         filterIcon: filtered => (
-            <SearchOutlined type="search" style={{ color: filtered ? '#1890ff' : undefined }} />
+            <SearchOutlined type="search" style={{ color: filtered ? 'white' : "white" }} />
         ),
         onFilter: (value, record) =>
             record[dataIndex]
@@ -153,18 +153,27 @@ const BuyerTeamGrid = () => {
             key: "2",
             title: "Buyer Team",
             dataIndex: "buyerTeam",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('buyerTeam')
         },
         {
             key: "3",
             title: "Created User",
             dataIndex: "createdUser",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             ...getColumnSearchProps('createdUser')
         },
         {
             title: `Action`,
             dataIndex: 'action',
             align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+              }),
             render: (text, rowData) => (
                 <span>
                     <EditOutlined className={'editSamplTypeIcon'} type="edit"
@@ -247,7 +256,7 @@ const BuyerTeamGrid = () => {
                 )
             }
 
-            headStyle={{ backgroundColor: '#7d33a2', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'white' }}>
             <Table columns={columnsSkelton} dataSource={responseData}></Table>
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} visible={drawerVisible} closable={true}>
