@@ -77,9 +77,9 @@ const DCForm = (props : DCFormProps) => {
         getAllItems();
         getAllEmployees();
         form.setFieldsValue({ fromUnitId: 10 })
-        form.setFieldsValue({ createdUser: authdata.userName })
-        form.setFieldsValue({ requestedBy: authdata.employeeId })
-        form.setFieldsValue({ departmentId: Number(authdata.department) })
+        form.setFieldsValue({ createdUser: 10 })
+        form.setFieldsValue({ requestedBy: 10 })
+        form.setFieldsValue({ departmentId: 10 })
     }, [])
     useEffect(() => {
         getGatePassData();
@@ -266,9 +266,9 @@ const DCForm = (props : DCFormProps) => {
 
     }, [defaultItemFormData])
 
-    const userData = localStorage.getItem('userName');
+    const userData = '10';
     const parsedUserData  = JSON.parse(userData)
-    const buyerTeam = parsedUserData.buyerTeam;
+    const buyerTeam = 'EDDIE BAUER';
 
 
 
@@ -614,7 +614,7 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     onChange={(value, option) => getAllToAddressByUnit(radioValue)}
                                 >
-                                    {radioValue === "unit" ? units.filter((i)=> i.id !== authdata.unitId).map(unit => (
+                                    {radioValue === "unit" ? units.filter((i)=> i.id !== 10).map(unit => (
                                         <Option key={unit.id} value={unit.id}>
                                             {unit.unitName}
                                         </Option>

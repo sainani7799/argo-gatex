@@ -364,7 +364,8 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
             title: (
               <OnlineStatus>
                 <span style={{ color: !dark ? '#ffffff' : '#001529' }}>
-                  {IAMClientAuthContext?.user?.userName}
+                  {/* {IAMClientAuthContext?.user?.userName} */}
+                  Admin
                 </span>
               </OnlineStatus>
             ),
