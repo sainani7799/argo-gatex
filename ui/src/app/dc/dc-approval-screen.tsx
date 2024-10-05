@@ -212,7 +212,7 @@ const DCApprovalGrid = () => {
           <p>Please click the link below for details:</p>
       
           <a
-            href="http://localhost:4200/#/dc-email-detail-view/${dcId}"
+            href="http://localhost:4400/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;

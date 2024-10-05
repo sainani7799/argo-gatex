@@ -46,85 +46,84 @@ const AppRoutes = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
-                       <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
-                    <Route path="/form9" element={<UserForm 
-                        userData={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/users" element={<UserFormGrid />} />
-                    <Route path="/employee-view" element={<EmployeeGrid />} />
-                    <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
+        <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
+          <Route path="/form9" element={<UserForm
+            userData={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/users" element={<UserFormGrid />} />
+          <Route path="/employee-view" element={<EmployeeGrid />} />
+          <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
 
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/supplier-form" element={<SupplierForm supplierData={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }} />} />
-                    <Route path="/supplier-view" element={<SupplierGrid />} />
-                    <Route path="/address-form" element={<AddressForm addressData={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/warehouse-form" element={<WarehouseForm warehouseData={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/warehouse-grid" element={<WarehouseGrid />} />
-                    <Route path="/buyerteam-form" element={<BuyerTeamForm 
-                        data={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/buyerteam-grid" element={<BuyerTeamGrid />} />
-                    <Route path="/address-view" element={<AddressGrid />} />
-                    <Route path="/item-form" element={<ItemForm 
-                    itemData={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateDetails={(undefined) => { }}
-                    />} />
-                    <Route path="/item-grid" element={<ItemGrid />} />
-                    <Route path="/dc-form" element={<DCForm 
-                    data={undefined} 
-                    updateDetails={(undefined) => { }}
-                    isUpdate={false} 
-                    closeForm={() => { }} />} />
-                    <Route path="/dc-view" element={<DCGrid />} />
-                    <Route path="/dc-return-view" element={<DCReturnableGrid />} />
-                    <Route path="/dc-approval-grid" element={<DCApprovalGrid />} />
-                    <Route path="/dc-received" element={<DCReceived />} />
-                    <Route path="/dc-security" element={<DCSecurity />} />
-                    <Route path="/security-report" element={<SecurityHeadReport />} />
-                    <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
-                    <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
-                    <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
-                    <Route path="/approval-user" element={<ApproverGrid />} />
-                    <Route path="/approval-user-from" element={<ApprovedUserForm
-                        data={undefined}
-                        isUpdate={false}
-                        closeForm={() => { }}
-                        updateApprovalUser={(undefined) => { }} />} />
-                     </Route>
-
-                <Route path="/login" element={< LoginComponent />} />
-                <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
-                <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
-                <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/supplier-form" element={<SupplierForm supplierData={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }} />} />
+          <Route path="/supplier-view" element={<SupplierGrid />} />
+          <Route path="/address-form" element={<AddressForm addressData={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/warehouse-form" element={<WarehouseForm warehouseData={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/warehouse-grid" element={<WarehouseGrid />} />
+          <Route path="/buyerteam-form" element={<BuyerTeamForm
+            data={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/buyerteam-grid" element={<BuyerTeamGrid />} />
+          <Route path="/address-view" element={<AddressGrid />} />
+          <Route path="/item-form" element={<ItemForm
+            itemData={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateDetails={(undefined) => { }}
+          />} />
+          <Route path="/item-grid" element={<ItemGrid />} />
+          <Route path="/dc-form" element={<DCForm
+            data={undefined}
+            updateDetails={(undefined) => { }}
+            isUpdate={false}
+            closeForm={() => { }} />} />
+          <Route path="/dc-view" element={<DCGrid />} />
+          <Route path="/dc-return-view" element={<DCReturnableGrid />} />
+          <Route path="/dc-approval-grid" element={<DCApprovalGrid />} />
+          <Route path="/dc-received" element={<DCReceived />} />
+          <Route path="/dc-security" element={<DCSecurity />} />
+          <Route path="/security-report" element={<SecurityHeadReport />} />
+          <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
+          <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
+          <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
+          <Route path="/approval-user" element={<ApproverGrid />} />
+          <Route path="/approval-user-from" element={<ApprovedUserForm
+            data={undefined}
+            isUpdate={false}
+            closeForm={() => { }}
+            updateApprovalUser={(undefined) => { }} />} />
+        </Route>
+        <Route path="/login" element={< LoginComponent />} />
+        <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
+        <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
+        <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
         <Route path="/login" key="/login" element={<LoginComponent />} />
       </Route>
     )
   );
 
   return (
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   );
 };
 

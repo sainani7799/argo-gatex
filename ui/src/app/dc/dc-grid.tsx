@@ -173,7 +173,7 @@ const DCGrid = () => {
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://localhost:4200/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://localhost:4400/dc-email-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -185,7 +185,7 @@ const DCGrid = () => {
             >View Details of GatePass</a
           >
           <a
-          href="http://localhost:4200/#/dc-email/${form.getFieldValue('dcId')}"
+          href="http://localhost:4400/dc-email/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -197,7 +197,7 @@ const DCGrid = () => {
           >Accept DC</a
         >
         <a
-          href="http://localhost:4200/#/dc-reject-mail/${form.getFieldValue('dcId')}"
+          href="http://localhost:4400/dc-reject-mail/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
