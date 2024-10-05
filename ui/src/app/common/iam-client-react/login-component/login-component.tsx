@@ -1,11 +1,11 @@
 import { Button, Card, Carousel, Col, Divider, Form, Input, Row, notification, } from "antd";
 import { Header } from "antd/es/layout/layout";
-import assetpic from "../login-component-images/assetpic.png";
-import assetname from "../login-component-images/assetname.png";
+import assetpic from "../login-component/images/Gatepassicon.png";
+import assetname from "../login-component/images/gatex-white.png";
 // import productOne from "../../app/login-component-images/empty.png";
 // import productTwo from "../../app/login-component-images/empty.png";
-import AssetXpert1 from "../login-component-images/AssetXpertSCHEMAX.jpg";
-import AssetXpert2 from "../login-component-images/AssetXpertSchemaxTwo.jpg";
+import AssetXpert1 from "../login-component/images/GatepassOne.png";
+import AssetXpert2 from "../login-component/images/GatepassTwo.png";
 import supporticon from "../login-component-images/Support-icon.png";
 import videoiconnew from "../login-component-images/Videoiconnew.png";
 import downloadicon from "../login-component-images/Downlodeicon.png";

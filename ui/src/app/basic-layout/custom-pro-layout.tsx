@@ -43,6 +43,8 @@ import { IconType } from '../common/iam-client-react/constants/icon-type';
 import { MenuItem, treeRouter } from '../common/utils';
 import { HeaderFullscreen, NotificationComponent, OnlineStatus } from '../components/common';
 import { components } from './all-components';
+import Asset from '../../app/common/iam-client-react/login-component/images/gatex-white.png';
+
 
 import { svgIcons } from './all-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -323,7 +325,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
       >
         <ProLayout
           title=""
-          // logo={<img src={dark ? Asset : Asset} />}
+          logo={<img src={dark ? Asset : Asset} />}
           locale="en-US"
           siderWidth={240}
           colorPrimary={colorPrimary}

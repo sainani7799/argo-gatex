@@ -53,7 +53,7 @@ const DCApprovalGrid = () => {
 
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
-            acceptedUser: authdata.employeeId,
+            acceptedUser: 36,
             dcId: Number(rec.dcId),
             status: StatusEnum.SENT_FOR_SECURITY_CHECK,
         };
