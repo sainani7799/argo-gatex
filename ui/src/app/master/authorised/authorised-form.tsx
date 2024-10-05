@@ -43,7 +43,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
   useEffect(() => {
     getAllEmployees();
     getAllbuyerTeam();
-    form.setFieldsValue({ createdUser: authdata.userName })
+    form.setFieldsValue({ createdUser: authdata?.userName })
   }, [])
   const getAllEmployees = () => {
     employeeService.getAllEmployees().then(res => {

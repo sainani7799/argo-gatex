@@ -137,7 +137,7 @@ export function DcPrint(props: DcPrintProps) {
                                 </div>
                             </Col>
                             <Col span={4} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingLeft: '5px' }}>
-                                <QRCode type="svg" value={`http://gpdc.seplcloud.com/#/dc-email-detail-view/${props.dcId}`} />
+                                <QRCode type="svg" value={`http://localhost:4200/#/dc-email-detail-view/${props.dcId}`} />
                             </Col>
                         </Row>
                     </div>
@@ -224,7 +224,7 @@ export function DcPrint(props: DcPrintProps) {
                                 Amount
                             </th>
                         </tr>
-                        {data.map((item, index) => (
+                        {data?.map((item, index) => (
                             <tr className='css-serial' key={index}>
                                 <td style={{ textAlign: 'left', paddingLeft: '20px' }} id={`count${index + 1}`}>{index + 1}</td>
                                 <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>

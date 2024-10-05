@@ -102,7 +102,7 @@ const DCGrid = () => {
 
     const update = (dto: AssignReq) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        dto.updatedUser = authdata.userName,
+        dto.updatedUser = authdata?.userName,
         dto.status = StatusEnum.SENT_FOR_APPROVAL,
         dto.isAssignable = AcceptableEnum.YES,
         dto.assignBy = form.getFieldValue('assignBy')
@@ -173,7 +173,7 @@ const DCGrid = () => {
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="http://localhost:4200/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -185,7 +185,7 @@ const DCGrid = () => {
             >View Details of GatePass</a
           >
           <a
-          href="http://gpdc.seplcloud.com/#/dc-email/${form.getFieldValue('dcId')}"
+          href="http://localhost:4200/#/dc-email/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -197,7 +197,7 @@ const DCGrid = () => {
           >Accept DC</a
         >
         <a
-          href="http://gpdc.seplcloud.com/#/dc-reject-mail/${form.getFieldValue('dcId')}"
+          href="http://localhost:4200/#/dc-reject-mail/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;

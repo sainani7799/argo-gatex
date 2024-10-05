@@ -1,63 +1,52 @@
-import { Route, HashRouter as Router, Routes, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
-import { ChildProtectionWrapper } from "./common/protected-child-wrapper";
-import BasicLayout from "./layout";
-import UserForm from "./user/user-form";
-import UserFormGrid from "./user/user-grid";
-import Login from "./login/login";
-import EmployeeGrid from "./master/employee-grid";
-import EmployeeForm from "./master/employee-form";
-import SupplierForm from "./master/suppliers/supplier-form";
-import AddressForm from "./master/address/address-form";
-import SupplierGrid from "./master/suppliers/supplier-grid";
-import WarehouseForm from "./master/warehouse/warehouse-form";
-import WarehouseGrid from "./master/warehouse/warehouse-grid";
-import AddressGrid from "./master/address/address-grid";
-import ApprovedUserForm from "./master/authorised/authorised-form";
-import ItemForm from "./master/items/item-form";
-import ItemGrid from "./master/items/item-grid";
-import DCForm from "./dc/dc-form";
-import DCGrid from "./dc/dc-grid";
-import DcDetailsView from "./dc/dc-detail-view";
-import { DcEmailModel } from "libs/shared-models";
-import { DcMail } from "./dc/dc-mail";
-import DCReceived from "./dc/dc-recived";
-import DcRejectMail from "./dc/dc-mail-reject";
-import DCSecurity from "./dc/dc-security";
-import SecurityHeadReport from "./dc/security-head-report";
-import DcEmailDetailsView from "./dc/email-detail-view";
-import ApproverGrid from "./master/authorised/authorised-grid";
-import DCApprovalGrid from "./dc/dc-approval-screen";
-import BuyerTeamForm from "./master/buyerTeam/buyerTeam-form";
-import BuyerTeamGrid from "./master/buyerTeam/buyerTeam-grid";
-import DCReturnableGrid from "./dc/dc-returnable-grid";
-import newLogin from "./login/newLogin";
-import NewLogin from "./login/newLogin";
-import CustomProLayout from "./basic-layout/custom-pro-layout";
-import { LoginComponent } from "./common";
-
-
+import {
+  Route,
+  HashRouter as Router,
+  RouterProvider,
+  Routes,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from 'react-router-dom';
+import { ChildProtectionWrapper } from './common/protected-child-wrapper';
+import BasicLayout from './layout';
+import UserForm from './user/user-form';
+import UserFormGrid from './user/user-grid';
+import Login from './login/login';
+import EmployeeGrid from './master/employee-grid';
+import EmployeeForm from './master/employee-form';
+import SupplierForm from './master/suppliers/supplier-form';
+import AddressForm from './master/address/address-form';
+import SupplierGrid from './master/suppliers/supplier-grid';
+import WarehouseForm from './master/warehouse/warehouse-form';
+import WarehouseGrid from './master/warehouse/warehouse-grid';
+import AddressGrid from './master/address/address-grid';
+import ApprovedUserForm from './master/authorised/authorised-form';
+import ItemForm from './master/items/item-form';
+import ItemGrid from './master/items/item-grid';
+import DCForm from './dc/dc-form';
+import DCGrid from './dc/dc-grid';
+import DcDetailsView from './dc/dc-detail-view';
+import { DcEmailModel } from 'libs/shared-models';
+import { DcMail } from './dc/dc-mail';
+import DCReceived from './dc/dc-recived';
+import DcRejectMail from './dc/dc-mail-reject';
+import DCSecurity from './dc/dc-security';
+import SecurityHeadReport from './dc/security-head-report';
+import DcEmailDetailsView from './dc/email-detail-view';
+import ApproverGrid from './master/authorised/authorised-grid';
+import DCApprovalGrid from './dc/dc-approval-screen';
+import BuyerTeamForm from './master/buyerTeam/buyerTeam-form';
+import BuyerTeamGrid from './master/buyerTeam/buyerTeam-grid';
+import DCReturnableGrid from './dc/dc-returnable-grid';
+import newLogin from './login/newLogin';
+import NewLogin from './login/newLogin';
+import CustomProLayout from './basic-layout/custom-pro-layout';
+import { LoginComponent } from './common';
 
 const AppRoutes = () => {
-
-
-    const router = createBrowserRouter(createRoutesFromElements(
-        <Route  >
-            <Route path='/' key='/' element={
-                <ChildProtectionWrapper>
-                    <>
-                        <CustomProLayout />
-                    </>
-                </ChildProtectionWrapper>
-            } >
-            </Route>
-            <Route path="/login" key='/login' element={<LoginComponent />} />
-        </Route>
-    ))
-
-    return (
-
-            <Routes>
-                <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+                       <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
                     <Route path="/form9" element={<UserForm 
                         userData={undefined}
                         isUpdate={false}
@@ -129,8 +118,14 @@ const AppRoutes = () => {
                 <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
                 <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
                 <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
-            </Routes>
-    );
+        <Route path="/login" key="/login" element={<LoginComponent />} />
+      </Route>
+    )
+  );
+
+  return (
+    <RouterProvider router={router}/>
+  );
 };
 
 export default AppRoutes;

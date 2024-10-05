@@ -20,7 +20,7 @@ export default function DcItemsForm({ dcDetails }) {
     console.log(dcDetails, '---form details')
     return (
         <>
-        {dcDetails.map((item, index) => {
+        {dcDetails?.map((item, index) => {
           console.log(item, 'item');
           return (
             <Card key={index}>

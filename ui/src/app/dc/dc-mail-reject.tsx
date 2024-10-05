@@ -102,7 +102,7 @@ export const DcRejectMail = (props: DcRejectMailProps) => {
           <p>Please click the link below for details:</p>
       
           <a
-            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${dcId}"
+            href="http://localhost:4200/#/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;

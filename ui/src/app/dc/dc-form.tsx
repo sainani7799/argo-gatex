@@ -525,7 +525,7 @@ const DCForm = (props : DCFormProps) => {
                                     disabled
                                     // onChange={getWarehouses}
                                 >
-                                    {addressData.map(unit => {
+                                    {addressData?.map(unit => {
                                         return (
                                             <Option key={unit.addresser_name_id} value={unit.addresser_name_id}>
                                                 {unit.addresserName}
@@ -558,7 +558,7 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     loading={loadingWarehouses}
                                 >
-                                    {warehouses.map(wh => {
+                                    {warehouses?.map(wh => {
                                         return (
                                             <Option key={wh.warehouseId} value={wh.warehouseId}>
                                                 {wh.warehouseName}
@@ -614,17 +614,17 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     onChange={(value, option) => getAllToAddressByUnit(radioValue)}
                                 >
-                                    {radioValue === "unit" ? units.filter((i)=> i.id !== 10).map(unit => (
+                                    {radioValue === "unit" ? units.filter((i)=> i.id !== 10)?.map(unit => (
                                         <Option key={unit.id} value={unit.id}>
                                             {unit.unitName}
                                         </Option>
                                     ))    : radioValue === "buyer" 
-                                    ? buyers.map(buyer => (
+                                    ? buyers?.map(buyer => (
                                         <Option key={buyer.supplierId} value={buyer.supplierId}>
                                             {buyer.supplierName}
                                         </Option>
                                     ))
-                                    : suppliers.map(supplier => (
+                                    : suppliers?.map(supplier => (
                                         <Option key={supplier.supplierId} value={supplier.supplierId}>
                                             {supplier.supplierName}
                                         </Option>
@@ -662,7 +662,7 @@ const DCForm = (props : DCFormProps) => {
                                             allowClear
 
                                         > */}
-                                            {/* {toEmployee.map(app => (
+                                            {/* {toEmployee?.map(app => (
                                                 <Option key={app.employeeId} value={app.employeeId}>
                                                     {app.employeeName}
                                                 </Option>
@@ -704,7 +704,7 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     disabled
                                 >
-                                    {Object.keys(StatusEnum).map((type) => {
+                                    {Object.keys(StatusEnum)?.map((type) => {
                                         return <Option value={StatusEnum[type]}>{StatusEnum[type]}</Option>
                                     })}
                                 </Select>
@@ -729,7 +729,7 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     disabled
                                 >
-                                    {employee.map(app => {
+                                    {employee?.map(app => {
                                         return (
                                             <Option key={app.employeeId} value={app.employeeId}>
                                                 {app.employeeName}
@@ -892,7 +892,7 @@ const DCForm = (props : DCFormProps) => {
                                         <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                                             <Form.Item name='itemCode' label='Item Code' rules={[{ required: true, message: 'Item Code is required' }]}>
                                                 <Select showSearch allowClear optionFilterProp="children" placeholder='Select Item Code' dropdownMatchSelectWidth={false} onChange={getAllItemsByCode}>
-                                                    {itemData.map(e => {
+                                                    {itemData?.map(e => {
                                                         return (
                                                             <Option key={e.itemId} value={e.itemCode}>{e.itemCode} - {e.itemName}</Option>
                                                         );

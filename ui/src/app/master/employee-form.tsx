@@ -221,7 +221,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 dropdownMatchSelectWidth={false}
                                 allowClear
                             >
-                                {designation.map((rec: any) => {
+                                {designation?.map((rec: any) => {
                                     return (
                                         <Option key={rec.designationId} value={rec.designationId}>
                                             {rec.designation}
@@ -246,7 +246,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 onChange={getAllSectionsForDrop}
                                 allowClear
                             >
-                                {department.map((rec: any) => {
+                                {department?.map((rec: any) => {
                                     return (
                                         <Option key={rec.id} value={rec.id}>
                                             {rec.departmentName}
@@ -267,7 +267,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 optionFilterProp="children"
                                 allowClear
                             >
-                                {section.map((rec: any) => {
+                                {section?.map((rec: any) => {
                                     return (
                                         <Option key={rec.section_id} value={rec.section_id}>
                                             {rec.section}
@@ -290,7 +290,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 optionFilterProp="children"
                                 allowClear
                             >
-                                {unit.map((rec: any) => {
+                                {unit?.map((rec: any) => {
                                     return (
                                         <Option key={rec.unitCode} value={rec.unitCode}>
                                             {rec.unitName}

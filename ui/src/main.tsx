@@ -1,27 +1,24 @@
 import * as ReactDOM from 'react-dom/client';
-import { HashRouter as Router } from 'react-router-dom';
+import { ConfigProvider, theme } from 'antd';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 import App from './app/app';
-import { IntlProvider } from 'react-intl';
+const queryClient = new QueryClient()
 
-
-
-
-const container = document.getElementById('root') as HTMLElement;
-const root = ReactDOM.createRoot(container);
-
-export const enPmsLabels = {
-
-}
-
-
-export const messages = {
-  en: enPmsLabels
-};
-export const language = navigator.language.split(/[-_]/)[0];
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
-  <Router>
-   
-        <App />
-  </Router>
+  <QueryClientProvider client={queryClient}>
+  <ConfigProvider
+    locale={{ locale: 'en-US' }}
+    theme={{
+      algorithm: theme.compactAlgorithm,
+      token: {
+        colorPrimary: '#673ab7',
+        borderRadius: 5,
+      }
+    }}
+  >
+    <App />
+  </ConfigProvider >
+</QueryClientProvider>
 );

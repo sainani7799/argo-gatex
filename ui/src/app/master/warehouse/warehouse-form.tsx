@@ -23,7 +23,7 @@ const WarehouseForm = (props:warehouseFormProps) => {
 
     useEffect(() => {
         console.log(`This is Auth data: ${authdata}`);
-        form.setFieldsValue({ createdUser: authdata.userName });
+        form.setFieldsValue({ createdUser: authdata?.userName });
         unitService.getAllUnits().then((res) => {
             if (res) {
                 setUnit(res.data);
@@ -94,7 +94,7 @@ const WarehouseForm = (props:warehouseFormProps) => {
                                 optionFilterProp="children"
                                 allowClear
                             >
-                                {unit.map((rec: any) => {
+                                {unit?.map((rec: any) => {
                                     return (
                                         <Option key={rec.id} value={rec.id}>
                                             {rec.unitName}

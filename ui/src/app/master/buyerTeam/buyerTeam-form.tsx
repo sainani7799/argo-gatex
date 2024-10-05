@@ -22,7 +22,7 @@ const BuyerTeamForm = (props:buyerTeamFormProps) => {
 
     useEffect(() => {
         console.log(`This is Auth data: ${authdata}`);
-        form.setFieldsValue({ createdUser: authdata.userName });
+        form.setFieldsValue({ createdUser: authdata?.userName });
     }, [])
 
     const onReset = () => {

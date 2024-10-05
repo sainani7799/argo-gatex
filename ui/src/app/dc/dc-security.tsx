@@ -179,7 +179,7 @@ const DCSecurity = () => {
     status = status;
     const dto = new SecurityCheckReq();
     dto.dcId = rowData.dcId;
-    dto.securityUser = authdata.userName;
+    dto.securityUser = authdata?.userName;
     dto.status = status;
     console.log(dto);
     service

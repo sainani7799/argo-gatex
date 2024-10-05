@@ -134,7 +134,7 @@ const DCReceived = () => {
           console.log('Final Returned Date:', returnedDate);
 
         const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,
-        authdata.userName,
+        authdata?.userName,
         receivedDate,
         returnedDate
     )
@@ -198,7 +198,7 @@ const DCReceived = () => {
           <input type="hidden" id="dcId" value=${dcId} />
       
           <a
-            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${dcId}"
+            href="http://localhost:4200/#/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;

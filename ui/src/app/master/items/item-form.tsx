@@ -26,7 +26,7 @@ const ItemForm = (props:ItemsFormProps) => {
     const authdata = JSON.parse(localStorage.getItem('userName'))
 
     useEffect(() => {
-        form.setFieldsValue({ createdUser: authdata.userName });
+        form.setFieldsValue({ createdUser: authdata?.userName });
     }, [])
 
     const onReset = () => {

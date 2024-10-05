@@ -32,7 +32,7 @@ const SupplierForm = (props:SupplierFormProps) => {
     };
 
     useEffect(() => {
-        form.setFieldsValue({createdUser:authdata.userName})
+        form.setFieldsValue({createdUser:authdata?.userName})
     }, [])
 
 

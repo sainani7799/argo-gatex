@@ -41,7 +41,7 @@ const DCApprovalGrid = () => {
        const email = rec.emailId
        const dcNumber = rec.dcNumber
        console.log(email , 'email')
-       const approvedBy = authdata.userName
+       const approvedBy = authdata?.userName
        const currentDate = new Date();
        const approvedDate = moment(currentDate).format('YYYY-MM-DD')
        const fromUnit = rec.fromUnit
@@ -76,7 +76,7 @@ const DCApprovalGrid = () => {
         const email = rec.emailId
        const dcNumber = rec.dcNumber
        console.log(email , 'email')
-       const approvedBy = authdata.userName
+       const approvedBy = authdata?.userName
        const currentDate = new Date();
        const approvedDate = moment(currentDate).format('YYYY-MM-DD')
        const fromUnit = rec.fromUnit
@@ -138,7 +138,7 @@ const DCApprovalGrid = () => {
 
     const update = (dto: AssignReq) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        dto.updatedUser = authdata.userName,
+        dto.updatedUser = authdata?.userName,
             dto.status = StatusEnum.SENT_FOR_APPROVAL,
             dto.isAssignable = AcceptableEnum.YES,
             dto.assignBy = form.getFieldValue('assignBy')
@@ -212,7 +212,7 @@ const DCApprovalGrid = () => {
           <p>Please click the link below for details:</p>
       
           <a
-            href="http://gpdc.seplcloud.com/#/dc-email-detail-view/${dcId}"
+            href="http://localhost:4200/#/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;

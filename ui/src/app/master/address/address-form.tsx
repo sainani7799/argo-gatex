@@ -38,7 +38,7 @@ const AddressForm = (props: AddressFormProps) => {
     };
 
     useEffect(() => {
-        form.setFieldsValue({ createdUser: authdata.userName })
+        form.setFieldsValue({ createdUser: authdata?.userName })
     }, [])
 
 
@@ -140,12 +140,12 @@ const AddressForm = (props: AddressFormProps) => {
                                     style={{ width: '100%' }}
                                 >
                                     {selectedAddressType === 'unit'
-                                        ? unit.map((rec: any) => (
+                                        ? unit?.map((rec: any) => (
                                             <Select.Option key={rec.id} value={rec.id}>
                                                 {rec.unitName}
                                             </Select.Option>
                                         ))
-                                        : supplier.filter((v) =>  v.type == selectedAddressType).map((rec: any) => (
+                                        : supplier.filter((v) =>  v.type == selectedAddressType)?.map((rec: any) => (
                                             <Select.Option key={rec.supplierId} value={rec.supplierId}>
                                                 {rec.supplierName}
                                             </Select.Option>
