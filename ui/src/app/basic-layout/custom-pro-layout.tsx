@@ -153,11 +153,11 @@ const menuData = [
         name: 'Employee',
         icon: <PicCenterOutlined />,
       },
-      {
-        path: '/users',
-        name: 'Users',
-        icon: <PicCenterOutlined />,
-      },
+      // {
+      //   path: '/users',
+      //   name: 'Users',
+      //   icon: <PicCenterOutlined />,
+      // },
       {
         path: '/supplier-view',
         name: 'Buyers',

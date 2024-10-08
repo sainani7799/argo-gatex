@@ -113,11 +113,11 @@ const LoginComponent = () => {
         if (values.username === 'admin' && values.password === "admin") {
             localStorage.setItem('auth', 'true');
             localStorage.setItem('username', values.username);
-            navigate('/users', { replace: true });
+            navigate('/employee-view', { replace: true });
         } else if (values.username === 'patrolx' && values.password === "patrolx") {
             localStorage.setItem('auth', 'true');
             localStorage.setItem('username', values.username);
-            navigate('/users', { replace: true });
+            navigate('/employee-view', { replace: true });
         } else {
 
         }
