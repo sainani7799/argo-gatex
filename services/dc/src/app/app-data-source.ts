@@ -17,9 +17,9 @@ import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm
 export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
     timezone: 'Z',
-    host: '165.22.220.143',
-    username: 'ramakrishna',
-    password: 'Schemax@23',
+    host: '139.59.79.77',
+    username: 'gate_demo',
+    password: 'gate@xyz',
     database: 'gate-pass',
     synchronize: false,
     logging:true,
