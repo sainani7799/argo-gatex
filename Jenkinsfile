@@ -48,9 +48,9 @@ pipeline {
                 sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@139.59.79.77 "rm -rf /var/www/html/gate_app/*"
-                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_pass/dist/packages/services"
-                        scp -r $CI_PROJECT_DIR/dist/packages/ui/* root@139.59.79.77:/var/www/html/gate_app
-                        scp -r $CI_PROJECT_DIR/dist/packages/services root@139.59.79.77:/var/www/html/gate_pass/dist/packages
+                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_pass/dist/services"
+                        scp -r $CI_PROJECT_DIR/dist/ui/* root@139.59.79.77:/var/www/html/gate_app
+                        scp -r $CI_PROJECT_DIR/dist/services root@139.59.79.77:/var/www/html/gate_pass/dist
                     '''
                 }
             }
@@ -60,7 +60,7 @@ pipeline {
                 sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@139.59.79.77 <<EOF
-pm2 start /var/www/html/gate_pass/dist/packages/services/dc/main.js --name "gate-3338"
+pm2 start /var/www/html/gate_pass/dist/services/dc/main.js --name "gate-3338"
 pm2 save
 EOF
                     '''
