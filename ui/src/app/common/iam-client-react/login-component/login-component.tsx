@@ -1,4 +1,4 @@
-import { Button, Card, Carousel, Col, Divider, Form, Input, Row, notification, } from "antd";
+import { Button, Card, Carousel, Col, Divider, Form, Input, Row, message, notification, } from "antd";
 import { Header } from "antd/es/layout/layout";
 import assetpic from "../login-component/images/Gatepassicon.png";
 import assetname from "../login-component/images/gatex-white.png";
@@ -23,6 +23,8 @@ import { LoginUserDto, UserPermissionsDto } from "../user-models";
 import { ActionTypes } from "../action-types";
 import { useIAMClientState } from "../iam-client";
 import { loginUser } from "../actions";
+import { LoginDto } from "libs/shared-models";
+import { UserManagementServices } from "libs/shared-services";
 
 interface LocationState {
     from: { pathname: string };
@@ -36,6 +38,9 @@ const LoginComponent = () => {
     let navigate = useNavigate();
     const { IAMClientAuthContext, dispatch } = useIAMClientState();
     const location = useLocation();
+    const [loginForm] = Form.useForm()
+    const service = new UserManagementServices()
+    const [authState, setAuthState] = useState<any[]>([]);
 
     axios.interceptors.request.use(request => {
         setLoad(true);
@@ -109,19 +114,40 @@ const LoginComponent = () => {
     //     }
     // };
 
-    const handleSubmit = async (values: any) => {
-        if (values.username === 'admin' && values.password === "admin") {
-            localStorage.setItem('auth', 'true');
-            localStorage.setItem('username', values.username);
-            navigate('/employee-view', { replace: true });
-        } else if (values.username === 'patrolx' && values.password === "patrolx") {
-            localStorage.setItem('auth', 'true');
-            localStorage.setItem('username', values.username);
-            navigate('/employee-view', { replace: true });
-        } else {
+    // const handleSubmit = async (values: any) => {
+    //     if (values.username === 'admin' && values.password === "admin") {
+    //         localStorage.setItem('auth', 'true');
+    //         localStorage.setItem('username', values.username);
+    //         navigate('/employee-view', { replace: true });
+    //     } else if (values.username === 'patrolx' && values.password === "patrolx") {
+    //         localStorage.setItem('auth', 'true');
+    //         localStorage.setItem('username', values.username);
+    //         navigate('/employee-view', { replace: true });
+    //     } else {
 
-        }
-    };
+    //     }
+    // };
+
+
+    const handleSubmit = () => {
+        loginForm.validateFields().then((values) => {
+            const loginDto = new LoginDto(values.username, values.password)
+            service.login(loginDto).then((res) => {
+                if (res.status) {
+                    localStorage.setItem('userName', JSON.stringify(res.data))
+                    console.log( JSON.stringify(res.data), 'log')
+                    setAuthState([{ userName: values.username, isAuthenticated: true }]);
+                    console.log(setAuthState, 'setAuthState')
+                    message.success(res.internalMessage)
+                    navigate('/dc-view')
+                    // navigate('/')
+                } else {
+                    message.error(res.internalMessage)
+                }
+            })
+
+        })
+    }
 
 
 
@@ -292,6 +318,7 @@ const LoginComponent = () => {
                                     initialValues={{
                                         remember: true,
                                     }}
+                                    form={loginForm}
                                     onFinish={handleSubmit}>
                                     <Col span={24}>
                                         <Form.Item

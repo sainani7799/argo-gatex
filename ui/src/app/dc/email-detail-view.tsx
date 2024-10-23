@@ -198,7 +198,7 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
 
   return (
     <div>
-      <Card title="Dc Detail View" headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0, color: '#fff' }} extra={
+      <Card title="Gate Pass Detail View" headStyle={{ backgroundColor: '#047595', border: 0, color: 'black' }} extra={
         <span style={{ color: 'white' }}>
           {data[0]?.is_accepted === 'YES' ? <Button className='panel_button' onClick={openPrint}>
             Print

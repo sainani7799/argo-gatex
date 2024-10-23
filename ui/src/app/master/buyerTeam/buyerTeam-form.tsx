@@ -59,7 +59,7 @@ const BuyerTeamForm = (props:buyerTeamFormProps) => {
 
     return (
         <Card title={<span style={{ color: 'white' }}>BuyerTeam Form </span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<Link to='/buyerteam-grid' >
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595',color:'black', border: 0 }} extra={<Link to='/buyerteam-grid' >
             {props.isUpdate === false && (
                 
                 <span style={{ color: 'white' }} >

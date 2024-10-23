@@ -52,7 +52,7 @@ const DCReturnableGrid = () => {
     }, []);
 
     const getGatePassData = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         service.getAllGatePassTounit(req).then((res: any) => {
             if (res.status) {
@@ -293,8 +293,8 @@ const DCReturnableGrid = () => {
         console.log(data, '---render from data')
         return
     }
-    const userUnitName = 10;
-    const userName = 10
+    const userUnitName = authdata?.unitName;
+    const userName = authdata?.userName;
     // console.log(userName , 'user nameee')
 
     const columnsSkelton: any = [

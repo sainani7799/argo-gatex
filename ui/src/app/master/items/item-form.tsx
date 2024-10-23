@@ -63,7 +63,7 @@ const ItemForm = (props:ItemsFormProps) => {
 
     return (
         <Card title={<span style={{ color: 'white' }}>Item Form</span>}
-            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} 
+            style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595',color:'black', border: 0 }} 
             extra={<Link to='/item-grid' >
                 {props.isUpdate === false && (
                 <span style={{ color: 'white' }} >

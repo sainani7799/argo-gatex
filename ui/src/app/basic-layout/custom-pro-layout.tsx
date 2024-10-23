@@ -234,6 +234,7 @@ export const CustomProLayout = (props: CustomProLayoutProps) => {
   const [pathname, setPathname] = useState(location.pathname);
   const [dark, setDark] = useState(false);
   const [sideBar, setSideBar] = useState(true);
+  const authdata = JSON.parse(localStorage.getItem('userName'))
 
   const navigate = useNavigate();
   const {
@@ -297,7 +298,9 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
   };
 
   const logoutHandler = () => {
-    logout(dispatch);
+    localStorage.clear();
+    navigate('/login');
+    // logout(dispatch);
   };
 
   const getSideBarData = (): any => {
@@ -367,7 +370,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
               <OnlineStatus>
                 <span style={{ color: !dark ? '#ffffff' : '#001529' }}>
                   {/* {IAMClientAuthContext?.user?.userName} */}
-                  Admin
+                  {authdata?.userName}
                 </span>
               </OnlineStatus>
             ),
@@ -377,8 +380,12 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
                   menu={{
                     items: [
                       {
-                        key: 'roles',
-                        label: `Roles: ${IAMClientAuthContext?.user?.roles?.toString()}`,
+                        key: 'Name',
+                        label: `Name: ${authdata?.userName}`,
+                      },
+                      {
+                        key: 'Unit',
+                        label: `Unit: ${authdata?.unitName}`,
                       },
                       {
                         key: 'logout',

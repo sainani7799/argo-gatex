@@ -90,11 +90,11 @@ export class MailerService {
       });
       return new CommonResponse(true, 1111, 'Mail sent sucessfully');
     }catch(err){
-      await this.logError(err)
-      console.log('------send mail error in service')
-      console.log(err)
-      console.log('-------End in service')
-       throw err
+      // await this.logError(err)
+      // console.log('------send mail error in service')
+      // console.log(err)
+      // console.log('-------End in service')
+      //  throw err
     }
   }
 

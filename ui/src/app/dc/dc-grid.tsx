@@ -60,7 +60,7 @@ const DCGrid = () => {
       }, [selectedDc])
 
     const getGatePassData = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         service.getAllGatePass(req).then((res: any) => {
             if (res.status) {
@@ -70,7 +70,7 @@ const DCGrid = () => {
     };
 
     const getAllGatePassReturnableData = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         service.getAllGatePassReturnable(req).then((res: any) => {
             if (res.status) {
@@ -194,7 +194,7 @@ const DCGrid = () => {
             text-decoration: none;
             border-radius: 5px;
           "
-          >Accept DC</a
+          >Accept Gate Pass</a
         >
         <a
           href="http://localhost:4200/dc-reject-mail/${form.getFieldValue('dcId')}"
@@ -206,7 +206,7 @@ const DCGrid = () => {
             text-decoration: none;
             border-radius: 5px;
           "
-          >Reject DC</a
+          >Reject Gate Pass</a
         >
         </body>
       </html>
@@ -312,7 +312,7 @@ const DCGrid = () => {
     }
     console.log(selectedDc ,'selected DC')
 
-    const userUnitName = 'Unit-7';
+    const userUnitName = authdata?.unitName;
 
     const columnsSkelton: any = [
         {

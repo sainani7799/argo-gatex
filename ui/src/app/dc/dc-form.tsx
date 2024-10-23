@@ -67,6 +67,9 @@ const DCForm = (props : DCFormProps) => {
     const navigate = useNavigate()
     let tableData: any[] = [];
 
+    console.log(JSON.parse(localStorage.getItem('userName')),'pppppppp')
+    console.log(authdata,'authdata')
+
     useEffect(() => {
         // getWarehouses();
         getUnits();
@@ -76,17 +79,18 @@ const DCForm = (props : DCFormProps) => {
         getAllAddressByUnit();
         getAllItems();
         getAllEmployees();
-        form.setFieldsValue({ fromUnitId: 10 })
-        form.setFieldsValue({ createdUser: 10 })
-        form.setFieldsValue({ requestedBy: 10 })
-        form.setFieldsValue({ departmentId: 10 })
+        form.setFieldsValue({ fromUnitId: authdata?.unitId })
+        form.setFieldsValue({ createdUser: authdata?.userName })
+        form.setFieldsValue({ requestedBy: authdata?.employeeId })
+        form.setFieldsValue({ departmentId: Number(authdata?.department) })
+
     }, [])
     useEffect(() => {
         getGatePassData();
     }, []);
 
     const getGatePassData = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         dcService.getAllGatePass(req).then((res: any) => {
             if (res.status) {
@@ -100,7 +104,7 @@ const DCForm = (props : DCFormProps) => {
 
     const getWarehouses = async () => {
         try {
-            const unitValue = 10;
+            const unitValue = authdata?.unitId;
             const req = { unitId: unitValue };
             const res = await warehouseService.getAllWarehousesByUnit(req);
             const activeWarehouses = res.data.filter(warehouse => warehouse.isActive === true);
@@ -132,7 +136,7 @@ const DCForm = (props : DCFormProps) => {
         })
     };
     const getAllAddressByUnit = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         addressService.getAllAddressByUnit(req).then(res => {
             if (res) {
@@ -195,7 +199,7 @@ const DCForm = (props : DCFormProps) => {
     };
 
     const getAllEmployees = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         employeeService.getAllEmployeesByUnit(req).then(res => {
             if (res) {
@@ -500,7 +504,7 @@ const DCForm = (props : DCFormProps) => {
     return (
         <>
             <Card title={<span style={{ color: 'white' }}>DC Form</span>}
-                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>Back</Button></span>} >
+                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595',color:'black', border: 0 }} extra={<span><Button onClick={() => navigate('/dc-view')}>Back</Button></span>} >
                 <Form
                     form={form}
                     layout='vertical'
@@ -614,7 +618,7 @@ const DCForm = (props : DCFormProps) => {
                                     allowClear
                                     onChange={(value, option) => getAllToAddressByUnit(radioValue)}
                                 >
-                                    {radioValue === "unit" ? units.filter((i)=> i.id !== 10)?.map(unit => (
+                                    {radioValue === "unit" ? units.filter((i)=> i.id !== authdata?.unitId)?.map(unit => (
                                         <Option key={unit.id} value={unit.id}>
                                             {unit.unitName}
                                         </Option>
@@ -762,7 +766,7 @@ const DCForm = (props : DCFormProps) => {
                     <Row gutter={24}>
                         <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                             <Card size='small' title={<span style={{ color: 'white' }}>From Address</span>}
-                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', color:'black',border: 0 }} >
                                 <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="Line One">
                                         {addressData[0]?.lineOne}
@@ -793,7 +797,7 @@ const DCForm = (props : DCFormProps) => {
                         </Col>
                         <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                             <Card size='small' title={<span style={{ color: 'white' }}>To Address</span>}
-                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', color:'black', border: 0 }} >
                                 <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                     <Descriptions.Item label="Line One">
                                         {toAddressData[0]?.lineOne}

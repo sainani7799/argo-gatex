@@ -191,7 +191,7 @@ export function ApprovedUserForm(props: ApprovedUserFormProps) {
 
   return (
 
-    <Card title={props.isUpdate ? 'Update user' : 'User '} headStyle={{ backgroundColor: '#7d33a2', border: 0,color:'#fff' }}
+    <Card title={props.isUpdate ? 'Update user' : 'User '} headStyle={{ backgroundColor: '#047595', border: 0,color:'black' }}
      extra={(props.isUpdate === false) && <span>
      <Link to="/approval-user">
                 <Button>View </Button>

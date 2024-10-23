@@ -13,7 +13,7 @@ root.render(
     theme={{
       algorithm: theme.compactAlgorithm,
       token: {
-        colorPrimary: '#673ab7',
+        colorPrimary: '#047595',
         borderRadius: 5,
       }
     }}

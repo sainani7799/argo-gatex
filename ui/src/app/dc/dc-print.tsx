@@ -115,7 +115,7 @@ export function DcPrint(props: DcPrintProps) {
     return (
         <Card title='GATE PASS PRINT'
             style={{ textAlign: 'center' }}
-            headStyle={{ backgroundColor: 'rgb(125, 51, 162)', border: 0, color: '#fff' }} extra={<span style={{ color: 'white' }} >
+            headStyle={{ backgroundColor: '#047595', border: 0, color: 'black' }} extra={<span style={{ color: 'white' }} >
                 <>
                 <Button onClick={printDc} className='panel_button'><PrinterOutlined /> Print</Button>
                 <Button className='panel_button' onClick={pdfDownloadDc}><DownloadOutlined />Download</Button> 

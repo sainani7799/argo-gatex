@@ -26,7 +26,8 @@ const DCApprovalGrid = () => {
     const searchInput = useRef(null);
     const mailService = new EmailService()
     
-
+    console.log(authdata,'authdataauthdata')
+    
     let navigate = useNavigate();
     
     useEffect(() => {
@@ -53,7 +54,7 @@ const DCApprovalGrid = () => {
 
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
-            acceptedUser: 36,
+            acceptedUser: authdata?.employeeId,
             dcId: Number(rec.dcId),
             status: StatusEnum.SENT_FOR_SECURITY_CHECK,
         };
@@ -105,7 +106,7 @@ const DCApprovalGrid = () => {
     };
 
     const getGatePassData = () => {
-        const unitValue = 10;
+        const unitValue = authdata?.unitId;
         const req = { unitId: unitValue };
         service.getAllGatePass(req).then((res: any) => {
             if (res.status) {
