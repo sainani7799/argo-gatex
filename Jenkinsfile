@@ -28,7 +28,7 @@ pipeline {
                 script {
                     sh '''
                         export PATH="$CI_PROJECT_DIR/node_modules/.bin:$PATH"
-                        nx run services-sakku-mrp:build --skip-nx-cache
+                        nx run services-dc:build --skip-nx-cache
                     '''
                 }
             }
@@ -43,39 +43,44 @@ pipeline {
                 }
             }
         }
-        stage('Modify index.html') {
-            steps {
-                script {
-                    sh '''
-                        sed -i 's|<base href="/">|<base href="/sakku_mrp_app/">|g' $CI_PROJECT_DIR/dist/packages/ui/index.html
-                    '''
-                }
-            }
-        }
         stage('Transfer Build Files') {
             steps {
                 sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@139.59.79.77 "rm -rf /var/www/html/gate_app/*"
-                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_pass/packages/services"
+                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_pass/dist/packages/services"
                         scp -r $CI_PROJECT_DIR/dist/packages/ui/* root@139.59.79.77:/var/www/html/gate_app
                         scp -r $CI_PROJECT_DIR/dist/packages/services root@139.59.79.77:/var/www/html/gate_pass/dist/packages
                     '''
                 }
             }
         }
-        stage('Restart Services with PM2') {
+        stage('start Services with PM2') {
             steps {
                 sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@139.59.79.77 <<EOF
-pm2 restart sakku_mrp_3337
+pm2 start /var/www/html/gate_pass/dist/packages/services/dc/main.js --name "gate-3338"
 pm2 save
 EOF
                     '''
                 }
             }
         }
+        /*
+        stage('Restart Services with PM2') {
+            steps {
+                sshagent(credentials: ['2']) { // Use the correct credentials ID here
+                    sh '''
+                        ssh root@139.59.79.77 <<EOF
+pm2 restart gate-3338
+pm2 save
+EOF
+                    '''
+                }
+            }
+        }
+        */
     }
     post {
         success {
