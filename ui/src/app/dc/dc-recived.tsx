@@ -198,7 +198,7 @@ const DCReceived = () => {
           <input type="hidden" id="dcId" value=${dcId} />
       
           <a
-            href="http://localhost:4200/dc-email-detail-view/${dcId}"
+            href="https://gatex.schemaxtech.in/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
