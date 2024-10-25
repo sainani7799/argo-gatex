@@ -4,6 +4,7 @@ import {
   RouterProvider,
   Routes,
   createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements,
 } from 'react-router-dom';
 import { ChildProtectionWrapper } from './common/protected-child-wrapper';
@@ -43,18 +44,18 @@ import CustomProLayout from './basic-layout/custom-pro-layout';
 import { LoginComponent } from './common';
 
 const AppRoutes = () => {
-  const router = createBrowserRouter(
+  const router = createHashRouter(
     createRoutesFromElements(
       <Route>
-        <Route path="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
+        <Route path="/" key="/" element={<ChildProtectionWrapper><CustomProLayout /></ChildProtectionWrapper>}>
           <Route path="/form9" element={<UserForm
             userData={undefined}
             isUpdate={false}
             closeForm={() => { }}
             updateDetails={(undefined) => { }}
           />} />
-          <Route path="/users" element={<UserFormGrid />} />
-          <Route path="/employee-view" element={<EmployeeGrid />} />
+          <Route path="/users" key="/users" element={<UserFormGrid />} />
+          <Route path="/employee-view" key="/employee-view" element={<EmployeeGrid />} />
           <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
 
             isUpdate={false}
