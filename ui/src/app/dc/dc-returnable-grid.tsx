@@ -129,7 +129,7 @@ const DCReturnableGrid = () => {
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="https://gatex.schemaxtech.in/dc-email-detail-view/${form.getFieldValue('dcId')}"
+            href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${form.getFieldValue('dcId')}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -141,7 +141,7 @@ const DCReturnableGrid = () => {
             >View Details of GatePass</a
           >
           <a
-          href="https://gatex.schemaxtech.in/dc-email/${form.getFieldValue('dcId')}"
+          href="https://gatex.schemaxtech.in/#/dc-email/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -153,7 +153,7 @@ const DCReturnableGrid = () => {
           >Accept DC</a
         >
         <a
-          href="https://gatex.schemaxtech.in/dc-reject-mail/${form.getFieldValue('dcId')}"
+          href="https://gatex.schemaxtech.in/#/dc-reject-mail/${form.getFieldValue('dcId')}"
           style="
             display: inline-block;
             padding: 10px 20px;

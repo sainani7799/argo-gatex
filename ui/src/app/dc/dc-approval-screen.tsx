@@ -213,7 +213,7 @@ const DCApprovalGrid = () => {
           <p>Please click the link below for details:</p>
       
           <a
-            href="https://gatex.schemaxtech.in/dc-email-detail-view/${dcId}"
+            href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
