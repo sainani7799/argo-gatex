@@ -3,7 +3,7 @@ import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/app
 import { DcService } from "./dc.service";
 import { CommonResponse } from "libs/shared-models/src/common";
 import { Response } from 'express';
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiBody, ApiProperty } from "@nestjs/swagger";
 import { DcDto } from "./dto/dc.dto";
 import { MailerService } from "./send-mail";
 
@@ -247,6 +247,16 @@ export class DcController {
     async getAllGatePassReturnable(@Body() req:any): Promise<CommonResponse> {
       try {
         return await this.dcService.getAllGatePassReturnable(req);
+      } catch (error) {
+        return (error);
+      }
+    }
+
+    @Post('/getIdByDc')
+    @ApiBody({ type: DcDto })
+    async getIdByDc(@Body() req:any): Promise<CommonResponse> {
+      try {
+        return await this.dcService.getIdByDc(req);
       } catch (error) {
         return (error);
       }

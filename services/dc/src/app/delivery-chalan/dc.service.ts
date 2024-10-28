@@ -518,4 +518,13 @@ export class DcService {
       console.log(error);
     }
   }
+
+
+  async getIdByDc(req: DcDto): Promise<CommonResponse> {
+    const data = await this.dcRepo.findOne({ where: { dcNumber: req.dcNumber } });
+    if (data) {
+      return new CommonResponse(true, 1, 'Data retrieved', data);
+    }
+    return new CommonResponse(false, 0, 'No data found');
+  }
 }
