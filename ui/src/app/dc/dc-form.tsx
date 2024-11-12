@@ -332,16 +332,16 @@ const DCForm = (props : DCFormProps) => {
             }
 
         },
-        {
-            title: 'rate',
-            dataIndex: 'rate',
+        // {
+        //     title: 'rate',
+        //     dataIndex: 'rate',
 
-        },
+        // },
 
-        {
-            title: 'Amount',
-            dataIndex: 'amount'
-        },
+        // {
+        //     title: 'Amount',
+        //     dataIndex: 'amount'
+        // },
 
         {
             title: "Action",
@@ -518,7 +518,7 @@ const DCForm = (props : DCFormProps) => {
                         <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                             <Form.Item style={{ display: "none" }} name="createdUser"  >
                             </Form.Item>
-                            <Form.Item name="fromUnitId" label="Unit" rules={[
+                            <Form.Item name="fromUnitId" label="From Unit" rules={[
                                 { required: true },
                             ]} >
                                 <Select
@@ -572,7 +572,7 @@ const DCForm = (props : DCFormProps) => {
                                 </Select>
                             </Form.Item>
 
-                            <Form.Item name="departmentId" label="Department" rules={[
+                            <Form.Item name="departmentId" label="From Department" rules={[
                                 { required: true },
                             ]}>
                                 <Select
@@ -691,15 +691,13 @@ const DCForm = (props : DCFormProps) => {
                                     <Radio value={"NO"}>No</Radio>
                                 </Radio.Group>
                             </Form.Item> */}
-                            <Form.Item name="purpose" label="Purpose" rules={[
-                                { required: true },
-                            ]}>
+                            <Form.Item name="purpose" label="Purpose">
                                 <Input placeholder="Enter Purpose" />
                             </Form.Item>
-                            <Form.Item name="value" label="Value">
+                            {/* <Form.Item name="value" label="Value">
 
                                 <Input placeholder="Enter Value" disabled />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item name="status" label="Status" initialValue={StatusEnum.OPEN}>
                                 <Select
                                     showSearch
@@ -878,7 +876,7 @@ const DCForm = (props : DCFormProps) => {
                                                 <Input onChange={calculateAmount} />
                                             </Form.Item>
                                         </Col>
-                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                        {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                                             <Form.Item name='rate' label='Rate' rules={[
                                                 { required: true, message: 'Rate is required' },
                                             ]}>
@@ -889,7 +887,7 @@ const DCForm = (props : DCFormProps) => {
                                             <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
                                                 <Input disabled />
                                             </Form.Item>
-                                        </Col>
+                                        </Col> */}
                                     </>
                                 ) : (
                                     <>
@@ -931,7 +929,7 @@ const DCForm = (props : DCFormProps) => {
                                                 <Input onChange={calculateAmount} />
                                             </Form.Item>
                                         </Col>
-                                        <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
+                                        {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                                             <Form.Item name='rate' label='Rate' rules={[
                                                 { required: true, message: 'Rate is required' },
                                             ]}>
@@ -942,7 +940,7 @@ const DCForm = (props : DCFormProps) => {
                                             <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
                                                 <Input disabled />
                                             </Form.Item>
-                                        </Col>
+                                        </Col> */}
                                     </>
                                 )
                             }
