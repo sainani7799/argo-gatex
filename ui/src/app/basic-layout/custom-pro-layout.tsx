@@ -198,7 +198,7 @@ const menuData = [
     children: [
       {
         path: '/dc-view',
-        name: 'Creater',
+        name: 'Indent',
         icon: <PicCenterOutlined />,
       },
       {
