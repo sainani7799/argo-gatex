@@ -635,9 +635,7 @@ const DCReturnableGrid = () => {
                                     <Input style={{ textAlign: 'center' }} disabled />
 
                                 </Form.Item>
-                                <Form.Item name="requestedBy" label="Requested By" rules={[
-                                    { required: true },
-                                ]}>
+                                <Form.Item name="requestedBy" label="Requested By">
                                     <Input style={{ textAlign: 'center' }} disabled />
 
                                 </Form.Item>
@@ -856,7 +854,7 @@ const DCReturnableGrid = () => {
                                                     <Input disabled />
                                                 </Form.Item>
                                             </Col>
-                                            <Col xs={24} sm={24} md={4} lg={4} xl={2}>
+                                            {/* <Col xs={24} sm={24} md={4} lg={4} xl={2}>
                                                 <Form.Item name='rate' label='Rate' rules={[{ required: true, message: 'Rate is required' }]}>
                                                     <Input disabled />
                                                 </Form.Item>
@@ -865,7 +863,7 @@ const DCReturnableGrid = () => {
                                                 <Form.Item name='amount' label='Amount' rules={[{ required: true, message: 'Amount is required' }]}>
                                                     <Input disabled />
                                                 </Form.Item>
-                                            </Col>
+                                            </Col> */}
                                             <Col xs={24} sm={24} md={4} lg={4} xl={3}>
                                                 <Form.Item
                                                     name='returnQty'
