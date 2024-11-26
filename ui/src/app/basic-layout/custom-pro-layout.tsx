@@ -2,7 +2,10 @@ import * as antdIcons from '@ant-design/icons';
 import Icon, {
   AppstoreAddOutlined,
   AppstoreOutlined,
+  AuditOutlined,
+  BarChartOutlined,
   CalendarOutlined,
+  CheckCircleOutlined,
   CreditCardOutlined,
   DeleteOutlined,
   DollarOutlined,
@@ -10,9 +13,12 @@ import Icon, {
   EnvironmentOutlined,
   FileSearchOutlined,
   FileSyncOutlined,
+  FileTextOutlined,
   FontColorsOutlined,
   FormOutlined,
   HistoryOutlined,
+  HomeOutlined,
+  InboxOutlined,
   LayoutOutlined,
   LogoutOutlined,
   PicCenterOutlined,
@@ -20,11 +26,17 @@ import Icon, {
   ProfileOutlined,
   PullRequestOutlined,
   RadiusSettingOutlined,
+  SafetyOutlined,
+  SecurityScanOutlined,
   SettingOutlined,
+  ShoppingCartOutlined,
+  ShoppingOutlined,
   SlidersOutlined,
   SmileOutlined,
   SolutionOutlined,
+  TeamOutlined,
   TranslationOutlined,
+  UndoOutlined,
   UserOutlined
 } from '@ant-design/icons';
 import {
@@ -151,7 +163,7 @@ const menuData = [
       {
         path: '/employee-view',
         name: 'Employee',
-        icon: <PicCenterOutlined />,
+        icon: <UserOutlined  />,
       },
       // {
       //   path: '/users',
@@ -161,32 +173,32 @@ const menuData = [
       {
         path: '/supplier-view',
         name: 'Buyers',
-        icon: <PicCenterOutlined />,
+        icon: <ShoppingOutlined  />,
       },
       {
         path: '/address-view',
         name: 'Address',
-        icon: <PicCenterOutlined />,
+        icon: <EnvironmentOutlined  />,
       },
       {
         path: '/approval-user',
         name: 'Approval Users',
-        icon: <PicCenterOutlined />,
+        icon: <CheckCircleOutlined  />,
       },
       {
         path: '/warehouse-grid',
         name: 'Warehouse',
-        icon: <PicCenterOutlined />,
+        icon: <HomeOutlined  />,
       },
       {
         path: '/item-grid',
         name: 'Items',
-        icon: <PicCenterOutlined />,
+        icon: <ShoppingCartOutlined  />,
       },
       {
         path: '/buyerteam-grid',
         name: 'Userwise (Buyer Team)',
-        icon: <PicCenterOutlined />,
+        icon: <TeamOutlined  />,
       },
 
     ],
@@ -194,37 +206,37 @@ const menuData = [
   {
     path: '/dc',
     name: 'Gate Pass',
-    icon: <FontAwesomeIcon icon={faUsersGear} />,
+    icon: <SecurityScanOutlined  />,
     children: [
       {
         path: '/dc-view',
         name: 'Indent',
-        icon: <PicCenterOutlined />,
+        icon: <FileTextOutlined  />,
       },
       {
         path: '/dc-return-view',
         name: 'Returnable',
-        icon: <PicCenterOutlined />,
+        icon: <UndoOutlined  />,
       },
       {
         path: '/dc-approval-grid',
         name: 'Approver',
-        icon: <PicCenterOutlined />,
+        icon: <AuditOutlined  />,
       },
       {
         path: '/dc-received',
         name: 'Receiver',
-        icon: <PicCenterOutlined />,
+        icon: <InboxOutlined  />,
       },
       {
         path: '/dc-security',
         name: 'Security Check',
-        icon: <PicCenterOutlined />,
+        icon: <SafetyOutlined  />,
       },
       {
         path: '/security-report',
         name: 'Gate Pass Report',
-        icon: <PicCenterOutlined />,
+        icon: <BarChartOutlined  />,
       },
     ],
   }
@@ -318,6 +330,15 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
       };
     }
   };
+
+  const transformMenuData = (data) =>
+    data.map((item) => ({
+      key: item.key,
+      label: item.label,
+      icon: item.icon,
+      children: item.children ? transformMenuData(item.children) : undefined,
+    }));
+  
   return (
     <ProConfigProvider dark={dark}>
       <div
@@ -357,7 +378,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
           }}
           menu={{
             // request: async () => treeRouter(getAllSubMenus()),
-            request: async () => menuData,
+            request: async () =>  menuData,
             collapsedShowGroupTitle: true,
           }}
           location={{
@@ -460,7 +481,8 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
                   setPathname(item.path || '/');
                 }}
               >
-                {dom}
+                 {item.icon}
+                 <span style={{ marginLeft: 8 }}>{item.name}</span>
               </Link>
             );
           }}
