@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import React, { useState } from 'react';
 import './ticket-raiser.css';
 
+
 // Define the interface for the ticket
 interface Ticket {
     username: string;
@@ -156,15 +157,16 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
             {/* Floating button to open/close the ticket box */}
             <Tooltip title="Raise Ticket">
                 <Button
-                    type="primary"
                     shape="circle"
-                    icon={<MessageOutlined />}
+                    // icon={<MessageOutlined />}
+                    icon={<img src="./assets/pro-ticket.ico" alt="favicon" style={{ width: 25, height: 25, borderRadius: '50%' }} />}
                     size="large"
                     style={{
                         position: 'fixed',
                         bottom: '20px',
                         right: '20px',
                         zIndex: 1000,
+                        border: '2px solid #3fcc73'
                     }}
                     onClick={toggleTicketBox}
                 />
@@ -219,7 +221,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                                     </Radio.Group>
                                 </Form.Item></Col>
                                 <Col>
-                                    <div style={{ display: 'flex',marginTop:'15px' }}>
+                                    <div style={{ display: 'flex', marginTop: '15px' }}>
                                         <label htmlFor="">Include Attachment</label>&nbsp;&nbsp;&nbsp;
                                         <Form.Item name="isImageNeeded" valuePropName="checked" label='Include Attachment' noStyle>
                                             <Checkbox />
