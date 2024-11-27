@@ -14,3 +14,4 @@ export * from './dc';
 export * from './email';
 export * from './roles';
 export * from './buyerTeam';
+export * from './notifications';

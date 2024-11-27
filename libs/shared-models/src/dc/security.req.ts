@@ -4,5 +4,6 @@ export class SecurityCheckReq{
     dcId:number;
     status:StatusEnum;
     securityUser:string;
-    checkoutTime?:Date
+    checkoutTime?:Date;
+    chechInTime?:Date;
 }

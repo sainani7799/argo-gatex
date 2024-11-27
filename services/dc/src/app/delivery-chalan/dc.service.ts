@@ -11,6 +11,7 @@ import {
   AssignReq,
   DcIdReq,
   DcReportReq,
+  MessageParameters,
   ReceivedDcReq,
   RejectDcReq,
   SecurityCheckReq,
@@ -20,6 +21,8 @@ import {
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import * as XLSX from 'xlsx';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
+import { WhatsAppNotificationService } from 'libs/shared-services';
+import moment from 'moment';
 
 @Injectable()
 export class DcService {
@@ -27,7 +30,8 @@ export class DcService {
     private dcRepo: DcEntityRepository,
     private dcAdapter: DcAdapter,
     private unitsRepo: UnitRepository,
-    private dcItemSRepo: DcItemEntityRepository
+    private dcItemSRepo: DcItemEntityRepository,
+    private wpService: WhatsAppNotificationService,
   ) {}
 
   async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
@@ -105,6 +109,70 @@ export class DcService {
     }
   }
 
+//   async updateDc(dto: any): Promise<CommonResponse> {
+//     // Fetch the existing record
+//     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+
+//     if (!dcRecord) {
+//         return new CommonResponse(false, 6666, 'Something went wrong: DC record not found.');
+//     }
+
+//     // Update the DC record
+//     const updateData = await this.dcRepo.update(
+//         { dcId: dto.dcId },
+//         {
+//             isAssignable: dto.isAssignable,
+//             emailId: dto.emailId,
+//             assignBy: dto.assignBy,
+//             status: dto.status,
+//         }
+//     );
+
+//     // Generate WhatsApp Message Content
+//     const contacts = ['917036716813']; // List of contacts (as an array)
+//     const messageContent = `Dear Team, \\n The Gate Pass details have been updated. \\n DC NO: ${dto.dcId || '-'} \\n Status: ${dto.status || '-'} \\n Assigned By: ${dto.assignBy || '-'} \\n Thank you. \\n <p>Please take action using the buttons below:</p> \\n 
+//      <div style="margin-top: 10px;"> \\n
+//         <a href="https://yourdomain.com/accept/GP24102600852" 
+//            style="display: inline-block; padding: 10px 20px; color: white; background-color: green; text-decoration: none; border-radius: 5px; margin-right: 10px;"> \\n
+//            ✅ Accept Gate Pass \\n
+//         </a> \\n
+//         <a href="https://yourdomain.com/reject/GP24102600852" 
+//            style="display: inline-block; padding: 10px 20px; color: white; background-color: red; text-decoration: none; border-radius: 5px;"> \\n
+//            ❌ Reject Gate Pass \\n
+//         </a> \\n
+//     </div>`;
+
+//     // Parameters for the WhatsApp template
+//     const parameters = [
+//         { "type": "text", "text": moment().format("YYYY-MM-DD") }, // Current date
+//         { "type": "text", "text": messageContent }, // Message content
+//     ];
+
+//     try {
+//         for (const contact of contacts) {
+//             // Construct the request for WhatsApp API
+//             const req = new MessageParameters(contact, "vrs_alert", parameters, "en_us");
+
+//             // Send the message
+//             const messageStatus = await this.wpService.sendMessageThroughFbApi(req);
+
+//             // Log the status
+//             if (!messageStatus.status) {
+//                 console.error(`Failed to send message to ${contact}:`, messageStatus);
+//             } else {
+//                 console.log(`Message sent successfully to ${contact}`);
+//             }
+//         }
+
+//         return new CommonResponse(true, 333, "Updated and sent WhatsApp messages successfully", updateData);
+//     } catch (err) {
+//         console.error("Error while sending WhatsApp messages:", err);
+//         return new CommonResponse(false, 11108, "Error while sending message");
+//     }
+// }
+
+
+
   async acceptDc(dto: AcceptReq): Promise<CommonResponse> {
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
     if (dcRecord) {
@@ -173,6 +241,7 @@ export class DcService {
       return new CommonResponse(false, 6666, 'something went wrong');
     }
   }
+
   async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
     console.log(dto, 'SecurityCheckReq');
     const currentDate = new Date();
@@ -192,6 +261,27 @@ export class DcService {
       return new CommonResponse(false, 6666, 'something went wrong');
     }
   }
+
+  async securityCheckIn(dto: SecurityCheckReq): Promise<CommonResponse> {
+    console.log(dto, 'SecurityCheckReq');
+    const currentDate = new Date();
+    const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+    if (dcRecord) {
+      const updateData = await this.dcRepo.update(
+        { dcId: dto.dcId },
+        {
+          status: dto.status,
+          securityUser: dto.securityUser,
+          checkInTime: dto.chechInTime,
+          securityCheckedDate: currentDate,
+        }
+      );
+      return new CommonResponse(true, 333, 'update successfully', updateData);
+    } else {
+      return new CommonResponse(false, 6666, 'something went wrong');
+    }
+  }
+
   async getAllGatePass(req: UnitReq): Promise<CommonResponse> {
     try {
       const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId, w.warehouse_name AS warehouseName,

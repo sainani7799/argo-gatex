@@ -217,6 +217,12 @@ export class DcEntity {
   checkoutTime: Date;
 
   @UpdateDateColumn({
+    name: "checkin_time",
+    type: 'datetime'
+  })
+  checkInTime: Date;
+
+  @UpdateDateColumn({
     name: "received_date",
     type: 'datetime'
   })

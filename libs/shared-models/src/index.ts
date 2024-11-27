@@ -14,3 +14,4 @@ export * from './item';
 export * from './dc';
 export * from './enum/is-acceptable';
 export * from './buyer_team';
+export * from './notification';
