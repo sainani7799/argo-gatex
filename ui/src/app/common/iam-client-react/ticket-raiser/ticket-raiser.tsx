@@ -115,7 +115,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
 
                 // Handle the success response
                 if (response.status) {
-                    message.success('Your ticket has been raised successfully!');
+                    message.success(`Your ticket with Id #${response.data.data.ticketId} has been raised successfully`);
                     console.log('Sended data', updatedTicket);
                     console.log('Ticket Raised:', response.data);
                     if (values.isImageNeeded) {
@@ -215,7 +215,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                                     name="category"
                                     style={{ width: '100%' }}
                                 >
-                                    <Radio.Group >
+                                    <Radio.Group>
                                         <Radio.Button value="3">CR</Radio.Button>
                                         <Radio.Button value="2">Bug</Radio.Button>
                                     </Radio.Group>
