@@ -41,7 +41,7 @@ const DCReturnableGrid = () => {
     const departmentService = new DepartmentService();
     const formRefs = useRef([]);
 
-    
+
 
     let navigate = useNavigate();
 
@@ -220,7 +220,7 @@ const DCReturnableGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -305,7 +305,7 @@ const DCReturnableGrid = () => {
             responsive: ['sm'],
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
@@ -313,7 +313,7 @@ const DCReturnableGrid = () => {
             dataIndex: "dcNumber",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcNumber')
         },
         {
@@ -321,7 +321,7 @@ const DCReturnableGrid = () => {
             dataIndex: "dcType",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcType')
         },
         {
@@ -329,14 +329,14 @@ const DCReturnableGrid = () => {
             dataIndex: "fromUnit",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "To Unit/Supplier/Buyer",
             dataIndex: "toAddresserName",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             // dataIndex: "addresserNameId",
             // render: (text, record) => {
             //     // Extract the name and keep the ID for editing
@@ -355,14 +355,14 @@ const DCReturnableGrid = () => {
             dataIndex: "requestedBy",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Attention Person",
             dataIndex: "attentionPerson",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (item) => item ? item : '-'
         },
         {
@@ -370,7 +370,7 @@ const DCReturnableGrid = () => {
             dataIndex: "buyerTeam",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (item) => item ? item : '-'
         },
         {
@@ -378,14 +378,14 @@ const DCReturnableGrid = () => {
             dataIndex: "purpose",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Created Date",
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, record) => {
                 const createdDate = record.createdDate;
                 if (createdDate) {
@@ -400,15 +400,16 @@ const DCReturnableGrid = () => {
             dataIndex: "status",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
+            fixed: 'right',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, rowData, index) => (
                 <span>
                     {rowData.status === 'RECEIVED' && userUnitName === rowData.toAddresserName ? (
@@ -512,52 +513,52 @@ const DCReturnableGrid = () => {
     function onSubmit(rec) {
         console.log(formData)
         const req = {
-            dc : rec,
-            dcItem : formData,
-            dcId:selectedDc.dcId,
-            status : StatusEnum.SENT_FOR_SECURITY_RE_CHECK,
-            returnedBy : userName
+            dc: rec,
+            dcItem: formData,
+            dcId: selectedDc.dcId,
+            status: StatusEnum.SENT_FOR_SECURITY_RE_CHECK,
+            returnedBy: userName
         }
-        console.log(req , 'req')
-        service.updateRetunableData(req).then((res)=>{
-            if(res.status){
-                notification.success({message:res.internalMessage})
-            }else{
-                notification.error({message:res.internalMessage})
+        console.log(req, 'req')
+        service.updateRetunableData(req).then((res) => {
+            if (res.status) {
+                notification.success({ message: res.internalMessage })
+            } else {
+                notification.error({ message: res.internalMessage })
             }
         })
         closeDrawer()
         getGatePassData();
     }
 
-    function handleFormChange(index, changedValues , record) {
+    function handleFormChange(index, changedValues, record) {
         const newFormData = [...formData];
-        newFormData[index] = { ...newFormData[index], ...changedValues , dcItemId: record.dc_item_id };
+        newFormData[index] = { ...newFormData[index], ...changedValues, dcItemId: record.dc_item_id };
         setFormData(newFormData);
     }
 
     const [writeOffQtys, setWriteOffQtys] = useState(dcDetails.map(() => 0));
 
-    const calculateWriteOffQty = (qty, returnQty , index) => {
+    const calculateWriteOffQty = (qty, returnQty, index) => {
         const writeOffQty = qty - returnQty;
         const result = writeOffQty >= 0 ? writeOffQty : 0;
         console.log(`Calculating Write Off Qty: ${qty} - ${returnQty} = ${result}`);
 
         const updatedWriteOffQtys = [...writeOffQtys];
         updatedWriteOffQtys[index] = result;
-        console.log(updatedWriteOffQtys , 'ipp')
+        console.log(updatedWriteOffQtys, 'ipp')
         setWriteOffQtys(updatedWriteOffQtys);
         return result
-      };
+    };
 
-      const onValuesChange = (index, changedValues, allValues) => {
+    const onValuesChange = (index, changedValues, allValues) => {
         console.log(`Form ${index} values changed:`, changedValues);
         console.log(`All form ${index} values:`, allValues);
-    
+
         const qty = Number(allValues.qty) || 0;
         const returnQty = Number(allValues.returnQty) || 0;
-        const result = calculateWriteOffQty(qty, returnQty , index);
-    
+        const result = calculateWriteOffQty(qty, returnQty, index);
+
         console.log(`Setting writeOffQty for item ${index} to: ${result}`);
         const form = formRefs.current[index];
         form.setFieldsValue({ writeOffQty: result });
@@ -568,7 +569,7 @@ const DCReturnableGrid = () => {
 
         handleFormChange(index, updatedValues, dcDetails[index]);
         console.log("Updated form data after changes:", updatedValues);
-      };
+    };
 
 
 
@@ -588,12 +589,12 @@ const DCReturnableGrid = () => {
 
             headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
-            <Table columns={columnsSkelton} 
-            dataSource= {responseData.filter(
-                (item) => item.status === 'RECEIVED' && item.dcType === 'returnable' 
-              )}
-           
-                scroll={{ x: 1400, y: 400 }} />
+            <Table columns={columnsSkelton}
+                dataSource={responseData.filter(
+                    (item) => item.status === 'RECEIVED' && item.dcType === 'returnable'
+                )}
+
+                scroll={{ x: 1400, y: 400 }} size='small' />
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Returnable' width={window.innerWidth > 768 ? '95%' : '99%'}
                 onClose={closeDrawer} open={editDrawerVisible} closable={true} >
                 <Card title={<span style={{ color: 'white' }}>DC Form</span>}
@@ -819,8 +820,8 @@ const DCReturnableGrid = () => {
                                             writeOffQty: item.writeOffQty
                                         }}
                                         onValuesChange={(changedValues, allValues) => onValuesChange(index, changedValues, allValues)}
-                                    
-            
+
+
                                     >
                                         <h1 style={{ color: '#6b54bf', fontSize: '15px', textAlign: 'left' }}>ITEM DETAILS</h1>
                                         <Row gutter={14}>
