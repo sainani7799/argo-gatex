@@ -5,6 +5,7 @@ import axios from 'axios';
 import html2canvas from 'html2canvas';
 import React, { useRef, useState } from 'react';
 import './ticket-raiser.css';
+import helpDeskLog from './helpx-logo.png';
 
 
 // Define the interface for the ticket
@@ -159,7 +160,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
     const showModal = () => setIsModalVisible(true);
     const handleCancel = () => setIsModalVisible(false);
 
-// Start drawing
+    // Start drawing
     const startDrawing = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
         const canvas = canvasRef.current;
         if (canvas) {
@@ -261,19 +262,31 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
             {/* Floating button to open/close the ticket box */}
             <Tooltip title="Raise Ticket">
                 <Button
-                    shape="circle"
-                    // icon={<MessageOutlined />}
-                    icon={<img src="./assets/pro-ticket.ico" alt="favicon" style={{ width: 25, height: 25, borderRadius: '50%' }} />}
-                    size="large"
                     style={{
                         position: 'fixed',
                         bottom: '20px',
                         right: '20px',
                         zIndex: 1000,
-                        border: '2px solid #3fcc73'
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        background: 'transparent',
+                        border: 'none',
+                        padding: '0',
+                        boxShadow: 'none',
                     }}
                     onClick={toggleTicketBox}
-                />
+                >
+                    <img
+                        src={helpDeskLog}
+                        alt="Ticket Icon"
+                        style={{
+                            width: '64px',
+                            height: '54px',
+                            background: 'transparent',
+                        }}
+                    />
+                </Button>
             </Tooltip>
 
             {isOpen && (
@@ -352,17 +365,18 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                 onCancel={handleCancel}
                 width={800}
                 styles={{ body: { maxHeight: '500px', overflow: 'auto' } }}
-                footer={[
-                    <Button key="undo" onClick={undoLastAction} disabled={history.length === 0}>
-                        Undo
-                    </Button>,
-                    <Button key="clear" danger onClick={clearCanvas}>
-                        Clear
-                    </Button>,
-                    <Button key="save" type="primary" onClick={saveEditedImage}>
-                        Save Changes
-                    </Button>,
-                ]}
+                footer={null}
+                // footer={[
+                //     <Button key="undo" onClick={undoLastAction} disabled={history.length === 0}>
+                //         Undo
+                //     </Button>,
+                //     <Button key="clear" danger onClick={clearCanvas}>
+                //         Clear
+                //     </Button>,
+                //     <Button key="save" type="primary" onClick={saveEditedImage}>
+                //         Save Changes
+                //     </Button>,
+                // ]}
             >
                 {/* <img
                     src={ticketDetails.screenshot || ''}
@@ -376,7 +390,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                         alt="Screenshot"
                         style={{ width: '100%', display: 'block' }}
                     />
-                    <canvas
+                    {/* <canvas
                         ref={canvasRef}
                         width={500}
                         height={500}
@@ -392,7 +406,7 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                         onMouseMove={draw}
                         onMouseUp={stopDrawing}
                         onMouseLeave={stopDrawing}
-                    />
+                    /> */}
                 </div>
             </Modal>
         </div>
