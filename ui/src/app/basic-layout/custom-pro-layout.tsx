@@ -48,7 +48,7 @@ import ProLayout from '@ant-design/pro-layout';
 import { Dropdown, Tooltip, theme } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, Route, useNavigate } from 'react-router-dom';
 import { logout, useIAMClientState } from '../common/iam-client-react';
 import { IconType } from '../common/iam-client-react/constants/icon-type';
@@ -229,8 +229,13 @@ const menuData = [
         icon: <InboxOutlined  />,
       },
       {
+        path: '/dc-security-in',
+        name: 'Security Check In',
+        icon: <SafetyOutlined  />,
+      },
+      {
         path: '/dc-security',
-        name: 'Security Check',
+        name: 'Security Check Out',
         icon: <SafetyOutlined  />,
       },
       {
@@ -247,6 +252,7 @@ export const CustomProLayout = (props: CustomProLayoutProps) => {
   const [dark, setDark] = useState(false);
   const [sideBar, setSideBar] = useState(true);
   const authdata = JSON.parse(localStorage.getItem('userName'))
+  const [collapsed, setCollapsed] = useState(true);
 
   const navigate = useNavigate();
   const {
@@ -338,6 +344,30 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
       icon: item.icon,
       children: item.children ? transformMenuData(item.children) : undefined,
     }));
+
+    const handleMouseEnter = () => {
+      setCollapsed(false);
+    };
+  
+    const handleMouseLeave = () => {
+      setCollapsed(true);
+    };
+  
+    useEffect(() => {
+      const sidebar = document.querySelector('.ant-pro-sider');
+      if (sidebar) {
+        sidebar.addEventListener('mouseenter', handleMouseEnter);
+        sidebar.addEventListener('mouseleave', handleMouseLeave);
+      }
+  
+      return () => {
+        if (sidebar) {
+          sidebar.removeEventListener('mouseenter', handleMouseEnter);
+          sidebar.removeEventListener('mouseleave', handleMouseLeave);
+        }
+      };
+    }, []);
+    
   
   return (
     <ProConfigProvider dark={dark}>
@@ -350,6 +380,8 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
         <ProLayout
           title=""
           logo={<img src={dark ? Asset : Asset} />}
+          collapsed={collapsed} // Link collapsed state
+          onCollapse={(value) => setCollapsed(value)} // Sync manual collapses
           locale="en-US"
           siderWidth={240}
           colorPrimary={colorPrimary}

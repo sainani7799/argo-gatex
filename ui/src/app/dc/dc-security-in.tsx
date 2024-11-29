@@ -60,7 +60,7 @@ import {
       const unitValue = authdata?.unitId;
       const req = { unitId: unitValue };
       console.log(req);
-      service.getSecurityGatePass(req).then((res: any) => {
+      service.getSecurityInGatePass(req).then((res: any) => {
         if (res.status) {
           setResponseData(res.data);
         }
@@ -170,7 +170,7 @@ import {
       if (rowData.toAddresser === 'supplier') {
         status = StatusEnum.CLOSED;
       } else {
-        if (rowData.status === StatusEnum.READY_TO_RE_CHECK_IN) {
+        if (rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN) {
           status = StatusEnum.READY_TO_RE_RECIEVE;
         } else {
           status = StatusEnum.READY_TO_RECEIVE;
@@ -306,13 +306,13 @@ import {
               <Divider type="vertical" />
             </Tooltip>
             {/* <Divider type="vertical" /> */}
-            {rowData.status === 'SENT FOR SECURITY CHECK' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK  ? (
+            {rowData.status === 'SENT FOR SECURITY CHECK IN' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN  ? (
               <Popconfirm
                 onConfirm={(e) => {
                     securityIn(rowData);
                 }}
                 title={
-                  rowData.status === 'SENT FOR SECURITY CHECK' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK 
+                  rowData.status === 'SENT FOR SECURITY CHECK IN' || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN
                     ? 'Are You Done Checking'
                     : ''
                 }
@@ -473,13 +473,13 @@ import {
               <Divider type="vertical" />
             </Tooltip>
             {/* <Divider type="vertical" /> */}
-            {rowData.status === 'SENT FOR SECURITY CHECK'  || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK ? (
+            {rowData.status === 'SENT FOR SECURITY CHECK IN'  || rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN ? (
               <Popconfirm
                 onConfirm={(e) => {
                     securityIn(rowData);
                 }}
                 title={
-                  rowData.status === 'SENT FOR SECURITY CHECK'
+                  rowData.status === 'SENT FOR SECURITY CHECK IN'
                     ? 'Are You Done Checking'
                     : ''
                 }
@@ -515,14 +515,14 @@ import {
     ]
   
     return (
-      <Card title={<span style={{ color: 'white' }}>SECURITY CHECK</span>} headStyle={{ backgroundColor: '#047595', color: 'black' }} >
+      <Card title={<span style={{ color: 'white' }}>SECURITY CHECK IN</span>} headStyle={{ backgroundColor: '#047595', color: 'black' }} >
         <Tabs defaultActiveKey="2">
         <TabPane tab="Security Pending" key="2">
             <Table
               columns={columnsSkelton}
               dataSource={responseData.filter(
-                (item) => item.status === 'SENT FOR SECURITY CHECK'||
-                          item.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK
+                (item) => item.status === 'SENT FOR SECURITY CHECK IN'||
+                          item.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN
                         
               )}
               scroll={{ x: 1400, y: 400 }}

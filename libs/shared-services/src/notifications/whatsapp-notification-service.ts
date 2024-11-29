@@ -143,7 +143,18 @@ export class WhatsAppNotificationService {
                         "parameters": [
                             {
                                 "type": "text",
-                                "text":message.buttonParameter
+                                "text":message.buttonParameter1
+                            }
+                        ]
+                    },
+                    {
+                        "type": "button",
+                        "sub_type" : "url",
+                        "index": "1", 
+                        "parameters": [
+                            {
+                                "type": "text",
+                                "text":message.buttonParameter2
                             }
                         ]
                     },

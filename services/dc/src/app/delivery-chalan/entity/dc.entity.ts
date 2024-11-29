@@ -235,6 +235,13 @@ export class DcEntity {
    })
    securityCheckedDate: Date;
 
+   @Column({
+    type: 'timestamp',
+    name: 'expected_return_date',
+    nullable: true 
+   })
+   expectedReturnDate: any;
+
    @Column('varchar', {
     name: 'buyer_team',
     nullable: true

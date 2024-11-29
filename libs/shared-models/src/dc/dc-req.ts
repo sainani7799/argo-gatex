@@ -27,7 +27,8 @@ export class DcReq{
     toDepartmentId?:number;
     buyerTeam?:string;
     dcType?:string;
-    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,attentionPerson?:string,toDepartmentId?:number,buyerTeam?:string , dcType?:string
+    expectedReturnDate?:string;
+    constructor(fromUnitId :number, warehouseId:number, departmentId:number, poNo:string ,modeOfTransport:string, toAddresser:string, addresserNameId:number, weight:string, vehicleNo:string, returnable:string, purpose:string, value:string, status:StatusEnum ,requestedBy:number ,remarks:string,createdUser:string, dcItemDetails:ItemsReq[],updatedUser?:string,isAssignable?:AcceptableEnum,assignBy?:number,attentionPerson?:string,toDepartmentId?:number,buyerTeam?:string , dcType?:string,expectedReturnDate?:string
 
     ){
         this.fromUnitId = fromUnitId;
@@ -52,7 +53,8 @@ export class DcReq{
         this.assignBy = assignBy;
         this.attentionPerson = attentionPerson;
         this.toDepartmentId = toDepartmentId;
-        this.buyerTeam = buyerTeam
-        this.dcType = dcType
+        this.buyerTeam = buyerTeam;
+        this.dcType = dcType;
+        this.expectedReturnDate = expectedReturnDate;
     }
 }

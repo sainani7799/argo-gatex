@@ -171,9 +171,9 @@ const DCSecurity = () => {
       status = StatusEnum.CLOSED;
     } else {
       if (rowData.status === StatusEnum.SENT_FOR_SECURITY_RE_CHECK) {
-        status = StatusEnum.READY_TO_RE_RECIEVE;
+        status = StatusEnum.SENT_FOR_SECURITY_RE_CHECK_IN;
       } else {
-        status = StatusEnum.READY_TO_RECEIVE;
+        status = StatusEnum.SENT_FOR_SECURITY_CHECK_IN;
       }    
     }
     status = status;
