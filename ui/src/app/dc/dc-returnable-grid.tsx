@@ -1,5 +1,5 @@
-import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio, notification } from 'antd';
+import { CheckOutlined, EditOutlined, EyeOutlined, LockOutlined, MoreOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio, notification, Dropdown, Menu, Tag } from 'antd';
 import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
@@ -398,69 +398,121 @@ const DCReturnableGrid = () => {
         {
             title: "Status",
             dataIndex: "status",
+            fixed: "right",
+            width: 200,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
+            render: (status) => {
+                // Define the color based on the status value
+                const color = status === "RECEIVED"
+                    ? "#3c763d" // Green for RECEIVED
+                    : status === "PENDING"
+                        ? "#f0ad4e" // Orange for PENDING
+                        : "#a94442";
+
+                const tagStyle: React.CSSProperties = {
+                    backgroundColor: color,
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    padding: '4px 12px',
+                    textTransform: 'capitalize',
+
+                };
+
+                return (
+                    <Tag style={tagStyle}>
+                        {status.replace(/ /g, ' ')}
+                    </Tag>
+                );
+            },
         },
+
         {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
-            fixed: 'right',
+            fixed: "right",
+            width: 70,
+            outerWidth: '4px',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
-            render: (text, rowData, index) => (
-                <span>
-                    {rowData.status === 'RECEIVED' && userUnitName === rowData.toAddresserName ? (
-                        <Tooltip placement="top" title="Edit">
-                            <EditOutlined
-                                onClick={() => {
-                                    drawerForReturnable(rowData)
-                                }}
-                                style={{ color: "blue", fontSize: 20 }}
-                            />
-                            <Divider type='vertical' />
-                        </Tooltip>
-                    ) : ('')}
-                    <Tooltip placement="top" title="Detail View">
-                        <EyeOutlined
-                            onClick={() => {
-                                navigate(`/dc-detail-view/${rowData.dcId}`)
-                            }}
-                            style={{ color: "blue", fontSize: 20 }}
-                        />
-                        <Divider type='vertical' />
-                    </Tooltip>
-                    {rowData.isDcAssign === 'NO' ? (
-                        <Tooltip placement='top' title="ASSIGN DC TO USER">
-                            <RightOutlined
-                                onClick={() => {
-                                    setDrawerVisible(true);
-                                    form.setFieldValue('dcId', rowData.dcId);
-                                    form.setFieldValue('dcNumber', rowData.dcNumber);
-                                    form.setFieldValue('fromUnit', rowData.fromUnit);
-                                    form.setFieldValue('toAddresserName', rowData.toAddresserName);
-                                    form.setFieldValue('purpose', rowData.purpose)
-                                    form.setFieldValue('created_user', rowData.created_user)
-                                }}
-                                style={{ color: "blue", fontSize: 20 }}
-                            />
-                        </Tooltip>
-                    ) : (
-                        <Tooltip placement='top' title="Already Assigned">
-                            <CheckOutlined
-                                onClick={() => {
-                                    // Handle click for the other icon
-                                }}
-                                style={{ color: "gray", fontSize: 20 }}
-                            />
-                        </Tooltip>
-                    )}
-                </span>
-            ),
+            render: (text, rowData, index) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="edit">
+                            {rowData.status === 'RECEIVED' && userUnitName === rowData.toAddresserName ? (
+                                <Tooltip placement="top" title="Edit">
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <EditOutlined
+                                            style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
+                                            onClick={() => drawerForReturnable(rowData)}
+                                        />
+                                        <span>Edit</span>
+                                    </div>
+                                </Tooltip>
+                            ) : null}
+                        </Menu.Item>
+                        <Menu.Item key="view">
+                            <Tooltip placement="top" title="Detail View">
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <EyeOutlined
+                                        style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
+                                        onClick={() => navigate(`/dc-detail-view/${rowData.dcId}`)}
+                                    />
+                                    <span>Detail View</span>
+                                </div>
+                            </Tooltip>
+                        </Menu.Item>
+                        <Menu.Item key="assign">
+                            {rowData.isDcAssign === 'NO' ? (
+                                <Tooltip placement="top" title="Assign DC to User">
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <RightOutlined
+                                            style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
+                                            onClick={() => {
+                                                setDrawerVisible(true);
+                                                form.setFieldsValue({
+                                                    dcId: rowData.dcId,
+                                                    dcNumber: rowData.dcNumber,
+                                                    fromUnit: rowData.fromUnit,
+                                                    toAddresserName: rowData.toAddresserName,
+                                                    purpose: rowData.purpose,
+                                                    created_user: rowData.created_user,
+                                                });
+                                            }}
+                                        />
+                                        <span>Assign DC to User</span>
+                                    </div>
+                                </Tooltip>
+                            ) : (
+                                <Tooltip placement="top" title="Already Assigned">
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <CheckOutlined
+                                            style={{ color: "gray", fontSize: 20, marginRight: '8px' }}
+                                        />
+                                        <span>Already Assigned</span>
+                                    </div>
+                                </Tooltip>
+                            )}
+                        </Menu.Item>
+                    </Menu>
+                );
 
+                return (
+                    <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+                        <Tooltip placement="top" title="Actions">
+                            <MoreOutlined
+                                style={{ fontSize: 20, cursor: 'pointer', color: '#016582' }}
+                            />
+                        </Tooltip>
+                    </Dropdown>
+                );
+            },
         },
+
 
     ];
 
@@ -576,7 +628,12 @@ const DCReturnableGrid = () => {
     const radioValueInEdit = selectedDc?.toAddresser || " "
     return (
         <Card
-            title={<span style={{ color: "white" }}>GatePass</span>}
+            title={
+                <span style={{ color: "white" }}>
+                    <LockOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />
+                    GatePass
+                </span>
+            }
             // extra={
             //     (
             //         <Link to="/dc-form">

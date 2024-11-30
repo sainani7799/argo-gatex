@@ -1,5 +1,5 @@
-import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select } from 'antd';
+import { CheckOutlined, EditOutlined, EllipsisOutlined, EyeOutlined, LockOutlined, MoreOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Tag, Dropdown, Menu } from 'antd';
 import { AddressService, ApprovalUserService, DcService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
@@ -25,11 +25,11 @@ const DCApprovalGrid = () => {
     const [user, setUser] = useState<any>([]);
     const searchInput = useRef(null);
     const mailService = new EmailService()
-    
-    console.log(authdata,'authdataauthdata')
-    
+
+    console.log(authdata, 'authdataauthdata')
+
     let navigate = useNavigate();
-    
+
     useEffect(() => {
         getGatePassData();
         getAllApprovalUser();
@@ -39,18 +39,18 @@ const DCApprovalGrid = () => {
 
     const acceptDc = (rec) => {
         console.log(rec)
-       const email = rec.emailId
-       const dcNumber = rec.dcNumber
-       console.log(email , 'email')
-       const approvedBy = authdata?.userName
-       const currentDate = new Date();
-       const approvedDate = moment(currentDate).format('YYYY-MM-DD')
-       const fromUnit = rec.fromUnit
-       const toUnit = rec.toAddresserName
-       const dcId = rec.dcId
-       const status = 'Approved ✅'
+        const email = rec.emailId
+        const dcNumber = rec.dcNumber
+        console.log(email, 'email')
+        const approvedBy = authdata?.userName
+        const currentDate = new Date();
+        const approvedDate = moment(currentDate).format('YYYY-MM-DD')
+        const fromUnit = rec.fromUnit
+        const toUnit = rec.toAddresserName
+        const dcId = rec.dcId
+        const status = 'Approved ✅'
 
-        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId,status)
+        sendDcMailForGatePass(email, dcNumber, approvedDate, approvedBy, fromUnit, toUnit, dcId, status)
 
         const dto: AcceptReq = {
             isAccepted: AcceptableEnum.YES,
@@ -59,7 +59,7 @@ const DCApprovalGrid = () => {
             status: StatusEnum.SENT_FOR_SECURITY_CHECK,
         };
         console.log(dto);
-        
+
         service.acceptDc(dto).then(res => {
             if (res.status) {
                 message.success('DC Accept Successfully');
@@ -75,17 +75,17 @@ const DCApprovalGrid = () => {
     const rejectDc = (rec) => {
         console.log(rec)
         const email = rec.emailId
-       const dcNumber = rec.dcNumber
-       console.log(email , 'email')
-       const approvedBy = authdata?.userName
-       const currentDate = new Date();
-       const approvedDate = moment(currentDate).format('YYYY-MM-DD')
-       const fromUnit = rec.fromUnit
-       const toUnit = rec.toAddresserName
-       const dcId = rec.dcId
-       const status = 'Rejected ❌'
+        const dcNumber = rec.dcNumber
+        console.log(email, 'email')
+        const approvedBy = authdata?.userName
+        const currentDate = new Date();
+        const approvedDate = moment(currentDate).format('YYYY-MM-DD')
+        const fromUnit = rec.fromUnit
+        const toUnit = rec.toAddresserName
+        const dcId = rec.dcId
+        const status = 'Rejected ❌'
 
-        sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId,status)
+        sendDcMailForGatePass(email, dcNumber, approvedDate, approvedBy, fromUnit, toUnit, dcId, status)
         const dto: RejectDcReq = {
             dcId: Number(rec.dcId),
             isAccepted: AcceptableEnum.REJECT,
@@ -162,7 +162,7 @@ const DCApprovalGrid = () => {
     }
 
     let mailerSent = false;
-    async function sendDcMailForGatePass(email,dcNumber,approvedDate,approvedBy,fromUnit,toUnit,dcId , status) {
+    async function sendDcMailForGatePass(email, dcNumber, approvedDate, approvedBy, fromUnit, toUnit, dcId, status) {
         const dcDetails = new DcEmailModel();
         // dcDetails.to = form.getFieldValue('emailId');
         dcDetails.to = email;
@@ -276,7 +276,7 @@ const DCApprovalGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -326,7 +326,7 @@ const DCApprovalGrid = () => {
             responsive: ['sm'],
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
@@ -334,15 +334,15 @@ const DCApprovalGrid = () => {
             dataIndex: "dcNumber",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcNumber')
         },
         {
-            title: "Dc Type",
+            title: "DC Type",
             dataIndex: "dcType",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcType')
         },
         {
@@ -350,28 +350,28 @@ const DCApprovalGrid = () => {
             dataIndex: "fromUnit",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "To Unit/Supplier/Buyer",
             dataIndex: "toAddresserName",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Requested By",
             dataIndex: "requestedBy",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Attention Person",
             dataIndex: "attentionPerson",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         // {
         //     title: "created User",
@@ -382,7 +382,7 @@ const DCApprovalGrid = () => {
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, record) => {
                 const createdDate = record.createdDate;
                 if (createdDate) {
@@ -395,47 +395,104 @@ const DCApprovalGrid = () => {
         {
             title: "Status",
             dataIndex: "status",
+            fixed: 'right',
+            width: 200,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+
+            }),
+            render: (status) => {
+                let color = 'default';
+                if (status === 'OPEN') color = 'gray';
+                if (status === 'ASSIGN TO APPROVAL') color = 'blue';
+                if (status === 'SENT FOR APPROVAL') color = 'blue';
+                if (status === 'CANCELED') color = 'red';
+                if (status === 'REJECTED') color = 'red';
+                if (status === 'SENT FOR SECURITY CHECK') color = 'orange';
+                if (status === 'READY TO RECEIVE') color = 'green';
+                if (status === 'SENT FOR SECURITY RE CHECK') color = 'orange';
+                if (status === 'RECEIVED') color = 'green';
+                if (status === 'RETURNED') color = 'green';
+                if (status === 'READY TO RETURN') color = 'yellow';
+                if (status === 'NOT RETURNED') color = 'red';
+                if (status === 'CLOSED') color = 'gray';
+                if (status === 'SENT FOR SECURITY CHECK IN') color = 'orange';
+                if (status === 'SENT FOR SECURITY RE CHECK IN') color = 'orange';
+
+
+                const tagStyle: React.CSSProperties = {
+                    backgroundColor: color,
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    padding: '4px 12px',
+                    textTransform: 'capitalize',
+                };
+
+                return (
+                    <Tag style={tagStyle}>
+                        {status.replace(/ /g, ' ')}
+                    </Tag>
+                );
+            },
         },
         {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
+            fixed: "right",
+            width: 70,
+            outerWidth: '4px',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, rowData, index) => (
                 <span>
-                    <Tooltip placement="top" title="Detail View">
-                        <EyeOutlined
-                            onClick={() => {
-                                console.log(rowData.dcId);
-                                navigate(`/dc-detail-view/${rowData.dcId}`)
-                            }}
-                            style={{ color: "blue", fontSize: 20 }}
+                    <Dropdown
+                        overlay={
+                            <Menu>
+                                <Menu.Item key="1">
+                                    <Tooltip placement="top" title="Detail View">
+                                        <EyeOutlined
+                                            onClick={() => {
+                                                console.log(rowData.dcId);
+                                                navigate(`/dc-detail-view/${rowData.dcId}`)
+                                            }}
+                                            style={{ color: "blue", fontSize: 20 }}
+                                        />
+                                        <span>Detail View</span>
+                                    </Tooltip>
+                                </Menu.Item>
+                                <Menu.Item key="2">
+                                    <Popconfirm title="Are you sure to accept dc?"
+                                        onConfirm={() => acceptDc(rowData)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button type="primary" size="small">Accept</Button>
+                                    </Popconfirm>
+                                </Menu.Item>
+                                <Menu.Item key="3">
+                                    <Popconfirm title="Are you sure to reject dc?"
+                                        onConfirm={() => rejectDc(rowData)}
+                                        okText="Yes"
+                                        cancelText="No"
+                                    >
+                                        <Button size="small">Reject</Button>
+                                    </Popconfirm>
+                                </Menu.Item>
+                            </Menu>
+                        }
+                        trigger={['click']}
+                    >
+                        <Button
+                            type="text"
+                            icon={<MoreOutlined style={{ fontSize: 20, color: "#1890ff" }} />}
                         />
-                        <Divider type='vertical' />
-                    </Tooltip>
-                    <Popconfirm title="Are you sure to accept dc?"
-          onConfirm={() => acceptDc(rowData)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button type="primary">Accept</Button></Popconfirm><Divider type='vertical' />
-          <Popconfirm title="Are you sure to reject dc?"
-          onConfirm={() => rejectDc(rowData)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button >Reject</Button></Popconfirm>
-                    {/* <Button type="primary" onClick={() => acceptDc(rowData)}>Accept</Button> */}
-                    {/* <Button  onClick={() => rejectDc(rowData)}>Reject</Button> */}
+                    </Dropdown>
                 </span>
             ),
-
-        },
+        }
 
     ];
 
@@ -443,7 +500,11 @@ const DCApprovalGrid = () => {
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>Gate Pass Approval</span>}
+            title={<span style={{ color: "white" }}>
+                <LockOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />
+                Gate Pass Approval
+            </span>
+            }
             headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData.filter(item => item.status === "SENT FOR APPROVAL")}

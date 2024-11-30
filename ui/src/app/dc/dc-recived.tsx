@@ -1,5 +1,5 @@
-import { CheckOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Divider, Drawer, Form, Input, Popconfirm, Row, Select, Switch, Table, Tooltip, message } from "antd";
+import { CheckOutlined, EyeOutlined, LockOutlined, MoreOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Divider, Drawer, Dropdown, Form, Input, Menu, Popconfirm, Row, Select, Switch, Table, Tag, Tooltip, message } from "antd";
 import { AcceptableEnum, DcEmailModel, ReceivedDcReq, StatusEnum } from "libs/shared-models";
 import { DcService, EmailService } from "libs/shared-services";
 import moment from "moment";
@@ -72,7 +72,7 @@ const DCReceived = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -116,29 +116,29 @@ const DCReceived = () => {
     const receivedDc = (rowData) => {
         const date = new Date();
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        console.log(rowData , 'rowData')
+        console.log(rowData, 'rowData')
         // const status = rowData.returnable ==='N' ? StatusEnum.CLOSED : StatusEnum.RECEIVED
-        let status 
+        let status
         let returnedDate = null;
         let receivedDate = null;
         if (rowData.status === StatusEnum.READY_TO_RE_RECIEVE) {
             status = StatusEnum.RETURNED;
             returnedDate = String(date);
-            console.log(returnedDate , 'rettt')
-            sendDcMailForGatePass(rowData.emailId , rowData.dcNumber , rowData.created_user , rowData.dcId , rowData.fromUnit , rowData.toAddresserName)
-          } else {
+            console.log(returnedDate, 'rettt')
+            sendDcMailForGatePass(rowData.emailId, rowData.dcNumber, rowData.created_user, rowData.dcId, rowData.fromUnit, rowData.toAddresserName)
+        } else {
             status = rowData.returnable === 'N' ? StatusEnum.CLOSED : StatusEnum.RECEIVED;
             receivedDate = String(date)
-          }
-          console.log('Final Received Date:', receivedDate);
-          console.log('Final Returned Date:', returnedDate);
+        }
+        console.log('Final Received Date:', receivedDate);
+        console.log('Final Returned Date:', returnedDate);
 
-        const dto = new ReceivedDcReq(rowData.dcId,AcceptableEnum.YES,status,
-        authdata?.userName,
-        receivedDate,
-        returnedDate
-    )
-        console.log(dto , 'dto')
+        const dto = new ReceivedDcReq(rowData.dcId, AcceptableEnum.YES, status,
+            authdata?.userName,
+            receivedDate,
+            returnedDate
+        )
+        console.log(dto, 'dto')
         // dto.logAllProperties()
         service.receivedDc(dto).then(res => {
             if (res.status) {
@@ -153,8 +153,8 @@ const DCReceived = () => {
         })
     }
 
-    async function sendDcMailForGatePass(email , dcNumber , createdUser , dcId , fromUnit , toUnit) {
-        console.log(email , 'email')
+    async function sendDcMailForGatePass(email, dcNumber, createdUser, dcId, fromUnit, toUnit) {
+        console.log(email, 'email')
         const dcDetails = new DcEmailModel();
         dcDetails.dcNo = dcNumber
         dcDetails.to = email
@@ -236,7 +236,7 @@ const DCReceived = () => {
             responsive: ['sm'],
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
         {
@@ -244,7 +244,7 @@ const DCReceived = () => {
             dataIndex: "dcNumber",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcNumber')
         },
         {
@@ -252,7 +252,7 @@ const DCReceived = () => {
             dataIndex: "dcType",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('dcType')
         },
         {
@@ -260,44 +260,44 @@ const DCReceived = () => {
             dataIndex: "fromUnit",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "To Unit",
             dataIndex: "toAddresserName",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Requested By",
             dataIndex: "requestedBy",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Attention Person",
             dataIndex: "attentionPerson",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Received By",
             dataIndex: "receivedBy",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Received Date",
             dataIndex: "receivedDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
-            render :(val,rec) =>{
-                return val ? moment(val).format('YYYY-MM-DD HH:mm') :'-'
+            }),
+            render: (val, rec) => {
+                return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-'
             }
         },
         {
@@ -305,7 +305,7 @@ const DCReceived = () => {
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, record) => {
                 const createdDate = record.createdDate;
                 if (createdDate) {
@@ -318,75 +318,95 @@ const DCReceived = () => {
         {
             title: "Status",
             dataIndex: "status",
+            width:200,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
+            render: (status) => {
+                // Define the color based on the status value
+                const color = status === "RECEIVED"
+                    ? "#3c763d" // Green for RECEIVED
+                    : status === "PENDING"
+                        ? "#f0ad4e" // Orange for PENDING
+                        : "#a94442";
+
+                const tagStyle: React.CSSProperties = {
+                    backgroundColor: color,
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    padding: '4px 12px',
+                    textTransform: 'capitalize',
+
+                };
+
+                return (
+                    <Tag style={tagStyle}>
+                        {status.replace(/ /g, ' ')}
+                    </Tag>
+                );
+            },
         },
+
         {
             title: 'Action',
             dataIndex: 'requestNumber',
+            fixed: "right",
+            width: 70,
+            outerWidth: '4px',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             align: "center",
-            render: (text, rowData, index) => (
-                <span>
-                    <Tooltip placement="top" title="Detail View">
-                        <EyeOutlined
-                            onClick={() => {
-                                console.log(rowData.dcId);
+            render: (text, rowData, index) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="1" icon={<EyeOutlined />} onClick={() => {
+                            console.log(rowData.dcId);
+                            navigate(`/dc-detail-view/${rowData.dcId}`, { state: rowData.dcId })
+                        }}>
+                            Detail View
+                        </Menu.Item>
+                        {rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE ? (
+                            <Menu.Item key="2" icon={<RightSquareOutlined />} onClick={() => receivedDc(rowData)}>
+                                Receive DC
+                            </Menu.Item>
+                        ) : (
+                            <Menu.Item key="3" icon={<CheckOutlined />} disabled>
+                                DC Received
+                            </Menu.Item>
+                        )}
+                    </Menu>
+                );
 
-                                navigate(`/dc-detail-view/${rowData.dcId}`, { state: rowData.dcId })
-                            }}
-                            style={{ color: "blue", fontSize: 20 }}
+                return (
+                    <Dropdown overlay={menu} trigger={['click']}>
+                        <Button
+                            type="text"
+                            icon={<MoreOutlined style={{ fontSize: 20, color: "#1890ff" }} />}
                         />
-                        <Divider type='vertical' />
+                    </Dropdown>
+                );
 
-                    </Tooltip>
-                    <Divider type="vertical" />
-                    {rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE ? (
-                  <Popconfirm 
-                  onConfirm={e =>{receivedDc(rowData)}}
-                  title={
-                    rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE
-                      ? 'Are you sure to Receive The Dc ?'
-                      :  ''
-                  }
-                >
-                  <Switch  size="default"
-                      className={ rowData.received_dc ==='YES' && rowData.status !== StatusEnum.READY_TO_RE_RECIEVE ? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.received_dc ==='YES' && rowData.status !== StatusEnum.READY_TO_RE_RECIEVE  } 
-                    />
-                  
-                </Popconfirm>
-                )
-                :(
-                        <Tooltip placement='top' title="DC Received">
-                            <CheckOutlined
-                                onClick={() => {
-                                    // Handle click for the other icon
-                                }}
-                                style={{ color: "gray", fontSize: 20 }}
-                            />
-                        </Tooltip>
-                    )}
-                </span>
-            ),
+            },
         },
 
     ];
-console.log(responseData)
+    console.log(responseData)
     return (
         <Card
-            title={<span style={{ color: "white" }}>Received GatePass's</span>}
+            title={<span style={{ color: "white" }}>
+                <LockOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />
+
+                Received GatePass's
+            </span>
+            }
 
 
             headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
             <Table columns={columnsSkelton} dataSource={responseData.filter(
-              (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE || item.status === StatusEnum.RETURNED
+                (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE || item.status === StatusEnum.RETURNED
             )}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
