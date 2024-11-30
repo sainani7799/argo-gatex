@@ -56,6 +56,10 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/getSecurityGatePass', dto);
     }
 
+    async getSecurityInGatePass(dto: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getSecurityInGatePass', dto);
+    }
+
     async securityReport(dto: any): Promise<any> {
         return await this.axiosPostCall(this.DcController + '/securityReport', dto);
     }

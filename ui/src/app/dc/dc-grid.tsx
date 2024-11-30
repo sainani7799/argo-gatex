@@ -1,5 +1,5 @@
 import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio, Tabs } from 'antd';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio, Tabs, Tag } from 'antd';
 import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
@@ -375,21 +375,21 @@ const DCGrid = () => {
               }),
         },
         {
-            title: "Attention Person",
+            title: "Receiver",
             dataIndex: "attentionPerson",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
               }),
             render:(item) =>  item ? item : '-' 
         },
-        {
-            title: "Users Buyer Team",
-            dataIndex: "buyerTeam",
-            onHeaderCell: () => ({
-                style: { backgroundColor: '#047595', color: 'white' },
-              }),
-            render:(item) =>  item ? item : '-' 
-        },
+        // {
+        //     title: "Users Buyer Team",
+        //     dataIndex: "buyerTeam",
+        //     onHeaderCell: () => ({
+        //         style: { backgroundColor: '#047595', color: 'white' },
+        //       }),
+        //     render:(item) =>  item ? item : '-' 
+        // },
         {
             title: "Purpose",
             dataIndex: "purpose",
@@ -402,7 +402,7 @@ const DCGrid = () => {
         //     dataIndex: "created_user"
         // },
         {
-            title: "Created Date",
+            title: "Created On",
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
@@ -419,14 +419,35 @@ const DCGrid = () => {
         {
             title: "Status",
             dataIndex: "status",
+            fixed: 'right',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
               }),
+              render: (status) => {
+                let color = 'default';
+                if (status === 'OPEN') color = 'gray';
+                if (status === 'ASSIGN_TO_APPROVAL') color = 'blue';
+                if (status === 'SENT_FOR_APPROVAL') color = 'blue';
+                if (status === 'CANCELED') color = 'red';
+                if (status === 'REJECTED') color = 'red';
+                if (status === 'SENT_FOR_SECURITY_CHECK') color = 'orange';
+                if (status === 'READY_TO_RECEIVE') color = 'green';
+                if (status === 'SENT_FOR_SECURITY_RE_CHECK') color = 'orange';
+                if (status === 'READY_TO_RE_RECIEVE') color = 'green';
+                if (status === 'RETURNED') color = 'green';
+                if (status === 'READY_TO_RETURN') color = 'yellow';
+                if (status === 'NOT_RETURNED') color = 'red';
+                if (status === 'CLOSED') color = 'gray';
+                if (status === 'SENT_FOR_SECURITY_CHECK_IN') color = 'orange';
+                if (status === 'SENT_FOR_SECURITY_RE_CHECK_IN') color = 'orange';
+                return <Tag color={color}>{status}</Tag>;
+              },
         },
         {
             title: 'Action',
             dataIndex: 'requestNumber',
             align: "center",
+            fixed: 'right',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
               }),

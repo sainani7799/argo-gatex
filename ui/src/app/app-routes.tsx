@@ -42,6 +42,7 @@ import newLogin from './login/newLogin';
 import NewLogin from './login/newLogin';
 import CustomProLayout from './basic-layout/custom-pro-layout';
 import { LoginComponent } from './common';
+import DCSecurityIn from './dc/dc-security-in';
 
 const AppRoutes = () => {
   const router = createHashRouter(
@@ -103,6 +104,7 @@ const AppRoutes = () => {
           <Route path="/dc-approval-grid" element={<DCApprovalGrid />} />
           <Route path="/dc-received" element={<DCReceived />} />
           <Route path="/dc-security" element={<DCSecurity />} />
+          <Route path="/dc-security-in" element={<DCSecurityIn />} />
           <Route path="/security-report" element={<SecurityHeadReport />} />
           <Route path="/dc-detail-view/:id" element={<DcDetailsView dcId={undefined} />} />
           <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />

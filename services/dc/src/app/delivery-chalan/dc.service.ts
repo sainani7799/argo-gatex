@@ -31,29 +31,31 @@ export class DcService {
     private dcAdapter: DcAdapter,
     private unitsRepo: UnitRepository,
     private dcItemSRepo: DcItemEntityRepository,
-    private wpService: WhatsAppNotificationService,
+    private wpService: WhatsAppNotificationService
   ) {}
 
   async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
-    console.log('-create api call')
+    console.log('-create api call');
     try {
-        const slNoNonReturnable = await this.dcRepo.count({
-          where: { dcType: 'nonReturnable' }
+      const slNoNonReturnable = await this.dcRepo.count({
+        where: { dcType: 'nonReturnable' },
       });
       const slNoReturnable = await this.dcRepo.count({
-          where: { dcType: 'returnable' }
+        where: { dcType: 'returnable' },
       });
 
-      const slNo = req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
-      console.log(slNo , 'slNO')
+      const slNo =
+        req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
+      console.log(slNo, 'slNO');
 
       const nextSlNo = slNo + 1;
       console.log(nextSlNo, 'Next slNo');
 
-      const formattedSlNo = String(Math.min(Math.max(nextSlNo, 1), 99999)).padStart(5,'0');
+      const formattedSlNo = String(
+        Math.min(Math.max(nextSlNo, 1), 99999)
+      ).padStart(5, '0');
       // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
-      
-      
+
       const currentDate = new Date();
       const currentYear = currentDate.getFullYear();
       const lastTwoDigitsOfYear = String(currentYear).slice(-2);
@@ -62,17 +64,18 @@ export class DcService {
 
       const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
       const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
-      console.log(dcNum , 'dcNum')
+      console.log(dcNum, 'dcNum');
 
       req.dcNumber = dcNum;
       const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
         req,
         isUpdate
       );
-      console.log(convertedDcEntity,'----coneverted entity');
+      console.log(convertedDcEntity, '----coneverted entity');
       const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
       // console.log(savedDcEntity,'--save dc entity')
-      const savedDcDto: DcDto =this.dcAdapter.convertEntityToDto(savedDcEntity);
+      const savedDcDto: DcDto =
+        this.dcAdapter.convertEntityToDto(savedDcEntity);
       if (savedDcDto) {
         const response = new CommonResponse(
           true,
@@ -85,93 +88,102 @@ export class DcService {
         throw new Error('DC saved but issue while transforming into DTO');
       }
     } catch (error) {
-      console.log('dc creation log')
-      console.log(error)
+      console.log('dc creation log');
+      console.log(error);
       throw error;
     }
   }
 
-  async updateDc(dto: AssignReq): Promise<CommonResponse> {
+  // async updateDc(dto: AssignReq): Promise<CommonResponse> {
+  //   const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+  //   if (dcRecord) {
+  //     const updateData = await this.dcRepo.update(
+  //       { dcId: dto.dcId },
+  //       {
+  //         isAssignable: dto.isAssignable,
+  //         emailId: dto.emailId,
+  //         assignBy: dto.assignBy,
+  //         status: dto.status,
+  //       }
+  //     );
+  //     return new CommonResponse(true, 333, 'update successfully', updateData);
+  //   } else {
+  //     return new CommonResponse(false, 6666, 'something went wrong');
+  //   }
+  // }
+
+  async updateDc(dto: any): Promise<CommonResponse> {
+    // Fetch the existing record
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-    if (dcRecord) {
-      const updateData = await this.dcRepo.update(
-        { dcId: dto.dcId },
-        {
-          isAssignable: dto.isAssignable,
-          emailId: dto.emailId,
-          assignBy: dto.assignBy,
-          status: dto.status,
-        }
+
+    if (!dcRecord) {
+      return new CommonResponse(
+        false,
+        6666,
+        'Something went wrong: DC record not found.'
       );
-      return new CommonResponse(true, 333, 'update successfully', updateData);
-    } else {
-      return new CommonResponse(false, 6666, 'something went wrong');
+    }
+
+    // Update the DC record
+    const updateData = await this.dcRepo.update(
+      { dcId: dto.dcId },
+      {
+        isAssignable: dto.isAssignable,
+        emailId: dto.emailId,
+        assignBy: dto.assignBy,
+        status: dto.status,
+      }
+    );
+
+    // Generate WhatsApp Message Content
+    const contacts = ['917036716813']; // List of contacts (as an array)
+    let messageContent = `Please find the Gate Pass details below: \\n`
+    messageContent += `*DC No: ${dto.dcNumber || 'N/A'}* \\n`
+    messageContent += `*From: ${dto.fromUnit || 'N/A'}* \\n`
+    messageContent += `*To: ${dto.toAddresserName || 'N/A'}* \\n`
+    messageContent += `*Created By: ${dto.created_user || 'N/A'}* \\n`
+    messageContent += `*Purpose: ${dto.purpose || 'N/A'}* \\n`
+    messageContent +=`Please click the link below for details`;
+
+    // Parameters for the WhatsApp template
+    const parameters = [
+      { type: 'text', text: messageContent }, // Message body
+    ];
+    try {
+      for (const contact of contacts) {
+        // Construct the request for WhatsApp API
+        const req = new MessageParameters(
+          contact,
+          'gatepass_approval',
+          parameters,
+          'en_us',
+          dto.dcId,
+          dto.dcId
+        );
+
+        // Send the message
+        const messageStatus =
+          await this.wpService.sendMessageWithButtonParamsThroughFbApi(req);
+
+        // Log the status
+        if (!messageStatus.status) {
+          console.error(`Failed to send message to ${contact}:`, messageStatus);
+        } else {
+          console.log(`Message sent successfully to ${contact}`);
+        }
+      }
+
+      return new CommonResponse(
+        true,
+        333,
+        'Updated and sent WhatsApp messages successfully',
+        updateData
+      );
+    } catch (err) {
+      console.error('Error while sending WhatsApp messages:', err);
+      return new CommonResponse(false, 11108, 'Error while sending message');
     }
   }
-
-//   async updateDc(dto: any): Promise<CommonResponse> {
-//     // Fetch the existing record
-//     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-
-//     if (!dcRecord) {
-//         return new CommonResponse(false, 6666, 'Something went wrong: DC record not found.');
-//     }
-
-//     // Update the DC record
-//     const updateData = await this.dcRepo.update(
-//         { dcId: dto.dcId },
-//         {
-//             isAssignable: dto.isAssignable,
-//             emailId: dto.emailId,
-//             assignBy: dto.assignBy,
-//             status: dto.status,
-//         }
-//     );
-
-//     // Generate WhatsApp Message Content
-//     const contacts = ['917036716813']; // List of contacts (as an array)
-//     const messageContent = `Dear Team, \\n The Gate Pass details have been updated. \\n DC NO: ${dto.dcId || '-'} \\n Status: ${dto.status || '-'} \\n Assigned By: ${dto.assignBy || '-'} \\n Thank you. \\n <p>Please take action using the buttons below:</p> \\n 
-//      <div style="margin-top: 10px;"> \\n
-//         <a href="https://yourdomain.com/accept/GP24102600852" 
-//            style="display: inline-block; padding: 10px 20px; color: white; background-color: green; text-decoration: none; border-radius: 5px; margin-right: 10px;"> \\n
-//            ✅ Accept Gate Pass \\n
-//         </a> \\n
-//         <a href="https://yourdomain.com/reject/GP24102600852" 
-//            style="display: inline-block; padding: 10px 20px; color: white; background-color: red; text-decoration: none; border-radius: 5px;"> \\n
-//            ❌ Reject Gate Pass \\n
-//         </a> \\n
-//     </div>`;
-
-//     // Parameters for the WhatsApp template
-//     const parameters = [
-//         { "type": "text", "text": moment().format("YYYY-MM-DD") }, // Current date
-//         { "type": "text", "text": messageContent }, // Message content
-//     ];
-
-//     try {
-//         for (const contact of contacts) {
-//             // Construct the request for WhatsApp API
-//             const req = new MessageParameters(contact, "vrs_alert", parameters, "en_us");
-
-//             // Send the message
-//             const messageStatus = await this.wpService.sendMessageThroughFbApi(req);
-
-//             // Log the status
-//             if (!messageStatus.status) {
-//                 console.error(`Failed to send message to ${contact}:`, messageStatus);
-//             } else {
-//                 console.log(`Message sent successfully to ${contact}`);
-//             }
-//         }
-
-//         return new CommonResponse(true, 333, "Updated and sent WhatsApp messages successfully", updateData);
-//     } catch (err) {
-//         console.error("Error while sending WhatsApp messages:", err);
-//         return new CommonResponse(false, 11108, "Error while sending message");
-//     }
-// }
-
-
 
   async acceptDc(dto: AcceptReq): Promise<CommonResponse> {
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
@@ -204,28 +216,25 @@ export class DcService {
   }
 
   async receivedDc(dto: ReceivedDcReq): Promise<CommonResponse> {
-    console.log(dto , 'dtooo')
+    console.log(dto, 'dtooo');
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-      if (dcRecord) {
-        const updateData: {[key : string]: any} = {
-          status: dto.status,
-        };  
-      
-        if (dto.returnedDate) {
-          updateData.returnedDate = dto.returnedDate;
-        } else if (dto.receivedDate !== null ) {
-          updateData.receivedDate = dto.receivedDate;
-          updateData.receivedDc = dto.receivedDc;
-          updateData.receivedUser = dto.receivedUser;
-        }
+    if (dcRecord) {
+      const updateData: { [key: string]: any } = {
+        status: dto.status,
+      };
 
-        console.log(updateData , 'update data')
-        // FIXME: in console it is coming only returned date  , but it is updating recieved DC also 
-      
-        const result = await this.dcRepo.update(
-          { dcId: dto.dcId },
-          updateData
-        ); 
+      if (dto.returnedDate) {
+        updateData.returnedDate = dto.returnedDate;
+      } else if (dto.receivedDate !== null) {
+        updateData.receivedDate = dto.receivedDate;
+        updateData.receivedDc = dto.receivedDc;
+        updateData.receivedUser = dto.receivedUser;
+      }
+
+      console.log(updateData, 'update data');
+      // FIXME: in console it is coming only returned date  , but it is updating recieved DC also
+
+      const result = await this.dcRepo.update({ dcId: dto.dcId }, updateData);
 
       // const updateData = await this.dcRepo.update(
       //   { dcId: dto.dcId },
@@ -397,6 +406,31 @@ export class DcService {
     }
   }
 
+  async getSecurityInGatePass(req: UnitReq): Promise<CommonResponse> {
+    try {
+      const query = `SELECT dc.security_user as CheckedUser , dc.sec_checked_date as secUserDate ,dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
+            w.warehouse_name AS warehouseName,
+            CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN dc.to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
+            po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
+            weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user , dc.dc_type AS dcType
+             FROM shahi_dc dc
+            LEFT JOIN shahi_units u ON u.id = dc.from_unit_id
+            LEFT JOIN shahi_warehouse w ON w.warehouse_id = dc. warehouse_id
+            LEFT JOIN shahi_department d ON d.id = dc.department_id
+            LEFT JOIN shahi_units au ON au.id = dc.addresser_name_id AND dc.to_addresser = 'unit'
+            LEFT JOIN shahi_suppliers s ON s.supplier_id = dc.addresser_name_id AND dc.to_addresser = 'supplier'
+            LEFT JOIN shahi_suppliers b ON b.supplier_id = dc.addresser_name_id AND dc.to_addresser = 'buyer'
+            LEFT JOIN shahi_employees e ON e.employee_id = dc.requested_by
+            LEFT JOIN shahi_employees eu ON eu.employee_id = dc.assign_by
+            LEFT JOIN shahi_employees ea ON ea.employee_id = dc.accepted_user
+            WHERE to_addresser IN ('unit', 'supplier','buyer') AND dc.addresser_name_id = ${req.unitId} ORDER BY dc.created_at DESC`;
+      const data = await this.dcRepo.query(query);
+      return new CommonResponse(true, 111, 'data retried successfully', data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async ticketsExcelDownload(values): Promise<Buffer> {
     const res = await this.securityReport(values);
     const ws = XLSX.utils.json_to_sheet(res.data);
@@ -464,8 +498,8 @@ export class DcService {
       if (req.purpose) {
         query = query + ` AND dc.purpose =  '${req.purpose}'`;
       }
-      if(req.createdBy){
-        query = query + ` AND dc.created_user = '${req.createdBy}'`
+      if (req.createdBy) {
+        query = query + ` AND dc.created_user = '${req.createdBy}'`;
       }
       query = query + '  ORDER BY dc.created_at DESC';
       console.log(query);
@@ -570,16 +604,33 @@ export class DcService {
     }
   }
 
-  async updateRetunableData(req:any):Promise<CommonResponse>{
-    console.log(req , 'req')
-    try{
-      await this.dcRepo.update({dcId:req.dcId},{toDepartmentId:req.dc.toDepartmentId,attentionPerson:req.dc.attentionPerson , status: req.status , fromUnitId:req.dc.fromUnitIdOnly , addresserNameId : req.dc.toUnitId , returnedBy : req.returnedBy  })
-      for (const i of req.dcItem){
-        await this.dcItemSRepo.update({dcItemId:i.dcItemId},{returningQty:i.returnQty,returnRemarks:i.returnRemarks,writeOffQty:i.writeOffQty})
+  async updateRetunableData(req: any): Promise<CommonResponse> {
+    console.log(req, 'req');
+    try {
+      await this.dcRepo.update(
+        { dcId: req.dcId },
+        {
+          toDepartmentId: req.dc.toDepartmentId,
+          attentionPerson: req.dc.attentionPerson,
+          status: req.status,
+          fromUnitId: req.dc.fromUnitIdOnly,
+          addresserNameId: req.dc.toUnitId,
+          returnedBy: req.returnedBy,
+        }
+      );
+      for (const i of req.dcItem) {
+        await this.dcItemSRepo.update(
+          { dcItemId: i.dcItemId },
+          {
+            returningQty: i.returnQty,
+            returnRemarks: i.returnRemarks,
+            writeOffQty: i.writeOffQty,
+          }
+        );
       }
-      return new CommonResponse(true,1,'Data updated successfully')
-    }catch(err){
-      return new CommonResponse(false,0,'Updation failed')
+      return new CommonResponse(true, 1, 'Data updated successfully');
+    } catch (err) {
+      return new CommonResponse(false, 0, 'Updation failed');
     }
   }
 
@@ -609,9 +660,10 @@ export class DcService {
     }
   }
 
-
   async getIdByDc(req: DcDto): Promise<CommonResponse> {
-    const data = await this.dcRepo.findOne({ where: { dcNumber: req.dcNumber } });
+    const data = await this.dcRepo.findOne({
+      where: { dcNumber: req.dcNumber },
+    });
     if (data) {
       return new CommonResponse(true, 1, 'Data retrieved', data);
     }

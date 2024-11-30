@@ -3,8 +3,9 @@ import { Button, Checkbox, Col, Form, message, Modal, Radio, Row, Select, Toolti
 import TextArea from 'antd/es/input/TextArea';
 import axios from 'axios';
 import html2canvas from 'html2canvas';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import './ticket-raiser.css';
+import helpDeskLog from './helpx-logo.png';
 
 
 // Define the interface for the ticket
@@ -35,6 +36,13 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
         application: appClientId,
     });
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [history, setHistory] = useState<string[]>([]);
+    const [editedScreenshot, setEditedScreenshot] = useState<string | null>(null);
+
+
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
+    const imageRef = useRef<HTMLImageElement | null>(null);
 
     // Toggle the ticket box
     const toggleTicketBox = async () => {
@@ -152,24 +160,133 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
     const showModal = () => setIsModalVisible(true);
     const handleCancel = () => setIsModalVisible(false);
 
+    // Start drawing
+    const startDrawing = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                setIsDrawing(true);
+            }
+        }
+    };
+
+    // Continue drawing
+    const draw = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+        if (!isDrawing) return;
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                ctx.lineTo(x, y);
+                ctx.strokeStyle = 'red'; // Pen color
+                ctx.lineWidth = 2; // Pen width
+                ctx.stroke();
+            }
+        }
+    };
+
+    // Stop drawing
+    const stopDrawing = () => {
+        if (!isDrawing) return;
+        setIsDrawing(false);
+
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const url = canvas.toDataURL('image/png');
+            setHistory((prevHistory) => [...prevHistory, url]); // Save current state
+        }
+    };
+
+    // Clear canvas
+    const clearCanvas = () => {
+        const canvas = canvasRef.current;
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        setHistory([]); // Reset history
+    };
+
+    // Undo the last action
+    const undoLastAction = () => {
+        if (history.length > 0) {
+            const canvas = canvasRef.current;
+            const lastState = history[history.length - 2]; // Get the second last state
+            setHistory((prevHistory) => prevHistory.slice(0, -1)); // Remove last state
+            if (canvas && lastState) {
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.src = lastState;
+                img.onload = () => {
+                    if (ctx) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0); // Restore the last state
+                    }
+                };
+            }
+        }
+    };
+
+    // Save the edited image
+    const saveEditedImage = () => {
+        const canvas = canvasRef.current;
+        const image = imageRef.current;
+        if (canvas && image) {
+            const mergedCanvas = document.createElement('canvas');
+            const ctx = mergedCanvas.getContext('2d');
+            mergedCanvas.width = image.width;
+            mergedCanvas.height = image.height;
+
+            if (ctx) {
+                ctx.drawImage(image, 0, 0); // Draw the original image
+                ctx.drawImage(canvas, 0, 0); // Overlay the canvas edits
+                const finalImage = mergedCanvas.toDataURL('image/png');
+                setEditedScreenshot(finalImage)
+            }
+        }
+        setIsModalVisible(false);
+    };
     return (
         <div className='ticket-riser'>
             {/* Floating button to open/close the ticket box */}
             <Tooltip title="Raise Ticket">
                 <Button
-                    shape="circle"
-                    // icon={<MessageOutlined />}
-                    icon={<img src="./assets/pro-ticket.ico" alt="favicon" style={{ width: 25, height: 25, borderRadius: '50%' }} />}
-                    size="large"
                     style={{
                         position: 'fixed',
                         bottom: '20px',
                         right: '20px',
                         zIndex: 1000,
-                        border: '2px solid #3fcc73'
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        background: 'transparent',
+                        border: 'none',
+                        padding: '0',
+                        boxShadow: 'none',
                     }}
                     onClick={toggleTicketBox}
-                />
+                >
+                    <img
+                        src={helpDeskLog}
+                        alt="Ticket Icon"
+                        style={{
+                            width: '64px',
+                            height: '54px',
+                            background: 'transparent',
+                        }}
+                    />
+                </Button>
             </Tooltip>
 
             {isOpen && (
@@ -222,10 +339,10 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
                                 </Form.Item></Col>
                                 <Col>
                                     <div style={{ display: 'flex', marginTop: '15px' }}>
-                                        <label htmlFor="">Include Attachment</label>&nbsp;&nbsp;&nbsp;
                                         <Form.Item name="isImageNeeded" valuePropName="checked" label='Include Attachment' noStyle>
                                             <Checkbox />
                                         </Form.Item>
+                                        &nbsp;&nbsp;&nbsp;<label htmlFor="">Include Attachment</label>
                                     </div>
                                 </Col>
                             </Row>
@@ -245,16 +362,52 @@ export const TicketRaiser: React.FC<TicketRaiserProps> = ({ appClientId, apiEndp
             <Modal
                 title="Screenshot"
                 open={isModalVisible}
-                footer={null}
                 onCancel={handleCancel}
                 width={800}
                 styles={{ body: { maxHeight: '500px', overflow: 'auto' } }}
+                footer={null}
+                // footer={[
+                //     <Button key="undo" onClick={undoLastAction} disabled={history.length === 0}>
+                //         Undo
+                //     </Button>,
+                //     <Button key="clear" danger onClick={clearCanvas}>
+                //         Clear
+                //     </Button>,
+                //     <Button key="save" type="primary" onClick={saveEditedImage}>
+                //         Save Changes
+                //     </Button>,
+                // ]}
             >
-                <img
+                {/* <img
                     src={ticketDetails.screenshot || ''}
                     alt="Screenshot"
                     style={{ maxWidth: '100%', maxHeight: '500px' }}
-                />
+                /> */}
+                <div style={{ position: 'relative', width: '100%', height: 'auto' }}>
+                    <img
+                        ref={imageRef}
+                        src={ticketDetails.screenshot || ''}
+                        alt="Screenshot"
+                        style={{ width: '100%', display: 'block' }}
+                    />
+                    {/* <canvas
+                        ref={canvasRef}
+                        width={500}
+                        height={500}
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            cursor: 'crosshair',
+                        }}
+                        onMouseDown={startDrawing}
+                        onMouseMove={draw}
+                        onMouseUp={stopDrawing}
+                        onMouseLeave={stopDrawing}
+                    /> */}
+                </div>
             </Modal>
         </div>
     );
