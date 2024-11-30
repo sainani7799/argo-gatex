@@ -146,7 +146,29 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="dateOfBirth" label="Date OF Birth"  >
+                        <Form.Item name="dateOfBirth" label="Date OF Birth" 
+                         rules={[
+                            { required: true, message: 'Please select your date of birth!' },
+                            {
+                              validator: (_, value) => {
+                                if (!value) {
+                                  return Promise.resolve(); // No value, just show required error
+                                }
+                                const today = new Date();
+                                const birthDate = value.toDate(); // Convert moment object to JS Date
+                                const age = today.getFullYear() - birthDate.getFullYear();
+                                const monthDifference = today.getMonth() - birthDate.getMonth();
+                      
+                                if (
+                                  age > 18 ||
+                                  (age === 18 && monthDifference >= 0 && today.getDate() >= birthDate.getDate())
+                                ) {
+                                  return Promise.resolve(); // Valid age
+                                }
+                                return Promise.reject(new Error('You must be at least 18 years old!'));
+                              },
+                            },
+                          ]} >
                             <DatePicker
                                 style={{ width: '100%' }}
                             />
@@ -155,7 +177,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
 
 
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="gender" label="Gender:"
+                        <Form.Item name="gender" label="Gender"
                             rules={[
                                 { required: props.isUpdate ? true : false  },
                             ]}
@@ -165,6 +187,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 options={[
                                     { value: 'male', label: 'Male' },
                                     { value: 'Female', label: 'Female' },
+                                    { value: 'other', label: 'Other' },
                                 ]}
                             />
                         </Form.Item>
@@ -194,13 +217,17 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                     message: `Don't Allow letters and Spaces`
                                 }
                             ]}>
-                            <Input />
+                            <Input placeholder="Enter Mobile Number"/>
                         </Form.Item>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="emailId" label="Email Id:"
+                        <Form.Item name="emailId" label="Email Id"
                             rules={[
                                 { required: props.isUpdate ? false : true  },
+                                { 
+                                    type: 'email', 
+                                    message: 'Please enter a valid email address!' 
+                                },
                             ]}
                         >
                             <Input placeholder=" Enter Email Id" />
@@ -256,7 +283,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
+                    {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="section" label="Section" rules={[
                                 { required: false },
                             ]}>
@@ -276,7 +303,7 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                                 })}
                             </Select>
                         </Form.Item>
-                    </Col>
+                    </Col> */}
 
                     <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
                         <Form.Item name="unit" label="Unit"
@@ -300,11 +327,18 @@ const EmployeeForm = (props: EmployeeFormProps) => {
                             </Select>
                         </Form.Item>
                     </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5, offset: 1 }} lg={{ span: 5, offset: 1 }} xl={{ span: 5, offset: 1 }} style={{ margin: '1%' }} >
-                        <Form.Item name="address" label="Address" >
-                            <TextArea />
-                        </Form.Item>
-                    </Col>
+                    <Col 
+  xs={{ span: 24 }} 
+  sm={{ span: 24 }} 
+  md={{ span: 8, offset: 1 }} 
+  lg={{ span: 8, offset: 1 }} 
+  xl={{ span: 8, offset: 1 }} 
+  style={{ margin: '1%' }}
+>
+  <Form.Item name="address" label="Address">
+    <TextArea />
+  </Form.Item>
+</Col>
                 </Row>
                 <Row justify="end">
                     <Col span={40} style={{ textAlign: 'right' }}>
