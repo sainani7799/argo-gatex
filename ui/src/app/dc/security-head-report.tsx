@@ -3,6 +3,7 @@ import {
   DownloadOutlined,
   ExclamationCircleOutlined,
   EyeOutlined,
+  FileTextOutlined,
   RightOutlined,
   RightSquareOutlined,
   SearchOutlined,
@@ -22,6 +23,7 @@ import {
   Switch,
   Table,
   Tabs,
+  Tag,
   Tooltip,
   message,
 } from 'antd';
@@ -68,6 +70,7 @@ export default function SecurityHeadReport() {
   const empService = new EmployeeService();
   const Option = Select;
   let navigate = useNavigate();
+  const [pageSize, setPageSize] = React.useState(10);
 
   useEffect(() => {
     // securityReport();
@@ -507,6 +510,13 @@ export default function SecurityHeadReport() {
       render: (text, object, index) => (page - 1) * 10 + (index + 1),
     },
     {
+      title: 'DC Type',
+      dataIndex: 'dcType',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      })
+    },
+    {
       title: 'DC Number',
       dataIndex: 'dcNumber',
       onHeaderCell: () => ({
@@ -580,17 +590,17 @@ export default function SecurityHeadReport() {
         style: { backgroundColor: '#047595', color: 'white' },
       }),
     },
-    {
-      title: 'Rate',
-      dataIndex: 'rate',
-    },
-    {
-      title: 'Amount',
-      dataIndex: 'amount',
-      onHeaderCell: () => ({
-        style: { backgroundColor: '#047595', color: 'white' },
-      }),
-    },
+    // {
+    //   title: 'Rate',
+    //   dataIndex: 'rate',
+    // },
+    // {
+    //   title: 'Amount',
+    //   dataIndex: 'amount',
+    //   onHeaderCell: () => ({
+    //     style: { backgroundColor: '#047595', color: 'white' },
+    //   }),
+    // },
     {
       title: 'Created By',
       dataIndex: 'createdBy',
@@ -615,6 +625,10 @@ export default function SecurityHeadReport() {
     {
       title: 'Checked Date & Time',
       dataIndex: 'checkedDate',
+      width:150,
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -629,6 +643,28 @@ export default function SecurityHeadReport() {
     {
       title: 'Received Date & Time',
       dataIndex: 'receivedDate',
+      width:150,
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
+      render: (val, rec) => {
+        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
+      },
+    },
+    {
+      title: 'Returned By',
+      dataIndex: 'returnedBy',
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
+    },
+    {
+      title: 'Returned Date & Time',
+      dataIndex: 'returnedDate',
+      width:150,
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
       render: (val, rec) => {
         return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
       },
@@ -644,6 +680,7 @@ export default function SecurityHeadReport() {
     {
       title: "Users Buyer Team",
       dataIndex: "buyerTeam",
+      width:150,
       onHeaderCell: () => ({
         style: { backgroundColor: '#047595', color: 'white' },
       }),
@@ -651,9 +688,44 @@ export default function SecurityHeadReport() {
     {
       title: 'Status',
       dataIndex: 'dcStatus',
+      width:260,
       onHeaderCell: () => ({
         style: { backgroundColor: '#047595', color: 'white' },
       }),
+      render: (status) => {
+        let color = 'default';
+        if (status === 'OPEN') color = 'gray';
+        if (status === 'ASSIGN TO APPROVAL') color = 'blue';
+        if (status === 'SENT FOR APPROVAL') color = 'blue';
+        if (status === 'CANCELED') color = 'red';
+        if (status === 'REJECTED') color = 'red';
+        if (status === 'SENT FOR SECURITY CHECK') color = 'orange';
+        if (status === 'READY TO RECEIVE') color = 'green';
+        if (status === 'SENT FOR SECURITY RE CHECK') color = 'orange';
+        if (status === 'RECEIVED') color = 'green';
+        if (status === 'RETURNED') color = 'green';
+        if (status === 'READY TO RETURN') color = 'yellow';
+        if (status === 'NOT RETURNED') color = 'red';
+        if (status === 'CLOSED') color = 'gray';
+        if (status === 'SENT FOR SECURITY CHECK IN') color = 'orange';
+        if (status === 'SENT FOR SECURITY RE CHECK IN') color = 'orange';
+
+
+        const tagStyle: React.CSSProperties = {
+          backgroundColor: color,
+          color: 'white',
+          fontSize: '14px',
+          fontWeight: '500',
+          padding: '4px 12px',
+          textTransform: 'capitalize',
+        };
+
+        return (
+          <Tag style={tagStyle}>
+            {status.replace(/ /g, ' ')}
+          </Tag>
+        );
+      },
     },
     {
       title: 'Remarks',
@@ -662,27 +734,7 @@ export default function SecurityHeadReport() {
         style: { backgroundColor: '#047595', color: 'white' },
       }),
     },
-    {
-      title: 'DC Type',
-      dataIndex: 'dcType',
-    },
-    {
-      title: 'Returned By',
-      dataIndex: 'returnedBy',
-      onHeaderCell: () => ({
-        style: { backgroundColor: '#047595', color: 'white' },
-      }),
-    },
-    {
-      title: 'Returned Date & Time',
-      dataIndex: 'returnedDate',
-      onHeaderCell: () => ({
-        style: { backgroundColor: '#047595', color: 'white' },
-      }),
-      render: (val, rec) => {
-        return val ? moment(val).format('YYYY-MM-DD HH:mm') : '-';
-      },
-    },
+    
   ];
 
   const onReset = () => {
@@ -694,10 +746,15 @@ export default function SecurityHeadReport() {
   }
   console.log(dcDataDrop)
 
+  const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
+    setPage(pagination.current);
+    setPageSize(pagination.pageSize);
+}
+
   return (
     <>
       <Card
-        title={<span style={{ color: 'white' }}> Gate Pass DC Transaction reports</span>}
+        title={<span style={{ color: 'white' }}> <FileTextOutlined style={{ fontSize: "24px", marginRight: "8px" }} /> Gate Pass DC Transaction reports</span>}
         headStyle={{ backgroundColor: '#047595', color: 'black' }}
       >
         <Form form={form} layout="vertical">
@@ -739,7 +796,7 @@ export default function SecurityHeadReport() {
               lg={{ span: 5, offset: 1 }}
               xl={{ span: 5, offset: 1 }}
             >
-              <Form.Item name="dcNumber" label="Dc Number">
+              <Form.Item name="dcNumber" label="DC Number">
                 <Select allowClear showSearch placeholder={'Select'}>
                   {dcDataDrop.map((d) => {
                     return <Option value={d.dcId}>{d.dcNumber}</Option>;
@@ -871,15 +928,28 @@ export default function SecurityHeadReport() {
                 <Button onClick={onReset}>Reset</Button>
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 5 }} lg={{ span: 6 }} xl={{ span: 2 }}>
-                <Button onClick={exportExcel} icon={<DownloadOutlined />}>Excel</Button>
+                <Button onClick={exportExcel} icon={<DownloadOutlined />}  style={{backgroundColor: '#28a745',
+        borderColor: '#28a745',color: 'white',}}>Excel</Button>
               </Col>
           </Row>
+
         </Form>
         {
           responseData.length > 0 && (
             <Table
             columns={columnsSkelton}
             dataSource={responseData}
+            pagination={{
+              current: page,
+              pageSize: pageSize,
+              showSizeChanger: true,
+              pageSizeOptions: ['10', '20', '50', '100'],
+              onChange: (page, pageSize) => {
+                  setPage(page);
+                  setPageSize(pageSize);
+              }
+          }}
+          onChange={onChange}
             scroll={{ x: 3000, y: 400 }}
           />
             )
