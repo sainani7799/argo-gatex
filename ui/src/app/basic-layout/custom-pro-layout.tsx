@@ -56,6 +56,7 @@ import { MenuItem, treeRouter } from '../common/utils';
 import { HeaderFullscreen, NotificationComponent, OnlineStatus } from '../components/common';
 import { components } from './all-components';
 import Asset from '../../app/common/iam-client-react/login-component/images/gatex-white.png';
+import userIcon from './user.jpg';
 
 
 import { svgIcons } from './all-svg-icons';
@@ -417,7 +418,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
             pathname,
           }}
           avatarProps={{
-            // src: userIcon,
+            src: userIcon,
             size: 'small',
             title: (
               <OnlineStatus>

@@ -40,6 +40,7 @@ const DCReturnableGrid = () => {
     const [formData, setFormData] = useState([])
     const departmentService = new DepartmentService();
     const formRefs = useRef([]);
+    const [pageSize, setPageSize] = React.useState(10);
 
 
 
@@ -311,6 +312,7 @@ const DCReturnableGrid = () => {
         {
             title: "DC Number",
             dataIndex: "dcNumber",
+            width : 120,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
@@ -334,6 +336,7 @@ const DCReturnableGrid = () => {
         {
             title: "To Unit/Supplier/Buyer",
             dataIndex: "toAddresserName",
+            width:150,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
@@ -381,7 +384,7 @@ const DCReturnableGrid = () => {
             }),
         },
         {
-            title: "Created Date",
+            title: "Created On",
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
@@ -396,10 +399,26 @@ const DCReturnableGrid = () => {
             }
         },
         {
+            title: "Expected Return Date",
+            dataIndex: "expectedReturnDate",
+            width: 150,
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+            }),
+            render: (text, record) => {
+                const ExpectedReturnDate = record.expectedReturnDate;
+                if (ExpectedReturnDate) {
+                    return moment(ExpectedReturnDate).format('DD-MM-YYYY');
+                } else {
+                    return '-';
+                }
+            }
+        },
+        {
             title: "Status",
             dataIndex: "status",
             fixed: "right",
-            width: 200,
+            width: 150,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
@@ -445,10 +464,11 @@ const DCReturnableGrid = () => {
                         <Menu.Item key="edit">
                             {rowData.status === 'RECEIVED' && userUnitName === rowData.toAddresserName ? (
                                 <Tooltip placement="top" title="Edit">
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}
+                                    onClick={() => drawerForReturnable(rowData)}>
                                         <EditOutlined
                                             style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
-                                            onClick={() => drawerForReturnable(rowData)}
+                                            
                                         />
                                         <span>Edit</span>
                                     </div>
@@ -457,10 +477,11 @@ const DCReturnableGrid = () => {
                         </Menu.Item>
                         <Menu.Item key="view">
                             <Tooltip placement="top" title="Detail View">
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}
+                                onClick={() => navigate(`/dc-detail-view/${rowData.dcId}`)}>
                                     <EyeOutlined
                                         style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
-                                        onClick={() => navigate(`/dc-detail-view/${rowData.dcId}`)}
+                                        
                                     />
                                     <span>Detail View</span>
                                 </div>
@@ -469,10 +490,7 @@ const DCReturnableGrid = () => {
                         <Menu.Item key="assign">
                             {rowData.isDcAssign === 'NO' ? (
                                 <Tooltip placement="top" title="Assign DC to User">
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <RightOutlined
-                                            style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
-                                            onClick={() => {
+                                    <div style={{ display: 'flex', alignItems: 'center' }} onClick={() => {
                                                 setDrawerVisible(true);
                                                 form.setFieldsValue({
                                                     dcId: rowData.dcId,
@@ -482,7 +500,10 @@ const DCReturnableGrid = () => {
                                                     purpose: rowData.purpose,
                                                     created_user: rowData.created_user,
                                                 });
-                                            }}
+                                            }}>
+                                        <RightOutlined
+                                            style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
+                                            
                                         />
                                         <span>Assign DC to User</span>
                                     </div>
@@ -626,6 +647,11 @@ const DCReturnableGrid = () => {
 
 
     const radioValueInEdit = selectedDc?.toAddresser || " "
+
+    const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
+        setPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    }
     return (
         <Card
             title={
@@ -650,12 +676,22 @@ const DCReturnableGrid = () => {
                 dataSource={responseData.filter(
                     (item) => item.status === 'RECEIVED' && item.dcType === 'returnable'
                 )}
-
+                pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                    onChange: (page, pageSize) => {
+                        setPage(page);
+                        setPageSize(pageSize);
+                    }
+                }}
+                onChange={onChange}
                 scroll={{ x: 1400, y: 400 }} size='small' />
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Returnable' width={window.innerWidth > 768 ? '95%' : '99%'}
                 onClose={closeDrawer} open={editDrawerVisible} closable={true} >
-                <Card title={<span style={{ color: 'white' }}>DC Form</span>}
-                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }}
+                <Card title={<span style={{ color: 'white' }}><LockOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />DC Form</span>}
+                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', border: 0 }}
                 // extra={<span><Button onClick={() => navigate('/dc-return-view')}>Back</Button></span>} 
                 >
                     <Form
@@ -668,36 +704,33 @@ const DCReturnableGrid = () => {
                             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item style={{ display: "none" }} name="createdUser"  >
                                 </Form.Item>
-                                <Form.Item name="fromUnitId" label="Unit" rules={[
+                                <Form.Item name="fromUnitId" label="From Unit" rules={[
                                     { required: true },
                                 ]} >
                                     <Input style={{ textAlign: 'center' }} disabled />
                                 </Form.Item>
-
                                 <Form.Item name="fromUnitIdOnly" label="From unit" hidden rules={[
                                     { required: true },
                                 ]} >
                                     <Input style={{ textAlign: 'center' }} disabled />
                                 </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                                <Form.Item name="departmentId" label="From Department" rules={[
+                                    { required: true },
+                                ]}>
 
+                                    <Input style={{ textAlign: 'center' }} disabled />
+
+                                </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item name="warehouseId" label="Warehouse" rules={[
                                     { required: true },
                                 ]}>
                                     <Input style={{ textAlign: 'center' }} disabled />
                                 </Form.Item>
-
-                                <Form.Item name="departmentId" label="Department" rules={[
-                                    { required: true },
-                                ]}>
-
-                                    <Input style={{ textAlign: 'center' }} disabled />
-
-                                </Form.Item>
-                                <Form.Item name="requestedBy" label="Requested By">
-                                    <Input style={{ textAlign: 'center' }} disabled />
-
-                                </Form.Item>
-                            </Col>
+                                </Col>
                             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item name="toAddresser" label="Unit / Buyer /Supplier" rules={[
                                     { required: true },
@@ -714,19 +747,21 @@ const DCReturnableGrid = () => {
                                         <Radio value={"buyer"}>Buyer</Radio>
                                     </Radio.Group>
                                 </Form.Item>
-
                                 <Form.Item name="toUnitId" label="To unit" hidden rules={[
                                     { required: true },
                                 ]} >
                                     <Input style={{ textAlign: 'center' }} disabled />
                                 </Form.Item>
+                                </Col>
+                                <Col xs={24} sm={12} md={8} lg={8} xl={8}>
 
                                 <Form.Item name="addresserNameId" label="To" rules={[
                                     { required: true },
                                 ]}>
                                     <Input disabled />
                                 </Form.Item>
-
+                                </Col>
+                                <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 {radioValueInEdit === "unit" && (
                                     <>
                                         <Form.Item name="toDepartmentId" label="To Department" rules={[
@@ -748,32 +783,47 @@ const DCReturnableGrid = () => {
                                                 })}
                                             </Select>
                                         </Form.Item>
-                                        <Form.Item name="attentionPerson" label="Attention Person(Receiver side)">
-                                            <Input />
-                                        </Form.Item>
                                     </>
                                 )}
                             </Col>
+                            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                                        <Form.Item name="attentionPerson" label="Receiver">
+                                            <Input />
+                                        </Form.Item>
+                                        </Col>
                             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item name="purpose" label="Purpose" rules={[
                                     { required: true },
                                 ]}>
                                     <Input disabled placeholder="Enter Purpose" />
                                 </Form.Item>
+                            </Col>
+                            {/* <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item name="value" label="Value">
 
                                     <Input placeholder="Enter Value" disabled />
                                 </Form.Item>
-                                <Form.Item name="status" label="Status" >
-                                    <Input placeholder="Enter Value" disabled />
-
-                                </Form.Item>
+                            </Col> */}
+                            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                                 <Form.Item name="buyerTeam" label="Users Buyer Team" rules={[
                                     { required: true },
                                 ]}>
                                     <Input disabled />
                                 </Form.Item>
                             </Col>
+                            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                                <Form.Item name="status" label="Status" >
+                                    <Input placeholder="Enter Value" disabled />
+
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+                                <Form.Item name="requestedBy" label="Requested By">
+                                    <Input style={{ textAlign: 'center' }} disabled />
+
+                                </Form.Item>
+                            </Col>
+                            <Col xs={24} sm={12} md={8} lg={8} xl={8}></Col>
                         </Row>
                         <Row gutter={24} >
                             <Col xs={24} sm={24} md={8} lg={8} xl={18}>
@@ -796,7 +846,7 @@ const DCReturnableGrid = () => {
                         <Row gutter={24}>
                             <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                                 <Card size='small' title={<span style={{ color: 'white' }}>From Address</span>}
-                                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', border: 0 }} >
                                     <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                         <Descriptions.Item label="Line One">
                                             {addressData[0]?.lineOne}
@@ -827,7 +877,7 @@ const DCReturnableGrid = () => {
                             </Col>
                             <Col className="cardComp" xs={24} sm={24} md={12} xl={12}>
                                 <Card size='small' title={<span style={{ color: 'white' }}>To Address</span>}
-                                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#7d33a2', border: 0 }} >
+                                    style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', border: 0 }} >
                                     <Descriptions column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
                                         <Descriptions.Item label="Line One">
                                             {toAddressData[0]?.lineOne}

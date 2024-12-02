@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import DcPrint from './dc-print'
 import moment from "moment";
+import { ArrowLeftOutlined, PrinterOutlined } from "@ant-design/icons";
 
 export interface DcViewProps {
   dcId: number
@@ -144,22 +145,22 @@ console.log(data , 'data')
       hideOnXs: true,
       hideOnSm: true,
     },
-    {
-      title: 'Rate',
-      key: 'Rate',
-      dataIndex: 'rate',
-      align: 'right',
-      hideOnXs: true,
-      hideOnSm: true,
-    },
-    {
-      title: 'Amount',
-      key: 'Amount',
-      dataIndex: 'amount',
-      align: 'right',
-      hideOnXs: true,
-      hideOnSm: true,
-    },
+    // {
+    //   title: 'Rate',
+    //   key: 'Rate',
+    //   dataIndex: 'rate',
+    //   align: 'right',
+    //   hideOnXs: true,
+    //   hideOnSm: true,
+    // },
+    // {
+    //   title: 'Amount',
+    //   key: 'Amount',
+    //   dataIndex: 'amount',
+    //   align: 'right',
+    //   hideOnXs: true,
+    //   hideOnSm: true,
+    // },
   ];
 
   if (dcType === 'returnable') {
@@ -225,21 +226,32 @@ console.log(data , 'data')
   }
   const isDetailView = location.pathname === '/dc-detail-view';
   
-
+  const conditionForReturn = true;
   return (
     <div>
       <Card title="Gate Pass Detail View" headStyle={{ backgroundColor: '#047595', border: 0, color: 'black' }} extra={
         <span style={{ color: 'white' }}>
-          {data[0]?.is_accepted === 'YES' ? <Button className='panel_button' onClick={openPrint}>
+          {data[0]?.is_accepted === 'YES' ? <Button className='panel_button' onClick={openPrint} icon={<PrinterOutlined />}
+          style={{backgroundColor: '#4CAF50',color: 'white',border: 'none',marginRight: '10px',}}>
             Print
           </Button> : ''}
           <Button
             className='panel_button'
             onClick={() => 
               {
-                const routePath = security ? `/dc-security` : `/dc-view`;
+              const routePath = security ? `/dc-security` : `/dc-view`;
+                //                 let routePath;
+// if (security) {
+//   routePath = `/dc-security`;
+// } else if (conditionForReturn) {
+//   routePath = `/dc-return-view`;
+// } else {
+//   routePath = `/dc-view`;
+// }
               navigate(routePath)
             }}
+            icon={<ArrowLeftOutlined />}
+            style={{backgroundColor: '#f44336',color: 'white',border: 'none' }}
           >
             BACK
           </Button>

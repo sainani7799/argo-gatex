@@ -23,6 +23,7 @@ const DCReceived = () => {
     const searchInput = useRef(null);
     const service = new DcService()
     const mailService = new EmailService()
+    const [pageSize, setPageSize] = React.useState(10);
 
 
     let navigate = useNavigate();
@@ -301,7 +302,7 @@ const DCReceived = () => {
             }
         },
         {
-            title: "Created Date",
+            title: "Created On",
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
@@ -319,6 +320,7 @@ const DCReceived = () => {
             title: "Status",
             dataIndex: "status",
             width:200,
+            fixed:'right',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
             }),
@@ -361,18 +363,18 @@ const DCReceived = () => {
             render: (text, rowData, index) => {
                 const menu = (
                     <Menu>
-                        <Menu.Item key="1" icon={<EyeOutlined />} onClick={() => {
+                        <Menu.Item key="1" icon={<EyeOutlined  style={{ color: "blue", fontSize: 20,marginRight: '8px' }}/>} onClick={() => {
                             console.log(rowData.dcId);
                             navigate(`/dc-detail-view/${rowData.dcId}`, { state: rowData.dcId })
                         }}>
                             Detail View
                         </Menu.Item>
                         {rowData.received_dc === 'NO' || rowData.status === StatusEnum.READY_TO_RE_RECIEVE ? (
-                            <Menu.Item key="2" icon={<RightSquareOutlined />} onClick={() => receivedDc(rowData)}>
+                            <Menu.Item key="2" icon={<RightSquareOutlined  style={{ color: "blue", fontSize: 20,marginRight: '8px' }} />} onClick={() => receivedDc(rowData)}>
                                 Receive DC
                             </Menu.Item>
                         ) : (
-                            <Menu.Item key="3" icon={<CheckOutlined />} disabled>
+                            <Menu.Item key="3" icon={<CheckOutlined  style={{ color: "blue", fontSize: 20,marginRight: '8px' }}/>} disabled>
                                 DC Received
                             </Menu.Item>
                         )}
@@ -393,6 +395,13 @@ const DCReceived = () => {
 
     ];
     console.log(responseData)
+
+    
+    const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
+        setPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    }
+
     return (
         <Card
             title={<span style={{ color: "white" }}>
@@ -408,6 +417,17 @@ const DCReceived = () => {
             <Table columns={columnsSkelton} dataSource={responseData.filter(
                 (item) => item.status === 'READY TO RECEIVE' || item.status === 'RECEIVED' || item.status === StatusEnum.READY_TO_RE_RECIEVE || item.status === StatusEnum.RETURNED
             )}
+            pagination={{
+                current: page,
+                pageSize: pageSize,
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50', '100'],
+                onChange: (page, pageSize) => {
+                    setPage(page);
+                    setPageSize(pageSize);
+                }
+            }}
+            onChange={onChange}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} open={drawerVisible} closable={true}>

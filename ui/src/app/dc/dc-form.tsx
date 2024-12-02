@@ -1,6 +1,7 @@
 import {
   EditOutlined,
   LoadingOutlined,
+  LockOutlined,
   MinusCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -601,7 +602,7 @@ const DCForm = (props: DCFormProps) => {
   return (
     <>
       <Card
-        title={<span style={{ color: 'white' }}>DC Form</span>}
+        title={<span style={{ color: 'white' }}><LockOutlined style={{ fontSize: '24px', color: 'white', marginRight: '8px' }} />DC Form</span>}
         style={{ textAlign: 'center' }}
         headStyle={{ backgroundColor: '#047595', color: 'black', border: 0 }}
         extra={

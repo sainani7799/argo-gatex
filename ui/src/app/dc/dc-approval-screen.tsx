@@ -25,6 +25,7 @@ const DCApprovalGrid = () => {
     const [user, setUser] = useState<any>([]);
     const searchInput = useRef(null);
     const mailService = new EmailService()
+    const [pageSize, setPageSize] = React.useState(10);
 
     console.log(authdata, 'authdataauthdata')
 
@@ -378,7 +379,7 @@ const DCApprovalGrid = () => {
         //     dataIndex: "created_user"
         // },
         {
-            title: "Created Date",
+            title: "Created On",
             dataIndex: "createdDate",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
@@ -453,14 +454,16 @@ const DCApprovalGrid = () => {
                             <Menu>
                                 <Menu.Item key="1">
                                     <Tooltip placement="top" title="Detail View">
+                                    <div style={{ display: 'flex', alignItems: 'center',cursor: 'pointer' }}
+                                    onClick={() => {
+                                        console.log(rowData.dcId);
+                                        navigate(`/dc-detail-view/${rowData.dcId}`)
+                                    }}>
                                         <EyeOutlined
-                                            onClick={() => {
-                                                console.log(rowData.dcId);
-                                                navigate(`/dc-detail-view/${rowData.dcId}`)
-                                            }}
-                                            style={{ color: "blue", fontSize: 20 }}
+                                            style={{ color: "blue", fontSize: 20,marginRight: '8px' }}
                                         />
                                         <span>Detail View</span>
+                                    </div>
                                     </Tooltip>
                                 </Menu.Item>
                                 <Menu.Item key="2">
@@ -496,6 +499,10 @@ const DCApprovalGrid = () => {
 
     ];
 
+    const onChange = (pagination: any, filters: any, sorter: any, extra: any) => {
+        setPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    }
 
 
     return (
@@ -507,7 +514,17 @@ const DCApprovalGrid = () => {
             }
             headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData.filter(item => item.status === "SENT FOR APPROVAL")}
+            <Table columns={columnsSkelton} dataSource={responseData.filter(item => item.status === "SENT FOR APPROVAL")}   pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                    onChange: (page, pageSize) => {
+                        setPage(page);
+                        setPageSize(pageSize);
+                    }
+                }}
+                onChange={onChange}
                 scroll={{ x: 1400, y: 400 }} />
             <Drawer styles={{ body: { paddingBottom: '80' } }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} open={drawerVisible} closable={true}>
