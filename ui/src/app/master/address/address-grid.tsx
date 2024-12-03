@@ -1,5 +1,5 @@
-import { EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer } from 'antd';
+import { EditOutlined, EnvironmentOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Dropdown, Menu } from 'antd';
 import { AddressService } from 'libs/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ const AddressGrid = () => {
     const [responseData, setResponseData] = useState<any>([]);
     const service = new AddressService();
     const [page, setPage] = React.useState(1);
+    const pageSize = 10;
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [drawerVisible, setDrawerVisible] = useState(false);
@@ -30,26 +31,26 @@ const AddressGrid = () => {
             }
         });
     };
-  
 
-    const updateAddress=(address: CreateAddressDto)=>{
+
+    const updateAddress = (address: CreateAddressDto) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
-        address.updatedUser=authdata.userName
+        address.updatedUser = authdata.userName
         console.log(address.updatedUser)
-        service.updateAddress(address).then(res=>{
-            if(res.status){
+        service.updateAddress(address).then(res => {
+            if (res.status) {
                 message.success('Updated Successfully');
                 setDrawerVisible(false);
                 getAddress()
-    
-            }else{
+
+            } else {
                 message.error(res.internalMessage);
-    
+
             }
         }).catch(err => {
             message.error(err.message);
-          })
-      }
+        })
+    }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -61,13 +62,13 @@ const AddressGrid = () => {
         clearFilters();
         setSearchText('');
     };
-    const openFormWithData=(viewData: CreateAddressDto)=>{
+    const openFormWithData = (viewData: CreateAddressDto) => {
         setDrawerVisible(true);
         setSelectedAddress(viewData);
     }
     const closeDrawer = () => {
         setDrawerVisible(false);
-      }
+    }
 
     const getColumnSearchProps = (dataIndex: string) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -85,7 +86,7 @@ const AddressGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -125,22 +126,23 @@ const AddressGrid = () => {
             )
                 : null
     })
-    const deleteAddress = (dto:CreateAddressDto) => {
-        dto.isActive=dto.isActive?false:true;
-        service.activateOrDeactivateAddress(dto).then(res => { console.log(res);
-          if (res.status) {
-            message.success('Success'); 
-          } else {
-              message.error(res.internalMessage);
+    const deleteAddress = (dto: CreateAddressDto) => {
+        dto.isActive = dto.isActive ? false : true;
+        service.activateOrDeactivateAddress(dto).then(res => {
+            console.log(res);
+            if (res.status) {
+                message.success('Success');
+            } else {
+                message.error(res.internalMessage);
             }
         }).catch(err => {
-          message.error(err.message);
+            message.error(err.message);
         })
-      }
+    }
 
 
-    
-    const columnsSkelton: any  = [
+
+    const columnsSkelton: any = [
         {
             title: 'S No',
             key: 'sno',
@@ -148,8 +150,9 @@ const AddressGrid = () => {
             responsive: ['sm'],
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
-            render: (text, object, index) => (page - 1) * 10 + (index + 1)
+            }),
+            render: (text, object, index) => (page - 1) * pageSize + (index + 1),
+
         },
         {
             title: "Addresser",
@@ -157,7 +160,7 @@ const AddressGrid = () => {
             ...getColumnSearchProps('addresser'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
 
         {
@@ -166,7 +169,7 @@ const AddressGrid = () => {
             ...getColumnSearchProps('addresserName'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "GST No",
@@ -174,7 +177,7 @@ const AddressGrid = () => {
             ...getColumnSearchProps('gstNo'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "CST No",
@@ -182,31 +185,31 @@ const AddressGrid = () => {
             ...getColumnSearchProps('cstNo'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
-            title: "Line One",
+            title: "Address Line 1",
             dataIndex: "lineOne",
             ...getColumnSearchProps('lineOne'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
 
         {
-            title: "Line Two",
+            title: "Address Line 2",
             dataIndex: "lineTwo",
             ...getColumnSearchProps('lineTwo'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "City",
             dataIndex: "city",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
 
         {
@@ -214,101 +217,129 @@ const AddressGrid = () => {
             dataIndex: "dist",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Pin Code",
             dataIndex: "pinCode",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "State",
             dataIndex: "state",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
 
         {
             title: "Country",
             dataIndex: "country",
+            width: '50',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
-            title:`Action`,
+            title: 'Action',
             dataIndex: 'action',
-            align:"center",
+            align: "center",
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+            }),
             render: (text, rowData) => (
-              <span>  
-               <EditOutlined  className={'editSamplTypeIcon'}  type="edit" 
-                    onClick={() => {
-                      if (rowData.isActive) {
-                        openFormWithData(rowData);
-                      } else {
-                        message.error('You Cannot Edit Deactivated Address');
-                      }
-                    }}
-                    style={{ color: '#1890ff', fontSize: '14px' }}
-                  />      
-                  
-                
-                <Divider type="vertical" />
-                  <Popconfirm onConfirm={e =>{deleteAddress(rowData);}}
-                  title={
-                    rowData.isActive
-                      ? 'Are you sure to Deactivate Address ?'
-                      :  'Are you sure to Activate Address ?'
-                  }
+                <Dropdown
+                    overlay={
+                        <Menu>
+                            <Menu.Item
+                                key="1"
+                                icon={<EditOutlined className={'editSamplTypeIcon'} style={{ fontSize: '24px', color: 'blue' }} />}
+                                onClick={() => {
+                                    if (rowData.isActive) {
+                                        openFormWithData(rowData);
+                                    } else {
+                                        message.error('You Cannot Edit Deactivated Address');
+                                    }
+                                }}
+                                style={{ color: 'black', fontSize: '12px' }}
+                            >
+                                Edit
+                            </Menu.Item>
+                            <Menu.Item key="2">
+                                <Popconfirm
+                                    onConfirm={e => {
+                                        deleteAddress(rowData);
+                                    }}
+                                    title={
+                                        rowData.isActive
+                                            ? 'Are you sure to Deactivate Address?'
+                                            : 'Are you sure to Activate Address?'
+                                    }
+                                >
+                                    <Switch
+                                        size="default"
+                                        className={rowData.isActive ? 'toggle-activated' : 'toggle-deactivated'}
+                                        checkedChildren={<RightSquareOutlined />}
+                                        unCheckedChildren={<RightSquareOutlined />}
+                                        checked={rowData.isActive}
+                                    />
+                                </Popconfirm>
+                                <span>Security Check</span>
+                            </Menu.Item>
+                        </Menu>
+                    }
+                    trigger={['click']}
                 >
-                  <Switch  size="default"
-                      className={ rowData.isActive ? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.isActive}
-                    />
-                  
-                </Popconfirm>
-              </span>
-            )
-          }
-
-    ];
-    
-
-
+                    <a onClick={e => e.preventDefault()}>
+                        <MoreOutlined style={{ fontSize: '25px', color: '#0000ff' }} />
+                    </a>
+                </Dropdown>
+            ),
+        }
+    ]
     return (
         <Card
-                title={<span style={{ color: "white" }}>Address</span>}
-                extra={
-                    (
-                        <Link to="/address-form">
-                            <span style={{ color: "white" }}>
-                                <Button>Create </Button>{" "}
-                            </span>
-                        </Link>
-                    )
-                }
+            title={<span style={{ color: "white" }}>
+                <EnvironmentOutlined style={{ fontSize: '24px', color: 'white' }} />
+                Address
+            </span>
+            }
+            extra={
+                (
+                    <Link to="/address-form">
+                        <span style={{ color: "white" }}>
+                            <Button>Create </Button>{" "}
+                        </span>
+                    </Link>
+                )
+            }
 
-                headStyle={{ backgroundColor: '#047595', color: 'black' }}>
+            headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData}
-            scroll={{ x: 1400, y: 400 }} />
+            <Table
+                columns={columnsSkelton}
+                dataSource={responseData}
+                pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    onChange: (newPage) => setPage(newPage),
+                }}
+                scroll={{ x: 1400, y: 400 }} size='small'
+            />
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
-              onClose={closeDrawer} visible={drawerVisible} closable={true}>
-              <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
-                <AddressForm key={Date.now()}
-                  updateDetails={updateAddress}
-                  isUpdate={true}
-                  addressData={selectedAddress}
-                  closeForm={closeDrawer} />
-              </Card>
+                onClose={closeDrawer} visible={drawerVisible} closable={true}>
+                <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
+                    <AddressForm key={Date.now()}
+                        updateDetails={updateAddress}
+                        isUpdate={true}
+                        addressData={selectedAddress}
+                        closeForm={closeDrawer} />
+                </Card>
             </Drawer>
-                
-           
+
+
         </Card>
     );
 };

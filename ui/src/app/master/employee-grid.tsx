@@ -1,5 +1,5 @@
-import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Drawer, Input, Popconfirm, Row, Space, Switch, Table, Tag, Tooltip, message } from 'antd'
+import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, IdcardOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { Button, Card, Col, Divider, Drawer, Dropdown, Input, Menu, Popconfirm, Row, Space, Switch, Table, Tag, Tooltip, message } from 'antd'
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import EmployeeForm from './employee-form'
@@ -73,7 +73,7 @@ const EmployeeGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                    style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -153,7 +153,7 @@ const EmployeeGrid = () => {
             width: 60,
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             responsive: ['sm'],
             render: (text, object, index) => (page - 1) * 10 + (index + 1)
         },
@@ -164,7 +164,7 @@ const EmployeeGrid = () => {
             ...getColumnSearchProps('unit'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Employee Name',
@@ -173,7 +173,7 @@ const EmployeeGrid = () => {
             ...getColumnSearchProps('employeeName'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Employee Code',
@@ -182,7 +182,7 @@ const EmployeeGrid = () => {
             ...getColumnSearchProps('employeeCode'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Card No',
@@ -191,7 +191,7 @@ const EmployeeGrid = () => {
             ...getColumnSearchProps('cardNo'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Department',
@@ -199,7 +199,7 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Section',
@@ -207,7 +207,7 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Designation',
@@ -215,7 +215,7 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Date OF Birth',
@@ -231,7 +231,7 @@ const EmployeeGrid = () => {
             },
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Gender',
@@ -239,7 +239,7 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
 
         {
@@ -248,7 +248,7 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: 'Email Id',
@@ -256,49 +256,113 @@ const EmployeeGrid = () => {
             align: 'center',
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
+
         {
             title: `Action`,
             dataIndex: 'action',
             align: "center",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
-            render: (text, rowData) => (
-                <span>
-                    <EditOutlined className={'editSamplTypeIcon'} type="edit"
-                        onClick={() => {
-                            console.log(rowData)
-                            if (rowData.isActive) {
-                                openFormWithData(rowData);
-                            } else {
-                                message.error('You Cannot Edit Deactivated Employee');
-                            }
-                        }}
-                        style={{ color: '#1890ff', fontSize: '14px' }}
-                    />
-                    <Divider type="vertical" />
-                    <Popconfirm onConfirm={e => { deactiveEmployee(rowData); }}
-                        title={
-                            rowData.isActive
-                                ? 'Are you sure to Delete Address ?'
-                                : 'Are you sure to Delete Address ?'
-                        }
-                    >
-                        <DeleteOutlined />
-                    </Popconfirm>
-                </span>
-            )
+            }),
+            render: (text, rowData, index) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="edit">
+                            <Tooltip placement="top" title="Edit">
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                    onClick={() => {
+                                        console.log(rowData);
+                                        if (rowData.isActive) {
+                                            openFormWithData(rowData);
+                                        } else {
+                                            message.error('You Cannot Edit Deactivated Employee');
+                                        }
+                                    }}
+                                >
+                                    <EditOutlined
+                                        style={{
+                                            fontSize: '24px',
+                                            color: 'blue',
+                                            marginRight: '8px',
+                                        }}
+                                    />
+                                    <span>Edit</span>
+                                </div>
+                            </Tooltip>
+                        </Menu.Item>
+                        <Menu.Item key="delete">
+                            <Tooltip placement="top" title="Delete">
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                    }}
+                                >
+                                    <Popconfirm
+                                        onConfirm={e => { deactiveEmployee(rowData); }}
+                                        title={
+                                            rowData.isActive
+                                                ? 'Are you sure to Delete Employee Details ?'
+                                                : 'Are you sure to Delete Employee Details ?'
+                                        }
+                                    >
+                                        <DeleteOutlined
+                                            style={{
+                                                fontSize: '24px',
+                                                color: '#eb2a1c',
+                                                marginRight: '8px',
+                                            }}
+                                        />
+                                    </Popconfirm>
+                                    <span>Delete</span>
+                                </div>
+                            </Tooltip>
+                        </Menu.Item>
+                    </Menu>
+                );
+
+                return (
+                    <span>
+                        <Dropdown overlay={menu} trigger={['click']}>
+                            <a onClick={(e) => e.preventDefault()}>
+                                <MoreOutlined style={{ fontSize: '20px', color:'blue', cursor: 'pointer' }} />
+                            </a>
+                        </Dropdown>
+                    </span>
+                );
+            }
         }
 
     ]
+
     return (
-        <div>
-            <Card title={<span style={{ color: 'white' }}>Employee Details</span>}
-                style={{ textAlign: 'center' }} headStyle={{ backgroundColor: '#047595', border: 0 }}
-                extra={<Link to="/employee-form"  ><span style={{ color: 'white' }} ><Button className='panel_button' >Create </Button>
-                </span></Link>}>
+        <div style={{ textAlign: 'left' }} >
+            <Card
+                title={
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px' }}>
+                        <UserOutlined style={{ fontSize: '24px', color: 'white' }} />
+                        <span style={{ color: 'white', fontWeight: 'bold' }}>Employee Details</span>
+                    </div>
+                }
+                headStyle={{
+                    backgroundColor: '#047595',
+                    border: 0,
+                    textAlign: 'left',
+                }}
+                extra={
+                    <Link to="/employee-form">
+                        <Button className="panel_button" style={{ color: 'black' }}>
+                            Create
+                        </Button>
+                    </Link>}>
                 <br></br>
                 <Table
                     loading={loading}
@@ -319,7 +383,7 @@ const EmployeeGrid = () => {
                     </Card>
                 </Drawer>
             </Card>
-        </div>
+        </div >
     )
 }
 

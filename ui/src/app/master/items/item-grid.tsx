@@ -1,17 +1,20 @@
-import { EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Divider, Drawer, Switch } from 'antd';
+import { AppstoreOutlined, BarcodeOutlined, CheckOutlined, ContainerOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, ShoppingCartOutlined, TagsOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Divider, Drawer, Switch, Dropdown, Menu } from 'antd';
 import { ItemDto } from 'libs/shared-models';
 import { ItemService } from 'libs/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ItemForm from './item-form';
 import Highlighter from 'react-highlight-words'
+import React from 'react';
 
 const ItemGrid = () => {
 
     const service = new ItemService();
     const [responseData, setResponseData] = useState<any>([]);
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const [page, setPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
     const [selectedItems, setSelectedItems] = useState<any>(undefined);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -44,7 +47,7 @@ const ItemGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -87,12 +90,23 @@ const ItemGrid = () => {
 
     const columnsSkelton: any = [
         {
+            title: 'S No',
+            key: 'sno',
+            width: 60,
+            responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+            }),
+            render: (text, object, index) => (page - 1) * pageSize + (index + 1),
+
+        },
+        {
             key: "1",
             title: "Item Code",
             dataIndex: "itemCode",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('itemCode')
         },
         {
@@ -101,7 +115,7 @@ const ItemGrid = () => {
             dataIndex: "itemName",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('itemName')
         },
         {
@@ -110,7 +124,7 @@ const ItemGrid = () => {
             dataIndex: "itemType",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('itemType')
         },
         {
@@ -119,7 +133,7 @@ const ItemGrid = () => {
             dataIndex: "createdUser",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('createdUser')
         },
         {
@@ -128,50 +142,63 @@ const ItemGrid = () => {
             dataIndex: "description",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
-            title: `Action`,
+            title: 'Action',
             dataIndex: 'action',
             align: "center",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, rowData) => (
-                <span>
-                    <EditOutlined className={'editSamplTypeIcon'} type="edit"
-                        onClick={() => {
-                            if (rowData.isActive) {
-                                openFormWithData(rowData);
-                            } else {
-                                message.error('You Cannot Edit Deactivated Payment mode');
-                            }
-                        }}
-                        style={{ color: '#1890ff', fontSize: '14px' }}
-                    />
+                <Dropdown
+                    overlay={
+                        <Menu>
+                            <Menu.Item
+                                key="1"
+                                icon={<EditOutlined className={'editSamplTypeIcon'} style={{ fontSize: '24px', color: 'blue' }} />}
+                                onClick={() => {
+                                    if (rowData.isActive) {
+                                        openFormWithData(rowData);
+                                    } else {
+                                        message.error('You Cannot Edit Deactivated Payment mode');
+                                    }
+                                }}
+                                style={{ color: 'black', fontSize: '14px' }}
+                            >
+                                Edit
+                            </Menu.Item>
 
+                            <Menu.Item key="2">
 
-                    <Divider type="vertical" />
-                    <Popconfirm onConfirm={e =>{deleteItem(rowData);}}
-                  title={
-                    rowData.isActive
-                      ? 'Are you sure to Deactivate color ?'
-                      :  'Are you sure to Activate color ?'
-                  }
+                                <Popconfirm
+                                    onConfirm={() => { deleteItem(rowData); }}
+                                    title={rowData.isActive
+                                        ? 'Are you sure to Deactivate color?'
+                                        : 'Are you sure to Activate color?'}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        <Switch
+                                            size="default"
+                                            className={rowData.isActive ? 'toggle-activated' : 'toggle-deactivated'}
+                                            checkedChildren={<RightSquareOutlined type="check" />}
+                                            unCheckedChildren={<RightSquareOutlined type="close" />}
+                                            checked={rowData.isActive}
+                                        />
+                                    </div>
+                                </Popconfirm>
+                                <span>Security Check</span>
+                            </Menu.Item>
+                        </Menu>
+                    }
+                    trigger={['click']}
                 >
-                  <Switch  size="default"
-                      className={ rowData.isActive ? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.isActive}
-                    />
-                  
-                </Popconfirm>
-                </span>
-            )
+                    <a onClick={e => e.preventDefault()}><MoreOutlined style={{ fontSize: '25px', color: '#1890ff' }} /></a>
+                </Dropdown>
+            ),
         }
-    ];
-
+    ]
     const closeDrawer = () => {
         setDrawerVisible(false);
     }
@@ -211,22 +238,29 @@ const ItemGrid = () => {
         })
     }
 
-    const deleteItem = (dto:ItemDto) => {
-        dto.isActive=dto.isActive?false:true;
-        service.activateOrDeactivateItem(dto).then(res => { console.log(res);
-          if (res.status) {
-            message.success('Success'); 
-          } else {
-              message.error(res.internalMessage);
+    const deleteItem = (dto: ItemDto) => {
+        dto.isActive = dto.isActive ? false : true;
+        service.activateOrDeactivateItem(dto).then(res => {
+            console.log(res);
+            if (res.status) {
+                message.success('Success');
+            } else {
+                message.error(res.internalMessage);
             }
         }).catch(err => {
-          message.error(err.message);
+            message.error(err.message);
         })
-      }
+    }
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>Item Data</span>}
+            title={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px' }}>
+                    <ContainerOutlined style={{ fontSize: '24px', color: 'white' }} />
+                    <span style={{ color: 'white', fontWeight: 'bold' }}>Item Data</span>
+                </div>
+
+            }
             extra={
                 (
                     <Link to="/item-form">
@@ -237,8 +271,20 @@ const ItemGrid = () => {
                 )
             }
             headStyle={{ backgroundColor: '#047595', color: 'white' }}>
-            <Table columns={columnsSkelton} dataSource={responseData}></Table>
-            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
+            <Table
+                columns={columnsSkelton}
+                dataSource={responseData}
+                pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    onChange: (current, size) => {
+                        setPage(current);
+                        setPageSize(size);
+                    },
+                    showSizeChanger: true,
+                }}
+                rowKey={(record) => record.id}
+            />            <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} visible={drawerVisible} closable={true}>
                 <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
                     <ItemForm key={Date.now()}

@@ -154,7 +154,7 @@ const AddressForm = (props: AddressFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={6}>
-                            <Form.Item name="gstNo" label="GST IN :"
+                            <Form.Item name="gstNo" label="GST IN"
                                 rules={[
                                     { required: false },
                                 ]} style={{ width: '90%' }}>
@@ -167,15 +167,15 @@ const AddressForm = (props: AddressFormProps) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="lineOne" label="Line One(Address 1)"
+                            <Form.Item name="Address Line 2" label="Address Line 1"
                                 rules={[
                                     { required: true },
                                 ]} style={{ width: '90%' }}>
-                                <Input placeholder=" Enter line One" style={{ width: '100%' }} />
+                                <Input placeholder="Address Line 1" style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="lineTwo" label="Line Two(Address 2)"
+                            <Form.Item name="lineTwo" label="Address Line 2"
                                 rules={[
                                     { required: true },
                                 ]} style={{ width: '90%' }}>
@@ -185,7 +185,7 @@ const AddressForm = (props: AddressFormProps) => {
                     </Row>
                     <Row style={{ width: '100%' }}>
                         <Col xs={24} sm={12} md={12} lg={12} xl={12}>
-                            <Form.Item name="city" label="City:"
+                            <Form.Item name="city" label="City"
                                 rules={[
                                     { required: true },
                                 ]}

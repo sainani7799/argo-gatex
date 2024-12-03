@@ -1,11 +1,12 @@
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Drawer, Divider, Switch, message } from 'antd';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Drawer, Divider, Switch, message, Dropdown, Menu } from 'antd';
 import { SupplierDto } from 'libs/shared-models';
 import { SupplierService } from 'libs/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SupplierForm from './supplier-form';
-import { EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { BoxPlotOutlined, CarryOutOutlined, EditOutlined, InteractionOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, ShopOutlined, SolutionOutlined, SwapOutlined, UsergroupAddOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words'
+import React from 'react';
 
 const SupplierGrid = () => {
 
@@ -13,6 +14,8 @@ const SupplierGrid = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [selectedSuppliers, setSelectedSuppliers] = useState<any>(undefined);
     const service = new SupplierService();
+    const [page, setPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
@@ -44,7 +47,7 @@ const SupplierGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -121,27 +124,39 @@ const SupplierGrid = () => {
             message.error(err.message);
         })
     }
-    const deleteSupplier = (dto:SupplierDto) => {
-        dto.isActive=dto.isActive?false:true;
-        service.activateOrDeactivateSupplier(dto).then(res => { console.log(res);
-          if (res.status) {
-            message.success('Success'); 
-          } else {
-              message.error(res.internalMessage);
+    const deleteSupplier = (dto: SupplierDto) => {
+        dto.isActive = dto.isActive ? false : true;
+        service.activateOrDeactivateSupplier(dto).then(res => {
+            console.log(res);
+            if (res.status) {
+                message.success('Success');
+            } else {
+                message.error(res.internalMessage);
             }
         }).catch(err => {
-          message.error(err.message);
+            message.error(err.message);
         })
-      }
+    }
 
-    const columnsSkelton:any = [
+    const columnsSkelton: any = [
+        {
+            title: 'S No',
+            key: 'sno',
+            width: 60,
+            responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+            }),
+            render: (text, object, index) => (page - 1) * pageSize + (index + 1),
+
+        },
         {
             title: "Buyer/Supplier Code",
             dataIndex: "supplierCode",
             ...getColumnSearchProps('supplierCode'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Buyer/Supplier Name",
@@ -149,7 +164,7 @@ const SupplierGrid = () => {
             ...getColumnSearchProps('supplierName'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Type",
@@ -157,61 +172,84 @@ const SupplierGrid = () => {
             ...getColumnSearchProps('type'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             title: "Created user ",
             dataIndex: "createdUser",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
-            title: `Action`,
+            title: 'Action',
             dataIndex: 'action',
             align: "center",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, rowData) => (
-                <span>
-                    <EditOutlined className={'editSamplTypeIcon'} type="edit"
-                        onClick={() => {
-                            if (rowData.isActive) {
-                                openFormWithData(rowData);
-                            } else {
-                                message.error('You Cannot Edit Deactivated Buyer');
-                            }
-                        }}
-                        style={{ color: '#1890ff', fontSize: '14px' }}
-                    />
+                <Dropdown
+                    overlay={
+                        <Menu>
+                            {/* Edit Item */}
+                            <Menu.Item
+                                key="1"
+                                icon={<EditOutlined className={'editSamplTypeIcon'} style={{ fontSize: '24px', color: 'blue' }} />}
 
 
-                    <Divider type="vertical" />
-                    <Popconfirm 
-                    onConfirm={e =>{deleteSupplier(rowData);}}
-                  title={
-                    rowData.isActive
-                      ? 'Are you sure to Deactivate buyer ?'
-                      :  'Are you sure to Activate buyer ?'
-                  }
+                                onClick={() => {
+                                    if (rowData.isActive) {
+                                        openFormWithData(rowData);
+                                    } else {
+                                        message.error('You Cannot Edit Deactivated Buyer');
+                                    }
+                                }}
+                                style={{ color: 'black', fontSize: '14px' }}
+                            >
+                                Edit
+                            </Menu.Item>
+
+                            <Menu.Item key="2">
+
+                                <Popconfirm
+                                    onConfirm={e => { deleteSupplier(rowData); }}
+                                    title={
+                                        rowData.isActive
+                                            ? 'Are you sure to Deactivate buyer ?'
+                                            : 'Are you sure to Activate buyer ?'
+                                    }
+                                >
+                                    <Switch size="default"
+                                        className={rowData.isActive ? 'toggle-activated' : 'toggle-deactivated'}
+                                        checkedChildren={<RightSquareOutlined type="check" />}
+                                        unCheckedChildren={<RightSquareOutlined type="close" />}
+                                        checked={rowData.isActive}
+                                    />
+
+                                </Popconfirm>
+
+                                <span>Security Check</span>
+                            </Menu.Item>
+                        </Menu>
+                    }
+                    trigger={['click']}
                 >
-                  <Switch  size="default"
-                      className={ rowData.isActive ? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.isActive}
-                    />
-                  
-                </Popconfirm>
-                </span>
-            )
+                    <a onClick={e => e.preventDefault()}><MoreOutlined style={{ fontSize: '25px', color: '#1890ff' }} /></a>
+                </Dropdown>
+            ),
         }
-    ];
+    ]
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>Supplier Data</span>}
+            title={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px' }}>
+                     <SolutionOutlined style={{ fontSize: '24px', color: 'white' }} />
+                    <span style={{ color: 'white', fontWeight: 'bold' }}>Supplier Data</span>
+                </div>
+
+            }
             extra={
                 (
                     <Link to="/supplier-form">
@@ -224,7 +262,20 @@ const SupplierGrid = () => {
 
             headStyle={{ backgroundColor: '#047595', color: 'black' }}>
 
-            <Table columns={columnsSkelton} dataSource={responseData}></Table>
+            <Table
+                columns={columnsSkelton}
+                dataSource={responseData}
+                pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    onChange: (current, size) => {
+                        setPage(current);
+                        setPageSize(size);
+                    },
+                    showSizeChanger: true,
+                }}
+                rowKey={(record) => record.id}
+            />
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} visible={drawerVisible} closable={true}>
                 <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>

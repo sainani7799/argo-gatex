@@ -1,16 +1,19 @@
-import { EditOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
-import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Divider, message, Drawer, Switch } from 'antd';
+import { BankOutlined, EditOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
+import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Divider, message, Drawer, Switch, Dropdown, Menu } from 'antd';
 import { SupplierService, WarehouseService } from 'libs/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import WarehouseForm from './warehouse-form';
 import { CreateWarehouseDto, UnitReq } from 'libs/shared-models';
 import Highlighter from 'react-highlight-words'
+import React from 'react';
 
 const WarehouseGrid = () => {
     const [responseData, setResponseData] = useState<any>([]);
     const service = new WarehouseService();
     const [drawerVisible, setDrawerVisible] = useState(false);
+    const [page, setPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
     const [selectedWarehouse, setSelectedWarehouse] = useState<any>(undefined);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -43,7 +46,7 @@ const WarehouseGrid = () => {
                     onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                     icon={<SearchOutlined />}
                     size="small"
-                   style={{backgroundColor:"#047595",color:"white" ,width: 90, marginRight: 8 }}
+                    style={{ backgroundColor: "#047595", color: "white", width: 90, marginRight: 8 }}
                 >
                     Search
                 </Button>
@@ -105,35 +108,46 @@ const WarehouseGrid = () => {
     const closeDrawer = () => {
         setDrawerVisible(false);
     }
-    
-    const deleteWarehouse = (dto:CreateWarehouseDto) => {
-        dto.isActive=dto.isActive?false:true;
-        service.activateOrDeactivateWarehouse(dto).then(res => { console.log(res);
-          if (res.status) {
-            message.success(res.internalMessage); 
-          } else {
-              message.error(res.internalMessage);
+
+    const deleteWarehouse = (dto: CreateWarehouseDto) => {
+        dto.isActive = dto.isActive ? false : true;
+        service.activateOrDeactivateWarehouse(dto).then(res => {
+            console.log(res);
+            if (res.status) {
+                message.success(res.internalMessage);
+            } else {
+                message.error(res.internalMessage);
             }
         }).catch(err => {
-          message.error(err.message);
+            message.error(err.message);
         })
-      }
+    }
 
-      const activateOrDeactivateUnits = (val:UnitReq) =>{
-        val.isActive=val.isActive?false:true;
-        service.activateOrDeactivateUnits(val).then((res) =>{
+    const activateOrDeactivateUnits = (val: UnitReq) => {
+        val.isActive = val.isActive ? false : true;
+        service.activateOrDeactivateUnits(val).then((res) => {
             if (res.status) {
-                message.success(res.internalMessage); 
-              } else {
-                  message.error(res.internalMessage);
-                }
-            }).catch(err => {
-              message.error(err.message);
-            })
-      }
+                message.success(res.internalMessage);
+            } else {
+                message.error(res.internalMessage);
+            }
+        }).catch(err => {
+            message.error(err.message);
+        })
+    }
 
 
     const columnsSkelton: any = [
+        {
+            title: 'S No',
+            key: 'sno',
+            width: 60,
+            responsive: ['sm'],
+            onHeaderCell: () => ({
+                style: { backgroundColor: '#047595', color: 'white' },
+            }),
+            render: (text, object, index) => (page - 1) * pageSize + (index + 1),
+        },
         {
             key: "1",
             title: "Unit Name",
@@ -141,7 +155,7 @@ const WarehouseGrid = () => {
             ...getColumnSearchProps('unitName'),
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
         },
         {
             key: "2",
@@ -149,7 +163,7 @@ const WarehouseGrid = () => {
             dataIndex: "warehouseName",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('warehouseName')
         },
         {
@@ -158,52 +172,65 @@ const WarehouseGrid = () => {
             dataIndex: "createdUser",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             ...getColumnSearchProps('createdUser')
         },
         {
-            title: `Action`,
+            title: 'Action',
             dataIndex: 'action',
             align: "center",
             onHeaderCell: () => ({
                 style: { backgroundColor: '#047595', color: 'white' },
-              }),
+            }),
             render: (text, rowData) => (
-                <span>
-                    <EditOutlined className={'editSamplTypeIcon'} type="edit"
-                        onClick={() => {
-                            if (rowData.isActive) {
-                                openFormWithData(rowData);
-                            } else {
-                                message.error('You Cannot Edit Deactivated Warehouse-Unit');
-                            }
-                        }}
-                        style={{ color: '#1890ff', fontSize: '14px' }}
-                    />
+                <Dropdown
+                    overlay={
+                        <Menu>
+                            {/* Edit Item */}
+                            <Menu.Item
+                                key="1"
+                                icon={<EditOutlined className={'editSamplTypeIcon'} style={{ fontSize: '24px', color: 'blue' }} />}
+                                onClick={() => {
+                                    if (rowData.isActive) {
+                                        openFormWithData(rowData);
+                                    } else {
+                                        message.error('You Cannot Edit Deactivated Warehouse-Unit');
+                                    }
+                                }}
+                                style={{ color: 'black', fontSize: '12px' }}
+                            >
+                                Edit
+                            </Menu.Item>
 
+                            <Menu.Item key="2">
 
-                    <Divider type="vertical" />
-                    <Popconfirm onConfirm={e =>{activateOrDeactivateUnits(rowData);}}
-                  title={
-                    rowData.isActive
-                      ? 'Are you sure to Deactivate Warehouse-Unit ?'
-                      :  'Are you sure to Activate Warehouse-Unit ?'
-                  }
+                                <Popconfirm onConfirm={e => { activateOrDeactivateUnits(rowData); }}
+                                    title={
+                                        rowData.isActive
+                                            ? 'Are you sure to Deactivate Warehouse-Unit ?'
+                                            : 'Are you sure to Activate Warehouse-Unit ?'
+                                    }
+                                >
+                                    <Switch size="default"
+                                        className={rowData.isActive ? 'toggle-activated' : 'toggle-deactivated'}
+                                        checkedChildren={<RightSquareOutlined type="check" />}
+                                        unCheckedChildren={<RightSquareOutlined type="close" />}
+                                        checked={rowData.isActive}
+                                    />
+
+                                </Popconfirm>
+
+                                <span>Security Check</span>
+                            </Menu.Item>
+                        </Menu>
+                    }
+                    trigger={['click']}
                 >
-                  <Switch  size="default"
-                      className={ rowData.isActive ? 'toggle-activated' : 'toggle-deactivated' }
-                      checkedChildren={<RightSquareOutlined type="check" />}
-                      unCheckedChildren={<RightSquareOutlined type="close" />}
-                      checked={rowData.isActive}
-                    />
-                  
-                </Popconfirm>
-                </span>
-            )
+                    <a onClick={e => e.preventDefault()}><MoreOutlined style={{ fontSize: '25px', color: '#1890ff' }} /></a>
+                </Dropdown>
+            ),
         }
-    ];
-
-    
+    ]
 
     const updateWarehouse = (warehouse: CreateWarehouseDto) => {
         const authdata = JSON.parse(localStorage.getItem('userName'))
@@ -226,7 +253,13 @@ const WarehouseGrid = () => {
 
     return (
         <Card
-            title={<span style={{ color: "white" }}>Warehouse Data</span>}
+            title={
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '8px' }}>
+                    <BankOutlined style={{ fontSize: '24px', color: 'white' }} />
+                    <span style={{ color: 'white', fontWeight: 'bold' }}>Warehouse Data</span>
+                </div>
+
+            }
             extra={
                 (
                     <Link to="/warehouse-form">
@@ -238,7 +271,20 @@ const WarehouseGrid = () => {
             }
 
             headStyle={{ backgroundColor: '#047595', color: 'white' }}>
-            <Table columns={columnsSkelton} dataSource={responseData}></Table>
+            <Table
+                columns={columnsSkelton}
+                dataSource={responseData}
+                pagination={{
+                    current: page,
+                    pageSize: pageSize,
+                    onChange: (current, size) => {
+                        setPage(current);
+                        setPageSize(size);
+                    },
+                    showSizeChanger: true,
+                }}
+                rowKey={(record) => record.id}
+            />
             <Drawer bodyStyle={{ paddingBottom: 80 }} title='Update' width={window.innerWidth > 768 ? '80%' : '85%'}
                 onClose={closeDrawer} visible={drawerVisible} closable={true}>
                 <Card headStyle={{ textAlign: 'center', fontWeight: 500, fontSize: 16 }} size='small'>
