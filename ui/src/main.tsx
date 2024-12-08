@@ -24,7 +24,7 @@ root.render(
       }}
     >
       <App />
-      <TicketRaiser appClientId={applicationId} apiEndpoint={proTicketUrl} applicationName={applicationName}/>
+      {/* <TicketRaiser appClientId={applicationId} apiEndpoint={proTicketUrl} applicationName={applicationName}/> */}
     </ConfigProvider >
   </QueryClientProvider>
 );
