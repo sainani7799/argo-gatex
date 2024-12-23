@@ -20,11 +20,11 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
   const service = new DcService();
   const addressService = new AddressService();
   const [toAddressData, setToAddressData] = useState<any>([]);
-  const { id ,security } = useParams();
+  const { id, security } = useParams();
 
   const location = useLocation();
   const currentRoute = location.pathname;
-  
+
   useEffect(() => {
     getDc();
   }, [id])
@@ -179,22 +179,26 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
  * @param fromDoc 
  * @param toDoc 
  */
-  const getCssFromComponent = (fromDoc, toDoc) => {
-    Array.from(fromDoc.styleSheets).forEach((styleSheet: any) => {
-      if (styleSheet.cssRules) { // true for inline styles
-        const newStyleElement = toDoc.createElement('style');
-        Array.from(styleSheet.cssRules).forEach((cssRule: any) => {
-          newStyleElement.appendChild(toDoc.createTextNode(cssRule.cssText));
-        });
-        toDoc.head.appendChild(newStyleElement);
+  const getCssFromComponent = (fromDoc: Document, toDoc: Document) => {
+    Array.from(fromDoc.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
+      try {
+        if (styleSheet?.cssRules) { // true for inline styles and same-origin stylesheets
+          const newStyleElement = toDoc.createElement("style");
+          Array.from(styleSheet.cssRules).forEach((cssRule: CSSRule) => {
+            newStyleElement.appendChild(toDoc.createTextNode(cssRule.cssText));
+          });
+          toDoc.head.appendChild(newStyleElement);
+        }
+      } catch (e) {
+        console.warn("Could not access stylesheet rules for", styleSheet.href, e);
       }
     });
-  }
+  };
   const openPrint = () => {
     setIsModalVisible(true);
   }
   const isDetailView = location.pathname === '/dc-detail-view';
-  
+
 
   return (
     <div>
@@ -297,7 +301,7 @@ export const DcEmailDetailsView = (props: DcViewProps) => {
                 ]}
               >
 
-                <DcPrint dcId={id}/>
+                <DcPrint dcId={id} />
               </Modal> : ""}
           </Col>
         </Row>

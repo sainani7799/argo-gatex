@@ -3,6 +3,5 @@ import { IAMClientProvider, useIAMClientState } from './iam-client';
 import LoginComponent from './login-component/login-component';
 import { isPermissionExist } from './permission-checker/permission-checker';
 import useScopes from './useScopes';
-import { TicketRaiser } from './ticket-raiser';
 
-export { IAMClientProvider, useIAMClientState, loginUser, logout, LoginComponent, isPermissionExist, useScopes, TicketRaiser };
+export { IAMClientProvider, useIAMClientState, loginUser, logout, LoginComponent, isPermissionExist, useScopes };

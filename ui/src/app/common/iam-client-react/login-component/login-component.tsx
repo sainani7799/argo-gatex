@@ -134,7 +134,9 @@ const LoginComponent = () => {
             const loginDto = new LoginDto(values.username, values.password)
             service.login(loginDto).then((res) => {
                 if (res.status) {
-                    localStorage.setItem('userName', JSON.stringify(res.data))
+                    localStorage.setItem('userName', JSON.stringify(res.data));
+                    
+                    localStorage.setItem('helpxUserName', values.username)
                     console.log( JSON.stringify(res.data), 'log')
                     setAuthState([{ userName: values.username, isAuthenticated: true }]);
                     console.log(setAuthState, 'setAuthState')

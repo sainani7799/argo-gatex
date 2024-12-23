@@ -22,11 +22,11 @@ export const DcDetailsView = (props: DcViewProps) => {
   const service = new DcService();
   const addressService = new AddressService();
   const [toAddressData, setToAddressData] = useState<any>([]);
-  const { id ,security } = useParams();
+  const { id, security } = useParams();
 
   const location = useLocation();
   const currentRoute = location.pathname;
-  
+
   useEffect(() => {
     getDc();
   }, [id])
@@ -39,7 +39,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       }
     })
   }
-console.log(data , 'data')
+  console.log(data, 'data')
   useEffect(() => {
     if (data) {
       getFromAddress(data[0]?.fromUnitId),
@@ -68,7 +68,7 @@ console.log(data , 'data')
     req.addresserNameId = data[0]?.toAddresserNameId
     addressService.getAllToAddressByUnit(req).then(res => {
       if (res) {
-        console.log(res , 'resss');
+        console.log(res, 'resss');
         setToAddressData(res.data);
       }
     }).catch(err => {
@@ -76,11 +76,11 @@ console.log(data , 'data')
     })
   };
 
-  console.log(toAddressData ,'to')
+  console.log(toAddressData, 'to')
 
 
- const dcType = data[0]?.dcType
- console.log(dcType , 'dccc')
+  const dcType = data[0]?.dcType
+  console.log(dcType, 'dccc')
 
   const itemColumns: any = [
     {
@@ -166,12 +166,12 @@ console.log(data , 'data')
   if (dcType === 'returnable') {
     itemColumns.push(
       {
-          title: 'Return Quantity',
-          key: 'returningQty',
-          dataIndex: 'returningQty',
-          align: 'right',
+        title: 'Return Quantity',
+        key: 'returningQty',
+        dataIndex: 'returningQty',
+        align: 'right',
 
-        
+
       },
       {
         title: 'Return Remarks',
@@ -210,48 +210,51 @@ console.log(data , 'data')
  * @param fromDoc 
  * @param toDoc 
  */
-  const getCssFromComponent = (fromDoc, toDoc) => {
-    Array.from(fromDoc.styleSheets).forEach((styleSheet: any) => {
-      if (styleSheet.cssRules) { // true for inline styles
-        const newStyleElement = toDoc.createElement('style');
-        Array.from(styleSheet.cssRules).forEach((cssRule: any) => {
-          newStyleElement.appendChild(toDoc.createTextNode(cssRule.cssText));
-        });
-        toDoc.head.appendChild(newStyleElement);
+  const getCssFromComponent = (fromDoc: Document, toDoc: Document) => {
+    Array.from(fromDoc.styleSheets).forEach((styleSheet: CSSStyleSheet) => {
+      try {
+        if (styleSheet?.cssRules) { // true for inline styles and same-origin stylesheets
+          const newStyleElement = toDoc.createElement("style");
+          Array.from(styleSheet.cssRules).forEach((cssRule: CSSRule) => {
+            newStyleElement.appendChild(toDoc.createTextNode(cssRule.cssText));
+          });
+          toDoc.head.appendChild(newStyleElement);
+        }
+      } catch (e) {
+        console.warn("Could not access stylesheet rules for", styleSheet.href, e);
       }
     });
-  }
+  };
   const openPrint = () => {
     setIsModalVisible(true);
   }
   const isDetailView = location.pathname === '/dc-detail-view';
-  
+
   const conditionForReturn = true;
   return (
     <div>
       <Card title="Gate Pass Detail View" headStyle={{ backgroundColor: '#047595', border: 0, color: 'black' }} extra={
         <span style={{ color: 'white' }}>
           {data[0]?.is_accepted === 'YES' ? <Button className='panel_button' onClick={openPrint} icon={<PrinterOutlined />}
-          style={{backgroundColor: '#4CAF50',color: 'white',border: 'none',marginRight: '10px',}}>
+            style={{ backgroundColor: '#4CAF50', color: 'white', border: 'none', marginRight: '10px', }}>
             Print
           </Button> : ''}
           <Button
             className='panel_button'
-            onClick={() => 
-              {
+            onClick={() => {
               const routePath = security ? `/dc-security` : `/dc-view`;
-                //                 let routePath;
-// if (security) {
-//   routePath = `/dc-security`;
-// } else if (conditionForReturn) {
-//   routePath = `/dc-return-view`;
-// } else {
-//   routePath = `/dc-view`;
-// }
+              //                 let routePath;
+              // if (security) {
+              //   routePath = `/dc-security`;
+              // } else if (conditionForReturn) {
+              //   routePath = `/dc-return-view`;
+              // } else {
+              //   routePath = `/dc-view`;
+              // }
               navigate(routePath)
             }}
             icon={<ArrowLeftOutlined />}
-            style={{backgroundColor: '#f44336',color: 'white',border: 'none' }}
+            style={{ backgroundColor: '#f44336', color: 'white', border: 'none' }}
           >
             BACK
           </Button>
@@ -341,7 +344,7 @@ console.log(data , 'data')
                 ]}
               >
 
-                <DcPrint dcId={id}/>
+                <DcPrint dcId={id} />
               </Modal> : ""}
           </Col>
         </Row>
