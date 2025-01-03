@@ -1,4 +1,3 @@
-import { StatusEnum } from "libs/shared-models";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 import { DcEntity } from "./dc.entity";
 
@@ -29,7 +28,7 @@ export class DcItemEntity {
     @Column('varchar', {
         name: 'item_type',
     })
-    itemType:string;
+    itemType: string;
 
     @Column('varchar', {
         name: 'uom',
@@ -42,6 +41,30 @@ export class DcItemEntity {
         nullable: false
     })
     qty: number;
+
+    @Column('varchar', {
+        name: 'po_number',
+        nullable: false
+    })
+    poNumber: string;
+
+    @Column('varchar', {
+        name: 'color',
+        nullable: false
+    })
+    color: string;
+
+    @Column('varchar', {
+        name: 'style',
+        nullable: false
+    })
+    style: string;
+
+    @Column('varchar', {
+        name: 'pieces',
+        nullable: false
+    })
+    pieces: string;
 
     @Column('int', {
         name: 'rate',
@@ -102,12 +125,12 @@ export class DcItemEntity {
     @Column('varchar', {
         name: 'return_remarks',
     })
-    returnRemarks:string;
+    returnRemarks: string;
 
     @Column('varchar', {
         name: 'write_off_qty',
     })
-    writeOffQty:string;
+    writeOffQty: string;
 
     @ManyToOne(type => DcEntity, i => i.dcItemInfo, { nullable: false, })
     @JoinColumn({ name: "dc_id" })

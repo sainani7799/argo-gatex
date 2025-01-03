@@ -1,24 +1,32 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class DcItemsDto{
+export class DcItemsDto {
     @ApiProperty()
-    dcItemId:number;
+    dcItemId: number;
     @ApiProperty()
-    itemCode:string;
+    itemCode: string;
     @ApiProperty()
-    itemName:string;
+    itemName: string;
     @ApiProperty()
-    description:string;
+    description: string;
     @ApiProperty()
-    itemType:string;
+    itemType: string;
     @ApiProperty()
-    uom:string;
+    uom: string;
     @ApiProperty()
-    qty:number;
+    qty: number;
     @ApiProperty()
-    rate:number;
+    rate: number;
     @ApiProperty()
-    amount:string;
+    amount: string;
+    @ApiProperty()
+    poNumber: string;
+    @ApiProperty()
+    color: string;
+    @ApiProperty()
+    style: string;
+    @ApiProperty()
+    pieces: string;
     @ApiProperty()
     isActive?: boolean;
     @ApiProperty()
@@ -29,10 +37,10 @@ export class DcItemsDto{
     updatedAt?: Date;
     @ApiProperty()
     updatedUser?: string | null;
-    constructor(dcItemId:number, itemCode:string, itemName:string, description:string,itemType:string, uom:string, qty:number, rate:number, amount:string, isActive?: boolean, createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null,
-    ){
-        this.dcItemId = dcItemId 
-        this.itemCode = itemCode 
+    constructor(dcItemId: number, itemCode: string, itemName: string, description: string, itemType: string, uom: string, qty: number, rate: number, amount: string, poNumber: string, color: string, style: string, pieces: string, isActive?: boolean, createdAt?: Date, createdUser?: string | null, updatedAt?: Date, updatedUser?: string | null
+    ) {
+        this.dcItemId = dcItemId
+        this.itemCode = itemCode
         this.itemName = itemName
         this.description = description
         this.itemType = itemType;
@@ -40,6 +48,10 @@ export class DcItemsDto{
         this.qty = qty
         this.rate = rate
         this.amount = amount
+        this.poNumber = poNumber
+        this.color = color
+        this.style = style
+        this.pieces = pieces
         this.isActive = isActive
         this.createdAt = createdAt
         this.createdUser = createdUser

@@ -1,56 +1,48 @@
 import {
   EditOutlined,
-  LoadingOutlined,
   LockOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
+  MinusCircleOutlined
 } from '@ant-design/icons';
 import {
+  Button,
+  Card,
+  Col,
+  DatePicker,
+  Descriptions,
+  Divider,
   Form,
   Input,
-  Button,
-  Select,
-  Card,
-  message,
-  Col,
-  Row,
-  theme,
+  Popconfirm,
   Radio,
   RadioChangeEvent,
-  Descriptions,
-  Upload,
-  UploadProps,
-  Popconfirm,
-  Tooltip,
-  Divider,
+  Row,
+  Select,
   Tag,
-  DatePicker,
+  Tooltip,
+  message
 } from 'antd';
 import Table, { ColumnProps } from 'antd/es/table';
+import dayjs from 'dayjs';
 import {
   AcceptableEnum,
   DcReq,
   StatusEnum,
   ToAddressReq,
-  ToEmpReq,
-  UnitReq,
-  itemCode,
+  itemCode
 } from 'libs/shared-models';
 import {
-  WarehouseService,
-  UnitService,
-  SupplierService,
-  ApprovalUserService,
-  DepartmentService,
-  ItemService,
   AddressService,
-  EmployeeService,
+  ApprovalUserService,
   DcService,
+  DepartmentService,
+  EmployeeService,
+  ItemService,
+  SupplierService,
+  UnitService,
+  WarehouseService,
 } from 'libs/shared-services';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
-import dayjs from 'dayjs';
 const { Option } = Select;
 
 export interface DCFormProps {
@@ -84,8 +76,7 @@ const DCForm = (props: DCFormProps) => {
   const [itemFiledList, setItemFieldList] = useState<any>([]);
   const [btnType, setBtnType] = useState<any>('Add');
   const [itemTableData, setItemTableData] = useState<any[]>([]);
-  const [defaultItemFormData, setDefaultItemFormData] =
-    useState<any>(undefined);
+  const [defaultItemFormData, setDefaultItemFormData] = useState<any>(undefined);
   const [itemIndexVal, setItemIndexVal] = useState<any>(0);
   const [itemTableVisible, setItemTableVisible] = useState<boolean>(false);
   const [employee, setEmployee] = useState<any>([]);
@@ -103,7 +94,7 @@ const DCForm = (props: DCFormProps) => {
   const [manualEntry, setManualEntry] = useState(true);
   const [addVisible, setAddVisible] = useState(true);
   const [totalQty, setTotalQty] = useState(Number);
-  const [isReturnable, setIsReturnable] = useState(false); 
+  const [isReturnable, setIsReturnable] = useState(false);
 
   const toggleManualEntry = () => {
     setManualEntry(!manualEntry);
@@ -342,6 +333,10 @@ const DCForm = (props: DCFormProps) => {
         rate: defaultItemFormData.rate,
         amount: defaultItemFormData.amount,
         itemType: defaultItemFormData.itemType,
+        poNumber: defaultItemFormData.poNumber,
+        color: defaultItemFormData.color,
+        style: defaultItemFormData.style,
+        pieces: defaultItemFormData.pieces,
       });
     }
   }, [defaultItemFormData]);
@@ -390,6 +385,34 @@ const DCForm = (props: DCFormProps) => {
       dataIndex: 'qty',
       render: (text, record) => {
         return <>{record.qty ? record.qty : '-'}</>;
+      },
+    },
+    {
+      title: 'Po Number',
+      dataIndex: 'poNumber',
+      render: (text, record) => {
+        return <>{record.poNumber ? record.poNumber : '-'}</>;
+      },
+    },
+    {
+      title: 'Color',
+      dataIndex: 'color',
+      render: (text, record) => {
+        return <>{record.color ? record.color : '-'}</>;
+      },
+    },
+    {
+      title: 'Style',
+      dataIndex: 'style',
+      render: (text, record) => {
+        return <>{record.style ? record.style : '-'}</>;
+      },
+    },
+    {
+      title: 'Pieces',
+      dataIndex: 'pieces',
+      render: (text, record) => {
+        return <>{record.pieces ? record.pieces : '-'}</>;
       },
     },
     // {
@@ -647,21 +670,21 @@ const DCForm = (props: DCFormProps) => {
               </Form.Item>
             </Col>
             {isReturnable && (
-                  <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-        <Form.Item
-          name="expectedReturnDate"
-          label="Expected Return Date"
-          rules={[{ required: true, message: 'Please select the expected return date' }]}
-        >
-          <DatePicker
-            format="YYYY-MM-DD"
-            disabledDate={disabledDate} // Disable past dates
-            placeholder="Select Return Date"
-            style={{ width: '100%' }}
-          />
-        </Form.Item>
-        </Col>
-      )}
+              <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                <Form.Item
+                  name="expectedReturnDate"
+                  label="Expected Return Date"
+                  rules={[{ required: true, message: 'Please select the expected return date' }]}
+                >
+                  <DatePicker
+                    format="YYYY-MM-DD"
+                    disabledDate={disabledDate} // Disable past dates
+                    placeholder="Select Return Date"
+                    style={{ width: '100%' }}
+                  />
+                </Form.Item>
+              </Col>
+            )}
             <Col xs={24} sm={12} md={8} lg={8} xl={8}>
               <Form.Item
                 name="fromUnitId"
@@ -674,7 +697,7 @@ const DCForm = (props: DCFormProps) => {
                   optionFilterProp="children"
                   allowClear
                   disabled
-                  // onChange={getWarehouses}
+                // onChange={getWarehouses}
                 >
                   {addressData?.map((unit) => {
                     return (
@@ -776,19 +799,19 @@ const DCForm = (props: DCFormProps) => {
                 >
                   {radioValue === 'unit'
                     ? units
-                        .filter((i) => i.id !== authdata?.unitId)
-                        ?.map((unit) => (
-                          <Option key={unit.id} value={unit.id}>
-                            {unit.unitName}
-                          </Option>
-                        ))
+                      .filter((i) => i.id !== authdata?.unitId)
+                      ?.map((unit) => (
+                        <Option key={unit.id} value={unit.id}>
+                          {unit.unitName}
+                        </Option>
+                      ))
                     : radioValue === 'buyer'
-                    ? buyers?.map((buyer) => (
+                      ? buyers?.map((buyer) => (
                         <Option key={buyer.supplierId} value={buyer.supplierId}>
                           {buyer.supplierName}
                         </Option>
                       ))
-                    : suppliers?.map((supplier) => (
+                      : suppliers?.map((supplier) => (
                         <Option
                           key={supplier.supplierId}
                           value={supplier.supplierId}
@@ -799,8 +822,8 @@ const DCForm = (props: DCFormProps) => {
                 </Select>
               </Form.Item>
             </Col>
-              {radioValue === 'unit' && (
-                 <Col xs={24} sm={12} md={8} lg={8} xl={8}>
+            {radioValue === 'unit' && (
+              <Col xs={24} sm={12} md={8} lg={8} xl={8}>
                 <Form.Item
                   name="toDepartmentId"
                   label="To Department"
@@ -811,7 +834,7 @@ const DCForm = (props: DCFormProps) => {
                     placeholder="Select Dept "
                     optionFilterProp="children"
                     allowClear
-                    // onChange={getAllToEmployees}
+                  // onChange={getAllToEmployees}
                   >
                     {deps?.map((dep) => {
                       return (
@@ -822,8 +845,8 @@ const DCForm = (props: DCFormProps) => {
                     })}
                   </Select>
                 </Form.Item>
-                </Col>
-              )}
+              </Col>
+            )}
 
             {radioValue === 'unit' && (
               <>
@@ -1043,12 +1066,7 @@ const DCForm = (props: DCFormProps) => {
               ITEM DETAILS
             </h1>
             <Row gutter={14}>
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 24 }}
-                md={{ span: 4 }}
-                lg={{ span: 4 }}
-                xl={{ span: 4 }}
+              <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}
               >
                 <Button type="primary" onClick={toggleManualEntry}>
                   {manualEntry
@@ -1060,13 +1078,7 @@ const DCForm = (props: DCFormProps) => {
             <Row gutter={14}>
               {manualEntry ? (
                 <>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 5 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="itemType"
                       label="Item Type"
@@ -1081,13 +1093,7 @@ const DCForm = (props: DCFormProps) => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 5 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="itemCode"
                       label="Item Code"
@@ -1098,13 +1104,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 5 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="itemName"
                       label="Item Name"
@@ -1115,13 +1115,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 6 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 5 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="description"
                       label="Description"
@@ -1132,13 +1126,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 2 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Form.Item
                       name="uom"
                       label="UOM"
@@ -1147,19 +1135,49 @@ const DCForm = (props: DCFormProps) => {
                       <Input />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 2 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Form.Item
                       name="qty"
                       label="Qty"
                       rules={[{ required: true, message: 'Qty required' }]}
                     >
                       <Input onChange={calculateAmount} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="poNumber"
+                      label="Po Number"
+                      rules={[{ required: true, message: 'Po Number' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="color"
+                      label="Color"
+                      rules={[{ required: true, message: 'Color' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="style"
+                      label="Style"
+                      rules={[{ required: true, message: 'Style' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="pieces"
+                      label="Pieces"
+                      rules={[{ required: true, message: 'Pieces' }]}
+                    >
+                      <Input />
                     </Form.Item>
                   </Col>
                   {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
@@ -1177,13 +1195,7 @@ const DCForm = (props: DCFormProps) => {
                 </>
               ) : (
                 <>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
                     <Form.Item
                       name="itemCode"
                       label="Item Code"
@@ -1209,13 +1221,7 @@ const DCForm = (props: DCFormProps) => {
                       </Select>
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="itemName"
                       label="Item Name"
@@ -1226,13 +1232,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input disabled />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 4 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="itemType"
                       label="Item Type"
@@ -1243,13 +1243,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input disabled />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 6 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 5 }}>
                     <Form.Item
                       name="description"
                       label="Description"
@@ -1260,13 +1254,7 @@ const DCForm = (props: DCFormProps) => {
                       <Input disabled />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 2 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Form.Item
                       name="uom"
                       label="UOM"
@@ -1275,19 +1263,49 @@ const DCForm = (props: DCFormProps) => {
                       <Input disabled />
                     </Form.Item>
                   </Col>
-                  <Col
-                    xs={{ span: 24 }}
-                    sm={{ span: 24 }}
-                    md={{ span: 4 }}
-                    lg={{ span: 4 }}
-                    xl={{ span: 2 }}
-                  >
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>
                     <Form.Item
                       name="qty"
                       label="Qty"
                       rules={[{ required: true, message: 'Qty required' }]}
                     >
                       <Input onChange={calculateAmount} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="poNumber"
+                      label="Po Number"
+                      rules={[{ required: true, message: 'Po Number' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="color"
+                      label="Color"
+                      rules={[{ required: true, message: 'Color' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="style"
+                      label="Style"
+                      rules={[{ required: true, message: 'Style' }]}
+                    >
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 4 }}>
+                    <Form.Item
+                      name="pieces"
+                      label="Pieces"
+                      rules={[{ required: true, message: 'Pieces' }]}
+                    >
+                      <Input />
                     </Form.Item>
                   </Col>
                   {/* <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{ span: 4 }} lg={{ span: 4 }} xl={{ span: 2 }}>

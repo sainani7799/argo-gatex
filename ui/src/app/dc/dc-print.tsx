@@ -216,6 +216,26 @@ export function DcPrint(props: DcPrintProps) {
                             <th
                                 colSpan={1}
                                 className={'ta-b'}>
+                                PO Number
+                            </th>
+                            <th
+                                colSpan={1}
+                                className={'ta-b'}>
+                                Color
+                            </th>
+                            <th
+                                colSpan={1}
+                                className={'ta-b'}>
+                                Style
+                            </th>
+                            <th
+                                colSpan={1}
+                                className={'ta-b'}>
+                                Pieces
+                            </th>
+                            <th
+                                colSpan={1}
+                                className={'ta-b'}>
                                 Rate
                             </th>
                             <th
@@ -233,14 +253,26 @@ export function DcPrint(props: DcPrintProps) {
                                 <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.itemName}
                                 </td>
-                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '9px' }} colSpan={1} className={'ta-b'}>
                                     {item.description}
                                 </td>
-                                <td style={{ textAlign: 'left', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
+                                <td style={{ textAlign: 'left', fontSize: '9px' }} colSpan={1} className={'ta-b'}>
                                     {item.uom}
                                 </td>
                                 <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
                                     {item.qty}
+                                </td>
+                                <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                    {item.poNumber}
+                                </td>
+                                <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                    {item.color}
+                                </td>
+                                <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                    {item.style}
+                                </td>
+                                <td style={{ textAlign: 'right', fontSize: '10.5px', paddingRight: '35px' }} colSpan={1} className={'ta-b'}>
+                                    {item.pieces}
                                 </td>
                                 <td style={{ textAlign: 'right', paddingRight: '35px', fontSize: '10.5px' }} colSpan={1} className={'ta-b'}>
                                     {item.rate}
@@ -257,7 +289,7 @@ export function DcPrint(props: DcPrintProps) {
                             <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={2} className={'ta-b'}>
                                 {totalQty}
                             </td>
-                            <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={4} className={'ta-b'}>
+                            <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={6} className={'ta-b'}>
                                 {totalAmount}<span>&#8377;</span>
                             </td>
                         </tr>
