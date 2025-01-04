@@ -74,6 +74,7 @@ export class DcDto {
      * 
      * @param dcId 
      * @param dcNumber 
+     * @param dispatchChallanNo
      * @param fromUnitId 
      * @param warehouseId 
      * @param departmentId 
