@@ -156,6 +156,11 @@ const getRoute = (route) => {
 };
 
 const menuData = [
+  // {
+  //   path: '/dashboard',
+  //   name: 'Dashboard',
+  //   icon: <BarChartOutlined />,
+  // },
   {
     path: '/masters',
     name: 'Masters',

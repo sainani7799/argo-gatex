@@ -43,6 +43,7 @@ import NewLogin from './login/newLogin';
 import CustomProLayout from './basic-layout/custom-pro-layout';
 import { LoginComponent } from './common';
 import DCSecurityIn from './dc/dc-security-in';
+import Dashboard from './dashboard/dashboard';
 
 const AppRoutes = () => {
   const router = createHashRouter(
@@ -55,6 +56,7 @@ const AppRoutes = () => {
             closeForm={() => { }}
             updateDetails={(undefined) => { }}
           />} />
+           <Route path="/dashboard" key="/dashboard" element={<Dashboard />} />
           <Route path="/users" key="/users" element={<UserFormGrid />} />
           <Route path="/employee-view" key="/employee-view" element={<EmployeeGrid />} />
           <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
