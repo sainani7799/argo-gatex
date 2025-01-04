@@ -14,6 +14,12 @@ export class DcEntity {
   })
   dcNumber: string;
 
+  @Column('varchar', {
+    name: 'dispatch_challan_no',
+    nullable: false
+  })
+  dispatchChallanNo: string;
+
   @Column('int', {
     name: 'from_unit_id',
     nullable: false

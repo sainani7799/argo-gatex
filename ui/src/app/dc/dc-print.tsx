@@ -146,6 +146,14 @@ export function DcPrint(props: DcPrintProps) {
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px' }}>
                         <Col span={12}>
                             <div className="issued-to"><b style={{ fontSize: "15px", marginTop: '0px' }}>Gate Pass : </b> <h4 style={{ textAlign: 'left', marginTop: '3px', fontFamily: 'serif' }}>{data[0]?.dcNumber}</h4></div>
+                            {data[0]?.dispatchChallanNo && (
+  <div className="issued-to">
+    <b style={{ fontSize: "15px", marginTop: '0px' }}> Dispatch Challan No : </b>
+    <h4 style={{ textAlign: 'left', marginTop: '3px', fontFamily: 'serif' }}>
+      {data[0]?.dispatchChallanNo}
+    </h4>
+  </div>
+)}
                             <div className="issued-to">
                                 <b style={{ fontSize: "15px", marginTop: '-4px' }}>IssuedTo:</b>
                                 <h4 style={{ textAlign: 'left', marginTop: '0px', fontFamily: 'serif' }}>
