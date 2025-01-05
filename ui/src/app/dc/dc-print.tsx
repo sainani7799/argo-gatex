@@ -106,6 +106,7 @@ export function DcPrint(props: DcPrintProps) {
     const createdDate = moment(data[0]?.createdDate).format('DD-MM-YYYY');
     const totalQty = data.reduce((sum, item) => sum + parseFloat(item.qty || 0), 0);
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+    const piecesCount = data.reduce((sum, item) => sum + parseFloat(item.pieces || 0), 0);
     const titleCase = (str) => str.toLowerCase().split(' ')
         .map(word => word.charAt(0)?.toUpperCase() + word.slice(1))
         .join(' ');
@@ -127,7 +128,7 @@ export function DcPrint(props: DcPrintProps) {
 
                         <Row gutter={24} >
                             <Col span={20} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingLeft: '65px' }}>
-                                <h3 style={{ textAlign: 'center', fontFamily: 'serif' }}>{'Shahi Export Pvt. Ltd'}</h3>
+                                <h3 style={{ textAlign: 'center', fontFamily: 'serif' }}>{'SQ CELSIUS LIMITED'}</h3>
                                 <div style={{ textAlign: 'center', fontFamily: 'serif' }}>
                                     <h4>{data[0]?.fromUnit}<br />
                                         {addressData[0]?.lineOne}, {addressData[0]?.lineTwo}<br />
@@ -146,14 +147,14 @@ export function DcPrint(props: DcPrintProps) {
                     <Row gutter={[16, 16]} style={{ marginLeft: '10px' }}>
                         <Col span={12}>
                             <div className="issued-to"><b style={{ fontSize: "15px", marginTop: '0px' }}>Gate Pass : </b> <h4 style={{ textAlign: 'left', marginTop: '3px', fontFamily: 'serif' }}>{data[0]?.dcNumber}</h4></div>
-                            {data[0]?.dispatchChallanNo && (
+                            {data[0]?.dispatchChallanNo ? (
   <div className="issued-to">
-    <b style={{ fontSize: "15px", marginTop: '0px' }}> Dispatch Challan No : </b>
-    <h4 style={{ textAlign: 'left', marginTop: '3px', fontFamily: 'serif' }}>
+    <b style={{ fontSize: "15px", marginTop: "0px" }}> Dispatch Challan No : </b>
+    <h4 style={{ textAlign: "left", marginTop: "3px", fontFamily: "serif" }}>
       {data[0]?.dispatchChallanNo}
     </h4>
   </div>
-)}
+) : null}
                             <div className="issued-to">
                                 <b style={{ fontSize: "15px", marginTop: '-4px' }}>IssuedTo:</b>
                                 <h4 style={{ textAlign: 'left', marginTop: '0px', fontFamily: 'serif' }}>
@@ -297,6 +298,10 @@ export function DcPrint(props: DcPrintProps) {
                             <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={2} className={'ta-b'}>
                                 {totalQty}
                             </td>
+                            <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={4} className={'ta-b'}>
+                                {piecesCount}
+                            </td>
+                            
                             <td style={{ textAlign: 'right', fontSize: '11.5px', paddingRight: '35px' }} colSpan={6} className={'ta-b'}>
                                 {totalAmount}<span>&#8377;</span>
                             </td>
@@ -330,7 +335,7 @@ export function DcPrint(props: DcPrintProps) {
                         </Col>
                         <Col span={8}>
                             <div style={{ fontFamily: 'serif' }}>
-                                <h4>Authorised Signatory : <br/>{data[0]?.acceptedUser.toUpperCase()}<br/>({data[0]?.department})<br/>For Shahi Exports Pvt. Ltd</h4>
+                                <h4>Authorised Signatory : <br/>{data[0]?.acceptedUser}<br/>({data[0]?.department})<br/>SQ CELSIUS LIMITED</h4>
                             </div>
                         </Col>
                     </Row>

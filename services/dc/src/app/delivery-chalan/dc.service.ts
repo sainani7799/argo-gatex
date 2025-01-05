@@ -344,7 +344,7 @@ export class DcService {
 
   async getDcDetailsById(req: DcIdReq): Promise<CommonResponse> {
     try {
-      const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
+      const query = `SELECT dc.dc_id AS dcId ,dc.dc_number AS dcNumber ,dc.dispatch_challan_no AS dispatchChallanNo, dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
             w.warehouse_name AS warehouseName,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
