@@ -499,7 +499,6 @@ export class DcService {
         remarks: "",
         truckOutTimes: [{truckId: 0, checkoutDateTime: null,  remarks: null}]
       };
-      console.log(approvePayload,'approvePayload')
   
       const approveResponse = await axios.post(
         "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
@@ -511,7 +510,7 @@ export class DcService {
       console.log(approveResponse.data)
   
       if (!approveResponse?.data || approveResponse?.data?.status !== true) {
-        return new CommonResponse(false, 6668, JSON.stringify(approveResponse));
+        return new CommonResponse(false, 6668, 'Approved');
       }
   
       const updateData = await this.dcRepo.update(
