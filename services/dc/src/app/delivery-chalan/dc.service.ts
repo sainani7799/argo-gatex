@@ -497,7 +497,7 @@ export class DcService {
         userId: 20, // replace with actual user ID
         srId: dispatchChallanNo, // required challanNo
         remarks: "",
-        truckOutTimes: [{truckId: 0, checkoutDateTime: null, remarks: null}]
+        truckOutTimes: [{truckId: 0, checkoutDateTime: null,  remarks: null}]
       };
       console.log(approvePayload,'approvePayload')
   
@@ -645,7 +645,7 @@ export class DcService {
   async getSecurityGatePass(req: UnitReq): Promise<CommonResponse> {
     try {
       const query = `SELECT dc.security_user as CheckedUser , dc.sec_checked_date as secUserDate ,dc.dc_id AS dcId ,dc.dc_number AS dcNumber , dc.from_unit_id AS fromUnitId, u.unit_name AS fromUnit ,dc.warehouse_id AS warehouseId,
-            w.warehouse_name AS warehouseName,
+            w.warehouse_name AS warehouseName,dc.dispatch_challan_no AS dispatchChallanNo,
             CASE WHEN dc.to_addresser = 'unit' THEN au.unit_name WHEN to_addresser = 'supplier' THEN s.supplier_name WHEN dc.to_addresser = 'buyer' THEN b.supplier_name END AS toAddresserName ,
             po_no AS poNo ,mode_of_transport AS modeOfTransport , to_addresser AS toAddresser ,addresser_name_id AS toAddresserNameId,
             weight,department_id AS departmentId, d.department_name AS department,dc.requested_by AS requestedById, e.employee_name AS requestedBy , dc.created_at AS createdDate,dc.created_user,dc.status,dc.value,dc.returnable,dc.remarks,dc.is_assignable AS isDcAssign,dc.assign_by, eu.employee_name AS assignBy,dc.is_accepted , ea.employee_name AS acceptedUser, dc.received_dc , dc.received_user , dc.dc_type AS dcType

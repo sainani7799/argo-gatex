@@ -226,6 +226,15 @@ const DCSecurity = () => {
       ...getColumnSearchProps('dcNumber'),
     },
     {
+      title: 'Dispatch Challan No',
+      dataIndex: 'dispatchChallanNo',
+      width:150,
+      onHeaderCell: () => ({
+        style: { backgroundColor: '#047595', color: 'white' },
+      }),
+      ...getColumnSearchProps('dispatchChallanNo'),
+    },
+    {
       title: "DC Type",
       dataIndex: "dcType",
       onHeaderCell: () => ({
@@ -432,6 +441,7 @@ const DCSecurity = () => {
       }),
       ...getColumnSearchProps('dcNumber'),
     },
+
     {
       title: "DC Type",
       dataIndex: "dcType",
