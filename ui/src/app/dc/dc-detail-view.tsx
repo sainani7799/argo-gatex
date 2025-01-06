@@ -294,7 +294,7 @@ export const DcDetailsView = (props: DcViewProps) => {
       } >
         <Descriptions size='small' column={{ xs: 1, sm: 2, md: 2, lg: 3, xl: 3 }}>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dcNumber}</DescriptionsItem>
-          { data[0]?.dispatchChallanNo && <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>DC Number</span>}>{data[0]?.dispatchChallanNo}</DescriptionsItem>}
+          { data[0]?.dispatchChallanNo && <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Dispatch Challan No</span>}>{data[0]?.dispatchChallanNo}</DescriptionsItem>}
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created Date</span>}>{moment(data[0]?.createdDate)?.format('YYYY-MM-DD')}</DescriptionsItem>
           <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Created By</span>}>{data[0]?.created_user}</DescriptionsItem>
           {/* <DescriptionsItem label={<span style={{ fontWeight: 'bold', color: 'darkblack' }}>Returnable</span>}>{data[0]?.returnable}</DescriptionsItem> */}

@@ -9,6 +9,7 @@ import { error } from 'console';
 import {
   AcceptReq,
   AssignReq,
+  DcEmailModel,
   DcIdReq,
   DcReportReq,
   MessageParameters,
@@ -21,8 +22,10 @@ import {
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import * as XLSX from 'xlsx';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
-import { WhatsAppNotificationService } from 'libs/shared-services';
+import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import moment from 'moment';
+import axios from 'axios';
+import { json } from 'stream/consumers';
 
 @Injectable()
 export class DcService {
@@ -31,8 +34,70 @@ export class DcService {
     private dcAdapter: DcAdapter,
     private unitsRepo: UnitRepository,
     private dcItemSRepo: DcItemEntityRepository,
-    private wpService: WhatsAppNotificationService
+    private wpService: WhatsAppNotificationService,
+    private mailService : EmailService
   ) {}
+
+  // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+  //   console.log('-create api call');
+  //   try {
+  //     const slNoNonReturnable = await this.dcRepo.count({
+  //       where: { dcType: 'nonReturnable' },
+  //     });
+  //     const slNoReturnable = await this.dcRepo.count({
+  //       where: { dcType: 'returnable' },
+  //     });
+
+  //     const slNo =
+  //       req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
+  //     console.log(slNo, 'slNO');
+
+  //     const nextSlNo = slNo + 1;
+  //     console.log(nextSlNo, 'Next slNo');
+
+  //     const formattedSlNo = String(
+  //       Math.min(Math.max(nextSlNo, 1), 99999)
+  //     ).padStart(5, '0');
+  //     // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
+
+  //     const currentDate = new Date();
+  //     const currentYear = currentDate.getFullYear();
+  //     const lastTwoDigitsOfYear = String(currentYear).slice(-2);
+  //     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
+  //     const day = String(currentDate.getDate()).padStart(2, '0');
+
+  //     const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
+  //     const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
+  //     console.log(dcNum, 'dcNum');
+
+  //     req.dcNumber = dcNum;
+  //     const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
+  //       req,
+  //       isUpdate
+  //     );
+  //     console.log(convertedDcEntity, '----coneverted entity');
+  //     const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
+  //     // console.log(savedDcEntity,'--save dc entity')
+  //     const savedDcDto: DcDto =
+  //       this.dcAdapter.convertEntityToDto(savedDcEntity);
+  //     if (savedDcDto) {
+  //       const response = new CommonResponse(
+  //         true,
+  //         1,
+  //         isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
+  //         savedDcDto
+  //       );
+  //       return response;
+  //     } else {
+  //       throw new Error('DC saved but issue while transforming into DTO');
+  //     }
+  //   } catch (error) {
+  //     console.log('dc creation log');
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
+
 
   async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
     console.log('-create api call');
@@ -76,7 +141,35 @@ export class DcService {
       // console.log(savedDcEntity,'--save dc entity')
       const savedDcDto: DcDto =
         this.dcAdapter.convertEntityToDto(savedDcEntity);
-      if (savedDcDto) {
+        if (!savedDcDto) {
+          throw new Error('DC saved but issue while transforming into DTO');
+        }
+        const updatePayload = {
+          dcId: savedDcDto.dcId,
+          isAssignable: 'YES',
+          emailId: 'bhargavg@schemaxtech.com', // Use provided email or fallback
+          assignBy: 8, // Example hardcoded assignBy
+          status: 'SENT FOR APPROVAL',
+          dcNumber: savedDcDto.dcNumber,
+          fromUnit: savedDcDto.fromUnitId,
+          toAddresserName: savedDcDto.toAddresser,
+          created_user: savedDcDto.createdUser,
+          purpose: savedDcDto.purpose,
+        };
+    
+        const updateResponse = await this.updateDc(updatePayload);
+        
+        if (!updateResponse.status) {
+          console.error('Error in updateDc:', updateResponse);
+        }
+
+        const emailResult = await this.sendDcMailForGatePass(updatePayload);
+        if (!emailResult) {
+          console.error('Error while sending email');
+        } else {
+          console.log('Email sent successfully');
+        }
+
         const response = new CommonResponse(
           true,
           1,
@@ -84,13 +177,101 @@ export class DcService {
           savedDcDto
         );
         return response;
-      } else {
-        throw new Error('DC saved but issue while transforming into DTO');
-      }
     } catch (error) {
       console.log('dc creation log');
       console.log(error);
       throw error;
+    }
+  }
+
+
+  private async sendDcMailForGatePass(dto: any): Promise<boolean> {
+    const dcDetails = new DcEmailModel();
+    dcDetails.dcNo = dto.dcNumber;
+    dcDetails.to = dto.emailId;
+    dcDetails.html = `
+          <html>
+          <head>
+            <meta charset="UTF-8" />
+            <style>
+              #acceptDcLink {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #28a745;
+                    color: #fff;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    margin-top: 10px;
+                    transition: background-color 0.3s ease, color 0.3s ease;
+                    cursor: pointer;
+                }
+                #acceptDcLink.accepted {
+                    background-color: #6c757d;
+                    cursor: not-allowed;
+                }
+                #acceptDcLink:hover {
+                    background-color: #218838;
+                    color: #fff;
+                }
+            </style>
+          </head>
+          <body>
+            <p>Dear team,</p>
+            <p>Please find the Gate Pass details below:</p>
+            <p>DC NO: ${dto.dcNumber}</p>
+            <p>DC created user name : ${dto.created_user}</p>
+            <p>Purpose of this DC : ${dto.purpose}</p>
+            <p>Please click the link below for details:</p>
+            <input type="hidden" id="assignBy" value=${dto.assignBy} /> 
+            <input type="hidden" id="dcId" value=${dto.dcId} />
+        
+            <a
+              href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${dto.dcId}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #007bff;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+              "
+              >View Details of GatePass</a
+            >
+            <a
+            href="https://gatex.schemaxtech.in/#/dc-email/${dto.dcId}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #108f1a;
+              color: #fff;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >Accept Gate Pass</a
+          >
+          <a
+            href="https://gatex.schemaxtech.in/#/dc-reject-mail/${dto.dcId}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              background-color: #ff001e;
+              color: #fff;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >Reject Gate Pass</a
+          >
+          </body>
+        </html>
+        `;
+    dcDetails.subject = 'Gate Pass : ' + dto.dcNumber;
+  
+    try {
+      const res = await this.mailService.sendDcMail(dcDetails);
+      return res.status === 201 && res.data.status;
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return false;
     }
   }
 
@@ -172,6 +353,7 @@ export class DcService {
           console.log(`Message sent successfully to ${contact}`);
         }
       }
+     
 
       return new CommonResponse(
         true,
@@ -251,11 +433,87 @@ export class DcService {
     }
   }
 
+  // async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
+  //   console.log(dto, 'SecurityCheckReq');
+  //   const currentDate = new Date();
+  //   const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+  //   if (dcRecord) {
+  //     const updateData = await this.dcRepo.update(
+  //       { dcId: dto.dcId },
+  //       {
+  //         status: dto.status,
+  //         securityUser: dto.securityUser,
+  //         checkoutTime: dto.checkoutTime,
+  //         securityCheckedDate: currentDate,
+  //       }
+  //     );
+  //     return new CommonResponse(true, 333, 'update successfully', updateData);
+  //   } else {
+  //     return new CommonResponse(false, 6666, 'something went wrong');
+  //   }
+  // }
+
   async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
-    console.log(dto, 'SecurityCheckReq');
+    console.log(dto, "SecurityCheckReq");
     const currentDate = new Date();
+  
+    // Fetch the DC record
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-    if (dcRecord) {
+    if (!dcRecord) {
+      return new CommonResponse(false, 6666, "Dispatch Challan not found");
+    }
+  
+    const dispatchChallanNo = dcRecord.dispatchChallanNo;
+  
+    const validatePayload = {
+      username: "admin", // from gate pass
+      unitCode: "B3", // hardcoded
+      companyCode: "5000", // hardcoded
+      userId: 20, // replace with actual user ID
+      srIds: [dispatchChallanNo], // required challanNo
+      remarks: "",
+      iNeedVendorInfoAlso: false,
+      iNeedTruckInfoAlso: false,
+      iNeedSrItemsAlso: false,
+      iNeedSrItemsAttrAlso: false,
+    };
+  
+    try {
+      console.log('-----------')
+      const validateResponse = await axios.post(
+        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/validateCheckoutShippingRequest",
+        validatePayload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!validateResponse?.data || validateResponse?.data?.status !== true) {
+        return new CommonResponse(false, 6667, "Validation failed for Shipping Request",validateResponse);
+      }
+      const approvePayload = {
+        username: "admin", // from gate pass
+        unitCode: "B3", // hardcoded
+        companyCode: "5000", // hardcoded
+        userId: 20, // replace with actual user ID
+        srId: dispatchChallanNo, // required challanNo
+        remarks: "",
+        truckOutTimes: [{truckId: 0, checkoutDateTime: null, remarks: null}]
+      };
+      console.log(approvePayload,'approvePayload')
+  
+      const approveResponse = await axios.post(
+        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
+        approvePayload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(approveResponse.data)
+  
+      if (!approveResponse?.data || approveResponse?.data?.status !== true) {
+        return new CommonResponse(false, 6668, JSON.stringify(approveResponse));
+      }
+  
       const updateData = await this.dcRepo.update(
         { dcId: dto.dcId },
         {
@@ -265,11 +523,14 @@ export class DcService {
           securityCheckedDate: currentDate,
         }
       );
-      return new CommonResponse(true, 333, 'update successfully', updateData);
-    } else {
-      return new CommonResponse(false, 6666, 'something went wrong');
+  
+      return new CommonResponse(true, 333, "Updated successfully", updateData);
+    } catch (error) {
+      console.error("Error in securityCheckDone:", error.message || error);
+      return new CommonResponse(false, 9999, "An error occurred during the security check");
     }
   }
+  
 
   async securityCheckIn(dto: SecurityCheckReq): Promise<CommonResponse> {
     console.log(dto, 'SecurityCheckReq');

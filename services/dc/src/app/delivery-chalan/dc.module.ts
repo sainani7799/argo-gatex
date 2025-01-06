@@ -8,13 +8,13 @@ import { DcAdapter } from "./adapter/dc.adapter";
 import { UnitRepository } from "../masters/branch/repo/unit-repo";
 import { DcItemEntityRepository } from "./repository/dc-items.repo";
 import { MailerService } from "./send-mail";
-import { WhatsAppNotificationService } from "libs/shared-services";
+import { EmailService, WhatsAppNotificationService } from "libs/shared-services";
 
 @Module({
     imports: [TypeOrmModule.forFeature([
     ])],
     controllers: [DcController],
-    providers: [DcService,DcAdapter,DcEntityRepository,ApplicationExceptionHandler,UnitRepository,DcItemEntityRepository,MailerService,WhatsAppNotificationService],
+    providers: [DcService,DcAdapter,DcEntityRepository,ApplicationExceptionHandler,UnitRepository,DcItemEntityRepository,MailerService,WhatsAppNotificationService,EmailService],
     exports: [DcService],
   })
   export class DcModule {}
