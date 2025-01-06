@@ -488,7 +488,7 @@ export class DcService {
         }
       );
       if (!validateResponse?.data || validateResponse?.data?.status !== true) {
-        return new CommonResponse(false, 6667, "Validation failed for Shipping Request",validateResponse);
+        return new CommonResponse(false, 6667, "Validation failed for Shipping Request");
       }
       const approvePayload = {
         username: "admin", // from gate pass
