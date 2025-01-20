@@ -17,7 +17,7 @@ export class MailerService {
       secure: false,
       auth: {
         user: 'shahimnb.bot@shahi.co.in',
-        pass: 'otsx lnvj bdvp ynsf',
+        pass: 'ukir yeur yyre mxgt',
       },
     });
   }
