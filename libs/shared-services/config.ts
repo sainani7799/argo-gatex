@@ -9,7 +9,7 @@ export const config = {
     whatsapp_broadcast_url: 'http://206.189.138.212:3232/api',
     APP_ID: 1,
     APP_Name: 'Gate Pass',
-    APP_PRO_TICKET_URL: 'https://proticketx-be.schemaxtech.in/static/helpx-bot/helpx-bot.js'
+    APP_PRO_TICKET_URL: 'https://proticketx-v1-be.schemaxtech.in/static/helpx-bot/helpx-bot.js'
 }
 export const configVariables = {
     ...config
