@@ -20,7 +20,7 @@ export const typeOrmConfig: DataSourceOptions ={
     host: '165.22.220.143',
     username: 'gate_demo',
     password: 'gate@xyz',
-    database: 'gate-pass',
+    database: 'gatepass_dev',
     synchronize: false,
     logging:true,
     extra :{
