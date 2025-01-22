@@ -45,7 +45,7 @@ pipeline {
         }
         stage('Transfer Build Files') {
             steps {
-                sshagent(credentials: ['2']) { // Use the correct credentials ID here
+                sshagent(credentials: ['3']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@165.22.220.143 "rm -rf /var/www/html/gate_app/*"
                         ssh root@165.22.220.143 "rm -rf /var/www/html/gate_pass/dist/services"
@@ -57,7 +57,7 @@ pipeline {
         }
         stage('start Services with PM2') {
             steps {
-                sshagent(credentials: ['2']) { // Use the correct credentials ID here
+                sshagent(credentials: ['3']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@165.22.220.143 <<EOF
 pm2 start /var/www/html/gate_pass/dist/services/dc/main.js --name "gate-7000"
@@ -70,7 +70,7 @@ EOF
         /*
         stage('Restart Services with PM2') {
             steps {
-                sshagent(credentials: ['2']) { // Use the correct credentials ID here
+                sshagent(credentials: ['3']) { // Use the correct credentials ID here
                     sh '''
                         ssh root@165.22.220.143 <<EOF
 pm2 restart gate-7000
