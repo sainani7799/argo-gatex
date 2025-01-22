@@ -18,7 +18,7 @@ export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
     timezone: 'Z',
     host: '165.22.220.143',
-    username: 'gate_demo',
+    username: 'gate_dev',
     password: 'gate@xyz',
     database: 'gatepass_dev',
     synchronize: false,
