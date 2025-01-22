@@ -55,6 +55,7 @@ pipeline {
                 }
             }
         }
+        /*
         stage('start Services with PM2') {
             steps {
                 sshagent(credentials: ['3']) { // Use the correct credentials ID here
@@ -67,7 +68,7 @@ EOF
                 }
             }
         }
-        /*
+        */
         stage('Restart Services with PM2') {
             steps {
                 sshagent(credentials: ['3']) { // Use the correct credentials ID here
@@ -80,7 +81,6 @@ EOF
                 }
             }
         }
-        */
     }
     post {
         success {
