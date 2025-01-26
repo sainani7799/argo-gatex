@@ -493,7 +493,7 @@ export class DcService {
         }
       );
       if (!validateResponse?.data || validateResponse?.data?.status !== true) {
-        return new CommonResponse(false, 6667, "Validation failed for Shipping Request");
+        return new CommonResponse(false, 6667, "Validation failed for Shipping Request not approved from the dispatch department.");
       }
       const approvePayload = {
         username: "admin", // from gate pass
