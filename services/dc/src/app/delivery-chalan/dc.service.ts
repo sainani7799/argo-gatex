@@ -144,7 +144,7 @@ export class DcService {
         if (!savedDcDto) {
           throw new Error('DC saved but issue while transforming into DTO');
         }
-        const emailAddresses = ['bhargavg@schemaxtech.com','bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
+        const emailAddresses = ['bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
         const updatePromises = emailAddresses.map(async (email) => {
           const updatePayload = {
             dcId: savedDcDto.dcId,
