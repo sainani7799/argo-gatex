@@ -144,31 +144,36 @@ export class DcService {
         if (!savedDcDto) {
           throw new Error('DC saved but issue while transforming into DTO');
         }
-        const updatePayload = {
-          dcId: savedDcDto.dcId,
-          isAssignable: 'YES',
-          emailId: 'bhargavg@schemaxtech.com', // Use provided email or fallback
-          assignBy: 8, // Example hardcoded assignBy
-          status: 'SENT FOR APPROVAL',
-          dcNumber: savedDcDto.dcNumber,
-          fromUnit: savedDcDto.fromUnitId,
-          toAddresserName: savedDcDto.toAddresser,
-          created_user: savedDcDto.createdUser,
-          purpose: savedDcDto.purpose,
-        };
+        const emailAddresses = ['bhargavg@schemaxtech.com','bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
+        const updatePromises = emailAddresses.map(async (email) => {
+          const updatePayload = {
+            dcId: savedDcDto.dcId,
+            isAssignable: 'YES',
+            emailId: email,
+            assignBy: 8, // Example hardcoded value
+            status: 'SENT FOR APPROVAL',
+            dcNumber: savedDcDto.dcNumber,
+            fromUnit: savedDcDto.fromUnitId,
+            toAddresserName: savedDcDto.toAddresser,
+            created_user: savedDcDto.createdUser,
+            purpose: savedDcDto.purpose,
+          };
     
-        const updateResponse = await this.updateDc(updatePayload);
-        
-        if (!updateResponse.status) {
-          console.error('Error in updateDc:', updateResponse);
-        }
-
-        const emailResult = await this.sendDcMailForGatePass(updatePayload);
-        if (!emailResult) {
-          console.error('Error while sending email');
-        } else {
-          console.log('Email sent successfully');
-        }
+          // Update DC
+          const updateResponse = await this.updateDc(updatePayload);
+          if (!updateResponse?.status) {
+            console.error(`Failed to update DC for email ${email}`, updateResponse);
+          }
+    
+          // Send Email
+          const emailResult = await this.sendDcMailForGatePass(updatePayload);
+          if (!emailResult) {
+            console.error(`Failed to send email to ${email}`);
+          } else {
+            console.log(`Email sent successfully to ${email}`);
+          }
+        });
+        await Promise.all(updatePromises);
 
         const response = new CommonResponse(
           true,
