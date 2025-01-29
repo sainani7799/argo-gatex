@@ -38,67 +38,6 @@ export class DcService {
     private mailService : EmailService
   ) {}
 
-  // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
-  //   console.log('-create api call');
-  //   try {
-  //     const slNoNonReturnable = await this.dcRepo.count({
-  //       where: { dcType: 'nonReturnable' },
-  //     });
-  //     const slNoReturnable = await this.dcRepo.count({
-  //       where: { dcType: 'returnable' },
-  //     });
-
-  //     const slNo =
-  //       req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
-  //     console.log(slNo, 'slNO');
-
-  //     const nextSlNo = slNo + 1;
-  //     console.log(nextSlNo, 'Next slNo');
-
-  //     const formattedSlNo = String(
-  //       Math.min(Math.max(nextSlNo, 1), 99999)
-  //     ).padStart(5, '0');
-  //     // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
-
-  //     const currentDate = new Date();
-  //     const currentYear = currentDate.getFullYear();
-  //     const lastTwoDigitsOfYear = String(currentYear).slice(-2);
-  //     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
-  //     const day = String(currentDate.getDate()).padStart(2, '0');
-
-  //     const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
-  //     const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
-  //     console.log(dcNum, 'dcNum');
-
-  //     req.dcNumber = dcNum;
-  //     const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
-  //       req,
-  //       isUpdate
-  //     );
-  //     console.log(convertedDcEntity, '----coneverted entity');
-  //     const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
-  //     // console.log(savedDcEntity,'--save dc entity')
-  //     const savedDcDto: DcDto =
-  //       this.dcAdapter.convertEntityToDto(savedDcEntity);
-  //     if (savedDcDto) {
-  //       const response = new CommonResponse(
-  //         true,
-  //         1,
-  //         isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
-  //         savedDcDto
-  //       );
-  //       return response;
-  //     } else {
-  //       throw new Error('DC saved but issue while transforming into DTO');
-  //     }
-  //   } catch (error) {
-  //     console.log('dc creation log');
-  //     console.log(error);
-  //     throw error;
-  //   }
-  // }
-
-
   async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
     console.log('-create api call');
     try {
@@ -141,40 +80,7 @@ export class DcService {
       // console.log(savedDcEntity,'--save dc entity')
       const savedDcDto: DcDto =
         this.dcAdapter.convertEntityToDto(savedDcEntity);
-        if (!savedDcDto) {
-          throw new Error('DC saved but issue while transforming into DTO');
-        }
-        const emailAddresses = ['bhargavg@schemaxtech.com','bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
-        const updatePromises = emailAddresses.map(async (email) => {
-          const updatePayload = {
-            dcId: savedDcDto.dcId,
-            isAssignable: 'YES',
-            emailId: email,
-            assignBy: 8, // Example hardcoded value
-            status: 'SENT FOR APPROVAL',
-            dcNumber: savedDcDto.dcNumber,
-            fromUnit: savedDcDto.fromUnitId,
-            toAddresserName: savedDcDto.toAddresser,
-            created_user: savedDcDto.createdUser,
-            purpose: savedDcDto.purpose,
-          };
-    
-          // Update DC
-          const updateResponse = await this.updateDc(updatePayload);
-          if (!updateResponse?.status) {
-            console.error(`Failed to update DC for email ${email}`, updateResponse);
-          }
-    
-          // Send Email
-          const emailResult = await this.sendDcMailForGatePass(updatePayload);
-          if (!emailResult) {
-            console.error(`Failed to send email to ${email}`);
-          } else {
-            console.log(`Email sent successfully to ${email}`);
-          }
-        });
-        await Promise.all(updatePromises);
-
+      if (savedDcDto) {
         const response = new CommonResponse(
           true,
           1,
@@ -182,12 +88,106 @@ export class DcService {
           savedDcDto
         );
         return response;
+      } else {
+        throw new Error('DC saved but issue while transforming into DTO');
+      }
     } catch (error) {
       console.log('dc creation log');
       console.log(error);
       throw error;
     }
   }
+
+
+  // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+  //   console.log('-create api call');
+  //   try {
+  //     const slNoNonReturnable = await this.dcRepo.count({
+  //       where: { dcType: 'nonReturnable' },
+  //     });
+  //     const slNoReturnable = await this.dcRepo.count({
+  //       where: { dcType: 'returnable' },
+  //     });
+
+  //     const slNo =
+  //       req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
+  //     console.log(slNo, 'slNO');
+
+  //     const nextSlNo = slNo + 1;
+  //     console.log(nextSlNo, 'Next slNo');
+
+  //     const formattedSlNo = String(
+  //       Math.min(Math.max(nextSlNo, 1), 99999)
+  //     ).padStart(5, '0');
+  //     // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
+
+  //     const currentDate = new Date();
+  //     const currentYear = currentDate.getFullYear();
+  //     const lastTwoDigitsOfYear = String(currentYear).slice(-2);
+  //     const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
+  //     const day = String(currentDate.getDate()).padStart(2, '0');
+
+  //     const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
+  //     const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
+  //     console.log(dcNum, 'dcNum');
+
+  //     req.dcNumber = dcNum;
+  //     const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
+  //       req,
+  //       isUpdate
+  //     );
+  //     console.log(convertedDcEntity, '----coneverted entity');
+  //     const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
+  //     // console.log(savedDcEntity,'--save dc entity')
+  //     const savedDcDto: DcDto =
+  //       this.dcAdapter.convertEntityToDto(savedDcEntity);
+  //       if (!savedDcDto) {
+  //         throw new Error('DC saved but issue while transforming into DTO');
+  //       }
+  //       const emailAddresses = ['bhargavg@schemaxtech.com','bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
+  //       const updatePromises = emailAddresses.map(async (email) => {
+  //         const updatePayload = {
+  //           dcId: savedDcDto.dcId,
+  //           isAssignable: 'YES',
+  //           emailId: email,
+  //           assignBy: 8, // Example hardcoded value
+  //           status: 'SENT FOR APPROVAL',
+  //           dcNumber: savedDcDto.dcNumber,
+  //           fromUnit: savedDcDto.fromUnitId,
+  //           toAddresserName: savedDcDto.toAddresser,
+  //           created_user: savedDcDto.createdUser,
+  //           purpose: savedDcDto.purpose,
+  //         };
+    
+  //         // Update DC
+  //         const updateResponse = await this.updateDc(updatePayload);
+  //         if (!updateResponse?.status) {
+  //           console.error(`Failed to update DC for email ${email}`, updateResponse);
+  //         }
+    
+  //         // Send Email
+  //         const emailResult = await this.sendDcMailForGatePass(updatePayload);
+  //         if (!emailResult) {
+  //           console.error(`Failed to send email to ${email}`);
+  //         } else {
+  //           console.log(`Email sent successfully to ${email}`);
+  //         }
+  //       });
+  //       await Promise.all(updatePromises);
+
+  //       const response = new CommonResponse(
+  //         true,
+  //         1,
+  //         isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
+  //         savedDcDto
+  //       );
+  //       return response;
+  //   } catch (error) {
+  //     console.log('dc creation log');
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
 
 
   private async sendDcMailForGatePass(dto: any): Promise<boolean> {
@@ -438,86 +438,11 @@ export class DcService {
     }
   }
 
-  // async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
-  //   console.log(dto, 'SecurityCheckReq');
-  //   const currentDate = new Date();
-  //   const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-  //   if (dcRecord) {
-  //     const updateData = await this.dcRepo.update(
-  //       { dcId: dto.dcId },
-  //       {
-  //         status: dto.status,
-  //         securityUser: dto.securityUser,
-  //         checkoutTime: dto.checkoutTime,
-  //         securityCheckedDate: currentDate,
-  //       }
-  //     );
-  //     return new CommonResponse(true, 333, 'update successfully', updateData);
-  //   } else {
-  //     return new CommonResponse(false, 6666, 'something went wrong');
-  //   }
-  // }
-
   async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
-    console.log(dto, "SecurityCheckReq");
+    console.log(dto, 'SecurityCheckReq');
     const currentDate = new Date();
-  
-    // Fetch the DC record
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-    if (!dcRecord) {
-      return new CommonResponse(false, 6666, "Dispatch Challan not found");
-    }
-  
-    const dispatchChallanNo = dcRecord.dispatchChallanNo;
-  
-    const validatePayload = {
-      username: "admin", // from gate pass
-      unitCode: "B3", // hardcoded
-      companyCode: "5000", // hardcoded
-      userId: 20, // replace with actual user ID
-      srIds: [dispatchChallanNo], // required challanNo
-      remarks: "",
-      iNeedVendorInfoAlso: false,
-      iNeedTruckInfoAlso: false,
-      iNeedSrItemsAlso: false,
-      iNeedSrItemsAttrAlso: false,
-    };
-  
-    try {
-      console.log('-----------')
-      const validateResponse = await axios.post(
-        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/validateCheckoutShippingRequest",
-        validatePayload,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      if (!validateResponse?.data || validateResponse?.data?.status !== true) {
-        return new CommonResponse(false, 6667, "Validation failed for Shipping Request not approved from the dispatch department.");
-      }
-      const approvePayload = {
-        username: "admin", // from gate pass
-        unitCode: "B3", // hardcoded
-        companyCode: "5000", // hardcoded
-        userId: 20, // replace with actual user ID
-        srId: dispatchChallanNo, // required challanNo
-        remarks: "",
-        truckOutTimes: [{truckId: 0, checkoutDateTime: null,  remarks: null}]
-      };
-  
-      const approveResponse = await axios.post(
-        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
-        approvePayload,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      console.log(approveResponse.data)
-  
-      if (!approveResponse?.data || approveResponse?.data?.status !== true) {
-        return new CommonResponse(false, 6668, 'Approved');
-      }
-  
+    if (dcRecord) {
       const updateData = await this.dcRepo.update(
         { dcId: dto.dcId },
         {
@@ -527,13 +452,88 @@ export class DcService {
           securityCheckedDate: currentDate,
         }
       );
-  
-      return new CommonResponse(true, 333, "Updated successfully", updateData);
-    } catch (error) {
-      console.error("Error in securityCheckDone:", error.message || error);
-      return new CommonResponse(false, 9999, "An error occurred during the security check");
+      return new CommonResponse(true, 333, 'update successfully', updateData);
+    } else {
+      return new CommonResponse(false, 6666, 'something went wrong');
     }
   }
+
+  // async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
+  //   console.log(dto, "SecurityCheckReq");
+  //   const currentDate = new Date();
+  
+  //   // Fetch the DC record
+  //   const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+  //   if (!dcRecord) {
+  //     return new CommonResponse(false, 6666, "Dispatch Challan not found");
+  //   }
+  
+  //   const dispatchChallanNo = dcRecord.dispatchChallanNo;
+  
+  //   const validatePayload = {
+  //     username: "admin", // from gate pass
+  //     unitCode: "B3", // hardcoded
+  //     companyCode: "5000", // hardcoded
+  //     userId: 20, // replace with actual user ID
+  //     srIds: [dispatchChallanNo], // required challanNo
+  //     remarks: "",
+  //     iNeedVendorInfoAlso: false,
+  //     iNeedTruckInfoAlso: false,
+  //     iNeedSrItemsAlso: false,
+  //     iNeedSrItemsAttrAlso: false,
+  //   };
+  
+  //   try {
+  //     console.log('-----------')
+  //     const validateResponse = await axios.post(
+  //       "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/validateCheckoutShippingRequest",
+  //       validatePayload,
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
+  //     if (!validateResponse?.data || validateResponse?.data?.status !== true) {
+  //       return new CommonResponse(false, 6667, "Validation failed for Shipping Request not approved from the dispatch department.");
+  //     }
+  //     const approvePayload = {
+  //       username: "admin", // from gate pass
+  //       unitCode: "B3", // hardcoded
+  //       companyCode: "5000", // hardcoded
+  //       userId: 20, // replace with actual user ID
+  //       srId: dispatchChallanNo, // required challanNo
+  //       remarks: "",
+  //       truckOutTimes: [{truckId: 0, checkoutDateTime: null,  remarks: null}]
+  //     };
+  
+  //     const approveResponse = await axios.post(
+  //       "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
+  //       approvePayload,
+  //       {
+  //         headers: { "Content-Type": "application/json" },
+  //       }
+  //     );
+  //     console.log(approveResponse.data)
+  
+  //     if (!approveResponse?.data || approveResponse?.data?.status !== true) {
+  //       return new CommonResponse(false, 6668, 'Approved');
+  //     }
+  
+  //     const updateData = await this.dcRepo.update(
+  //       { dcId: dto.dcId },
+  //       {
+  //         status: dto.status,
+  //         securityUser: dto.securityUser,
+  //         checkoutTime: dto.checkoutTime,
+  //         securityCheckedDate: currentDate,
+  //       }
+  //     );
+  
+  //     return new CommonResponse(true, 333, "Updated successfully", updateData);
+  //   } catch (error) {
+  //     console.error("Error in securityCheckDone:", error.message || error);
+  //     return new CommonResponse(false, 9999, "An error occurred during the security check");
+  //   }
+  // }
   
 
   async securityCheckIn(dto: SecurityCheckReq): Promise<CommonResponse> {
