@@ -19,7 +19,7 @@ export const typeOrmConfig: DataSourceOptions ={
     timezone: 'Z',
     host: '10.40.244.94',
     username: 'dbadmin',
-    password: '$Chem@X1234',
+    password: '$chem@X',
     database: 'gate_pass',
     synchronize: false,
     logging:true,
