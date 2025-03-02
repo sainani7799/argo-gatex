@@ -38,67 +38,6 @@ export class DcService {
     private mailService : EmailService
   ) {}
 
-  async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
-    console.log('-create api call');
-    try {
-      const slNoNonReturnable = await this.dcRepo.count({
-        where: { dcType: 'nonReturnable' },
-      });
-      const slNoReturnable = await this.dcRepo.count({
-        where: { dcType: 'returnable' },
-      });
-
-      const slNo =
-        req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
-      console.log(slNo, 'slNO');
-
-      const nextSlNo = slNo + 1;
-      console.log(nextSlNo, 'Next slNo');
-
-      const formattedSlNo = String(
-        Math.min(Math.max(nextSlNo, 1), 99999)
-      ).padStart(5, '0');
-      // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
-
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const lastTwoDigitsOfYear = String(currentYear).slice(-2);
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
-      const day = String(currentDate.getDate()).padStart(2, '0');
-
-      const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
-      const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
-      console.log(dcNum, 'dcNum');
-
-      req.dcNumber = dcNum;
-      const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
-        req,
-        isUpdate
-      );
-      console.log(convertedDcEntity, '----coneverted entity');
-      const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
-      // console.log(savedDcEntity,'--save dc entity')
-      const savedDcDto: DcDto =
-        this.dcAdapter.convertEntityToDto(savedDcEntity);
-      if (savedDcDto) {
-        const response = new CommonResponse(
-          true,
-          1,
-          isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
-          savedDcDto
-        );
-        return response;
-      } else {
-        throw new Error('DC saved but issue while transforming into DTO');
-      }
-    } catch (error) {
-      console.log('dc creation log');
-      console.log(error);
-      throw error;
-    }
-  }
-
-
   // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
   //   console.log('-create api call');
   //   try {
@@ -141,35 +80,7 @@ export class DcService {
   //     // console.log(savedDcEntity,'--save dc entity')
   //     const savedDcDto: DcDto =
   //       this.dcAdapter.convertEntityToDto(savedDcEntity);
-  //       if (!savedDcDto) {
-  //         throw new Error('DC saved but issue while transforming into DTO');
-  //       }
-  //       const updatePayload = {
-  //         dcId: savedDcDto.dcId,
-  //         isAssignable: 'YES',
-  //         emailId: 'bhargavg@schemaxtech.com', // Use provided email or fallback
-  //         assignBy: 8, // Example hardcoded assignBy
-  //         status: 'SENT FOR APPROVAL',
-  //         dcNumber: savedDcDto.dcNumber,
-  //         fromUnit: savedDcDto.fromUnitId,
-  //         toAddresserName: savedDcDto.toAddresser,
-  //         created_user: savedDcDto.createdUser,
-  //         purpose: savedDcDto.purpose,
-  //       };
-    
-  //       const updateResponse = await this.updateDc(updatePayload);
-        
-  //       if (!updateResponse.status) {
-  //         console.error('Error in updateDc:', updateResponse);
-  //       }
-
-  //       const emailResult = await this.sendDcMailForGatePass(updatePayload);
-  //       if (!emailResult) {
-  //         console.error('Error while sending email');
-  //       } else {
-  //         console.log('Email sent successfully');
-  //       }
-
+  //     if (savedDcDto) {
   //       const response = new CommonResponse(
   //         true,
   //         1,
@@ -177,12 +88,101 @@ export class DcService {
   //         savedDcDto
   //       );
   //       return response;
+  //     } else {
+  //       throw new Error('DC saved but issue while transforming into DTO');
+  //     }
   //   } catch (error) {
   //     console.log('dc creation log');
   //     console.log(error);
   //     throw error;
   //   }
   // }
+
+
+  async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+    console.log('-create api call');
+    try {
+      const slNoNonReturnable = await this.dcRepo.count({
+        where: { dcType: 'nonReturnable' },
+      });
+      const slNoReturnable = await this.dcRepo.count({
+        where: { dcType: 'returnable' },
+      });
+
+      const slNo =
+        req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
+      console.log(slNo, 'slNO');
+
+      const nextSlNo = slNo + 1;
+      console.log(nextSlNo, 'Next slNo');
+
+      const formattedSlNo = String(
+        Math.min(Math.max(nextSlNo, 1), 99999)
+      ).padStart(5, '0');
+      // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
+
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const lastTwoDigitsOfYear = String(currentYear).slice(-2);
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
+      const day = String(currentDate.getDate()).padStart(2, '0');
+
+      const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
+      const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
+      console.log(dcNum, 'dcNum');
+
+      req.dcNumber = dcNum;
+      const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
+        req,
+        isUpdate
+      );
+      console.log(convertedDcEntity, '----coneverted entity');
+      const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
+      // console.log(savedDcEntity,'--save dc entity')
+      const savedDcDto: DcDto =
+        this.dcAdapter.convertEntityToDto(savedDcEntity);
+        if (!savedDcDto) {
+          throw new Error('DC saved but issue while transforming into DTO');
+        }
+        const updatePayload = {
+          dcId: savedDcDto.dcId,
+          isAssignable: 'YES',
+          emailId: 'bhargavg@schemaxtech.com', // Use provided email or fallback
+          assignBy: 8, // Example hardcoded assignBy
+          status: 'SENT FOR APPROVAL',
+          dcNumber: savedDcDto.dcNumber,
+          fromUnit: savedDcDto.fromUnitId,
+          toAddresserName: savedDcDto.toAddresser,
+          created_user: savedDcDto.createdUser,
+          purpose: savedDcDto.purpose,
+        };
+    
+        const updateResponse = await this.updateDc(updatePayload);
+        
+        if (!updateResponse.status) {
+          console.error('Error in updateDc:', updateResponse);
+        }
+
+        const emailResult = await this.sendDcMailForGatePass(updatePayload);
+        if (!emailResult) {
+          console.error('Error while sending email');
+        } else {
+          console.log('Email sent successfully');
+        }
+
+        const response = new CommonResponse(
+          true,
+          1,
+          isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
+          savedDcDto
+        );
+        return response;
+    } catch (error) {
+      console.log('dc creation log');
+      console.log(error);
+      throw error;
+    }
+  }
 
 
   private async sendDcMailForGatePass(dto: any): Promise<boolean> {
@@ -226,7 +226,7 @@ export class DcService {
             <input type="hidden" id="dcId" value=${dto.dcId} />
         
             <a
-              href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${dto.dcId}"
+              href="https://gatex-dev.schemaxtech.in/#/dc-email-detail-view/${dto.dcId}"
               style="
                 display: inline-block;
                 padding: 10px 20px;
@@ -238,7 +238,7 @@ export class DcService {
               >View Details of GatePass</a
             >
             <a
-            href="https://gatex.schemaxtech.in/#/dc-email/${dto.dcId}"
+            href="https://gatex-dev.schemaxtech.in/#/dc-email/${dto.dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -250,7 +250,7 @@ export class DcService {
             >Accept Gate Pass</a
           >
           <a
-            href="https://gatex.schemaxtech.in/#/dc-reject-mail/${dto.dcId}"
+            href="https://gatex-dev.schemaxtech.in/#/dc-reject-mail/${dto.dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
