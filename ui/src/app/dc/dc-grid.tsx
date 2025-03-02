@@ -337,7 +337,7 @@ const applyFilters = () => {
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
-            href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${form.getFieldValue(
+            href="https://gatex-dev.schemaxtech.in/#/dc-email-detail-view/${form.getFieldValue(
               'dcId'
             )}"
             style="
@@ -351,7 +351,7 @@ const applyFilters = () => {
             >View Details of GatePass</a
           >
           <a
-          href="https://gatex.schemaxtech.in/#/dc-email/${form.getFieldValue(
+          href="https://gatex-dev.schemaxtech.in/#/dc-email/${form.getFieldValue(
             'dcId'
           )}"
           style="
@@ -365,7 +365,7 @@ const applyFilters = () => {
           >Accept Gate Pass</a
         >
         <a
-          href="https://gatex.schemaxtech.in/#/dc-reject-mail/${form.getFieldValue(
+          href="https://gatex-dev.schemaxtech.in/#/dc-reject-mail/${form.getFieldValue(
             'dcId'
           )}"
           style="
