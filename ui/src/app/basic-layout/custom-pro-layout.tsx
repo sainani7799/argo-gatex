@@ -5,6 +5,7 @@ import Icon, {
   AuditOutlined,
   BarChartOutlined,
   CalendarOutlined,
+  CarOutlined,
   CheckCircleOutlined,
   CreditCardOutlined,
   DeleteOutlined,
@@ -235,6 +236,11 @@ const menuData = [
         icon: <InboxOutlined  />,
       },
       {
+        path: '/vehicle-grid',
+        name: 'Vehicle',
+        icon: <CarOutlined />,
+      },
+      {
         path: '/dc-security-in',
         name: 'Security Check In',
         icon: <SafetyOutlined  />,
@@ -249,6 +255,7 @@ const menuData = [
         name: 'Gate Pass Report',
         icon: <BarChartOutlined  />,
       },
+  
     ],
   }
 ];

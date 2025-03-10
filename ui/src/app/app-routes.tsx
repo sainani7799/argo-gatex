@@ -44,6 +44,8 @@ import CustomProLayout from './basic-layout/custom-pro-layout';
 import { LoginComponent } from './common';
 import DCSecurityIn from './dc/dc-security-in';
 import Dashboard from './dashboard/dashboard';
+import VehicleGrid from './dc/veichle-grid';
+import VehicleForm from './dc/vehicle-form';
 
 const AppRoutes = () => {
   const router = createHashRouter(
@@ -56,7 +58,7 @@ const AppRoutes = () => {
             closeForm={() => { }}
             updateDetails={(undefined) => { }}
           />} />
-           <Route path="/dashboard" key="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" key="/dashboard" element={<Dashboard />} />
           <Route path="/users" key="/users" element={<UserFormGrid />} />
           <Route path="/employee-view" key="/employee-view" element={<EmployeeGrid />} />
           <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
@@ -117,12 +119,15 @@ const AppRoutes = () => {
             isUpdate={false}
             closeForm={() => { }}
             updateApprovalUser={(undefined) => { }} />} />
+          <Route path="/vehicle-grid" key="/vehicle-grid" element={<VehicleGrid />} />
+          <Route path="/vehicle-form" key="/vehicle-form" element={<VehicleForm updateDetails={undefined} isUpdate={false} veichleData={undefined} closeForm={undefined} />} />
         </Route>
         <Route path="/login" element={< LoginComponent />} />
         <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
         <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
         <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
         <Route path="/login" key="/login" element={<LoginComponent />} />
+
       </Route>
     )
   );
