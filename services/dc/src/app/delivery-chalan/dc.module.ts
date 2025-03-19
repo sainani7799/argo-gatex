@@ -8,13 +8,14 @@ import { DcController } from "./dc.controller";
 import { DcService } from "./dc.service";
 import { VehicleEntity } from "./entity/vehicle-en.entity";
 import { VehicleINREntity } from "./entity/vehicle-inr.entity";
+import { VehicleOTREntity } from "./entity/vehicle-otr.entity";
 import { VehicleStateEntity } from "./entity/vehicle-state.entity";
 import { DcItemEntityRepository } from "./repository/dc-items.repo";
 import { DcEntityRepository } from "./repository/dc-repository";
 import { MailerService } from "./send-mail";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([VehicleINREntity, VehicleEntity, VehicleStateEntity])],
+  imports: [TypeOrmModule.forFeature([VehicleINREntity, VehicleOTREntity, VehicleEntity, VehicleStateEntity])],
   controllers: [DcController],
   providers: [DcService, DcAdapter, DcEntityRepository, ApplicationExceptionHandler, UnitRepository, DcItemEntityRepository, MailerService, WhatsAppNotificationService, EmailService],
   exports: [DcService],

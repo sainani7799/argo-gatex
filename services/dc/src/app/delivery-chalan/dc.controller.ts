@@ -6,6 +6,7 @@ import { DcService } from "./dc.service";
 import { DcDto } from "./dto/dc.dto";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
+import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
 
 @Controller("dc")
@@ -290,6 +291,17 @@ export class DcController {
     } catch (error) {
       return (error);
     }
+  }
+
+  @Post('/createVOTR')
+  @ApiBody({ type: [VehicleOTRDto] })
+  async createVOTR(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.createVOTR(req);
+    } catch (error) {
+      return (error);
+    }
+
   }
 
   @Post('/getVINR')

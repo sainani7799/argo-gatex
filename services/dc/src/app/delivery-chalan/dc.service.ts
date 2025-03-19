@@ -11,9 +11,11 @@ import { DcAdapter } from './adapter/dc.adapter';
 import { DcDto } from './dto/dc.dto';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
 import { VehicleINRDto } from './dto/vehicle-inr-dto';
+import { VehicleOTRDto } from './dto/vehicle-out.dto';
 import { DcEntity } from './entity/dc.entity';
 import { VehicleEntity } from './entity/vehicle-en.entity';
 import { VehicleINREntity } from './entity/vehicle-inr.entity';
+import { VehicleOTREntity } from './entity/vehicle-otr.entity';
 import { VehicleStateEntity } from './entity/vehicle-state.entity';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
 import { DcEntityRepository } from './repository/dc-repository';
@@ -29,6 +31,8 @@ export class DcService {
     private mailService: EmailService,
     @InjectRepository(VehicleINREntity)
     private vehicleINRRepository: Repository<VehicleINREntity>,
+    @InjectRepository(VehicleOTREntity)
+    private readonly vehicleOTRRepository: Repository<VehicleOTREntity>,
     @InjectRepository(VehicleEntity)
     private vehicleRepository: Repository<VehicleEntity>,
     @InjectRepository(VehicleStateEntity)
@@ -40,7 +44,7 @@ export class DcService {
   //   try {
   //     const slNoNonReturnable = await this.dcRepo.count({
   //       where: { dcType: 'nonReturnable' },
-  //     });
+  //     });  SS
   //     const slNoReturnable = await this.dcRepo.count({
   //       where: { dcType: 'returnable' },
   //     });
@@ -932,6 +936,83 @@ export class DcService {
     return new CommonResponse(false, 0, 'No data found');
   }
 
+  async createVOTR(reqs: VehicleOTRDto[]): Promise<CommonResponse> {
+    try {
+      const vOTREntityToSave: VehicleOTREntity[] = [];
+      const vehicleEntitiesToSave: VehicleEntity[] = [];
+      const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
+
+      for (const req of reqs) {
+        let entity = await this.vehicleOTRRepository.findOne({ where: { id: req.id } });
+
+        if (entity) {
+          Object.assign(entity, req);
+        } else {
+          entity = this.vehicleOTRRepository.create(req);
+        }
+        vOTREntityToSave.push(entity);
+
+        const vehiclesToSave: VehicleEntity[] = [];
+
+        for (const vehicleReq of req.vehicleRecords || []) {
+          let vehicleEntity = await this.vehicleRepository.findOne({ where: { id: vehicleReq.id } });
+
+          if (vehicleEntity) {
+            Object.assign(vehicleEntity, { ...vehicleReq, votrId: req.id });
+          } else {
+            vehicleEntity = this.vehicleRepository.create({
+              ...vehicleReq,
+              votrId: req.id,
+            });
+          }
+          vehiclesToSave.push(vehicleEntity);
+        }
+        if (vehiclesToSave.length > 0) {
+          vehicleEntitiesToSave.push(...vehiclesToSave);
+        }
+
+        for (const vehicle of vehiclesToSave) {
+          let vehicleStateEntity = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id } });
+
+          if (vehicleStateEntity) {
+            Object.assign(vehicleStateEntity, { votrId: vehicle.votrId });
+          } else {
+            vehicleStateEntity = this.vehicleStateRepository.create({
+              id: vehicle.id,
+              vid: vehicle.id,
+              votrId: vehicle.votrId,
+              updatedAt: new Date(),
+            });
+          }
+          vehicleStateEntitiesToSave.push(vehicleStateEntity);
+        }
+      }
+
+      if (vOTREntityToSave.length > 0) {
+        await this.vehicleOTRRepository.save(vOTREntityToSave);
+      }
+
+      if (vehicleEntitiesToSave.length > 0) {
+        await this.vehicleRepository.save(vehicleEntitiesToSave);
+      }
+
+      if (vehicleStateEntitiesToSave.length > 0) {
+        await this.vehicleStateRepository.save(vehicleStateEntitiesToSave);
+      }
+
+      return new CommonResponse(true, 1, "Data Processed", {
+        votrRecords: vOTREntityToSave,
+        vehicleRecords: vehicleEntitiesToSave,
+        vehicleStateRecords: vehicleStateEntitiesToSave,
+      });
+
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
     try {
       const vINREntityToSave: VehicleINREntity[] = [];
@@ -1005,7 +1086,6 @@ export class DcService {
     }
   }
 
-
   async getVINR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
     try {
       const vinrRecords = await this.vehicleINRRepository.find();
@@ -1063,3 +1143,12 @@ export class DcService {
 
 
 }
+
+
+
+
+
+
+
+
+
