@@ -1,0 +1,58 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { LocationFromTypeEnum, ReqStatus } from "libs/shared-models";
+
+export class VehicleOTRDto {
+    @ApiProperty()
+    id: bigint;
+
+    @ApiProperty()
+    refId: string;
+
+    @ApiProperty()
+    refNumber: string;
+
+    @ApiProperty()
+    expectedDeparture: Date;
+
+    @ApiProperty()
+    from: string;
+
+    @ApiProperty()
+    to: string;
+
+    @ApiProperty()
+    fromType: LocationFromTypeEnum;
+
+    @ApiProperty()
+    toType: LocationFromTypeEnum;
+
+    @ApiProperty()
+    readyToSend: number;
+
+    @ApiProperty()
+    reqStatus: ReqStatus;
+
+    @ApiProperty()
+    hasItems: number;
+
+    @ApiProperty()
+    isActive: boolean;
+
+    @ApiProperty()
+    createdAt: Date;
+
+    @ApiProperty()
+    createdUser: string;
+
+    @ApiProperty()
+    updatedAt: Date;
+
+    @ApiProperty()
+    updatedUser: string;
+
+    @ApiProperty()
+    versionFlag: number;
+
+    @ApiProperty()
+    vehicleRecords: VehicleOTRDto[];
+}
