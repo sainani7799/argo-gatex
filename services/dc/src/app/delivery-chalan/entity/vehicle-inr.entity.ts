@@ -6,12 +6,6 @@ export class VehicleINREntity {
     @PrimaryGeneratedColumn("increment", { name: 'id' })
     id: bigint;
 
-    @Column('bigint', {
-        name: 'vid',
-        nullable: true,
-    })
-    vid: bigint;
-
     @Column('varchar', {
         name: 'ref_id',
         nullable: true,

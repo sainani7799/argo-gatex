@@ -1,31 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { DcEntityRepository } from './repository/dc-repository';
-import { DcController } from './dc.controller';
-import { DcDto } from './dto/dc.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { DcEntity } from './entity/dc.entity';
-import { DcAdapter } from './adapter/dc.adapter';
-import { error } from 'console';
-import {
-  AcceptReq,
-  AssignReq,
-  DcEmailModel,
-  DcIdReq,
-  DcReportReq,
-  MessageParameters,
-  ReceivedDcReq,
-  RejectDcReq,
-  SecurityCheckReq,
-  StatusEnum,
-  UnitReq,
-} from 'libs/shared-models';
-import { UnitRepository } from '../masters/branch/repo/unit-repo';
-import * as XLSX from 'xlsx';
-import { DcItemEntityRepository } from './repository/dc-items.repo';
-import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import moment from 'moment';
+import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { json } from 'stream/consumers';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from 'libs/shared-models';
+import { CommonResponse } from 'libs/shared-models/src/common';
+import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
+import { Repository } from 'typeorm';
+import * as XLSX from 'xlsx';
+import { UnitRepository } from '../masters/branch/repo/unit-repo';
+import { DcAdapter } from './adapter/dc.adapter';
+import { DcDto } from './dto/dc.dto';
+import { RefIdStatusDTO } from './dto/ref-id-status-dto';
+import { VehicleINRDto } from './dto/vehicle-inr-dto';
+import { DcEntity } from './entity/dc.entity';
+import { VehicleEntity } from './entity/vehicle-en.entity';
+import { VehicleINREntity } from './entity/vehicle-inr.entity';
+import { VehicleStateEntity } from './entity/vehicle-state.entity';
+import { DcItemEntityRepository } from './repository/dc-items.repo';
+import { DcEntityRepository } from './repository/dc-repository';
 
 @Injectable()
 export class DcService {
@@ -35,8 +26,14 @@ export class DcService {
     private unitsRepo: UnitRepository,
     private dcItemSRepo: DcItemEntityRepository,
     private wpService: WhatsAppNotificationService,
-    private mailService : EmailService
-  ) {}
+    private mailService: EmailService,
+    @InjectRepository(VehicleINREntity)
+    private vehicleINRRepository: Repository<VehicleINREntity>,
+    @InjectRepository(VehicleEntity)
+    private vehicleRepository: Repository<VehicleEntity>,
+    @InjectRepository(VehicleStateEntity)
+    private vehicleStateRepository: Repository<VehicleStateEntity>,
+  ) { }
 
   // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
   //   console.log('-create api call');
@@ -99,7 +96,7 @@ export class DcService {
   // }
 
 
-async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+  async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
     console.log('-create api call');
     try {
       const slNoNonReturnable = await this.dcRepo.count({
@@ -141,47 +138,47 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
       // console.log(savedDcEntity,'--save dc entity')
       const savedDcDto: DcDto =
         this.dcAdapter.convertEntityToDto(savedDcEntity);
-        if (!savedDcDto) {
-          throw new Error('DC saved but issue while transforming into DTO');
-        }
-        const emailAddresses = ['bhargavg@schemaxtech.com','bhanuteja.reddi@schemaxtech.com','rajesh.nalam@schemaxtech.com','naidulokesh728@gmail.com','ajaykumarbali96@gmail.com'];
-        const updatePromises = emailAddresses.map(async (email) => {
-          const updatePayload = {
-            dcId: savedDcDto.dcId,
-            isAssignable: 'YES',
-            emailId: email,
-            assignBy: 8, // Example hardcoded value
-            status: 'SENT FOR APPROVAL',
-            dcNumber: savedDcDto.dcNumber,
-            fromUnit: savedDcDto.fromUnitId,
-            toAddresserName: savedDcDto.toAddresser,
-            created_user: savedDcDto.createdUser,
-            purpose: savedDcDto.purpose,
-          };
-    
-          // Update DC
-          const updateResponse = await this.updateDc(updatePayload);
-          if (!updateResponse?.status) {
-            console.error(`Failed to update DC for email ${email}`, updateResponse);
-          }
-    
-          // Send Email
-          const emailResult = await this.sendDcMailForGatePass(updatePayload);
-          if (!emailResult) {
-            console.error(`Failed to send email to ${email}`);
-          } else {
-            console.log(`Email sent successfully to ${email}`);
-          }
-        });
-        await Promise.all(updatePromises);
+      if (!savedDcDto) {
+        throw new Error('DC saved but issue while transforming into DTO');
+      }
+      const emailAddresses = ['bhargavg@schemaxtech.com', 'bhanuteja.reddi@schemaxtech.com', 'rajesh.nalam@schemaxtech.com', 'naidulokesh728@gmail.com', 'ajaykumarbali96@gmail.com'];
+      const updatePromises = emailAddresses.map(async (email) => {
+        const updatePayload = {
+          dcId: savedDcDto.dcId,
+          isAssignable: 'YES',
+          emailId: email,
+          assignBy: 8, // Example hardcoded value
+          status: 'SENT FOR APPROVAL',
+          dcNumber: savedDcDto.dcNumber,
+          fromUnit: savedDcDto.fromUnitId,
+          toAddresserName: savedDcDto.toAddresser,
+          created_user: savedDcDto.createdUser,
+          purpose: savedDcDto.purpose,
+        };
 
-        const response = new CommonResponse(
-          true,
-          1,
-          isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
-          savedDcDto
-        );
-        return response;
+        // Update DC
+        const updateResponse = await this.updateDc(updatePayload);
+        if (!updateResponse?.status) {
+          console.error(`Failed to update DC for email ${email}`, updateResponse);
+        }
+
+        // Send Email
+        const emailResult = await this.sendDcMailForGatePass(updatePayload);
+        if (!emailResult) {
+          console.error(`Failed to send email to ${email}`);
+        } else {
+          console.log(`Email sent successfully to ${email}`);
+        }
+      });
+      await Promise.all(updatePromises);
+
+      const response = new CommonResponse(
+        true,
+        1,
+        isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
+        savedDcDto
+      );
+      return response;
     } catch (error) {
       console.log('dc creation log');
       console.log(error);
@@ -270,7 +267,7 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
         </html>
         `;
     dcDetails.subject = 'Gate Pass : ' + dto.dcNumber;
-  
+
     try {
       const res = await this.mailService.sendDcMail(dcDetails);
       return res.status === 201 && res.data.status;
@@ -329,7 +326,7 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
     messageContent += `*To: ${dto.toAddresserName || 'N/A'}* \\n`
     messageContent += `*Created By: ${dto.created_user || 'N/A'}* \\n`
     messageContent += `*Purpose: ${dto.purpose || 'N/A'}* \\n`
-    messageContent +=`Please click the link below for details`;
+    messageContent += `Please click the link below for details`;
 
     // Parameters for the WhatsApp template
     const parameters = [
@@ -358,7 +355,7 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
           console.log(`Message sent successfully to ${contact}`);
         }
       }
-     
+
 
       return new CommonResponse(
         true,
@@ -461,15 +458,15 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
   async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
     console.log(dto, "SecurityCheckReq");
     const currentDate = new Date();
-  
+
     // Fetch the DC record
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
     if (!dcRecord) {
       return new CommonResponse(false, 6666, "Dispatch Challan not found");
     }
-  
+
     const dispatchChallanNo = dcRecord.dispatchChallanNo;
-  
+
     const validatePayload = {
       username: "admin", // from gate pass
       unitCode: "B3", // hardcoded
@@ -482,7 +479,7 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
       iNeedSrItemsAlso: false,
       iNeedSrItemsAttrAlso: false,
     };
-  
+
     try {
       console.log('-----------')
       const validateResponse = await axios.post(
@@ -502,9 +499,9 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
         userId: 20, // replace with actual user ID
         srId: dispatchChallanNo, // required challanNo
         remarks: "",
-        truckOutTimes: [{truckId: 0, checkoutDateTime: null,  remarks: null}]
+        truckOutTimes: [{ truckId: 0, checkoutDateTime: null, remarks: null }]
       };
-  
+
       const approveResponse = await axios.post(
         "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
         approvePayload,
@@ -513,11 +510,11 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
         }
       );
       console.log(approveResponse.data)
-  
+
       if (!approveResponse?.data || approveResponse?.data?.status !== true) {
         return new CommonResponse(false, 6668, 'Approved');
       }
-  
+
       const updateData = await this.dcRepo.update(
         { dcId: dto.dcId },
         {
@@ -527,14 +524,14 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
           securityCheckedDate: currentDate,
         }
       );
-  
+
       return new CommonResponse(true, 333, "Updated successfully", updateData);
     } catch (error) {
       console.error("Error in securityCheckDone:", error.message || error);
       return new CommonResponse(false, 9999, "An error occurred during the security check");
     }
   }
-  
+
 
   async securityCheckIn(dto: SecurityCheckReq): Promise<CommonResponse> {
     console.log(dto, 'SecurityCheckReq');
@@ -934,4 +931,135 @@ async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
     }
     return new CommonResponse(false, 0, 'No data found');
   }
+
+  async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
+    try {
+      const vINREntityToSave: VehicleINREntity[] = [];
+      const vehicleEntitiesToSave: VehicleEntity[] = [];
+      const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
+
+      for (const req of reqs) {
+        let entity = await this.vehicleINRRepository.findOne({ where: { id: req.id } });
+        if (entity) {
+          Object.assign(entity, req);
+        } else {
+          entity = this.vehicleINRRepository.create(req);
+        }
+        vINREntityToSave.push(entity);
+
+        const vehiclesToSave: VehicleEntity[] = [];
+        for (const vehicleReq of req.vehicleRecords || []) {
+          let vehicleEntity = await this.vehicleRepository.findOne({ where: { id: vehicleReq.id } });
+          if (vehicleEntity) {
+            Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
+          } else {
+            vehicleEntity = this.vehicleRepository.create({
+              ...vehicleReq,
+              vinrId: req.id,
+            });
+          }
+          vehiclesToSave.push(vehicleEntity);
+        }
+        if (vehiclesToSave.length > 0) {
+          vehicleEntitiesToSave.push(...vehiclesToSave);
+        }
+
+        for (const vehicle of vehiclesToSave) {
+          let vehicleStateEntity = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id } });
+          if (vehicleStateEntity) {
+            Object.assign(vehicleStateEntity, { vinrId: vehicle.vinrId });
+          } else {
+            vehicleStateEntity = this.vehicleStateRepository.create({
+              id: vehicle.id,
+              vid: vehicle.id,
+              vinrId: vehicle.vinrId,
+              vehicleType: vehicleStateEntity.vehicleType,
+              isActive: vehicleStateEntity.isActive,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              versionFlag: 1,
+            });
+          }
+          vehicleStateEntitiesToSave.push(vehicleStateEntity);
+        }
+      }
+
+      if (vINREntityToSave.length > 0) {
+        await this.vehicleINRRepository.save(vINREntityToSave);
+      }
+      if (vehicleEntitiesToSave.length > 0) {
+        await this.vehicleRepository.save(vehicleEntitiesToSave);
+      }
+      if (vehicleStateEntitiesToSave.length > 0) {
+        await this.vehicleStateRepository.save(vehicleStateEntitiesToSave);
+      }
+      return new CommonResponse(true, 1, "Data Processed", {
+        vinrRecords: vINREntityToSave,
+        vehicleRecords: vehicleEntitiesToSave,
+        vehicleStateRecords: vehicleStateEntitiesToSave,
+      });
+
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+
+  async getVINR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
+    try {
+      const vinrRecords = await this.vehicleINRRepository.find();
+      if (!vinrRecords.length) {
+        return new CommonResponse(false, 0, "No records found", []);
+      }
+
+      const vehicleRecords = await this.vehicleRepository.find();
+      const vehicleStateRecords = await this.vehicleStateRepository.find();
+
+      const filteredVINR = vinrRecords.filter(vinr =>
+        request.some(req =>
+          vinr.refId === req.refId ||
+          vehicleRecords.some(vehicle => Number(vehicle.vinrId) === Number(vinr.id))
+
+        )
+      );
+
+      if (!filteredVINR.length) {
+        return new CommonResponse(false, 0, "No matching records found", []);
+      }
+
+      const vinrWithVehicles = filteredVINR.map(vinr => {
+        const relatedVehicles = vehicleRecords.filter(vehicle =>
+          Number(vehicle.vinrId) === Number(vinr.id) &&
+          request.some(req => req.vid === vehicle.id)
+        );
+
+        const relatedVehicleIds = relatedVehicles.map(vehicle => Number(vehicle.id));
+
+        const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
+          relatedVehicleIds.includes(Number(vehicleState.vid))
+        );
+        return {
+          ...vinr,
+          vehicleRecords: relatedVehicles,
+          vehicleStateRecords: vehicleStateRecords.filter(vehicleState =>
+            relatedVehicleIds.includes(Number(vehicleState.vid))
+          ),
+        };
+      });
+
+      return new CommonResponse(true, 1, "Data Retrieved", vinrWithVehicles);
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+
+
+
+
+
+
+
 }

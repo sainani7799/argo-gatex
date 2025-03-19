@@ -40,10 +40,9 @@ export class VehicleEntity {
     })
     departureDateTime: Date;
 
-    @Column('enum', {
+    @Column('tinyint', {
         name: 'vehicle_type',
         nullable: true,
-        enum: VehicleTypeEnum
     })
     vehicleType: VehicleTypeEnum;
 
