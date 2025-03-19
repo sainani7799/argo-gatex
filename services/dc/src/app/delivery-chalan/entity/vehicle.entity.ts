@@ -1,7 +1,7 @@
 import { VehicleTypeEnum } from "libs/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
-@Entity('vehicle')
+@Entity('vehicle_en')
 export class VehicleEntity {
 
     @PrimaryGeneratedColumn("increment", { name: 'id' })
