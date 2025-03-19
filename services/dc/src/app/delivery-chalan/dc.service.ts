@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from 'libs/shared-models';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import { Repository } from 'typeorm';
@@ -981,7 +981,10 @@ export class DcService {
               id: vehicle.id,
               vid: vehicle.id,
               votrId: vehicle.votrId,
+              vehicleType: TruckStateEnum.PAUSE,
+              createdAt: new Date(),
               updatedAt: new Date(),
+              versionFlag: 1,
             });
           }
           vehicleStateEntitiesToSave.push(vehicleStateEntity);
@@ -1054,8 +1057,7 @@ export class DcService {
               id: vehicle.id,
               vid: vehicle.id,
               vinrId: vehicle.vinrId,
-              vehicleType: vehicleStateEntity.vehicleType,
-              isActive: vehicleStateEntity.isActive,
+              vehicleType: TruckStateEnum.OPEN,
               createdAt: new Date(),
               updatedAt: new Date(),
               versionFlag: 1,
