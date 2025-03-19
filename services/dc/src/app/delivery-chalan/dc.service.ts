@@ -4,12 +4,13 @@ import axios from 'axios';
 import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import * as XLSX from 'xlsx';
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import { DcAdapter } from './adapter/dc.adapter';
 import { DcDto } from './dto/dc.dto';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
+import { TruckIdReqeust } from './dto/truck-id-dto';
 import { VehicleINRDto } from './dto/vehicle-inr-dto';
 import { VehicleOTRDto } from './dto/vehicle-out.dto';
 import { DcEntity } from './entity/dc.entity';
@@ -936,6 +937,83 @@ export class DcService {
     return new CommonResponse(false, 0, 'No data found');
   }
 
+
+  async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
+    try {
+      const vINREntityToSave: VehicleINREntity[] = [];
+      const vehicleEntitiesToSave: VehicleEntity[] = [];
+      const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
+
+      for (const req of reqs) {
+        let entity = await this.vehicleINRRepository.findOne({ where: { id: req.id } });
+        if (entity) {
+          Object.assign(entity, req);
+        } else {
+          entity = this.vehicleINRRepository.create({
+            ...req,
+            expectedArrival: new Date().toISOString(),
+          });
+        }
+        vINREntityToSave.push(entity);
+
+        const vehiclesToSave: VehicleEntity[] = [];
+        for (const vehicleReq of req.vehicleRecords || []) {
+          let vehicleEntity = await this.vehicleRepository.findOne({ where: { id: vehicleReq.id } });
+          if (vehicleEntity) {
+            Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
+          } else {
+            vehicleEntity = this.vehicleRepository.create({
+              ...vehicleReq,
+              vinrId: req.id,
+              arrivalDateTime: new Date().toISOString()
+            });
+          }
+          vehiclesToSave.push(vehicleEntity);
+        }
+        if (vehiclesToSave.length > 0) {
+          vehicleEntitiesToSave.push(...vehiclesToSave);
+        }
+
+        for (const vehicle of vehiclesToSave) {
+          let vehicleStateEntity = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id } });
+          if (vehicleStateEntity) {
+            Object.assign(vehicleStateEntity, { vinrId: vehicle.vinrId });
+          } else {
+            vehicleStateEntity = this.vehicleStateRepository.create({
+              id: vehicle.id,
+              vid: vehicle.id,
+              vinrId: vehicle.vinrId,
+              vehicleType: TruckStateEnum.OPEN,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              versionFlag: 1,
+            });
+          }
+          vehicleStateEntitiesToSave.push(vehicleStateEntity);
+        }
+      }
+
+      if (vINREntityToSave.length > 0) {
+        await this.vehicleINRRepository.save(vINREntityToSave);
+      }
+      if (vehicleEntitiesToSave.length > 0) {
+        await this.vehicleRepository.save(vehicleEntitiesToSave);
+      }
+      if (vehicleStateEntitiesToSave.length > 0) {
+        await this.vehicleStateRepository.save(vehicleStateEntitiesToSave);
+      }
+      return new CommonResponse(true, 1, "Data Processed", {
+        vinrRecords: vINREntityToSave,
+        vehicleRecords: vehicleEntitiesToSave,
+        vehicleStateRecords: vehicleStateEntitiesToSave,
+      });
+
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
   async createVOTR(reqs: VehicleOTRDto[]): Promise<CommonResponse> {
     try {
       const vOTREntityToSave: VehicleOTREntity[] = [];
@@ -948,7 +1026,10 @@ export class DcService {
         if (entity) {
           Object.assign(entity, req);
         } else {
-          entity = this.vehicleOTRRepository.create(req);
+          entity = this.vehicleOTRRepository.create({
+            ...req,
+            expectedDeparture: new Date().toISOString(),
+          });
         }
         vOTREntityToSave.push(entity);
 
@@ -963,6 +1044,7 @@ export class DcService {
             vehicleEntity = this.vehicleRepository.create({
               ...vehicleReq,
               votrId: req.id,
+              departureDateTime: new Date().toISOString()
             });
           }
           vehiclesToSave.push(vehicleEntity);
@@ -1015,79 +1097,6 @@ export class DcService {
     }
   }
 
-
-  async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
-    try {
-      const vINREntityToSave: VehicleINREntity[] = [];
-      const vehicleEntitiesToSave: VehicleEntity[] = [];
-      const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
-
-      for (const req of reqs) {
-        let entity = await this.vehicleINRRepository.findOne({ where: { id: req.id } });
-        if (entity) {
-          Object.assign(entity, req);
-        } else {
-          entity = this.vehicleINRRepository.create(req);
-        }
-        vINREntityToSave.push(entity);
-
-        const vehiclesToSave: VehicleEntity[] = [];
-        for (const vehicleReq of req.vehicleRecords || []) {
-          let vehicleEntity = await this.vehicleRepository.findOne({ where: { id: vehicleReq.id } });
-          if (vehicleEntity) {
-            Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
-          } else {
-            vehicleEntity = this.vehicleRepository.create({
-              ...vehicleReq,
-              vinrId: req.id,
-            });
-          }
-          vehiclesToSave.push(vehicleEntity);
-        }
-        if (vehiclesToSave.length > 0) {
-          vehicleEntitiesToSave.push(...vehiclesToSave);
-        }
-
-        for (const vehicle of vehiclesToSave) {
-          let vehicleStateEntity = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id } });
-          if (vehicleStateEntity) {
-            Object.assign(vehicleStateEntity, { vinrId: vehicle.vinrId });
-          } else {
-            vehicleStateEntity = this.vehicleStateRepository.create({
-              id: vehicle.id,
-              vid: vehicle.id,
-              vinrId: vehicle.vinrId,
-              vehicleType: TruckStateEnum.OPEN,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              versionFlag: 1,
-            });
-          }
-          vehicleStateEntitiesToSave.push(vehicleStateEntity);
-        }
-      }
-
-      if (vINREntityToSave.length > 0) {
-        await this.vehicleINRRepository.save(vINREntityToSave);
-      }
-      if (vehicleEntitiesToSave.length > 0) {
-        await this.vehicleRepository.save(vehicleEntitiesToSave);
-      }
-      if (vehicleStateEntitiesToSave.length > 0) {
-        await this.vehicleStateRepository.save(vehicleStateEntitiesToSave);
-      }
-      return new CommonResponse(true, 1, "Data Processed", {
-        vinrRecords: vINREntityToSave,
-        vehicleRecords: vehicleEntitiesToSave,
-        vehicleStateRecords: vehicleStateEntitiesToSave,
-      });
-
-    } catch (err) {
-      console.error(err);
-      return new CommonResponse(false, 0, "Error occurred", null);
-    }
-  }
-
   async getVINR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
     try {
       const vinrRecords = await this.vehicleINRRepository.find();
@@ -1099,11 +1108,7 @@ export class DcService {
       const vehicleStateRecords = await this.vehicleStateRepository.find();
 
       const filteredVINR = vinrRecords.filter(vinr =>
-        request.some(req =>
-          vinr.refId === req.refId ||
-          vehicleRecords.some(vehicle => Number(vehicle.vinrId) === Number(vinr.id))
-
-        )
+        request.some(req => vinr.refId === req.refId)
       );
 
       if (!filteredVINR.length) {
@@ -1113,20 +1118,20 @@ export class DcService {
       const vinrWithVehicles = filteredVINR.map(vinr => {
         const relatedVehicles = vehicleRecords.filter(vehicle =>
           Number(vehicle.vinrId) === Number(vinr.id) &&
-          request.some(req => req.vid === vehicle.id)
-        );
+          (request.some(req => req.refId === vinr.refId && Number(req.vid) === Number(vehicle.id)) ||
+            request.every(req => req.vid === undefined))
+        ).map(vehicle => Object.assign({}, vehicle));
 
         const relatedVehicleIds = relatedVehicles.map(vehicle => Number(vehicle.id));
 
         const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
-          relatedVehicleIds.includes(Number(vehicleState.vid))
+          (relatedVehicleIds.length > 0 ? relatedVehicleIds.includes(Number(vehicleState.vid)) : true) &&
+          request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType))
         );
         return {
           ...vinr,
           vehicleRecords: relatedVehicles,
-          vehicleStateRecords: vehicleStateRecords.filter(vehicleState =>
-            relatedVehicleIds.includes(Number(vehicleState.vid))
-          ),
+          vehicleStateRecords: relatedVehicleStates,
         };
       });
 
@@ -1137,13 +1142,131 @@ export class DcService {
     }
   }
 
+  async getVOTR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
+    try {
+      const vOutRecords = await this.vehicleOTRRepository.find();
+      if (!vOutRecords.length) {
+        return new CommonResponse(false, 0, "No records found", []);
+      }
 
+      const vehicleRecords = await this.vehicleRepository.find();
+      const vehicleStateRecords = await this.vehicleStateRepository.find();
 
+      const filteredVOTR = vOutRecords.filter(votr =>
+        request.some(req => votr.refId === req.refId)
+      );
 
+      if (!filteredVOTR.length) {
+        return new CommonResponse(false, 0, "No matching records found", []);
+      }
 
+      const vinrWithVehicles = filteredVOTR.map(votr => {
+        const relatedVehicles = vehicleRecords.filter(vehicle =>
+          Number(vehicle.votrId) === Number(votr.id) &&
+          (request.some(req => req.refId === votr.refId && Number(req.vid) === Number(vehicle.id)) ||
+            request.every(req => req.vid === undefined))
+        ).map(vehicle => Object.assign({}, vehicle));
 
+        const relatedVehicleIds = relatedVehicles.map(vehicle => Number(vehicle.id));
 
+        const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
+          relatedVehicleIds.includes(Number(vehicleState.vid)) &&
+          request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType))
+        );
 
+        return {
+          ...votr,
+          vehicleRecords: relatedVehicles,
+          vehicleStateRecords: relatedVehicleStates,
+        };
+      });
+
+      return new CommonResponse(true, 1, "Data Retrieved", vinrWithVehicles);
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+  async getTruckInfoByTruckId(req: TruckIdReqeust): Promise<CommonResponse> {
+    try {
+      const vehicleRecords = await this.vehicleRepository.find();
+      const truckInfo = vehicleRecords.filter(truck => Number(truck.id) === Number(req.truckId));
+      if (truckInfo) {
+        return new CommonResponse(true, 1, 'Data Retrived', truckInfo)
+      } else {
+        return new CommonResponse(false, 0, 'No Data Found')
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateTruckState(req: TruckIdReqeust): Promise<CommonResponse> {
+    try {
+      const vehicleStateRecords = await this.vehicleStateRepository.update({ id: req.truckId }, { vehicleType: req.state })
+      if (vehicleStateRecords) {
+        return new CommonResponse(true, 1, 'Data Retrived', vehicleStateRecords)
+      } else {
+        return new CommonResponse(false, 0, 'No Data Found')
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async getVehicleRecordForReferenceId(req: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const [vehicleINR, vehicleOTR] = await Promise.all([
+        this.vehicleINRRepository.findOne({ where: { refId: req.refId } }),
+        this.vehicleOTRRepository.findOne({ where: { refId: req.refId } }),
+      ]);
+  
+      if (!vehicleINR && !vehicleOTR) {
+        return new CommonResponse(false, 0, 'No Data Found in INR and OTR Repositories');
+      }
+  
+      let vehicleINRRecords = [];
+      let vehicleOTRRecords = [];
+  
+      if (vehicleINR) {
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: BigInt(vehicleINR.refId) } });
+      }
+  
+      if (vehicleOTR) {
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: BigInt(vehicleOTR.refId) } });
+      }
+  
+      let vehicleINRStateRecords = [];
+      let vehicleOTRStateRecords = [];
+  
+      if (vehicleINRRecords.length) {
+        const vehicleINRIds = vehicleINRRecords.map(vehicle => vehicle.id);
+        vehicleINRStateRecords = await this.vehicleStateRepository.find({ where: { vid: In(vehicleINRIds) } });
+      }
+  
+      if (vehicleOTRRecords.length) {
+        const vehicleOTRIds = vehicleOTRRecords.map(vehicle => vehicle.id);
+        vehicleOTRStateRecords = await this.vehicleStateRepository.find({ where: { vid: In(vehicleOTRIds) } });
+      }
+  
+      const responseData = {
+        vehicleINR,
+        vehicleOTR,
+        vehicleINRRecords,
+        vehicleOTRRecords,
+        vehicleINRStateRecords,
+        vehicleOTRStateRecords,
+      };
+  
+      return new CommonResponse(true, 1, 'Data Retrieved Successfully', responseData);
+    } catch (err) {
+      console.error('Error retrieving vehicle data:', err);
+      return new CommonResponse(false, 0, 'Error fetching vehicle data');
+    }
+  }
+  
+  
 }
 
 

@@ -5,6 +5,7 @@ import { CommonResponse } from "libs/shared-models/src/common";
 import { DcService } from "./dc.service";
 import { DcDto } from "./dto/dc.dto";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
+import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
@@ -313,4 +314,45 @@ export class DcController {
       return (error);
     }
   }
+
+  @Post('/getVOTR')
+  @ApiBody({ type: [RefIdStatusDTO] })
+  async getVOTR(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getVOTR(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getTruckInfoByTruckId')
+  @ApiBody({ type: TruckIdReqeust })
+  async getTruckInfoByTruckId(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getTruckInfoByTruckId(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/updateTruckState')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateTruckState(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.updateTruckState(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVehicleRecordForReferenceId')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVehicleRecordForReferenceId(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getVehicleRecordForReferenceId(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+ 
 }
