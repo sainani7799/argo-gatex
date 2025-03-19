@@ -1,80 +1,12 @@
-import {
-  CheckCircleOutlined,
-  CheckOutlined,
-  ContainerOutlined,
-  CreditCardOutlined,
-  EditOutlined,
-  ExclamationCircleOutlined,
-  EyeOutlined,
-  FileDoneOutlined,
-  FileProtectOutlined,
-  FilterOutlined,
-  IdcardOutlined,
-  KeyOutlined,
-  LockOutlined,
-  MoreOutlined,
-  RedEnvelopeOutlined,
-  RightOutlined,
-  RightSquareOutlined,
-  SafetyCertificateOutlined,
-  ScanOutlined,
-  SearchOutlined,
-  UnorderedListOutlined,
-  WalletOutlined,
-} from '@ant-design/icons';
-import {
-  Modal,
-  Table,
-  Input,
-  Form,
-  Popconfirm,
-  Card,
-  Row,
-  Button,
-  Col,
-  Tooltip,
-  message,
-  Switch,
-  Divider,
-  Drawer,
-  Select,
-  Descriptions,
-  Radio,
-  Tabs,
-  Tag,
-  Menu,
-  Dropdown,
-  Badge,
-} from 'antd';
-import {
-  AddressService,
-  ApprovalUserService,
-  DcService,
-  DepartmentService,
-  EmailService,
-} from 'libs/shared-services';
-import React, { useRef } from 'react';
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import Highlighter from 'react-highlight-words';
-import {
-  AcceptReq,
-  AcceptableEnum,
-  ApprovalIdReq,
-  AssignReq,
-  CreateAddressDto,
-  DcEmailModel,
-  DcIdReq,
-  DcReq,
-  StatusEnum,
-  ToAddressReq,
-  UnitReq,
-} from 'libs/shared-models';
-import DCForm from './dc-form';
-import moment from 'moment';
+import { CheckOutlined, EyeOutlined, FileProtectOutlined, FilterOutlined, IdcardOutlined, LockOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
+import { Badge, Button, Card, Col, Descriptions, Drawer, Dropdown, Form, Input, Menu, Radio, Row, Select, Table, Tabs, Tag, Tooltip, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import DescriptionsItem from 'antd/es/descriptions/Item';
-import TabPane from 'antd/es/tabs/TabPane';
+import { AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, StatusEnum, ToAddressReq, UnitReq } from 'libs/shared-models';
+import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import Highlighter from 'react-highlight-words';
+import { Link, useNavigate } from 'react-router-dom';
 const { Option } = Select;
 
 const DCGrid = () => {
@@ -134,41 +66,41 @@ const DCGrid = () => {
   useEffect(() => {
     setFilteredData(responseData);
     setFilteredData1(toData); // Set initial data
-  }, [responseData,toData]);
+  }, [responseData, toData]);
 
   const handleFilterChange = (key: string, value: any) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-//   const applyFilters = () => {
-//     // If no filters are applied, show all data
-//     if (!filters.dcType && !filters.status) {
-//       setFilteredData(responseData);
-//       setAppliedFiltersCount(0);
-//       setDrawerFilterVisible(false);
-//       return;
-//     }
-  
-//     // Apply filters
-//     let filtered = [...responseData];
-  
-//     if (filters.dcType) {
-//       filtered = filtered.filter((item) => item.dcType === filters.dcType);
-//     }
-//     if (filters.status) {
-//       filtered = filtered.filter((item) => item.status === filters.status);
-//     }
-  
-//     setFilteredData(filtered);
-  
-//     // Calculate the number of applied filters
-//     const count = Object.values(filters).filter((value) => value).length;
-//     setAppliedFiltersCount(count);
-  
-//     setDrawerFilterVisible(false); // Close the drawer
-//   };
-  
-const applyFilters = () => {
+  //   const applyFilters = () => {
+  //     // If no filters are applied, show all data
+  //     if (!filters.dcType && !filters.status) {
+  //       setFilteredData(responseData);
+  //       setAppliedFiltersCount(0);
+  //       setDrawerFilterVisible(false);
+  //       return;
+  //     }
+
+  //     // Apply filters
+  //     let filtered = [...responseData];
+
+  //     if (filters.dcType) {
+  //       filtered = filtered.filter((item) => item.dcType === filters.dcType);
+  //     }
+  //     if (filters.status) {
+  //       filtered = filtered.filter((item) => item.status === filters.status);
+  //     }
+
+  //     setFilteredData(filtered);
+
+  //     // Calculate the number of applied filters
+  //     const count = Object.values(filters).filter((value) => value).length;
+  //     setAppliedFiltersCount(count);
+
+  //     setDrawerFilterVisible(false); // Close the drawer
+  //   };
+
+  const applyFilters = () => {
     if (activeTab === "1") {
       // Filtering logic for Tab 1 (responseData)
       if (!filters.dcType && !filters.status) {
@@ -177,7 +109,7 @@ const applyFilters = () => {
         setDrawerFilterVisible(false);
         return;
       }
-  
+
       let filtered = [...responseData];
       if (filters.dcType) {
         filtered = filtered.filter((item) => item.dcType === filters.dcType);
@@ -194,7 +126,7 @@ const applyFilters = () => {
         setDrawerFilterVisible(false);
         return;
       }
-  
+
       let filtered = [...toData];
       if (filters.dcType) {
         filtered = filtered.filter((item) => item.dcType === filters.dcType);
@@ -204,14 +136,14 @@ const applyFilters = () => {
       }
       setFilteredData1(filtered);
     }
-  
+
     // Calculate applied filters count
     const count = Object.values(filters).filter((value) => value).length;
     setAppliedFiltersCount(count);
-  
+
     setDrawerFilterVisible(false); // Close the drawer
   };
-  
+
   const resetFilters = () => {
     setFilters({
       dcType: '',
@@ -332,14 +264,14 @@ const applyFilters = () => {
           <p>Purpose of this DC : ${form.getFieldValue('purpose')}</p>
           <p>Please click the link below for details:</p>
           <input type="hidden" id="assignBy" value=${form.getFieldValue(
-            'assignBy'
-          )} /> 
+      'assignBy'
+    )} /> 
           <input type="hidden" id="dcId" value=${form.getFieldValue('dcId')} />
       
           <a
             href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${form.getFieldValue(
-              'dcId'
-            )}"
+      'dcId'
+    )}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -352,8 +284,8 @@ const applyFilters = () => {
           >
           <a
           href="https://gatex.schemaxtech.in/#/dc-email/${form.getFieldValue(
-            'dcId'
-          )}"
+      'dcId'
+    )}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -366,8 +298,8 @@ const applyFilters = () => {
         >
         <a
           href="https://gatex.schemaxtech.in/#/dc-reject-mail/${form.getFieldValue(
-            'dcId'
-          )}"
+      'dcId'
+    )}"
           style="
             display: inline-block;
             padding: 10px 20px;
@@ -469,9 +401,9 @@ const applyFilters = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : false,
     onFilterDropdownVisibleChange: (visible) => {
       if (visible) {
@@ -1160,11 +1092,11 @@ const applyFilters = () => {
       {/* <Table columns={columnsSkelton} dataSource={responseData}
                 scroll={{ x: 1400, y: 400 }} /> */}
 
-      <Tabs defaultActiveKey="1" onChange={(key) => {setActiveTab(key)}}>
+      <Tabs defaultActiveKey="1" onChange={(key) => { setActiveTab(key) }}>
         <TabPane
           tab={
             <span style={{ display: 'flex', alignItems: 'center' }}>
-              <IdcardOutlined style={{ fontSize: '24px', color: '#016582' }} />;
+              <IdcardOutlined style={{ fontSize: '24px', color: '#016582' }} />
               GatePass
             </span>
           }
@@ -1194,7 +1126,7 @@ const applyFilters = () => {
               <FileProtectOutlined
                 style={{ fontSize: '24px', color: '#016582' }}
               />
-              ; GatePass Returnable Status
+              GatePass Returnable Status
             </span>
           }
           key="2"
@@ -1391,13 +1323,13 @@ const applyFilters = () => {
               remarks: selectedDc?.remarks || ' ',
               weight: selectedDc?.weight || ' ',
             }}
-            // onValuesChange={(changedValues, allValues) => {
-            //     // if (selectedDc?.dcNumber) {
-            //     //   form.setFieldsValue({
-            //     //     fromUnitId: selectedDc.dcNumber
-            //     //   });
-            //     // }
-            //   }}
+          // onValuesChange={(changedValues, allValues) => {
+          //     // if (selectedDc?.dcNumber) {
+          //     //   form.setFieldsValue({
+          //     //     fromUnitId: selectedDc.dcNumber
+          //     //   });
+          //     // }
+          //   }}
           >
             <Row
               gutter={24}
@@ -1476,7 +1408,7 @@ const applyFilters = () => {
                         placeholder="Select Dept "
                         optionFilterProp="children"
                         allowClear
-                        // onChange={getAllToEmployees}
+                      // onChange={getAllToEmployees}
                       >
                         {deps?.map((dep) => {
                           return (
@@ -1882,20 +1814,20 @@ const applyFilters = () => {
             </Select>
           </Form.Item>
           <Form.Item name="status" label="Status">
-          <Select
-                  showSearch
-                  placeholder="Select Status"
-                  allowClear
-                  onChange={(value) => handleFilterChange('status', value)}
-                >
-                  {Object.keys(StatusEnum)?.map((type) => {
-                    return (
-                      <Option value={StatusEnum[type]}>
-                        {StatusEnum[type]}
-                      </Option>
-                    );
-                  })}
-                </Select>
+            <Select
+              showSearch
+              placeholder="Select Status"
+              allowClear
+              onChange={(value) => handleFilterChange('status', value)}
+            >
+              {Object.keys(StatusEnum)?.map((type) => {
+                return (
+                  <Option value={StatusEnum[type]}>
+                    {StatusEnum[type]}
+                  </Option>
+                );
+              })}
+            </Select>
           </Form.Item>
 
           <Row justify="space-between">

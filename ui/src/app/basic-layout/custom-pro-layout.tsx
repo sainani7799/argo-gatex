@@ -416,7 +416,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
               colorMenuBackground: dark ? '#000' : '#047595',
               colorTextMenu: '#fff',
               colorBgMenuItemHover: '#005f7a',
-              colorTextMenuItemHover: '#fff',
+              colorTextMenuItemHover: '#000',
               colorBgCollapsedButton: '#047595',
               colorTextCollapsedButton: '#fff',
             },
