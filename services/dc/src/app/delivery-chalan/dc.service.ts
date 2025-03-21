@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VRRefIdsResponseModel } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import { DataSource, In, Repository } from 'typeorm';
@@ -20,6 +20,7 @@ import { VehicleOTREntity } from './entity/vehicle-otr.entity';
 import { VehicleStateEntity } from './entity/vehicle-state.entity';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
 import { DcEntityRepository } from './repository/dc-repository';
+import { VRStatusDTO } from './dto/vr-status-req.dto';
 
 @Injectable()
 export class DcService {
@@ -1262,6 +1263,12 @@ console.log(reqs,'llllllllllllll')
       console.error('Error retrieving vehicle data:', err);
       return new CommonResponse(false, 0, 'Error fetching vehicle data');
     }
+  }
+
+  async getRefIdsByStatus(req: VRStatusDTO): Promise<VRRefIdsResponseModel> {
+    const data = await this.vehicleINRRepository.find({ select: ["refId"], where: { fromType: In(req.status) } });
+    if (data.length) return new VRRefIdsResponseModel(true, 1, 'data retrived', data.map(item => Number(item.refId)));
+    return new VRRefIdsResponseModel(false, 0, 'No data found');
   }
 
 

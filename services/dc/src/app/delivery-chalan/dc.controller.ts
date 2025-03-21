@@ -9,6 +9,8 @@ import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
+import { VRStatusDTO } from "./dto/vr-status-req.dto";
+import { VRRefIdsResponseModel } from "libs/shared-models";
 
 @Controller("dc")
 export class DcController {
@@ -352,6 +354,16 @@ export class DcController {
       return await this.dcService.getVehicleRecordForReferenceId(req);
     } catch (error) {
       return (error);
+    }
+  }
+
+  @Post('/getRefIdsByStatus')
+  @ApiBody({ type: VRStatusDTO })
+  async getRefIdsByStatus(@Body() req: any): Promise<VRRefIdsResponseModel> {
+    try {
+      return await this.dcService.getRefIdsByStatus(req);
+    } catch (error) {
+      return this.applicationExceptionHandler.returnException(VRRefIdsResponseModel, error);
     }
   }
  
