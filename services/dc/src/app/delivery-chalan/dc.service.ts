@@ -940,6 +940,7 @@ export class DcService {
 
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
+console.log(reqs,'llllllllllllll')
     const transactionalEntityManager = this.dataSource;
     try {
       const vINTEntityToSave: VehicleINREntity[] = [];
@@ -1012,7 +1013,7 @@ export class DcService {
       });
     } catch (err) {
       console.error(err);
-      return new CommonResponse(false, 0, "Error occurred", null);
+      return new CommonResponse(false, 0, err.message, null);
     }
   }
 
