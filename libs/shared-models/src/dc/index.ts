@@ -8,3 +8,4 @@ export * from './received-dc-req';
 export * from './reject-dc-req';
 export * from './security.req';
 export * from './dc-report.req';
+export * from './vr-ref-ids-response.model';
