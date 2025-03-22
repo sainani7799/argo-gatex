@@ -29,7 +29,7 @@ export class VehicleStateEntity {
         name: 'state',
         nullable: true,
     })
-    vehicleType: TruckStateEnum;
+    vState: TruckStateEnum;
 
 
     @Column("boolean", {

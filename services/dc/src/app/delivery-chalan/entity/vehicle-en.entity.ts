@@ -1,4 +1,4 @@
-import { VehicleTypeEnum } from "libs/shared-models";
+import { TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_en')
@@ -45,6 +45,12 @@ export class VehicleEntity {
         nullable: true,
     })
     vehicleType: VehicleTypeEnum;
+
+    @Column('tinyint', {
+        name: 'state',
+        nullable: true,
+    })
+    vState: TruckStateEnum;
 
     @Column('boolean', {
         name: 'in_house_vehicle',
