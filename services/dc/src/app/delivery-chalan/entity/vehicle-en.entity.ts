@@ -5,7 +5,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 export class VehicleEntity {
 
     @PrimaryGeneratedColumn("increment", { name: 'id' })
-    id: bigint;
+    id: number;
 
     @Column('varchar', {
         name: 'vehicle_no',
@@ -62,13 +62,13 @@ export class VehicleEntity {
         name: 'vinr_id',
         nullable: true
     })
-    vinrId: bigint;
+    vinrId: number;
 
     @Column('bigint', {
         name: 'votr_id',
         nullable: true
     })
-    votrId: bigint;
+    votrId: number;
 
     @Column("boolean", {
         nullable: false,

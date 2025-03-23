@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
-import { VRRefIdsResponseModel } from "libs/shared-models";
+import { ADDVehicleReqModal, GetVehicleNAInrReqModal, VRRefIdsResponseModel } from "libs/shared-models";
 import { CommonRequestAttrs, CommonResponse } from "libs/shared-models/src/common";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
@@ -8,11 +8,11 @@ import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
+import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
 export class VHRController {
-  applicationExceptionHandler: any;
   constructor(
     private readonly vhrService: VHRService,
   ) { }
@@ -23,7 +23,7 @@ export class VHRController {
     try {
       return await this.vhrService.createVINR(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -33,7 +33,7 @@ export class VHRController {
     try {
       return await this.vhrService.createVOTR(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
 
   }
@@ -44,7 +44,7 @@ export class VHRController {
     try {
       return await this.vhrService.getVINR(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -54,7 +54,7 @@ export class VHRController {
     try {
       return await this.vhrService.getVOTR(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -64,7 +64,7 @@ export class VHRController {
     try {
       return await this.vhrService.getTruckInfoByTruckId(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -74,7 +74,7 @@ export class VHRController {
     try {
       return await this.vhrService.updateTruckState(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -84,7 +84,7 @@ export class VHRController {
     try {
       return await this.vhrService.getVehicleRecordForReferenceId(req);
     } catch (error) {
-      return (error);
+      return returnException(CommonResponse, error);
     }
   }
 
@@ -94,17 +94,27 @@ export class VHRController {
     try {
       return await this.vhrService.getRefIdsByStatus(req);
     } catch (error) {
-      return this.applicationExceptionHandler.returnException(VRRefIdsResponseModel, error);
+      return returnException(VRRefIdsResponseModel, error);
     }
   }
 
   @Post('/getVehicleNotAssignedVINRRequestIds')
-  @ApiBody({ type: CommonRequestAttrs })
+  @ApiBody({ type: GetVehicleNAInrReqModal })
   async getVehicleNotAssignedVINRRequestIds(@Body() req: any) {
     try {
       return await this.vhrService.getVehicleNotAssignedVINRRequestIds(req);
     } catch (error) {
-      return this.applicationExceptionHandler.returnException(VRRefIdsResponseModel, error);
+      return returnException(VRRefIdsResponseModel, error);
+    }
+  }
+
+  @Post('/addVehicleToVINR')
+  @ApiBody({ type: ADDVehicleReqModal })
+  async addVehicleToVINR(@Body() req: any) {
+    try {
+      return await this.vhrService.addVehicleToVINR(req);
+    } catch (error) {
+      return returnException(VRRefIdsResponseModel, error);
     }
   }
 }

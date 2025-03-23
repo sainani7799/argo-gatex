@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VRRefIdsResponseModel } from 'libs/shared-models';
+import { AcceptReq, ADDVehicleReqModal, DcEmailModel, DcIdReq, DcReportReq, GetVehicleNAInrReqModal, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VRRefIdsResponseModel } from 'libs/shared-models';
 import { CommonRequestAttrs, CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import { DataSource, In, Repository } from 'typeorm';
@@ -325,11 +325,11 @@ export class VHRService {
       let vehicleOTRRecords = [];
 
       if (vehicleINR) {
-        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: BigInt(vehicleINR.refId) } });
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: Number(vehicleINR.refId) } });
       }
 
       if (vehicleOTR) {
-        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: BigInt(vehicleOTR.refId) } });
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: Number(vehicleOTR.refId) } });
       }
 
       let vehicleINRStateRecords = [];
@@ -362,6 +362,7 @@ export class VHRService {
   }
 
   async getRefIdsByStatus(req: VRStatusDTO): Promise<VRRefIdsResponseModel> {
+    console.log(req, 'req');
     const data = await this.vehicleINRRepository.getRefIdsByStatus(req);
     if (data.length == 0) {
       throw new ErrorResponse(0, 'No data found');
@@ -370,7 +371,7 @@ export class VHRService {
   }
 
 
-  async getVehicleNotAssignedVINRRequestIds(req: CommonRequestAttrs): Promise<VRRefIdsResponseModel> {
+  async getVehicleNotAssignedVINRRequestIds(req: GetVehicleNAInrReqModal): Promise<VRRefIdsResponseModel> {
     const data = await this.vehicleINRRepository.getVehicleNotAssignedVINRRequestIds(req);
     if (data.length == 0) {
       throw new ErrorResponse(0, 'No data found');
@@ -378,8 +379,22 @@ export class VHRService {
     return new VRRefIdsResponseModel(true, 1, 'data retrived', data);
   }
 
-  async addVehicleToVINR(req: CommonRequestAttrs): Promise<VRRefIdsResponseModel> {
-    return
+  async addVehicleToVINR(req: ADDVehicleReqModal): Promise<CommonResponse> {
+    const reqData = await this.vehicleINRRepository.findOne({ where: { refId: req.refId, fromType: req.fromType } });
+    if (!reqData) {
+      throw new ErrorResponse(0, 'No Request found with given details');
+    }
+    for (const vehicle of req.vehicleDetails) {
+      const vehicleData = await this.vehicleRepository.findOne({ where: { id: vehicle.id } });
+      if (!vehicleData) {
+        const vehicleEntity = new VehicleEntity();
+        Object.assign(vehicleEntity, vehicle);
+        vehicleEntity.vinrId = reqData.id;
+        vehicleEntity.vState = 0;
+        await this.vehicleRepository.save(vehicleEntity);
+      }
+    }
+    return new CommonResponse(true, 1, 'data saved successfully');
   }
 
 

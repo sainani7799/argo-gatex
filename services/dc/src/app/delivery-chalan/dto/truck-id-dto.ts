@@ -4,7 +4,7 @@ import { TruckStateEnum, VehilceRequestTypeEnum } from "libs/shared-models";
 export class TruckIdReqeust {
 
     @ApiProperty()
-    truckId: bigint;
+    truckId: number;
 
     @ApiProperty()
     state: TruckStateEnum;
