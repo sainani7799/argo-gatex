@@ -1,5 +1,5 @@
 import { ArrowDownOutlined, ArrowUpOutlined, CarOutlined, DownCircleOutlined, EditOutlined, EyeOutlined, MoreOutlined, UpCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Menu, message, Row, Select, Table, Tabs, Tag, Tooltip } from "antd";
+import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Input, Menu, message, Row, Select, Space, Table, Tabs, Tag, Tooltip } from "antd";
 import TabPane from 'antd/es/tabs/TabPane';
 import dayjs from "dayjs";
 import { ReqStatus, TruckStateEnum } from "libs/shared-models";
@@ -461,6 +461,35 @@ const VehcileEntry = () => {
                 <Drawer title="Update Status" placement="right" key={Date.now()} closable={false} onClose={onCloseDrawer} open={visible} width={400}>
                     <Form form={form} layout="vertical">
                         <Row gutter={24}>
+                            <Form.List name="vehicleRecords" initialValue={[{}]}>
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }, index) => (
+                                            <Space key={key} >
+                                                <Col span={8}>
+                                                    <Form.Item {...restField}
+                                                        label={<span style={{ fontWeight: 'bold' }}>Driver Name</span>}
+                                                        name={[name, 'drvierName']}
+                                                        rules={[{ required: true, message: 'Missing Consumption (INC Wastage)' }]}
+                                                    >
+                                                        <Input placeholder="Enter Consumption (INC Wastage)"
+                                                        />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Col>
+                                                    <Button onClick={() => add()}>Add</Button>
+                                                </Col>
+                                                {fields.length >1 && (
+                                                    <Col>
+                                                        <Button onClick={(e: any) => remove(e)}>Add</Button>
+                                                    </Col>
+                                                )}
+                                            </Space>
+                                        ))}
+
+                                    </>
+                                )}
+                            </Form.List>
                             <Col span={12}>
                                 <Form.Item name="reqStatus" label="Status" rules={[{ required: true, message: "Please select a status" }]}>
                                     <Select placeholder="Select Status">
