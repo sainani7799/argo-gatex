@@ -128,12 +128,7 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/getVOTRALL', req);
     }
 
-    async updateVechileReqStatus(req?: any): Promise<CommonResponse> {
-        console.log(req, 'ffffffffff');
-        return await this.axiosPostCall(this.DcController + '/updateVechileReqStatus', req);
-    }
-
-    async createVehicle(req?: any): Promise<CommonResponse> {
+    async createVehicle(req?: any[]): Promise<CommonResponse> {
         return await this.axiosPostCall(this.DcController + '/createVehicle', req);
     }
 

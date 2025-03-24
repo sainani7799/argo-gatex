@@ -381,18 +381,10 @@ export class DcController {
     }
   }
 
-  @Post('/updateVechileReqStatus')
-  async updateVechileReqStatus(@Body() req: any): Promise<CommonResponse> {
-    try {
-      return await this.dcService.updateVechileReqStatus(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
   @Post('/createVehicle')
   @ApiBody({ type: [VehicleDto] })
   async createVehicle(@Body() req: any[]): Promise<CommonResponse> {
+    console.log(req,'uuuuuuuuuuuuuuuu');
     try {
       return await this.dcService.createVehicle(req);
     } catch (error) {

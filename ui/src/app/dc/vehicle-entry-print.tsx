@@ -86,7 +86,7 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                     { label: "Status", value: data?.reqStatusData },
                                     {
                                         label: data?.readyToInData !== undefined ? "Ready To In" : "Ready To Send",
-                                        value: data?.readyToInData || data?.readyToSend
+                                        value: data?.readyToInData || data?.readyToSendData
                                     }
                                 ].map(({ label, value }) => (
                                     <div

@@ -1,8 +1,8 @@
-import { ArrowDownOutlined, ArrowUpOutlined, CarOutlined, DownCircleOutlined, EditOutlined, EyeOutlined, MoreOutlined, UpCircleOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Input, Menu, message, Row, Select, Space, Table, Tabs, Tag, Tooltip } from "antd";
+import { ArrowDownOutlined, ArrowUpOutlined, CarOutlined, DownCircleOutlined, EditOutlined, EyeOutlined, MinusCircleOutlined, MoreOutlined, PlusCircleOutlined, UpCircleOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Input, Menu, message, Row, Select, Table, Tabs, Tag, Tooltip } from "antd";
 import TabPane from 'antd/es/tabs/TabPane';
 import dayjs from "dayjs";
-import { ReqStatus, TruckStateEnum } from "libs/shared-models";
+import { ReqStatus, TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
 import { DcService } from "libs/shared-services";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -70,33 +70,14 @@ const VehcileEntry = () => {
 
     const showDrawer = (rec) => {
         setOpenFormData(rec);
-        form.setFieldsValue({ reqStatus: rec.reqStatus });
+        // form.setFieldsValue({ reqStatus: rec.reqStatus });
         setVisible(true);
+        form.resetFields(); // Reset all form fields
+        form.setFieldsValue({ vehicleRecords: [{}] });
     };
 
     const onCloseDrawer = () => {
         setVisible(false);
-    };
-
-    const updateVechileReqStatus = () => {
-        form.validateFields().then((values) => {
-            const payload = {
-                id: Number(openFormData.id),
-                reqStatus: values.reqStatus,
-                ...(openFormData.readyToIn ? { readyToIn: openFormData.readyToIn } : { readyToSend: openFormData.readyToSend })
-            };
-            dcService.updateVechileReqStatus(payload).then((res) => {
-                if (res.status) {
-                    getVINRALL();
-                    getVOTRALL();
-                    onCloseDrawer();
-                } else {
-                    message.error(res.internalMessage);
-                }
-            }).catch((err) => {
-                console.log(err);
-            });
-        });
     };
 
     const columnsINR: any = [
@@ -344,10 +325,27 @@ const VehcileEntry = () => {
         }
     };
 
-    // const onFinish = (values: any) => {
-    //     console.log("Form Submitted with Values:", values);
-    // };
-    
+    const onFinish = (values) => {
+        const payload = values.vehicleRecords.map((vehicle) => ({
+            ...vehicle,
+            id: openFormData.id,
+            readyToIn: openFormData.readyToIn,
+            readyToSend: openFormData.readyToSend,
+        }));
+        dcService.createVehicle(payload).then((res) => {
+            if (res.status) {
+                onCloseDrawer();
+                getVINRALL();
+                getVOTRALL();
+            } else {
+                message.error(res.internalMessage);
+            }
+        }).catch((err) => {
+            console.error("API Error:", err);
+        });
+    };
+
+
 
     return (
         <>
@@ -463,79 +461,74 @@ const VehcileEntry = () => {
 
                 </Tabs>
 
-                <Drawer title="Update Status" placement="right" key={Date.now()} closable={false} onClose={onCloseDrawer} open={visible} width={1200}>
-                    <Form form={form} layout="vertical" onFinish={(values) => console.log(values)}>
-                        <Row gutter={24}>
-                            <Form.List name="vehicleRecords" initialValue={[{}]}>
-                                {(fields, { add, remove }) => (
-                                    <>
-                                        {fields.map(({ key, name, ...restField }, index) => (
-                                            <Space key={key} >
-                                                <Card style={{width:'150%'}}>
+                <Drawer title="Create Vehicle" placement="right" key={Date.now()} closable={false} onClose={onCloseDrawer} open={visible} width={1200}>
+                    <Form form={form} layout="vertical" onFinish={onFinish}>
+                        <Form.List name="vehicleRecords" initialValue={[{}]}>
+                            {(fields, { add, remove }) => (
+                                <>
+                                    {fields.map(({ key, name, ...restField }, index) => (
+                                        <>
+                                            <Card key={key} style={{ width: '100%', padding: "10px" }}>
+                                                <Row gutter={16} style={{ display: "flex", flexWrap: "nowrap", justifyContent: "center" }}>
+                                                    <Col span={4}>
+                                                        <Form.Item {...restField} label={<strong>Vehicle No</strong>} name={[name, 'vehicleNo']}>
+                                                            <Input placeholder="Enter Vehicle No" />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={4}>
+                                                        <Form.Item {...restField} label={<strong>Driver Name</strong>} name={[name, 'dName']}>
+                                                            <Input placeholder="Enter Driver Name" />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={4}>
+                                                        <Form.Item {...restField} label={<strong>Driver Contact</strong>} name={[name, 'dContact']}>
+                                                            <Input placeholder="Enter Driver Contact" />
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={4}>
+                                                        <Form.Item {...restField} label={<strong>Vehicle Type</strong>} name={[name, 'vehicleType']}>
+                                                            <Select placeholder="Select Vehicle Type">
+                                                                {Object.entries(VehicleTypeEnum).filter(([key, value]) => isNaN(Number(key))).map(([key, value]) => (
+                                                                    <Option key={value} value={value}>
+                                                                        {key}
+                                                                    </Option>
+                                                                ))}
+                                                            </Select>
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={4}>
+                                                        <Form.Item {...restField} label={<strong>Status</strong>} name={[name, 'vState']}>
+                                                            <Select placeholder="Select Status">
+                                                                {Object.entries(ReqStatus).filter(([key, value]) => isNaN(Number(key))).map(([key, value]) => (
+                                                                    <Option key={value} value={value}>
+                                                                        {key}
+                                                                    </Option>
+                                                                ))}
+                                                            </Select>
 
-                                                    <Row gutter={24}>
-                                                        <Col span={8}>
-                                                            <Form.Item {...restField}
-                                                                label={<span style={{ fontWeight: 'bold' }}>Vehicle No</span>}
-                                                                name={[name, 'vehicleNo']}
-                                                            >
-                                                                <Input placeholder="Enter Vehicle No"
-                                                                />
-                                                            </Form.Item>
+                                                        </Form.Item>
+                                                    </Col>
+                                                    <Col span={1}>
+                                                        <Button icon={<PlusCircleOutlined />} type="primary" style={{ marginTop: '25px' }} onClick={() => add({})} />
+                                                    </Col >
+                                                    {fields.length > 1 && (
+                                                        <Col span={1}>
+                                                            <Button icon={<MinusCircleOutlined />} type="default" danger style={{ marginTop: '25px' }} onClick={() => remove(name)} />
                                                         </Col>
-                                                        <Col span={8}>
-                                                            <Form.Item {...restField}
-                                                                label={<span style={{ fontWeight: 'bold' }}>Driver Name</span>}
-                                                                name={[name, 'dName']}
-                                                            >
-                                                                <Input placeholder="Enter Driver Name"
-                                                                />
-                                                            </Form.Item>
-                                                        </Col>
-                                                        <Col span={8}>
-                                                            <Form.Item {...restField}
-                                                                label={<span style={{ fontWeight: 'bold' }}>Driver Contact</span>}
-                                                                name={[name, 'dContact']}
-                                                            >
-                                                                <Input placeholder="Enter Driver Contact"
-                                                                />
-                                                            </Form.Item>
-                                                        </Col>
-                                                        <Col span={8}>
-                                                            <Form.Item {...restField}
-                                                                label={<span style={{ fontWeight: 'bold' }}>Vehicle Type</span>}
-                                                                name={[name, 'vehicleType']}
-                                                            >
-                                                                <Input placeholder="Enter Vehicle Type"
-                                                                />
-                                                            </Form.Item>
-                                                        </Col>
-                                                        <Col>
-                                                            <Button style={{marginTop:'23px'}} onClick={() => add({})}>Add</Button>
-                                                        </Col>
-                                                        {fields.length > 1 && (
-                                                            <Col>
-                                                                <Button style={{marginTop:'23px'}} onClick={() => remove(name)}>Remove</Button>
-                                                            </Col>
-                                                        )}
-                                                    </Row>
-                                                </Card>
-
-                                            </Space>
-                                        ))}
-
-                                    </>
-                                )}
-                            </Form.List>
-                        </Row>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                        <Button type="default" danger onClick={onCloseDrawer} style={{ marginLeft: "10px" }}>
-                            Close
-                        </Button>
+                                                    )}
+                                                </Row>
+                                            </Card>
+                                            <br />
+                                        </>
+                                    ))}
+                                </>
+                            )}
+                        </Form.List>
+                        <Button type="primary" htmlType="submit">Submit</Button>
+                        <Button type="default" danger onClick={onCloseDrawer} style={{ marginLeft: "10px" }}>Close</Button>
                     </Form>
                 </Drawer>
+
 
             </Card>
         </>

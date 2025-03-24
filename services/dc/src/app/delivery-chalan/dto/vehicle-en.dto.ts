@@ -25,6 +25,9 @@ export class VehicleDto {
     vehicleType: VehicleTypeEnum;
 
     @ApiProperty()
+    vState: number;
+
+    @ApiProperty()
     inHouseVehicle: boolean;
 
     @ApiProperty()
@@ -50,6 +53,12 @@ export class VehicleDto {
 
     @ApiProperty()
     versionFlag: number;
+
+    @ApiProperty()
+    readyToIn: number;
+
+    @ApiProperty()
+    readyToSend: number;
 
     constructor(partial: Partial<VehicleDto>) {
         Object.assign(this, partial);
