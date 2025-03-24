@@ -255,6 +255,11 @@ const menuData = [
         name: 'Gate Pass Report',
         icon: <BarChartOutlined  />,
       },
+      {
+        path: '/vehcile-entry',
+        name: 'Vehicle Entry',
+        icon: <CarOutlined  />,
+      },
   
     ],
   }

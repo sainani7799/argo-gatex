@@ -112,6 +112,27 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/getAllGatePassReturnable',req);
     }
     
+    async getVINR(req?:any[]): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINR',req);
+    }
+    
+    async getVOTR(req?:any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTR',req);
+    }
+    
+    async getVINRALL(req?:any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINRALL',req);
+    }
+    
+    async getVOTRALL(req?:any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTRALL',req);
+    }
+    
+    async updateVechileReqStatus(req?:any): Promise<CommonResponse> {
+        console.log(req,'ffffffffff');
+        return await this.axiosPostCall(this.DcController + '/updateVechileReqStatus',req);
+    }
+    
 }
 
 // // export async function acceptDc(dto) {

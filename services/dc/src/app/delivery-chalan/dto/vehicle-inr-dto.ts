@@ -56,4 +56,8 @@ export class VehicleINRDto {
 
     @ApiProperty()
     vehicleRecords:VehicleDto[];
+
+    constructor(partial: Partial<VehicleINRDto>) {
+        Object.assign(this, partial);
+    }
 }

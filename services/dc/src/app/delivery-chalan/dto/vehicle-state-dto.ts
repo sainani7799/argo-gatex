@@ -1,37 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { VehicleTypeEnum } from "libs/shared-models";
+import { TruckStateEnum } from "libs/shared-models";
 
-export class VehicleDto {
-    
+export class VehicleStateDto {
     @ApiProperty()
     id: bigint;
 
     @ApiProperty()
-    vehicleNo: string;
-
-    @ApiProperty()
-    dName: string;
-
-    @ApiProperty()
-    dContact: string;
-
-    @ApiProperty()
-    arrivalDateTime: Date;
-
-    @ApiProperty()
-    departureDateTime: Date;
-
-    @ApiProperty()
-    vehicleType: VehicleTypeEnum;
-
-    @ApiProperty()
-    inHouseVehicle: boolean;
+    vid: bigint;
 
     @ApiProperty()
     vinrId: bigint;
 
     @ApiProperty()
     votrId: bigint;
+
+    @ApiProperty()
+    vehicleType: TruckStateEnum;
 
     @ApiProperty()
     isActive: boolean;
@@ -50,8 +34,8 @@ export class VehicleDto {
 
     @ApiProperty()
     versionFlag: number;
-
-    constructor(partial: Partial<VehicleDto>) {
+    
+    constructor(partial: Partial<VehicleStateDto>) {
         Object.assign(this, partial);
     }
 }
