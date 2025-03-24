@@ -23,13 +23,13 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/rejectDc', dto);
 
     }
-    
-    async getAllGatePass(req:UnitReq): Promise<any> {
-        return await this.axiosPostCall(this.DcController + '/getAllGatePass',req);
+
+    async getAllGatePass(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePass', req);
     }
 
-    async getIntransAndCompleteGatePass(req:UnitReq): Promise<any> {
-        return await this.axiosPostCall(this.DcController + '/getIntransAndCompleteGatePass',req);
+    async getIntransAndCompleteGatePass(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getIntransAndCompleteGatePass', req);
     }
 
     async getDcDetailsById(req: DcIdReq): Promise<any> {
@@ -100,39 +100,43 @@ export class DcService extends CommonAxiosServicePms {
         return await this.axiosPostCall(this.DcController + '/getCreated');
     }
 
-    async getAllGatePassTounit(req:UnitReq): Promise<any> {
-        return await this.axiosPostCall(this.DcController + '/getAllGatePassTounit',req);
+    async getAllGatePassTounit(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassTounit', req);
     }
 
-    async updateRetunableData(req:any): Promise<CommonResponse> {
-        return await this.axiosPostCall(this.DcController + '/updateRetunableData',req);
+    async updateRetunableData(req: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/updateRetunableData', req);
     }
 
-    async getAllGatePassReturnable(req:UnitReq): Promise<any> {
-        return await this.axiosPostCall(this.DcController + '/getAllGatePassReturnable',req);
+    async getAllGatePassReturnable(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassReturnable', req);
     }
-    
-    async getVINR(req?:any[]): Promise<CommonResponse> {
-        return await this.axiosPostCall(this.DcController + '/getVINR',req);
+
+    async getVINR(req?: any[]): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINR', req);
     }
-    
-    async getVOTR(req?:any): Promise<CommonResponse> {
-        return await this.axiosPostCall(this.DcController + '/getVOTR',req);
+
+    async getVOTR(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTR', req);
     }
-    
-    async getVINRALL(req?:any): Promise<CommonResponse> {
-        return await this.axiosPostCall(this.DcController + '/getVINRALL',req);
+
+    async getVINRALL(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINRALL', req);
     }
-    
-    async getVOTRALL(req?:any): Promise<CommonResponse> {
-        return await this.axiosPostCall(this.DcController + '/getVOTRALL',req);
+
+    async getVOTRALL(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTRALL', req);
     }
-    
-    async updateVechileReqStatus(req?:any): Promise<CommonResponse> {
-        console.log(req,'ffffffffff');
-        return await this.axiosPostCall(this.DcController + '/updateVechileReqStatus',req);
+
+    async updateVechileReqStatus(req?: any): Promise<CommonResponse> {
+        console.log(req, 'ffffffffff');
+        return await this.axiosPostCall(this.DcController + '/updateVechileReqStatus', req);
     }
-    
+
+    async createVehicle(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/createVehicle', req);
+    }
+
 }
 
 // // export async function acceptDc(dto) {
