@@ -9,10 +9,13 @@ import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
+import { VRStatusDTO } from "./dto/vr-status-req.dto";
+import { VRRefIdsResponseModel } from "libs/shared-models";
+import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 
 @Controller("dc")
 export class DcController {
-  applicationExceptionHandler: any;
+  applicationExceptionHandler: ApplicationExceptionHandler;
   constructor(
     private readonly dcService: DcService,
     private readonly mailService: MailerService

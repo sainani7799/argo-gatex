@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import { DataSource, In } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import * as XLSX from 'xlsx';
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import { DcAdapter } from './adapter/dc.adapter';
@@ -20,9 +21,12 @@ import { VehicleStateEntity } from './entity/vehicle-state.entity';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
 import { DcEntityRepository } from './repository/dc-repository';
 import { VehicleINRRepo } from './repository/vehicle-inr.repo';
+import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleOTRRepo } from './repository/vehicle-otr.repo';
+import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleENRepository } from './repository/vehicle.repo';
+import { VehicleRepository } from './repository/vehicle.repository';
 
 @Injectable()
 export class DcService {
@@ -33,11 +37,16 @@ export class DcService {
     private dcItemSRepo: DcItemEntityRepository,
     private wpService: WhatsAppNotificationService,
     private mailService: EmailService,
-    private vehicleRepository: VehicleENRepository,
-    private vehicleStateRepository: VehicleStateRepository,
-    private dataSource: DataSource,
+    private vehicleRecRepository: VehicleENRepository,
+    private vehicleStateRepo: VehicleStateRepository,
     private vechileINRRepo: VehicleINRRepo,
-    private vechileOTRRepo: VehicleOTRRepo
+    private vechileOTRRepo: VehicleOTRRepo,
+    private vehicleINRRepository: VehicleINRRepository,
+    private readonly vehicleOTRRepository: VehicleOTRRepository,
+    private vehicleRepository: VehicleRepository,
+    @InjectRepository(VehicleStateEntity)
+    private vehicleStateRepository: Repository<VehicleStateEntity>,
+    private dataSource: DataSource
   ) { }
 
   // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
@@ -989,7 +998,7 @@ export class DcService {
                 id: vehicle.id,
                 vid: vehicle.id,
                 vinrId: vehicle.vinrId,
-                vehicleType: TruckStateEnum.OPEN,
+                vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 versionFlag: 1,
@@ -1067,7 +1076,7 @@ export class DcService {
                 id: vehicle.id,
                 vid: vehicle.id,
                 votrId: vehicle.votrId,
-                vehicleType: TruckStateEnum.OPEN,
+                vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 versionFlag: 1,
@@ -1129,7 +1138,7 @@ export class DcService {
 
         const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
           (relatedVehicleIds.length > 0 ? relatedVehicleIds.includes(Number(vehicleState.vid)) : true) &&
-          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType)))
+          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vState)))
         );
 
         return {
@@ -1182,7 +1191,7 @@ export class DcService {
 
         const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
           (relatedVehicleIds.length > 0 ? relatedVehicleIds.includes(Number(vehicleState.vid)) : true) &&
-          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType)))
+          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vState)))
         );
 
         return {
@@ -1246,15 +1255,15 @@ export class DcService {
       if (req.vinrId) {
         const entity = new VehicleStateEntity();
         entity.vid = req.truckId;
-        entity.vinrId = req.vinrId
-        entity.vehicleType = req.state;
+        entity.vinrId = Number(req.vinrId)
+        entity.vState = req.state;
         const saveVehicleINRRecord = await this.vehicleStateRepository.save(entity);
         return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleINRRecord);
       } else {
         const entity = new VehicleStateEntity();
         entity.vid = req.truckId;
-        entity.votrId = req.votrId
-        entity.vehicleType = req.state;
+        entity.votrId = Number(req.votrId)
+        entity.vState = req.state;
         const saveVehicleOTRecord = await this.vehicleStateRepository.save(entity);
         return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleOTRecord);
       }
@@ -1279,11 +1288,11 @@ export class DcService {
       let vehicleOTRRecords = [];
 
       if (vehicleINR) {
-        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: BigInt(vehicleINR.id) } });
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: vehicleINR.id } });
       }
 
       if (vehicleOTR) {
-        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: BigInt(vehicleOTR.id) } });
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: vehicleOTR.id } });
       }
 
       let vehicleINRStateRecords = [];

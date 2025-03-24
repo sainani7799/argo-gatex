@@ -4,7 +4,7 @@ import { VehicleTypeEnum } from "libs/shared-models";
 export class VehicleDto {
     
     @ApiProperty()
-    id: bigint;
+    id: number;
 
     @ApiProperty()
     vehicleNo: string;
@@ -28,10 +28,10 @@ export class VehicleDto {
     inHouseVehicle: boolean;
 
     @ApiProperty()
-    vinrId: bigint;
+    vinrId: number;
 
     @ApiProperty()
-    votrId: bigint;
+    votrId: number;
 
     @ApiProperty()
     isActive: boolean;

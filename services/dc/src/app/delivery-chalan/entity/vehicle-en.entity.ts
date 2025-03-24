@@ -1,11 +1,11 @@
-import { VehicleTypeEnum } from "libs/shared-models";
+import { TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_en')
 export class VehicleEntity {
 
     @PrimaryGeneratedColumn("increment", { name: 'id' })
-    id: bigint;
+    id: number;
 
     @Column('varchar', {
         name: 'vehicle_no',
@@ -46,6 +46,12 @@ export class VehicleEntity {
     })
     vehicleType: VehicleTypeEnum;
 
+    @Column('tinyint', {
+        name: 'state',
+        nullable: true,
+    })
+    vState: TruckStateEnum;
+
     @Column('boolean', {
         name: 'in_house_vehicle',
         nullable: true
@@ -56,13 +62,13 @@ export class VehicleEntity {
         name: 'vinr_id',
         nullable: true
     })
-    vinrId: bigint;
+    vinrId: number;
 
     @Column('bigint', {
         name: 'votr_id',
         nullable: true
     })
-    votrId: bigint;
+    votrId: number;
 
     @Column("boolean", {
         nullable: false,

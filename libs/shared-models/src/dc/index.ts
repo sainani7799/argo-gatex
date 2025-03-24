@@ -1,11 +1,16 @@
+export * from './add-vehicle.req';
 export * from './assign.req';
 export * from './dc-accept-re';
 export * from './dc-id.req';
 export * from './dc-mail.req';
 export * from './dc-report.req';
 export * from './dc-req';
+export * from './get-vehicle-na-inr.req';
 export * from './items.req';
 export * from './received-dc-req';
 export * from './reject-dc-req';
 export * from './security.req';
 export * from './vehicle-in-out-req';
+export * from './vehicle-model';
+export * from './vr-ref-ids-response.model';
+

@@ -4,7 +4,7 @@ import { VehicleDto } from "./vehicle-en.dto";
 
 export class VehicleINRDto {
     @ApiProperty()
-    id: bigint;
+    id: number;
 
     @ApiProperty()
     refId: string;

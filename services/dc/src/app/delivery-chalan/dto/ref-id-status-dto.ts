@@ -5,7 +5,7 @@ export class RefIdStatusDTO {
     @ApiProperty()
     refId: string;
     @ApiProperty()
-    vid: bigint;
+    vid: number;
     @ApiProperty()
     status: number;
     @ApiProperty()
