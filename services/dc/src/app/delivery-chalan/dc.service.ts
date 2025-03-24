@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq, VehicleTypeEnum } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import { DataSource, In, Repository } from 'typeorm';
@@ -27,6 +27,7 @@ import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleENRepository } from './repository/vehicle.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
+import { VehicleDto } from './dto/vehicle-en.dto';
 
 @Injectable()
 export class DcService {
@@ -1344,6 +1345,32 @@ export class DcService {
       return new CommonResponse(false, 0, "Error occurred", null);
     }
   }
+
+  async createVehicle(vehicleDtos: VehicleDto[]): Promise<CommonResponse> {
+    try {
+      const response: VehicleEntity[] = [];
+
+      for (const vehicleDto of vehicleDtos) {
+        const entity = new VehicleEntity();
+        entity.vehicleNo = vehicleDto.vehicleNo;
+        entity.dName = vehicleDto.dName;
+        entity.dContact = vehicleDto.dContact;
+
+        if (!Object.values(VehicleTypeEnum).includes(vehicleDto.vehicleType)) {
+          return new CommonResponse(false, 400, `Invalid vehicle type: ${vehicleDto.vehicleType}`);
+        }
+
+        entity.vehicleType = vehicleDto.vehicleType;
+        response.push(entity);
+      }
+
+      return new CommonResponse(true, 1, 'Vehicle processed successfully', response);
+    } catch (error) {
+      console.error('Error in createVehicle:', error);
+      return new CommonResponse(false, 500, 'An error occurred while processing Vehicle');
+    }
+  }
+
 
 
 }

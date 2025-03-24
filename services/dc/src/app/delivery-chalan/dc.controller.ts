@@ -12,6 +12,7 @@ import { MailerService } from "./send-mail";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VRRefIdsResponseModel } from "libs/shared-models";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
+import { VehicleDto } from "./dto/vehicle-en.dto";
 
 @Controller("dc")
 export class DcController {
@@ -389,5 +390,14 @@ export class DcController {
     }
   }
 
+  @Post('/createVehicle')
+  @ApiBody({ type: [VehicleDto] })
+  async createVehicle(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.createVehicle(req);
+    } catch (error) {
+      return (error);
+    }
+  }
 
 }
