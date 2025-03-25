@@ -431,12 +431,21 @@ export class VHRService {
         vehStateEntity.createdAt = new Date();
         vehStateEntity.updatedAt = new Date();
         vehStateEntity.versionFlag = 1;
-
         if (savedVehicle.vinrId) {
           vehStateEntity.vinrId = savedVehicle.vinrId;
-        } else if (savedVehicle.votrId) {
+          // Update INR vehicle status
+          await this.vehicleINRRepository.update(
+              { id: savedVehicle.vinrId },
+              { reqStatus: 1 } // Consider using enum/constant for status codes
+          );
+      } else if (savedVehicle.votrId) {
           vehStateEntity.votrId = savedVehicle.votrId;
-        }
+          // Update OTR vehicle status
+          await this.vehicleOTRRepository.update(
+              { id: savedVehicle.votrId },
+              { reqStatus: 1 }
+          );
+      }
 
         await queryRunner.manager.save(vehStateEntity);
       }
@@ -502,6 +511,53 @@ export class VHRService {
         return new CommonResponse(false, 0, 'Error: ' + err.message);
       }
     }
+
+
+    async updateDepartureAndStatus(req: TruckIdReqeust): Promise<string> {
+      try {
+        // Fetch OTR records for the given votrId
+        const otrRecords = await this.vehicleOTRRepository.find({ where: { id: Number(req.votrId) } });
+    
+        if (!otrRecords.length) {
+          console.log(`No records found for votrId: ${req.votrId}`);
+          return 'No OTR records found';
+        }
+    
+        let updatedDeparture = false;
+    
+        // Fetch the vehicle record for the given truckId
+        const vehicle = await this.vehicleRepository.findOne({ where: { id: req.truckId } });
+    
+        if (vehicle) {
+          vehicle.departureDateTime = new Date();
+          await this.vehicleRepository.save(vehicle);
+          updatedDeparture = true;
+        } else {
+          console.log(`No vehicle found for vehicleId: ${req.truckId}`);
+          return 'No vehicle found';
+        }
+    
+        // Fetch all vehicles related to the given votrId
+        const relatedVehicles = await this.vehicleRepository.find({ where: { votrId: Number(req.votrId) } });
+    
+        // Check if all vehicles have a departureDateTime
+        const allDeparted = relatedVehicles.every(vehicle => vehicle.departureDateTime !== null);
+    
+        // If all related vehicles have departureDateTime, update reqStatus = 1 in vehicleOTRRepository
+        if (allDeparted) {
+          await this.vehicleOTRRepository.update({ id: Number(req.votrId) }, { reqStatus: 1 });
+          console.log(`Updated reqStatus to 1 for votrId: ${req.votrId}`);
+        }
+    
+        return updatedDeparture ? 'Departure updated successfully' : 'No vehicle updated';
+      } catch (error) {
+        console.error('Error updating records:', error);
+        throw new Error('Failed to update departure time and request status.');
+      }
+    }
+    
+    
+    
   
 
 }

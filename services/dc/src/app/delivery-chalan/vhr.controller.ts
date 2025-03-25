@@ -160,4 +160,14 @@ export class VHRController {
       return (error);
     }
   }
+
+  @Post('/updateDepartureAndStatus')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateDepartureAndStatus(@Body() req: any): Promise<any> {
+    try {
+      return await this.vhrService.updateDepartureAndStatus(req);
+    } catch (error) {
+      return (error);
+    }
+  }
 }
