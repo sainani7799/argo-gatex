@@ -3,7 +3,7 @@ import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Input, Menu, message,
 import TabPane from 'antd/es/tabs/TabPane';
 import dayjs from "dayjs";
 import { ReqStatus, TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
-import { DcService } from "libs/shared-services";
+import { VHRServices } from "libs/shared-services";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,7 +18,7 @@ const VehcileEntry = () => {
         UNLOAD_COMPLETED: "red",
     };
 
-    const dcService = new DcService();
+    const vhrService = new VHRServices();
     const [page, setPage] = React.useState(1)
     const [VINRData, setVINRData] = useState<any>([])
     const [VOTRData, setVOTRData] = useState<any>([])
@@ -37,7 +37,7 @@ const VehcileEntry = () => {
 
     const getVINRALL = () => {
         setIsLoading(true)
-        dcService.getVINRALL()
+        vhrService.getVINRALL()
             .then((res) => {
                 if (res.status) {
                     setVINRData(res.data);
@@ -54,7 +54,7 @@ const VehcileEntry = () => {
 
     const getVOTRALL = () => {
         setIsLoading(true)
-        dcService.getVOTRALL().then((res) => {
+        vhrService.getVOTRALL().then((res) => {
             if (res.status) {
                 setVOTRData(res.data)
                 setIsLoading(false)
@@ -148,21 +148,18 @@ const VehcileEntry = () => {
                 const menu = (
                     <>
                         <Menu >
-                            <Menu.Item
-                                icon={<EyeOutlined style={{ color: "blue", fontSize: 20, marginRight: '8px' }}
-                                    onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })}
-                                />}
-                                key='1'
-                            >
-                                Detail View
-                            </Menu.Item>
+                            <Tooltip title='Detail View' placement="rightTop"  >
+                                <Menu.Item key='1'
+                                    icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
+                                </Menu.Item>
+                            </Tooltip>
 
-                            <Menu.Item
-                                key='2'
-                                icon={<EditOutlined style={{ fontSize: '24px', color: 'blue', marginRight: '8px', }} onClick={() => showDrawer(rec)} />}
-                            >
-                                Edit
-                            </Menu.Item>
+                            <Tooltip title='Edit' placement="rightTop" >
+                                <Menu.Item key='2'
+                                    icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
+                                >
+                                </Menu.Item>
+                            </Tooltip>
                         </Menu>
                     </>
                 )
@@ -292,13 +289,18 @@ const VehcileEntry = () => {
                 const menu = (
                     <>
                         <Menu >
-                            <Menu.Item icon={<EyeOutlined style={{ color: "blue", fontSize: 20, marginRight: '8px' }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} key='1' >
-                                Detail View
-                            </Menu.Item>
+                            <Tooltip title='Detail View' placement="rightTop"  >
+                                <Menu.Item key='1'
+                                    icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
+                                </Menu.Item>
+                            </Tooltip>
 
-                            <Menu.Item key='2' icon={<EditOutlined style={{ fontSize: '24px', color: 'blue', marginRight: '8px', }} onClick={() => showDrawer(rec)} />}  >
-                                Edit
-                            </Menu.Item>
+                            <Tooltip title='Edit' placement="rightTop" >
+                                <Menu.Item key='2'
+                                    icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
+                                >
+                                </Menu.Item>
+                            </Tooltip>
                         </Menu>
                     </>
                 )
@@ -332,7 +334,7 @@ const VehcileEntry = () => {
             readyToIn: openFormData.readyToIn,
             readyToSend: openFormData.readyToSend,
         }));
-        dcService.createVehicle(payload).then((res) => {
+        vhrService.createVehicle(payload).then((res) => {
             if (res.status) {
                 onCloseDrawer();
                 getVINRALL();

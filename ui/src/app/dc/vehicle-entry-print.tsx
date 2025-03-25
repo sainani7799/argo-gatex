@@ -5,11 +5,13 @@ import html2pdf from 'html2pdf.js';
 import './dc-print.css';
 
 export interface VehicleEntryPrintProps {
-    rec: any
+    rec: any,
+    vehRec: any,
 }
 
 const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
     const data = props.rec
+    const vehData = props.vehRec
 
     const pdfDownloadVehicleEntry = () => {
         setTimeout(() => {
@@ -113,7 +115,6 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                         <table className={'ta-b'} style={{ width: '100%' }}>
                             <thead>
                                 <tr style={{ textAlign: 'left', backgroundColor: '#a3a3a352' }}>
-                                    <th className={'ta-b'} style={{ textAlign: 'left', paddingLeft: '20px' }}>Sno</th>
                                     <th colSpan={1} className={'ta-b'}>Vehicle No</th>
                                     <th colSpan={1} className={'ta-b'}>Driver Name</th>
                                     <th colSpan={1} className={'ta-b'}>Driver Contact</th>
@@ -123,22 +124,19 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data?.vehicleRecords.map((record, index) => (
-                                    <tr key={index} style={{ textAlign: 'left', fontSize: '10.5px' }}>
-                                        <td style={{ textAlign: 'left', paddingLeft: '20px' }}>{index + 1}</td>
-                                        <td colSpan={1} className={'ta-b'}>{record?.vehicleNo}</td>
-                                        <td colSpan={1} className={'ta-b'}>{record?.dName}</td>
-                                        <td colSpan={1} className={'ta-b'}>{record?.dContact}</td>
-                                        <td colSpan={1} className={'ta-b'}>{record?.vehicleType}</td>
-                                        <td colSpan={1} className={'ta-b'}>{record?.inHouseVehicle ? "Yes" : "No"}</td>
-                                        <td colSpan={1} className={'ta-b'}>
-                                            {record?.vehicleStateRecords?.length > 0 ?
-                                                record?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") :
-                                                "N/A"
-                                            }
-                                        </td>
-                                    </tr>
-                                ))}
+                                <tr key='1 'style={{ textAlign: 'left', fontSize: '10.5px' }}>
+                                    <td colSpan={1} className={'ta-b'}>{vehData?.vehicleNo}</td>
+                                    <td colSpan={1} className={'ta-b'}>{vehData?.dName}</td>
+                                    <td colSpan={1} className={'ta-b'}>{vehData?.dContact}</td>
+                                    <td colSpan={1} className={'ta-b'}>{vehData?.vehicleType}</td>
+                                    <td colSpan={1} className={'ta-b'}>{vehData?.inHouseVehicle ? "Yes" : "No"}</td>
+                                    <td colSpan={1} className={'ta-b'}>
+                                        {vehData?.vehicleStateRecords?.length > 0 ?
+                                            vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") :
+                                            "N/A"
+                                        }
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
 

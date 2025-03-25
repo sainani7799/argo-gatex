@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import * as XLSX from 'xlsx';
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import { DcAdapter } from './adapter/dc.adapter';
 import { DcDto } from './dto/dc.dto';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
 import { TruckIdReqeust } from './dto/truck-id-dto';
-import { VehicleDto } from './dto/vehicle-en.dto';
 import { VehicleINRDto } from './dto/vehicle-inr-dto';
 import { VehicleOTRDto } from './dto/vehicle-out.dto';
 import { DcEntity } from './entity/dc.entity';
@@ -21,12 +19,9 @@ import { VehicleOTREntity } from './entity/vehicle-otr.entity';
 import { VehicleStateEntity } from './entity/vehicle-state.entity';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
 import { DcEntityRepository } from './repository/dc-repository';
-import { VehicleINRRepo } from './repository/vehicle-inr.repo';
 import { VehicleINRRepository } from './repository/vehicle-inr.repository';
-import { VehicleOTRRepo } from './repository/vehicle-otr.repo';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
-import { VehicleENRepository } from './repository/vehicle.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
 
 @Injectable()
@@ -38,15 +33,10 @@ export class DcService {
     private dcItemSRepo: DcItemEntityRepository,
     private wpService: WhatsAppNotificationService,
     private mailService: EmailService,
-    private vehicleRecRepository: VehicleENRepository,
-    private vehicleStateRepo: VehicleStateRepository,
-    private vechileINRRepo: VehicleINRRepo,
-    private vechileOTRRepo: VehicleOTRRepo,
+    private vehicleStateRepository: VehicleStateRepository,
     private vehicleINRRepository: VehicleINRRepository,
-    private readonly vehicleOTRRepository: VehicleOTRRepository,
+    private vehicleOTRRepository: VehicleOTRRepository,
     private vehicleRepository: VehicleRepository,
-    @InjectRepository(VehicleStateEntity)
-    private vehicleStateRepository: Repository<VehicleStateEntity>,
     private dataSource: DataSource
   ) { }
 
@@ -947,7 +937,6 @@ export class DcService {
     return new CommonResponse(false, 0, 'No data found');
   }
 
-
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
     const transactionalEntityManager = this.dataSource;
     try {
@@ -1109,7 +1098,7 @@ export class DcService {
         request = [];
       }
 
-      const vinrRecords = await this.vechileINRRepo.find();
+      const vinrRecords = await this.vehicleINRRepository.find();
       if (!vinrRecords.length) {
         return new CommonResponse(false, 0, "No records found", []);
       }
@@ -1162,7 +1151,7 @@ export class DcService {
         request = [];
       }
 
-      const vOutRecords = await this.vechileOTRRepo.find();
+      const vOutRecords = await this.vehicleOTRRepository.find();
       if (!vOutRecords.length) {
         return new CommonResponse(false, 0, "No records found", []);
       }
@@ -1209,34 +1198,6 @@ export class DcService {
     }
   }
 
-  async getVINRALL(req?: RefIdStatusDTO): Promise<CommonResponse> {
-    try {
-      const result = await this.vechileINRRepo.getVINRALL(req)
-      if (result) {
-        return new CommonResponse(true, 1, "Data Retrieved", result);
-      } else {
-        return new CommonResponse(false, 0, "Failed to Retrive", []);
-      }
-    } catch (err) {
-      console.error(err);
-      return new CommonResponse(false, 0, "Error occurred", null);
-    }
-  }
-
-  async getVOTRALL(req: RefIdStatusDTO): Promise<CommonResponse> {
-    try {
-      const result = await this.vechileOTRRepo.getOTRALL(req)
-      if (result) {
-        return new CommonResponse(true, 1, "Data Retrieved", result);
-      } else {
-        return new CommonResponse(false, 0, "Failed to Retrive", []);
-      }
-    } catch (err) {
-      console.error(err);
-      return new CommonResponse(false, 0, "Error occurred", null);
-    }
-  }
-
   async getTruckInfoByTruckId(req: TruckIdReqeust): Promise<CommonResponse> {
     try {
       const vehicleRecords = await this.vehicleRepository.find();
@@ -1251,34 +1212,11 @@ export class DcService {
     }
   }
 
-  async updateTruckState(req: TruckIdReqeust): Promise<CommonResponse> {
-    try {
-      if (req.vinrId) {
-        const entity = new VehicleStateEntity();
-        entity.vid = req.truckId;
-        entity.vinrId = Number(req.vinrId)
-        entity.vState = req.state;
-        const saveVehicleINRRecord = await this.vehicleStateRepository.save(entity);
-        return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleINRRecord);
-      } else {
-        const entity = new VehicleStateEntity();
-        entity.vid = req.truckId;
-        entity.votrId = Number(req.votrId)
-        entity.vState = req.state;
-        const saveVehicleOTRecord = await this.vehicleStateRepository.save(entity);
-        return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleOTRecord);
-      }
-    } catch (err) {
-      console.log(err);
-      return new CommonResponse(false, 0, 'Error: ' + err.message);
-    }
-  }
-
   async getVehicleRecordForReferenceId(req: RefIdStatusDTO): Promise<CommonResponse> {
     try {
       const [vehicleINR, vehicleOTR] = await Promise.all([
-        this.vechileINRRepo.findOne({ where: { refId: req.refId } }),
-        this.vechileOTRRepo.findOne({ where: { refId: req.refId } }),
+        this.vehicleINRRepository.findOne({ where: { refId: req.refId } }),
+        this.vehicleOTRRepository.findOne({ where: { refId: req.refId } }),
       ]);
 
       if (!vehicleINR && !vehicleOTR) {
@@ -1324,66 +1262,6 @@ export class DcService {
       return new CommonResponse(false, 0, 'Error fetching vehicle data');
     }
   }
-
-  async createVehicle(vehicleDtos: VehicleDto[]): Promise<CommonResponse> {
-    console.log(vehicleDtos,'vehicleDtos');
-    
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const savedVehicles: VehicleEntity[] = [];
-      for (const vehicleDto of vehicleDtos) {
-        const entity = new VehicleEntity();
-        if (vehicleDto.readyToIn !== undefined) {
-          entity.vinrId = vehicleDto.id;
-          entity.vehicleNo = vehicleDto.vehicleNo;
-          entity.dName = vehicleDto.dName;
-          entity.dContact = vehicleDto.dContact;
-          entity.arrivalDateTime = new Date();
-          entity.vState = vehicleDto.vState;
-          entity.vehicleType = vehicleDto.vehicleType;
-        } else if (vehicleDto.readyToSend !== undefined) {
-          entity.votrId = vehicleDto.id;
-          entity.vehicleNo = vehicleDto.vehicleNo;
-          entity.dName = vehicleDto.dName;
-          entity.dContact = vehicleDto.dContact;
-          entity.departureDateTime = new Date();
-          entity.vState = vehicleDto.vState;
-          entity.vehicleType = vehicleDto.vehicleType;
-        }
-        const savedVehicle = await queryRunner.manager.save(entity);
-        savedVehicles.push(savedVehicle);
-
-        const vehStateEntity = new VehicleStateEntity();
-        vehStateEntity.vid = savedVehicle.id;
-        vehStateEntity.vState = TruckStateEnum.OPEN;
-        vehStateEntity.createdAt = new Date();
-        vehStateEntity.updatedAt = new Date();
-        vehStateEntity.versionFlag = 1;
-
-        if (savedVehicle.vinrId) {
-          vehStateEntity.vinrId = savedVehicle.vinrId;
-        } else if (savedVehicle.votrId) {
-          vehStateEntity.votrId = savedVehicle.votrId;
-        }
-
-        await queryRunner.manager.save(vehStateEntity);
-      }
-      await queryRunner.commitTransaction();
-
-      return new CommonResponse(true, 1, 'Vehicles created successfully', savedVehicles);
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-      console.error('Error in createVehicle:', error);
-      return new CommonResponse(false, 500, 'An error occurred while processing Vehicles');
-    } finally {
-      await queryRunner.release();
-    }
-  }
-
-
-
 
 
 }

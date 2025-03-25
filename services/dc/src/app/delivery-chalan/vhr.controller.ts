@@ -1,18 +1,20 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { ApplicationExceptionHandler, returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { ADDVehicleReqModal, GetVehicleNAInrReqModal, VRRefIdsResponseModel } from "libs/shared-models";
-import { CommonRequestAttrs, CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "libs/shared-models/src/common";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
+import { VehicleDto } from "./dto/vehicle-en.dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
-import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
 export class VHRController {
+  applicationExceptionHandler: ApplicationExceptionHandler;
   constructor(
     private readonly vhrService: VHRService,
   ) { }
@@ -115,6 +117,47 @@ export class VHRController {
       return await this.vhrService.addVehicleToVINR(req);
     } catch (error) {
       return returnException(VRRefIdsResponseModel, error);
+    }
+  }
+
+
+  @Post('/createVehicle')
+  @ApiBody({ type: [VehicleDto] })
+  async createVehicle(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.createVehicle(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVINRALL')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVINRALL(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getVINRALL(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVOTRALL')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVOTRALL(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getVOTRALL(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/updateVehicleState')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateVehicleState(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.updateVehicleState(req);
+    } catch (error) {
+      return (error);
     }
   }
 }

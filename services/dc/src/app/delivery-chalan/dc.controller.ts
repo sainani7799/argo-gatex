@@ -330,27 +330,6 @@ export class DcController {
   }
 
 
-  @Post('/getVINRALL')
-  @ApiBody({ type: RefIdStatusDTO })
-  async getVINRALL(@Body() req?: any): Promise<CommonResponse> {
-    try {
-      return await this.dcService.getVINRALL(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
-  @Post('/getVOTRALL')
-  @ApiBody({ type: RefIdStatusDTO })
-  async getVOTRALL(@Body() req?: any): Promise<CommonResponse> {
-    try {
-      return await this.dcService.getVOTRALL(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
-
   @Post('/getTruckInfoByTruckId')
   @ApiBody({ type: TruckIdReqeust })
   async getTruckInfoByTruckId(@Body() req: any): Promise<CommonResponse> {
@@ -361,32 +340,11 @@ export class DcController {
     }
   }
 
-  @Post('/updateTruckState')
-  @ApiBody({ type: TruckIdReqeust })
-  async updateTruckState(@Body() req: any): Promise<CommonResponse> {
-    try {
-      return await this.dcService.updateTruckState(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
   @Post('/getVehicleRecordForReferenceId')
   @ApiBody({ type: RefIdStatusDTO })
   async getVehicleRecordForReferenceId(@Body() req: any): Promise<CommonResponse> {
     try {
       return await this.dcService.getVehicleRecordForReferenceId(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
-  @Post('/createVehicle')
-  @ApiBody({ type: [VehicleDto] })
-  async createVehicle(@Body() req: any[]): Promise<CommonResponse> {
-    console.log(req,'uuuuuuuuuuuuuuuu');
-    try {
-      return await this.dcService.createVehicle(req);
     } catch (error) {
       return (error);
     }

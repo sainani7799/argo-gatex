@@ -23,8 +23,9 @@ const VehicleEntryDetailedView = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const data = location.state
+    const [printData, setPrintData] = useState<any>([]);
 
-    const columns :any = [
+    const columns: any = [
         {
             title: "Vehicle No",
             dataIndex: "vehicleNo",
@@ -70,10 +71,18 @@ const VehicleEntryDetailedView = () => {
                     </Tag>
                 );
             },
+        },
+        {
+            title: "Action",
+            align: "center",
+            render: (rec) => (
+                <Button icon={<PrinterOutlined />} onClick={() => openPrintModal(rec)} style={{ backgroundColor: '#45c44a', color: 'white', border: 'none' }}>Print</Button>
+            ),
         }
     ];
 
-    const openPrintModal = () => {
+    const openPrintModal = (rec) => {
+        setPrintData(rec)
         setOpenModal(true)
     }
 
@@ -85,7 +94,6 @@ const VehicleEntryDetailedView = () => {
         <>
             <Card title={<><span style={{ color: 'white' }}>Vehicle Entry - {data?.readyToIn ? "IN" : "OUT"}</span></>} headStyle={{ backgroundColor: '#047595', color: 'black' }}
                 extra={<>
-                    <Button icon={<PrinterOutlined />} onClick={openPrintModal} style={{ backgroundColor: '#45c44a', color: 'white', border: 'none', marginRight: '10px', }}>Print</Button>
                     <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/vehcile-entry')} style={{ backgroundColor: '#44abdb', color: 'white', border: 'none' }}>Back</Button>
                 </>
                 }
@@ -121,7 +129,7 @@ const VehicleEntryDetailedView = () => {
             </Card >
 
             <Modal open={openModal} onCancel={closePrintModal} footer={[]} width={800}>
-                <VehicleEntryPrint rec={data} />
+                <VehicleEntryPrint rec={data} vehRec={printData} />
             </Modal>
 
         </>
