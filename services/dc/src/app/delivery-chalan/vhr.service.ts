@@ -25,15 +25,16 @@ import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleRepository } from './repository/vehicle.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
+import { VehicleDto } from './dto/vehicle-en.dto';
+import { VehicleStateRepository } from './repository/vehicle-state.repo';
 
 @Injectable()
 export class VHRService {
   constructor(
     private vehicleINRRepository: VehicleINRRepository,
-    private readonly vehicleOTRRepository: VehicleOTRRepository,
+    private vehicleOTRRepository: VehicleOTRRepository,
     private vehicleRepository: VehicleRepository,
-    @InjectRepository(VehicleStateEntity)
-    private vehicleStateRepository: Repository<VehicleStateEntity>,
+    private vehicleStateRepository: VehicleStateRepository,
     private dataSource: DataSource
   ) { }
 
@@ -380,7 +381,6 @@ export class VHRService {
     return new VRRefIdsResponseModel(true, 1, 'data retrived', data);
   }
 
-
   async getVehicleNotAssignedVINRRequestIds(req: GetVehicleNAInrReqModal): Promise<VRRefIdsResponseModel> {
     const data = await this.vehicleINRRepository.getVehicleNotAssignedVINRRequestIds(req);
     if (data.length == 0) {
@@ -465,6 +465,168 @@ export class VHRService {
     return new CommonResponse(true, 1, 'data saved successfully');
   }
 
+  async createVehicle(vehicleDtos: VehicleDto[]): Promise<CommonResponse> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const savedVehicles: VehicleEntity[] = [];
+      for (const vehicleDto of vehicleDtos) {
+        const entity = new VehicleEntity();
+        if (vehicleDto.readyToIn !== undefined) {
+          entity.vinrId = vehicleDto.id;
+          entity.vehicleNo = vehicleDto.vehicleNo;
+          entity.dName = vehicleDto.dName;
+          entity.dContact = vehicleDto.dContact;
+          entity.arrivalDateTime = new Date();
+          entity.vState = vehicleDto.vState;
+          entity.vehicleType = vehicleDto.vehicleType;
+        } else if (vehicleDto.readyToSend !== undefined) {
+          entity.votrId = vehicleDto.id;
+          entity.vehicleNo = vehicleDto.vehicleNo;
+          entity.dName = vehicleDto.dName;
+          entity.dContact = vehicleDto.dContact;
+          entity.departureDateTime = new Date();
+          entity.vState = vehicleDto.vState;
+          entity.vehicleType = vehicleDto.vehicleType;
+        }
+        const savedVehicle = await queryRunner.manager.save(entity);
+        savedVehicles.push(savedVehicle);
+
+        const vehStateEntity = new VehicleStateEntity();
+        vehStateEntity.vid = savedVehicle.id;
+        vehStateEntity.vState = TruckStateEnum.OPEN;
+        vehStateEntity.createdAt = new Date();
+        vehStateEntity.updatedAt = new Date();
+        vehStateEntity.versionFlag = 1;
+        if (savedVehicle.vinrId) {
+          vehStateEntity.vinrId = savedVehicle.vinrId;
+          // Update INR vehicle status
+          await this.vehicleINRRepository.update(
+              { id: savedVehicle.vinrId },
+              { reqStatus: 1 } // Consider using enum/constant for status codes
+          );
+      } else if (savedVehicle.votrId) {
+          vehStateEntity.votrId = savedVehicle.votrId;
+          // Update OTR vehicle status
+          await this.vehicleOTRRepository.update(
+              { id: savedVehicle.votrId },
+              { reqStatus: 1 }
+          );
+      }
+
+        await queryRunner.manager.save(vehStateEntity);
+      }
+      await queryRunner.commitTransaction();
+
+      return new CommonResponse(true, 1, 'Vehicles created successfully', savedVehicles);
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.error('Error in createVehicle:', error);
+      return new CommonResponse(false, 500, 'An error occurred while processing Vehicles');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async getVINRALL(req?: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleINRRepository.getVINRALL(req)
+      if (result) {
+        return new CommonResponse(true, 1, "Data Retrieved", result);
+      } else {
+        return new CommonResponse(false, 0, "Failed to Retrive", []);
+      }
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+  async getVOTRALL(req: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleOTRRepository.getOTRALL(req)
+      if (result) {
+        return new CommonResponse(true, 1, "Data Retrieved", result);
+      } else {
+        return new CommonResponse(false, 0, "Failed to Retrive", []);
+      }
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+   async updateVehicleState(req: TruckIdReqeust): Promise<CommonResponse> {
+      try {
+        if (req.vinrId) {
+          const entity = new VehicleStateEntity();
+          entity.vid = req.truckId;
+          entity.vinrId = Number(req.vinrId)
+          entity.vState = req.state;
+          const saveVehicleINRRecord = await this.vehicleStateRepository.save(entity);
+          return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleINRRecord);
+        } else {
+          const entity = new VehicleStateEntity();
+          entity.vid = req.truckId;
+          entity.votrId = Number(req.votrId)
+          entity.vState = req.state;
+          const saveVehicleOTRecord = await this.vehicleStateRepository.save(entity);
+          return new CommonResponse(true, 1, 'Data Updated and Saved', saveVehicleOTRecord);
+        }
+      } catch (err) {
+        console.log(err);
+        return new CommonResponse(false, 0, 'Error: ' + err.message);
+      }
+    }
+
+
+    async updateDepartureAndStatus(req: TruckIdReqeust): Promise<string> {
+      try {
+        // Fetch OTR records for the given votrId
+        const otrRecords = await this.vehicleOTRRepository.find({ where: { id: Number(req.votrId) } });
+    
+        if (!otrRecords.length) {
+          console.log(`No records found for votrId: ${req.votrId}`);
+          return 'No OTR records found';
+        }
+    
+        let updatedDeparture = false;
+    
+        // Fetch the vehicle record for the given truckId
+        const vehicle = await this.vehicleRepository.findOne({ where: { id: req.truckId } });
+    
+        if (vehicle) {
+          vehicle.departureDateTime = new Date();
+          await this.vehicleRepository.save(vehicle);
+          updatedDeparture = true;
+        } else {
+          console.log(`No vehicle found for vehicleId: ${req.truckId}`);
+          return 'No vehicle found';
+        }
+    
+        // Fetch all vehicles related to the given votrId
+        const relatedVehicles = await this.vehicleRepository.find({ where: { votrId: Number(req.votrId) } });
+    
+        // Check if all vehicles have a departureDateTime
+        const allDeparted = relatedVehicles.every(vehicle => vehicle.departureDateTime !== null);
+    
+        // If all related vehicles have departureDateTime, update reqStatus = 1 in vehicleOTRRepository
+        if (allDeparted) {
+          await this.vehicleOTRRepository.update({ id: Number(req.votrId) }, { reqStatus: 1 });
+          console.log(`Updated reqStatus to 1 for votrId: ${req.votrId}`);
+        }
+    
+        return updatedDeparture ? 'Departure updated successfully' : 'No vehicle updated';
+      } catch (error) {
+        console.error('Error updating records:', error);
+        throw new Error('Failed to update departure time and request status.');
+      }
+    }
+    
+    
+    
+  
 
 }
 

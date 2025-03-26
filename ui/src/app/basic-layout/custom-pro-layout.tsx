@@ -235,11 +235,11 @@ const menuData = [
         name: 'Receiver',
         icon: <InboxOutlined  />,
       },
-      {
-        path: '/vehicle-grid',
-        name: 'Vehicle',
-        icon: <CarOutlined />,
-      },
+      // {
+      //   path: '/vehicle-grid',
+      //   name: 'Vehicle',
+      //   icon: <CarOutlined />,
+      // },
       {
         path: '/dc-security-in',
         name: 'Security Check In',
@@ -254,6 +254,11 @@ const menuData = [
         path: '/security-report',
         name: 'Gate Pass Report',
         icon: <BarChartOutlined  />,
+      },
+      {
+        path: '/vehcile-entry',
+        name: 'Vehicle Entry',
+        icon: <CarOutlined  />,
       },
   
     ],

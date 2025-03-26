@@ -4,6 +4,7 @@ import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVeh
 import { CommonRequestAttrs, CommonResponse } from "libs/shared-models/src/common";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
+import { VehicleDto } from "./dto/vehicle-en.dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
@@ -134,6 +135,56 @@ export class VHRController {
       return await this.vhrService.addHistoryRecords(req);
     } catch (error) {
       return returnException(CommonResponse, error);
+    }
+  }
+
+  @Post('/createVehicle')
+  @ApiBody({ type: [VehicleDto] })
+  async createVehicle(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.createVehicle(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVINRALL')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVINRALL(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getVINRALL(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVOTRALL')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVOTRALL(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getVOTRALL(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/updateVehicleState')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateVehicleState(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.updateVehicleState(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/updateDepartureAndStatus')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateDepartureAndStatus(@Body() req: any): Promise<any> {
+    try {
+      return await this.vhrService.updateDepartureAndStatus(req);
+    } catch (error) {
+      return (error);
     }
   }
 }

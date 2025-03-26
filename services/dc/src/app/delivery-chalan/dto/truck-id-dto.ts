@@ -7,6 +7,12 @@ export class TruckIdReqeust {
     truckId: number;
 
     @ApiProperty()
+    vinrId: bigint;
+   
+    @ApiProperty()
+    votrId: bigint;
+
+    @ApiProperty()
     state: TruckStateEnum;
 
     @ApiProperty()

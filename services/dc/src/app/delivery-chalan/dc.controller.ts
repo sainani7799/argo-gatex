@@ -12,6 +12,7 @@ import { MailerService } from "./send-mail";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VRRefIdsResponseModel } from "libs/shared-models";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
+import { VehicleDto } from "./dto/vehicle-en.dto";
 
 @Controller("dc")
 export class DcController {
@@ -286,4 +287,67 @@ export class DcController {
       return (error);
     }
   }
+
+  @Post('/createVINR')
+  @ApiBody({ type: [VehicleINRDto] })
+  async createVINR(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.createVINR(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/createVOTR')
+  @ApiBody({ type: [VehicleOTRDto] })
+  async createVOTR(@Body() req: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.createVOTR(req);
+    } catch (error) {
+      return (error);
+    }
+
+  }
+
+  @Post('/getVINR')
+  @ApiBody({ type: [RefIdStatusDTO] })
+  async getVINR(@Body() req?: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getVINR(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVOTR')
+  @ApiBody({ type: [RefIdStatusDTO] })
+  async getVOTR(@Body() req?: any[]): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getVOTR(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+
+  @Post('/getTruckInfoByTruckId')
+  @ApiBody({ type: TruckIdReqeust })
+  async getTruckInfoByTruckId(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getTruckInfoByTruckId(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getVehicleRecordForReferenceId')
+  @ApiBody({ type: RefIdStatusDTO })
+  async getVehicleRecordForReferenceId(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.dcService.getVehicleRecordForReferenceId(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
 }

@@ -12,17 +12,18 @@ import { VehicleOTREntity } from "./entity/vehicle-otr.entity";
 import { VehicleStateEntity } from "./entity/vehicle-state.entity";
 import { DcItemEntityRepository } from "./repository/dc-items.repo";
 import { DcEntityRepository } from "./repository/dc-repository";
-import { MailerService } from "./send-mail";
 import { VehicleINRRepository } from "./repository/vehicle-inr.repository";
-import { VehicleRepository } from "./repository/vehicle.repository";
 import { VehicleOTRRepository } from "./repository/vehicle-otr.repository";
-import { VHRService } from "./vhr.service";
+import { VehicleStateRepository } from "./repository/vehicle-state.repo";
+import { VehicleRepository } from "./repository/vehicle.repository";
+import { MailerService } from "./send-mail";
 import { VHRController } from "./vhr.controller";
+import { VHRService } from "./vhr.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([VehicleINREntity, VehicleOTREntity, VehicleEntity, VehicleStateEntity])],
   controllers: [DcController, VHRController],
-  providers: [DcService, VHRService, DcAdapter, DcEntityRepository, VehicleINRRepository, VehicleOTRRepository, VehicleRepository, ApplicationExceptionHandler, UnitRepository, DcItemEntityRepository, MailerService, WhatsAppNotificationService, EmailService],
+  providers: [DcService, VHRService, DcAdapter, DcEntityRepository, VehicleINRRepository, VehicleOTRRepository, VehicleRepository, ApplicationExceptionHandler, UnitRepository, DcItemEntityRepository, MailerService, WhatsAppNotificationService, EmailService, VehicleStateRepository],
   exports: [DcService, VHRService],
 })
 export class DcModule { }
