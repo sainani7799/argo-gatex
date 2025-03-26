@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, ADDVehicleReqModal, DcEmailModel, DcIdReq, DcReportReq, GetVehicleNAInrReqModal, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VRRefIdsResponseModel } from 'libs/shared-models';
+import { AcceptReq, ADDHistoryReqModel, ADDVehicleReqModal, DcEmailModel, DcIdReq, DcReportReq, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
 import { CommonRequestAttrs, CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
 import { DataSource, In, Repository } from 'typeorm';
@@ -46,7 +46,12 @@ export class VHRService {
 
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
-          let entity = await transactionalEntityManager.findOne(VehicleINREntity, { where: { id: req.id } });
+          let entity = await transactionalEntityManager.findOne(VehicleINREntity, {
+            where: [
+              { refId: String(req.refId), fromType: req.fromType },
+              { id: req.id }
+            ]
+          });
 
           if (entity) {
             Object.assign(entity, req);
@@ -64,11 +69,11 @@ export class VHRService {
             let vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
 
             if (vehicleEntity) {
-              Object.assign(vehicleEntity, { ...vehicleReq, votrId: req.id });
+              Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
             } else {
               vehicleEntity = transactionalEntityManager.create(VehicleEntity, {
                 ...vehicleReq,
-                votrId: req.id,
+                vinrId: req.id,
                 arrivalDateTime: new Date().toISOString()
               });
             }
@@ -124,7 +129,12 @@ export class VHRService {
 
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
-          let entity = await transactionalEntityManager.findOne(VehicleOTREntity, { where: { id: req.id } });
+          let entity = await transactionalEntityManager.findOne(VehicleOTREntity, {
+            where: [
+              { refId: String(req.refId), fromType: req.fromType },
+              { id: req.id }
+            ]
+          });
 
           if (entity) {
             Object.assign(entity, req);
@@ -385,15 +395,73 @@ export class VHRService {
       throw new ErrorResponse(0, 'No Request found with given details');
     }
     for (const vehicle of req.vehicleDetails) {
-      const vehicleData = await this.vehicleRepository.findOne({ where: { id: vehicle.id } });
+      let vehicleData = null;
+      if (vehicle.id != null) {
+        vehicleData = await this.vehicleRepository.findOne({ where: { id: vehicle.id } });
+      }
       if (!vehicleData) {
         const vehicleEntity = new VehicleEntity();
         Object.assign(vehicleEntity, vehicle);
         vehicleEntity.vinrId = reqData.id;
         vehicleEntity.vState = 0;
         await this.vehicleRepository.save(vehicleEntity);
+        const exist = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id, vState: 0 } });
+        if (!exist) {
+          await this.vehicleStateRepository.save({ vid: vehicle.id, vinrId: reqData.id, vState: 0 });
+        }
       }
     }
+    return new CommonResponse(true, 1, 'data saved successfully');
+  }
+
+  async getVehicleDetails(req: ADDVehicleReqModal): Promise<GetVehicleResModel> {
+    const reqData = await this.vehicleINRRepository.findOne({ where: { refId: req.refId, fromType: req.fromType } });
+    const reqVehicleDetails = [...req.vehicleDetails];
+    if (!reqData)
+      throw new ErrorResponse(0, 'No Request found with given details');
+
+    let vehicleData = null;
+    if (req.vehicleDetails.length > 0) {
+      vehicleData = await this.vehicleRepository.find({
+        where: { vinrId: reqData.id, id: In(req.vehicleDetails.map(vehicle => vehicle.id)) }
+      });
+    } else {
+      vehicleData = await this.vehicleRepository.find({
+        where: { vinrId: reqData.id }
+      });
+    }
+    console.log(vehicleData, 'vehicleData');
+    req.vehicleDetails = [];
+    for (const vehicle of vehicleData) {
+      const history = await this.vehicleStateRepository.find({ where: { vid: vehicle.id } });
+      const lastHistory = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id }, order: { createdAt: 'DESC' } });
+      console.log(lastHistory, 'lastHistory');
+      const historyRecord = new HistoryRecord();
+      const inAt = history.find(history => history.vState == TruckStateEnum.OPEN);
+      historyRecord.inAt = inAt?.createdAt ? inAt?.createdAt : null;
+      const unloadStartAt = history.find(history => history.vState == TruckStateEnum.UNLOADING);
+      historyRecord.unloadStartAt = unloadStartAt?.createdAt ? unloadStartAt?.createdAt : null;
+      const unloadPauseAt = history.find(history => history.vState == TruckStateEnum.PAUSE);
+      historyRecord.unloadPauseAt = unloadPauseAt?.createdAt ? unloadPauseAt?.createdAt : null;
+      const unloadCompleteAt = history.find(history => history.vState == TruckStateEnum.UNLOAD_COMPLETED);
+      historyRecord.unloadCompleteAt = unloadCompleteAt?.createdAt ? unloadCompleteAt?.createdAt : null;
+      req.vehicleDetails.push(new VehicleModal(vehicle.id, vehicle.vehicleNo, vehicle.dName, vehicle.dContact, vehicle.arrivalDateTime, vehicle.departureDateTime, vehicle.vehicleType, vehicle.inHouseVehicle, vehicle.vinrId, vehicle.votrId, (reqVehicleDetails.length && lastHistory) ? lastHistory.vState : vehicle.vState, historyRecord));
+    }
+    return new GetVehicleResModel(true, 1, 'data retrived', req);
+  }
+
+  async addHistoryRecords(req: ADDHistoryReqModel): Promise<CommonResponse> {
+    console.log(req, 'req');
+
+    const findVehicle = await this.vehicleRepository.findOne({ where: { id: req.vehicleId } });
+    if (!findVehicle) {
+      throw new ErrorResponse(0, 'No vehicle found with given details');
+    }
+    const vehicleState = new VehicleStateEntity();
+    vehicleState.vid = findVehicle.id;
+    vehicleState.vinrId = findVehicle.vinrId;
+    vehicleState.vState = req.status;
+    await this.vehicleStateRepository.save(vehicleState);
     return new CommonResponse(true, 1, 'data saved successfully');
   }
 

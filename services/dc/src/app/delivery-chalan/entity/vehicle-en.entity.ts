@@ -40,9 +40,9 @@ export class VehicleEntity {
     })
     departureDateTime: Date;
 
-    @Column('tinyint', {
+    @Column('varchar', {
         name: 'vehicle_type',
-        nullable: true,
+        nullable: true,        
     })
     vehicleType: VehicleTypeEnum;
 

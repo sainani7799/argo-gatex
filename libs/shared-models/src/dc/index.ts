@@ -12,3 +12,5 @@ export * from './vr-ref-ids-response.model';
 export * from './vehicle-model';
 export * from './add-vehicle.req';
 export * from './get-vehicle-na-inr.req';
+export * from './get.vehicle.res';
+export * from './add-history-req';

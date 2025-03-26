@@ -9,7 +9,7 @@ export class VehicleStateEntity {
 
     @Column('bigint', {
         name: 'vid',
-        nullable: true,
+        nullable: false,
     })
     vid: number;
 
@@ -27,7 +27,7 @@ export class VehicleStateEntity {
 
     @Column('tinyint', {
         name: 'state',
-        nullable: true,
+        nullable: false,
     })
     vState: TruckStateEnum;
 
