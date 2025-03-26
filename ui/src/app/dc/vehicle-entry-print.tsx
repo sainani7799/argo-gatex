@@ -38,6 +38,15 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
         }, 1000)
     };
 
+    const qrData = `
+    Reference Number - ${data?.refNumber ? data?.refNumber : "-"}
+    Vehicle No       - ${vehData?.vehicleNo ? vehData?.vehicleNo : "-"}
+    Driver Name      - ${vehData?.dName ? vehData?.dName : '-'}
+    Driver Contact   - ${vehData?.dContact ? vehData?.dContact : "-"}
+    Vehicle Type     - ${vehData?.vehicleType ? vehData?.vehicleType : "-"}
+    In-House Vehicle - ${vehData?.inHouseVehicle ? "Yes" : "No"}
+    Status           - ${vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") ? vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") : "-"}
+    `;
     return (
         <>
             <Card title='VEHICLE ENTRY PRINT'
@@ -106,7 +115,7 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                 ))}
                             </Col>
                             <Col span={6}>
-                                <QRCode type="svg" errorLevel='H' size={220} value={data.refId} />
+                                <QRCode type="svg" errorLevel='M' size={220} value={qrData} />
                             </Col>
                         </Row>
 
@@ -124,7 +133,7 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr key='1 'style={{ textAlign: 'left', fontSize: '10.5px' }}>
+                                <tr key='1 ' style={{ textAlign: 'left', fontSize: '10.5px' }}>
                                     <td colSpan={1} className={'ta-b'}>{vehData?.vehicleNo}</td>
                                     <td colSpan={1} className={'ta-b'}>{vehData?.dName}</td>
                                     <td colSpan={1} className={'ta-b'}>{vehData?.dContact}</td>
