@@ -12,5 +12,9 @@ export * from './reject-dc-req';
 export * from './security.req';
 export * from './vehicle-in-out-req';
 export * from './vehicle-model';
+export * from './add-vehicle.req';
+export * from './get-vehicle-na-inr.req';
+export * from './get.vehicle.res';
+export * from './add-history-req';
 export * from './vr-ref-ids-response.model';
 

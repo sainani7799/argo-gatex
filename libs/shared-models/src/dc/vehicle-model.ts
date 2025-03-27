@@ -1,5 +1,13 @@
-import { VehicleTypeEnum } from "../enum";
+import { TruckStateEnum, VehicleTypeEnum } from "../enum";
 
+export class HistoryRecord {
+    inAt: Date;
+    originalUnloadingStartTime: Date;
+    unloadStartAt: Date;
+    unloadCompleteAt: Date;
+    unloadPauseAt: Date;
+    outAt: Date;
+}
 export class VehicleModal {
     id: number;
     vehicleNo: string;
@@ -11,6 +19,8 @@ export class VehicleModal {
     inHouseVehicle: boolean;
     vinrId: number;
     votrId: number;
+    vState: TruckStateEnum;
+    historyData: HistoryRecord;
     constructor(
         id: number,
         vehicleNo: string,
@@ -22,7 +32,9 @@ export class VehicleModal {
         inHouseVehicle: boolean,
         vinrId: number,
         votrId: number,
-    ){
+        vState: TruckStateEnum,
+        historyData?: HistoryRecord
+    ) {
         this.id = id;
         this.vehicleNo = vehicleNo;
         this.dName = dName;
@@ -33,5 +45,7 @@ export class VehicleModal {
         this.inHouseVehicle = inHouseVehicle;
         this.vinrId = vinrId;
         this.votrId = votrId;
+        this.historyData = historyData;
+        this.vState = vState;
     }
 }

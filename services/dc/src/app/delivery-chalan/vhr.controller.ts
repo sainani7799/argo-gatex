@@ -1,8 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
-import { ApplicationExceptionHandler, returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { ADDVehicleReqModal, GetVehicleNAInrReqModal, VRRefIdsResponseModel } from "libs/shared-models";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "libs/shared-models";
+import { CommonRequestAttrs, CommonResponse } from "libs/shared-models/src/common";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleDto } from "./dto/vehicle-en.dto";
@@ -10,11 +9,11 @@ import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
+import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
 export class VHRController {
-  applicationExceptionHandler: ApplicationExceptionHandler;
   constructor(
     private readonly vhrService: VHRService,
   ) { }
@@ -120,6 +119,24 @@ export class VHRController {
     }
   }
 
+  @Post('/getVehicleDetails')
+  @ApiBody({ type: ADDVehicleReqModal })
+  async getVehicleDetails(@Body() req: any): Promise<GetVehicleResModel> {
+    try {
+      return await this.vhrService.getVehicleDetails(req);
+    } catch (error) {
+      return returnException(GetVehicleResModel, error);
+    }
+  }
+  @Post('/addHistoryRecords')
+  @ApiBody({ type: ADDHistoryReqModel })
+  async addHistoryRecords(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.addHistoryRecords(req);
+    } catch (error) {
+      return returnException(CommonResponse, error);
+    }
+  }
 
   @Post('/createVehicle')
   @ApiBody({ type: [VehicleDto] })
