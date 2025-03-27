@@ -1,13 +1,19 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { VehilceRequestTypeEnum } from "libs/shared-models";
+import { ReqStatus, VehilceRequestTypeEnum } from "libs/shared-models";
 
 export class RefIdStatusDTO {
     @ApiProperty()
     refId: string;
     @ApiProperty()
-    vid: bigint;
+    vid: number;
     @ApiProperty()
     status: number;
     @ApiProperty()
     vrType: VehilceRequestTypeEnum;
+    @ApiProperty()
+    reqStatus: ReqStatus;
+
+    constructor(partial: Partial<RefIdStatusDTO>) {
+        Object.assign(this, partial);
+    }
 }

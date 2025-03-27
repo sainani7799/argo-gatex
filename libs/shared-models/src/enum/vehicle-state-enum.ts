@@ -4,7 +4,8 @@ export enum TruckStateEnum {
     UNLOADING = 2,
     PAUSE = 3,
     LOAD_COMPLETED = 4,
-    UNLOAD_COMPLETED = 5
+    UNLOAD_COMPLETED = 5,
+    CLOSED = 6
 }
 
 export enum VehilceRequestTypeEnum {

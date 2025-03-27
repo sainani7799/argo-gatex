@@ -46,6 +46,8 @@ import DCSecurityIn from './dc/dc-security-in';
 import Dashboard from './dashboard/dashboard';
 import VehicleGrid from './dc/veichle-grid';
 import VehicleForm from './dc/vehicle-form';
+import VehcileEntry from './dc/vehicle-entry';
+import VehicleEntryDetailedView from './dc/vehicle-entry-detailed-view';
 
 const AppRoutes = () => {
   const router = createHashRouter(
@@ -114,6 +116,8 @@ const AppRoutes = () => {
           <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
           <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
           <Route path="/approval-user" element={<ApproverGrid />} />
+          <Route path="/vehcile-entry" element={<VehcileEntry />} />
+          <Route path="/vehcile-entry-detailed-view" element={<VehicleEntryDetailedView />} />
           <Route path="/approval-user-from" element={<ApprovedUserForm
             data={undefined}
             isUpdate={false}

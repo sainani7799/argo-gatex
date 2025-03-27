@@ -4,7 +4,7 @@ import { VehicleTypeEnum } from "libs/shared-models";
 export class VehicleDto {
     
     @ApiProperty()
-    id: bigint;
+    id: number;
 
     @ApiProperty()
     vehicleNo: string;
@@ -25,13 +25,16 @@ export class VehicleDto {
     vehicleType: VehicleTypeEnum;
 
     @ApiProperty()
+    vState: number;
+
+    @ApiProperty()
     inHouseVehicle: boolean;
 
     @ApiProperty()
-    vinrId: bigint;
+    vinrId: number;
 
     @ApiProperty()
-    votrId: bigint;
+    votrId: number;
 
     @ApiProperty()
     isActive: boolean;
@@ -50,4 +53,14 @@ export class VehicleDto {
 
     @ApiProperty()
     versionFlag: number;
+
+    @ApiProperty()
+    readyToIn: number;
+
+    @ApiProperty()
+    readyToSend: number;
+
+    constructor(partial: Partial<VehicleDto>) {
+        Object.assign(this, partial);
+    }
 }

@@ -4,7 +4,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 @Entity('vehicle_inr')
 export class VehicleINREntity {
     @PrimaryGeneratedColumn("increment", { name: 'id' })
-    id: bigint;
+    id: number;
 
     @Column('varchar', {
         name: 'ref_id',

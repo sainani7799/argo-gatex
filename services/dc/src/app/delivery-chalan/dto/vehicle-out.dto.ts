@@ -3,7 +3,7 @@ import { LocationFromTypeEnum, ReqStatus } from "libs/shared-models";
 
 export class VehicleOTRDto {
     @ApiProperty()
-    id: bigint;
+    id: number;
 
     @ApiProperty()
     refId: string;

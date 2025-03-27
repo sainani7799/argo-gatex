@@ -4,7 +4,7 @@ import { VehicleDto } from "./vehicle-en.dto";
 
 export class VehicleINRDto {
     @ApiProperty()
-    id: bigint;
+    id: number;
 
     @ApiProperty()
     refId: string;
@@ -56,4 +56,8 @@ export class VehicleINRDto {
 
     @ApiProperty()
     vehicleRecords:VehicleDto[];
+
+    constructor(partial: Partial<VehicleINRDto>) {
+        Object.assign(this, partial);
+    }
 }

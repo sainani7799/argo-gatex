@@ -5,31 +5,31 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 export class VehicleStateEntity {
 
     @PrimaryGeneratedColumn("increment", { name: 'id' })
-    id: bigint;
+    id: number;
 
     @Column('bigint', {
         name: 'vid',
-        nullable: true,
+        nullable: false,
     })
-    vid: bigint;
+    vid: number;
 
     @Column('bigint', {
         name: 'vinr_id',
         nullable: true,
     })
-    vinrId: bigint;
+    vinrId: number;
 
     @Column('bigint', {
         name: 'votr_id',
         nullable: true,
     })
-    votrId: bigint;
+    votrId: number;
 
     @Column('tinyint', {
         name: 'state',
-        nullable: true,
+        nullable: false,
     })
-    vehicleType: TruckStateEnum;
+    vState: TruckStateEnum;
 
 
     @Column("boolean", {

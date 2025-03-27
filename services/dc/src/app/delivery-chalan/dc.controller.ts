@@ -11,10 +11,12 @@ import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VRRefIdsResponseModel } from "libs/shared-models";
+import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
+import { VehicleDto } from "./dto/vehicle-en.dto";
 
 @Controller("dc")
 export class DcController {
-  applicationExceptionHandler: any;
+  applicationExceptionHandler: ApplicationExceptionHandler;
   constructor(
     private readonly dcService: DcService,
     private readonly mailService: MailerService
@@ -309,7 +311,7 @@ export class DcController {
 
   @Post('/getVINR')
   @ApiBody({ type: [RefIdStatusDTO] })
-  async getVINR(@Body() req: any[]): Promise<CommonResponse> {
+  async getVINR(@Body() req?: any[]): Promise<CommonResponse> {
     try {
       return await this.dcService.getVINR(req);
     } catch (error) {
@@ -319,7 +321,7 @@ export class DcController {
 
   @Post('/getVOTR')
   @ApiBody({ type: [RefIdStatusDTO] })
-  async getVOTR(@Body() req: any[]): Promise<CommonResponse> {
+  async getVOTR(@Body() req?: any[]): Promise<CommonResponse> {
     try {
       return await this.dcService.getVOTR(req);
     } catch (error) {
@@ -327,21 +329,12 @@ export class DcController {
     }
   }
 
+
   @Post('/getTruckInfoByTruckId')
   @ApiBody({ type: TruckIdReqeust })
   async getTruckInfoByTruckId(@Body() req: any): Promise<CommonResponse> {
     try {
       return await this.dcService.getTruckInfoByTruckId(req);
-    } catch (error) {
-      return (error);
-    }
-  }
-
-  @Post('/updateTruckState')
-  @ApiBody({ type: TruckIdReqeust })
-  async updateTruckState(@Body() req: any): Promise<CommonResponse> {
-    try {
-      return await this.dcService.updateTruckState(req);
     } catch (error) {
       return (error);
     }
@@ -357,14 +350,4 @@ export class DcController {
     }
   }
 
-  @Post('/getRefIdsByStatus')
-  @ApiBody({ type: VRStatusDTO })
-  async getRefIdsByStatus(@Body() req: any): Promise<VRRefIdsResponseModel> {
-    try {
-      return await this.dcService.getRefIdsByStatus(req);
-    } catch (error) {
-      return this.applicationExceptionHandler.returnException(VRRefIdsResponseModel, error);
-    }
-  }
- 
 }

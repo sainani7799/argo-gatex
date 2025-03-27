@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
-import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VRRefIdsResponseModel } from 'libs/shared-models';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, In } from 'typeorm';
 import * as XLSX from 'xlsx';
 import { UnitRepository } from '../masters/branch/repo/unit-repo';
 import { DcAdapter } from './adapter/dc.adapter';
@@ -20,7 +19,10 @@ import { VehicleOTREntity } from './entity/vehicle-otr.entity';
 import { VehicleStateEntity } from './entity/vehicle-state.entity';
 import { DcItemEntityRepository } from './repository/dc-items.repo';
 import { DcEntityRepository } from './repository/dc-repository';
-import { VRStatusDTO } from './dto/vr-status-req.dto';
+import { VehicleINRRepository } from './repository/vehicle-inr.repository';
+import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
+import { VehicleStateRepository } from './repository/vehicle-state.repo';
+import { VehicleRepository } from './repository/vehicle.repository';
 
 @Injectable()
 export class DcService {
@@ -31,14 +33,10 @@ export class DcService {
     private dcItemSRepo: DcItemEntityRepository,
     private wpService: WhatsAppNotificationService,
     private mailService: EmailService,
-    @InjectRepository(VehicleINREntity)
-    private vehicleINRRepository: Repository<VehicleINREntity>,
-    @InjectRepository(VehicleOTREntity)
-    private readonly vehicleOTRRepository: Repository<VehicleOTREntity>,
-    @InjectRepository(VehicleEntity)
-    private vehicleRepository: Repository<VehicleEntity>,
-    @InjectRepository(VehicleStateEntity)
-    private vehicleStateRepository: Repository<VehicleStateEntity>,
+    private vehicleStateRepository: VehicleStateRepository,
+    private vehicleINRRepository: VehicleINRRepository,
+    private vehicleOTRRepository: VehicleOTRRepository,
+    private vehicleRepository: VehicleRepository,
     private dataSource: DataSource
   ) { }
 
@@ -939,9 +937,7 @@ export class DcService {
     return new CommonResponse(false, 0, 'No data found');
   }
 
-
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
-console.log(reqs,'llllllllllllll')
     const transactionalEntityManager = this.dataSource;
     try {
       const vINTEntityToSave: VehicleINREntity[] = [];
@@ -968,11 +964,11 @@ console.log(reqs,'llllllllllllll')
             let vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
 
             if (vehicleEntity) {
-              Object.assign(vehicleEntity, { ...vehicleReq, votrId: req.id });
+              Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
             } else {
               vehicleEntity = transactionalEntityManager.create(VehicleEntity, {
                 ...vehicleReq,
-                votrId: req.id,
+                vinrId: req.id,
                 arrivalDateTime: new Date().toISOString()
               });
             }
@@ -986,13 +982,13 @@ console.log(reqs,'llllllllllllll')
             let vehicleStateEntity = await transactionalEntityManager.findOne(VehicleStateEntity, { where: { vid: vehicle.id } });
 
             if (vehicleStateEntity) {
-              Object.assign(vehicleStateEntity, { votrId: vehicle.votrId });
+              Object.assign(vehicleStateEntity, { vinrId: vehicle.vinrId });
             } else {
               vehicleStateEntity = transactionalEntityManager.create(VehicleStateEntity, {
                 id: vehicle.id,
                 vid: vehicle.id,
-                votrId: vehicle.votrId,
-                vehicleType: TruckStateEnum.OPEN,
+                vinrId: vehicle.vinrId,
+                vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 versionFlag: 1,
@@ -1014,7 +1010,7 @@ console.log(reqs,'llllllllllllll')
       });
     } catch (err) {
       console.error(err);
-      return new CommonResponse(false, 0, err.message, null);
+      return new CommonResponse(false, 0, "Error occurred", null);
     }
   }
 
@@ -1070,7 +1066,7 @@ console.log(reqs,'llllllllllllll')
                 id: vehicle.id,
                 vid: vehicle.id,
                 votrId: vehicle.votrId,
-                vehicleType: TruckStateEnum.PAUSE,
+                vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 versionFlag: 1,
@@ -1096,8 +1092,12 @@ console.log(reqs,'llllllllllllll')
     }
   }
 
-  async getVINR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
+  async getVINR(request: RefIdStatusDTO[] = []): Promise<CommonResponse> {
     try {
+      if (!Array.isArray(request)) {
+        request = [];
+      }
+
       const vinrRecords = await this.vehicleINRRepository.find();
       if (!vinrRecords.length) {
         return new CommonResponse(false, 0, "No records found", []);
@@ -1106,9 +1106,13 @@ console.log(reqs,'llllllllllllll')
       const vehicleRecords = await this.vehicleRepository.find();
       const vehicleStateRecords = await this.vehicleStateRepository.find();
 
-      const filteredVINR = vinrRecords.filter(vinr =>
-        request.some(req => vinr.refId === req.refId)
-      );
+      const filteredVINR = (request.length ? vinrRecords.filter(vinr => request.some(req => vinr.refId === req.refId)) : vinrRecords).map(vinr => {
+        const requestMatch = request.find(req => req.refId === vinr.refId);
+        return {
+          ...vinr,
+          reqStatusData: requestMatch ? requestMatch.reqStatus === ReqStatus.OPEN ? 'OPEN' : 'DONE' : "-"
+        };
+      });
 
       if (!filteredVINR.length) {
         return new CommonResponse(false, 0, "No matching records found", []);
@@ -1117,16 +1121,16 @@ console.log(reqs,'llllllllllllll')
       const vinrWithVehicles = filteredVINR.map(vinr => {
         const relatedVehicles = vehicleRecords.filter(vehicle =>
           Number(vehicle.vinrId) === Number(vinr.id) &&
-          (request.some(req => req.refId === vinr.refId && Number(req.vid) === Number(vehicle.id)) ||
-            request.every(req => req.vid === undefined))
+          (request.length === 0 || request.some(req => req.refId === vinr.refId && (!req.vid || Number(req.vid) === Number(vehicle.id))))
         ).map(vehicle => Object.assign({}, vehicle));
 
         const relatedVehicleIds = relatedVehicles.map(vehicle => Number(vehicle.id));
 
         const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
           (relatedVehicleIds.length > 0 ? relatedVehicleIds.includes(Number(vehicleState.vid)) : true) &&
-          request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType))
+          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vState)))
         );
+
         return {
           ...vinr,
           vehicleRecords: relatedVehicles,
@@ -1141,8 +1145,12 @@ console.log(reqs,'llllllllllllll')
     }
   }
 
-  async getVOTR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
+  async getVOTR(request: RefIdStatusDTO[] = []): Promise<CommonResponse> {
     try {
+      if (!Array.isArray(request)) {
+        request = [];
+      }
+
       const vOutRecords = await this.vehicleOTRRepository.find();
       if (!vOutRecords.length) {
         return new CommonResponse(false, 0, "No records found", []);
@@ -1151,26 +1159,29 @@ console.log(reqs,'llllllllllllll')
       const vehicleRecords = await this.vehicleRepository.find();
       const vehicleStateRecords = await this.vehicleStateRepository.find();
 
-      const filteredVOTR = vOutRecords.filter(votr =>
-        request.some(req => votr.refId === req.refId)
-      );
+      const filteredVOTR = (request.length ? vOutRecords.filter(votr => request.some(req => votr.refId === req.refId)) : vOutRecords).map(votr => {
+        const requestMatch = request.find(req => req.refId === votr.refId);
+        return {
+          ...votr,
+          reqStatusData: requestMatch ? requestMatch.reqStatus === ReqStatus.OPEN ? 'OPEN' : 'DONE' : "-"
+        };
+      });
 
       if (!filteredVOTR.length) {
         return new CommonResponse(false, 0, "No matching records found", []);
       }
 
-      const vinrWithVehicles = filteredVOTR.map(votr => {
+      const votrWithVehicles = filteredVOTR.map(votr => {
         const relatedVehicles = vehicleRecords.filter(vehicle =>
           Number(vehicle.votrId) === Number(votr.id) &&
-          (request.some(req => req.refId === votr.refId && Number(req.vid) === Number(vehicle.id)) ||
-            request.every(req => req.vid === undefined))
+          (request.length === 0 || request.some(req => req.refId === votr.refId && (!req.vid || Number(req.vid) === Number(vehicle.id))))
         ).map(vehicle => Object.assign({}, vehicle));
 
         const relatedVehicleIds = relatedVehicles.map(vehicle => Number(vehicle.id));
 
         const relatedVehicleStates = vehicleStateRecords.filter(vehicleState =>
-          relatedVehicleIds.includes(Number(vehicleState.vid)) &&
-          request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vehicleType))
+          (relatedVehicleIds.length > 0 ? relatedVehicleIds.includes(Number(vehicleState.vid)) : true) &&
+          (request.length === 0 || request.some(req => req.status === undefined || Number(req.status) === Number(vehicleState.vState)))
         );
 
         return {
@@ -1180,7 +1191,7 @@ console.log(reqs,'llllllllllllll')
         };
       });
 
-      return new CommonResponse(true, 1, "Data Retrieved", vinrWithVehicles);
+      return new CommonResponse(true, 1, "Data Retrieved", votrWithVehicles);
     } catch (err) {
       console.error(err);
       return new CommonResponse(false, 0, "Error occurred", null);
@@ -1193,19 +1204,6 @@ console.log(reqs,'llllllllllllll')
       const truckInfo = vehicleRecords.filter(truck => Number(truck.id) === Number(req.truckId));
       if (truckInfo) {
         return new CommonResponse(true, 1, 'Data Retrived', truckInfo)
-      } else {
-        return new CommonResponse(false, 0, 'No Data Found')
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async updateTruckState(req: TruckIdReqeust): Promise<CommonResponse> {
-    try {
-      const vehicleStateRecords = await this.vehicleStateRepository.update({ id: req.truckId }, { vehicleType: req.state })
-      if (vehicleStateRecords) {
-        return new CommonResponse(true, 1, 'Data Retrived', vehicleStateRecords)
       } else {
         return new CommonResponse(false, 0, 'No Data Found')
       }
@@ -1229,11 +1227,11 @@ console.log(reqs,'llllllllllllll')
       let vehicleOTRRecords = [];
 
       if (vehicleINR) {
-        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: BigInt(vehicleINR.refId) } });
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: vehicleINR.id } });
       }
 
       if (vehicleOTR) {
-        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: BigInt(vehicleOTR.refId) } });
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: vehicleOTR.id } });
       }
 
       let vehicleINRStateRecords = [];
@@ -1263,12 +1261,6 @@ console.log(reqs,'llllllllllllll')
       console.error('Error retrieving vehicle data:', err);
       return new CommonResponse(false, 0, 'Error fetching vehicle data');
     }
-  }
-
-  async getRefIdsByStatus(req: VRStatusDTO): Promise<VRRefIdsResponseModel> {
-    const data = await this.vehicleINRRepository.find({ select: ["refId"], where: { fromType: In(req.status) } });
-    if (data.length) return new VRRefIdsResponseModel(true, 1, 'data retrived', data.map(item => Number(item.refId)));
-    return new VRRefIdsResponseModel(false, 0, 'No data found');
   }
 
 

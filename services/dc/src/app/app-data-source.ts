@@ -14,32 +14,34 @@ import { DcEntity } from "./delivery-chalan/entity/dc.entity";
 import { DcItemEntity } from "./delivery-chalan/entity/dc-items.entity";
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm";
 
-export const typeOrmConfig: DataSourceOptions ={
-    type: "mysql",
-    timezone: 'Z',
-    host: '165.22.220.143',
-    username: 'gate_dev',
-    password: 'gate@xyz',
-    database: 'gatepass_dev',
-    synchronize: false,
-    logging:true,
-    extra :{
-       connectionLimit: 20
-    },
-    entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]
+export const typeOrmConfig: DataSourceOptions = {
+  type: 'mysql',
+  host: 'localhost',
+  port: 3306,
+  username: 'root',
+  password: '',
+  // database: 'xpparel_wms_demo',
+  timezone: 'UTC',
+  database: 'gatepass_dev',
+  synchronize: true,
+  logging: true,
+  extra: {
+    connectionLimit: 20
+  },
+  entities: [DepartmentEntity, UserEntity, EmployeeEntity, DesignationEntity, UnitEntity, WarehouseEntity, SupplierEntity, ItemEntity, AddressEntity, ApprovedUserEntity, DcEntity, DcItemEntity, RoleEntity]
 }
 
 
 
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
-    useFactory: async (): Promise<TypeOrmModuleOptions> => {
-      return {
-        ...typeOrmConfig,
-        synchronize: false,
-        logging: true,
-        autoLoadEntities: true
-      }
-    },
+  useFactory: async (): Promise<TypeOrmModuleOptions> => {
+    return {
+      ...typeOrmConfig,
+      synchronize: true,
+      logging: true,
+      autoLoadEntities: true
+    }
+  },
 
 }
 
