@@ -404,10 +404,10 @@ export class VHRService {
         Object.assign(vehicleEntity, vehicle);
         vehicleEntity.vinrId = reqData.id;
         vehicleEntity.vState = 0;
-        await this.vehicleRepository.save(vehicleEntity);
-        const exist = await this.vehicleStateRepository.findOne({ where: { vid: vehicle.id, vState: 0 } });
+        const savedVehicle=await this.vehicleRepository.save(vehicleEntity);
+        const exist = await this.vehicleStateRepository.findOne({ where: { vid: savedVehicle.id, vState: 0 } });
         if (!exist) {
-          await this.vehicleStateRepository.save({ vid: vehicle.id, vinrId: reqData.id, vState: 0 });
+          await this.vehicleStateRepository.save({ vid: savedVehicle.id, vinrId: reqData.id, vState: 0 });
         }
       }
     }
