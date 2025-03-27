@@ -326,11 +326,11 @@ export class VHRService {
       let vehicleOTRRecords = [];
 
       if (vehicleINR) {
-        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: Number(vehicleINR.refId) } });
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: Number(vehicleINR.id) } });
       }
 
       if (vehicleOTR) {
-        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: Number(vehicleOTR.refId) } });
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: Number(vehicleOTR.id) } });
       }
 
       let vehicleINRStateRecords = [];
