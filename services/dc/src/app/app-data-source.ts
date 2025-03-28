@@ -19,7 +19,7 @@ export const typeOrmConfig: DataSourceOptions ={
     timezone: 'Z',
     host: '165.22.220.143',
     username: 'gate_dev',
-    password: 'gate@xyz',
+    password: 'Gate@xyz',
     database: 'gatepass_dev',
     synchronize: false,
     logging:true,
