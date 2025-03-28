@@ -32,7 +32,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
   useFactory: async (): Promise<TypeOrmModuleOptions> => {
     return {
       ...typeOrmConfig,
-      synchronize: true,
+      synchronize: false,
       logging: true,
       autoLoadEntities: true
     }
