@@ -38,8 +38,14 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
         }, 1000)
     };
 
+    console.log(data, 'data');
+    console.log(vehData, 'vehData');
+
     const qrData = `
+    Reference ID     - ${data?.refId ? data?.refId : "-"}
     Reference Number - ${data?.refNumber ? data?.refNumber : "-"}
+    ${data?.expectedArrival ? "Arrival" : "Departure"}   - ${data?.expectedArrival ||  data?.expectedDeparture || "-"}
+    ${vehData?.vinrId ? "Vechicle IN Id" : "Vechicle OUT Id"}   - ${vehData?.vinrId || vehData?.votrId || "-"}
     Vehicle No       - ${vehData?.vehicleNo ? vehData?.vehicleNo : "-"}
     Driver Name      - ${vehData?.dName ? vehData?.dName : '-'}
     Driver Contact   - ${vehData?.dContact ? vehData?.dContact : "-"}
