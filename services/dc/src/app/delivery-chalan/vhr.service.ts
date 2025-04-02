@@ -404,7 +404,7 @@ export class VHRService {
         Object.assign(vehicleEntity, vehicle);
         vehicleEntity.vinrId = reqData.id;
         vehicleEntity.vState = 0;
-        const savedVehicle=await this.vehicleRepository.save(vehicleEntity);
+        const savedVehicle = await this.vehicleRepository.save(vehicleEntity);
         const exist = await this.vehicleStateRepository.findOne({ where: { vid: savedVehicle.id, vState: 0 } });
         if (!exist) {
           await this.vehicleStateRepository.save({ vid: savedVehicle.id, vinrId: reqData.id, vState: 0 });
@@ -632,7 +632,19 @@ export class VHRService {
   }
 
 
-
+  async getAllVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleINRRepository.getAllVehicleByVehReq(req)
+      if (result) {
+        return new CommonResponse(true, 1, "Data Retrieved", result);
+      } else {
+        return new CommonResponse(false, 0, "Failed to Retrive", []);
+      }
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
 
 
 }

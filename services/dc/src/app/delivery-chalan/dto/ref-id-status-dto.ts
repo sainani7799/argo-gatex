@@ -12,6 +12,8 @@ export class RefIdStatusDTO {
     vrType: VehilceRequestTypeEnum;
     @ApiProperty()
     reqStatus: ReqStatus;
+    @ApiProperty()
+    vehicleNo: string;
 
     constructor(partial: Partial<RefIdStatusDTO>) {
         Object.assign(this, partial);
