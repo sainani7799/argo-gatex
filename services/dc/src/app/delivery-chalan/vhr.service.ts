@@ -622,10 +622,22 @@ export class VHRService {
   }
 
 
-  async getAllVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+  async getAllINVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
     try {
-      const result = await this.vehicleINRRepository.getAllVehicleByVehReq(req)
-      console.log(result, 'llllllllll')
+      const result = await this.vehicleINRRepository.getAllINVehicleByVehReq(req)
+      if (result && typeof result === "object" && "status" in result) {
+        return result;
+      }
+      return new CommonResponse(false, 0, "No records found", []);
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+  async getAllOUTVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleOTRRepository.getAllOUTVehicleByVehReq(req)
       if (result && typeof result === "object" && "status" in result) {
         return result;
       }

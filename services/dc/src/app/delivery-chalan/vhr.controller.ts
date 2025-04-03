@@ -10,6 +10,7 @@ import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
+import { VehicleReqDTO } from "./dto/vehicle-req.dto";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
@@ -188,11 +189,21 @@ export class VHRController {
     }
   }
 
-  @Post('/getAllVehicleByVehReq')
-  @ApiBody({ type: RefIdStatusDTO })
-  async getAllVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
+  @Post('/getAllINVehicleByVehReq')
+  @ApiBody({ type: VehicleReqDTO })
+  async getAllINVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
     try {
-      return await this.vhrService.getAllVehicleByVehReq(req);
+      return await this.vhrService.getAllINVehicleByVehReq(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getAllOUTVehicleByVehReq')
+  @ApiBody({ type: VehicleReqDTO })
+  async getAllOUTVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getAllOUTVehicleByVehReq(req);
     } catch (error) {
       return (error);
     }

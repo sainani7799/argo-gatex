@@ -6,6 +6,7 @@ import { VRStatusDTO } from '../dto/vr-status-req.dto';
 import { VehicleEntity } from '../entity/vehicle-en.entity';
 import { VehicleINREntity } from '../entity/vehicle-inr.entity';
 import { CommonResponse } from 'libs/shared-models/src/common';
+import { VehicleReqDTO } from '../dto/vehicle-req.dto';
 
 @Injectable()
 export class VehicleINRRepository extends Repository<VehicleINREntity> {
@@ -111,7 +112,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
         }
     }
 
-    async getAllVehicleByVehReq(req: RefIdStatusDTO): Promise<CommonResponse> {
+    async getAllINVehicleByVehReq(req: VehicleReqDTO): Promise<CommonResponse> {
         try {
             let vehicleInr = `
             SELECT vinr.id, vinr.ref_id AS refId, vinr.ref_number AS refNumber, vinr.expected_arrival AS expectedArrival,
