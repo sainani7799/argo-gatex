@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { LocationFromTypeEnum, ReqStatus } from "libs/shared-models";
+import { VehicleDto } from "./vehicle-en.dto";
 
 export class VehicleOTRDto {
     @ApiProperty()
@@ -54,5 +55,5 @@ export class VehicleOTRDto {
     versionFlag: number;
 
     @ApiProperty()
-    vehicleRecords: VehicleOTRDto[];
+    vehicleRecords: VehicleDto[];
 }
