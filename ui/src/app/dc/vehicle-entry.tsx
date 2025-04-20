@@ -16,6 +16,7 @@ const VehcileEntry = () => {
         PAUSE: "gray",
         LOAD_COMPLETED: "purple",
         UNLOAD_COMPLETED: "red",
+        CLOSED : "blue"
     };
 
     const vhrService = new VHRServices();

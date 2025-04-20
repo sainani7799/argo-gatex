@@ -1,7 +1,8 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "libs/shared-models";
-import { CommonRequestAttrs, CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "libs/shared-models/src/common";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleDto } from "./dto/vehicle-en.dto";
@@ -9,7 +10,7 @@ import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
-import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
+import { VehicleReqDTO } from "./dto/vehicle-req.dto";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
@@ -183,6 +184,26 @@ export class VHRController {
   async updateDepartureAndStatus(@Body() req: any): Promise<any> {
     try {
       return await this.vhrService.updateDepartureAndStatus(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getAllINVehicleByVehReq')
+  @ApiBody({ type: VehicleReqDTO })
+  async getAllINVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getAllINVehicleByVehReq(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/getAllOUTVehicleByVehReq')
+  @ApiBody({ type: VehicleReqDTO })
+  async getAllOUTVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.getAllOUTVehicleByVehReq(req);
     } catch (error) {
       return (error);
     }

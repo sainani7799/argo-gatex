@@ -4,6 +4,7 @@ export enum LocationFromTypeEnum {
     WH = "WH",
     INS = "INS",
     SUPP = "SUPP",
+    PKMS = "PKMS"
 }
 
 export enum LocationToTypeEnum {

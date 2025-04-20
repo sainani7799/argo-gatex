@@ -1,32 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import axios from 'axios';
-import { AcceptReq, ADDHistoryReqModel, ADDVehicleReqModal, DcEmailModel, DcIdReq, DcReportReq, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, MessageParameters, ReceivedDcReq, RejectDcReq, SecurityCheckReq, TruckStateEnum, UnitReq, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
-import { CommonRequestAttrs, CommonResponse } from 'libs/shared-models/src/common';
-import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import { DataSource, In, Repository } from 'typeorm';
-import * as XLSX from 'xlsx';
-import { UnitRepository } from '../masters/branch/repo/unit-repo';
-import { DcAdapter } from './adapter/dc.adapter';
-import { DcDto } from './dto/dc.dto';
+import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
+import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
+import { CommonResponse } from 'libs/shared-models/src/common';
+import { DataSource, In } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
 import { TruckIdReqeust } from './dto/truck-id-dto';
+import { VehicleDto } from './dto/vehicle-en.dto';
 import { VehicleINRDto } from './dto/vehicle-inr-dto';
 import { VehicleOTRDto } from './dto/vehicle-out.dto';
 import { VRStatusDTO } from './dto/vr-status-req.dto';
-import { DcEntity } from './entity/dc.entity';
 import { VehicleEntity } from './entity/vehicle-en.entity';
 import { VehicleINREntity } from './entity/vehicle-inr.entity';
 import { VehicleOTREntity } from './entity/vehicle-otr.entity';
 import { VehicleStateEntity } from './entity/vehicle-state.entity';
-import { DcItemEntityRepository } from './repository/dc-items.repo';
-import { DcEntityRepository } from './repository/dc-repository';
 import { VehicleINRRepository } from './repository/vehicle-inr.repository';
-import { VehicleRepository } from './repository/vehicle.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
-import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { VehicleDto } from './dto/vehicle-en.dto';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
+import { VehicleRepository } from './repository/vehicle.repository';
 
 @Injectable()
 export class VHRService {
@@ -336,11 +326,11 @@ export class VHRService {
       let vehicleOTRRecords = [];
 
       if (vehicleINR) {
-        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: Number(vehicleINR.refId) } });
+        vehicleINRRecords = await this.vehicleRepository.find({ where: { vinrId: Number(vehicleINR.id) } });
       }
 
       if (vehicleOTR) {
-        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: Number(vehicleOTR.refId) } });
+        vehicleOTRRecords = await this.vehicleRepository.find({ where: { votrId: Number(vehicleOTR.id) } });
       }
 
       let vehicleINRStateRecords = [];
@@ -404,7 +394,7 @@ export class VHRService {
         Object.assign(vehicleEntity, vehicle);
         vehicleEntity.vinrId = reqData.id;
         vehicleEntity.vState = 0;
-        const savedVehicle=await this.vehicleRepository.save(vehicleEntity);
+        const savedVehicle = await this.vehicleRepository.save(vehicleEntity);
         const exist = await this.vehicleStateRepository.findOne({ where: { vid: savedVehicle.id, vState: 0 } });
         if (!exist) {
           await this.vehicleStateRepository.save({ vid: savedVehicle.id, vinrId: reqData.id, vState: 0 });
@@ -632,7 +622,31 @@ export class VHRService {
   }
 
 
+  async getAllINVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleINRRepository.getAllINVehicleByVehReq(req)
+      if (result && typeof result === "object" && "status" in result) {
+        return result;
+      }
+      return new CommonResponse(false, 0, "No records found", []);
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
 
+  async getAllOUTVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+    try {
+      const result = await this.vehicleOTRRepository.getAllOUTVehicleByVehReq(req)
+      if (result && typeof result === "object" && "status" in result) {
+        return result;
+      }
+      return new CommonResponse(false, 0, "No records found", []);
+    } catch (err) {
+      console.error(err);
+      return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
 
 
 }
