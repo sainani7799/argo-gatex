@@ -14,4 +14,13 @@ export class SequenceUtils {
         return r;
     }
 
+
+    static globalFilter(searchedValue: string | number | boolean, record: any): boolean {
+        const values = Object.keys(record).map((keys) => {
+            return String(record[keys]).toLocaleLowerCase().includes(searchedValue.toLocaleString())
+        })
+        const removeDuplicates = new Set(values);
+        if (removeDuplicates.size && removeDuplicates.has(true)) return true
+        else return false;
+    };
 }

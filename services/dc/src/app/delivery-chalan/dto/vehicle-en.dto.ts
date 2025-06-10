@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { VehicleTypeEnum } from "libs/shared-models";
 
 export class VehicleDto {
-    
+
     @ApiProperty()
     id: number;
 
@@ -59,6 +59,17 @@ export class VehicleDto {
 
     @ApiProperty()
     readyToSend: number;
+
+    @ApiProperty()
+    userId: number;
+
+    @ApiProperty()
+    unitCode: string;
+
+    @ApiProperty()
+    companyCode: string;
+
+
 
     constructor(partial: Partial<VehicleDto>) {
         Object.assign(this, partial);

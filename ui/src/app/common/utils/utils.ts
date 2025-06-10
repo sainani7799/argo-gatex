@@ -212,3 +212,11 @@ export const flattenMessages = ((nestedMessages, prefix = '') => {
 });
 
 
+export const convertBackendDateToLocalTimeZone = (dateTime: string, iNeedOnlyDate?: boolean) => {
+  if (iNeedOnlyDate) {
+    return moment(dateTime).format('YYYY-MM-DD');
+  } else {
+    // 24H format
+    return moment(dateTime).format('YYYY-MM-DD hh:mm A');
+  }
+}

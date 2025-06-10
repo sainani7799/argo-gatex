@@ -15,4 +15,4 @@ export * from './notification';
 export * from './supplier';
 export * from './unit';
 export * from './user';
-export * from './warehouse';
+export * from './warehouse'; 

@@ -9,7 +9,7 @@ export class AuthModel {
     roleName:string
     department?:number
     buyerTeam?:string
-
+    companyCode?:string;
 /**
  * 
  * @param userName 
@@ -32,7 +32,8 @@ export class AuthModel {
         roleId:number,
         roleName:string,
         department?:number,
-        buyerTeam?:string
+        buyerTeam?:string,
+        companyCode?:string
 
     ) {
         this.userName = userName;
@@ -45,6 +46,7 @@ export class AuthModel {
         this.roleName =roleName;
         this.department = department
         this.buyerTeam = buyerTeam
+        this.companyCode = companyCode
     }
 
 }

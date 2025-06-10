@@ -6,6 +6,7 @@ import { ReqStatus, TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
 import { VHRServices } from "libs/shared-services";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { SequenceUtils } from "../common";
 
 const VehcileEntry = () => {
 
@@ -16,7 +17,7 @@ const VehcileEntry = () => {
         PAUSE: "gray",
         LOAD_COMPLETED: "purple",
         UNLOAD_COMPLETED: "red",
-        CLOSED : "blue"
+        CLOSED: "blue"
     };
 
     const vhrService = new VHRServices();
@@ -30,6 +31,8 @@ const VehcileEntry = () => {
     const [form] = Form.useForm();
     const { Option } = Select
     const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem('userName'));
+    const [searchedText, setSearchedText] = useState("");
 
     useEffect(() => {
         getVINRALL();
@@ -110,7 +113,11 @@ const VehcileEntry = () => {
             title: "To",
             dataIndex: "to",
             align: "center",
-            render: (rec) => (rec ? rec : '-')
+            render: (rec) => (rec ? rec : '-'),
+            filteredValue: [String(searchedText).toLowerCase()],
+            onFilter: (value, record) => {
+                return SequenceUtils.globalFilter(value, record)
+            }
         },
         {
             title: "From Type",
@@ -233,7 +240,11 @@ const VehcileEntry = () => {
             title: "Refernce Number",
             dataIndex: "refNumber",
             align: "center",
-            render: (rec) => (rec ? rec : '-')
+            render: (rec) => (rec ? rec : '-'),
+            filteredValue: [String(searchedText).toLowerCase()],
+            onFilter: (value, record) => {
+                return SequenceUtils.globalFilter(value, record)
+            }
         },
         {
             title: "Expected Departure",
@@ -320,6 +331,7 @@ const VehcileEntry = () => {
     ]
 
     const onChangeTabs = (key) => {
+        setSearchedText('')
         setActiveKey(key);
         if (key === "1") {
             getVINRALL();
@@ -334,6 +346,9 @@ const VehcileEntry = () => {
             id: openFormData.id,
             readyToIn: openFormData.readyToIn,
             readyToSend: openFormData.readyToSend,
+            unitCode: user.unitCode,
+            companyCode: user.companyCode,
+            userId: 0
         }));
         vhrService.createVehicle(payload).then((res) => {
             if (res.status) {
@@ -352,11 +367,25 @@ const VehcileEntry = () => {
 
     return (
         <>
-            <Card title={<><CarOutlined style={{ fontSize: '24px', marginRight: 8, color: "white" }} /><span style={{ color: 'white' }}>Vehicle Entry</span></>} headStyle={{ backgroundColor: '#047595', color: 'black' }} >
+            <Card
+                title={<><CarOutlined style={{ fontSize: '24px', marginRight: 8, color: "white" }} /><span style={{ color: 'white' }}>Vehicle Entry</span></>} headStyle={{ backgroundColor: '#047595', color: 'black' }}
+                extra={<Input.Search
+                    placeholder="Search"
+                    value={searchedText}
+                    allowClear
+                    onChange={(e) => { setSearchedText(e.target.value) }}
+                    onSearch={(value) => { setSearchedText(value) }}
+                    style={{ width: 200, float: "right" }}
+                />
+                }
+            >
 
-                <Tabs defaultActiveKey="1" tabBarStyle={{ display: 'flex', justifyContent: 'center' }} onChange={onChangeTabs}>
+                <Tabs
 
-                    <TabPane tab={<><ArrowDownOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle IN</span></>} key='1'>
+                    defaultActiveKey="1" tabBarStyle={{ display: 'flex', justifyContent: 'center' }} onChange={onChangeTabs}>
+
+                    <TabPane
+                     tab={<><ArrowDownOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle IN</span></>} key='1'>
 
                         <Table columns={columnsINR} dataSource={VINRData} bordered loading={isLodaing}
                             rowKey={(record, index) => index}

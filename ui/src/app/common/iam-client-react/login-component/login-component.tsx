@@ -1,34 +1,31 @@
-import { Button, Card, Carousel, Col, Divider, Form, Input, Row, message, notification, } from "antd";
+import { Button, Card, Carousel, Col, Divider, Form, Input, Row, message } from "antd";
 import { Header } from "antd/es/layout/layout";
 import assetpic from "../login-component/images/Gatepassicon.png";
 import assetname from "../login-component/images/gatex-white.png";
 // import productOne from "../../app/login-component-images/empty.png";
 // import productTwo from "../../app/login-component-images/empty.png";
-import AssetXpert1 from "../login-component/images/GatepassOne.png";
-import AssetXpert2 from "../login-component/images/GatepassTwo.png";
+import { EyeInvisibleOutlined, EyeOutlined, } from '@ant-design/icons';
+import Axios from "axios";
+import downloadicon from "../login-component-images/Downlodeicon.png";
 import supporticon from "../login-component-images/Support-icon.png";
 import videoiconnew from "../login-component-images/Videoiconnew.png";
-import downloadicon from "../login-component-images/Downlodeicon.png";
 import WhatsappIcon from "../login-component-images/Whatsappicon.png";
 import SchemaxLogoWhite1 from "../login-component-images/X Logo 2.png";
-import { EyeOutlined, EyeInvisibleOutlined, } from '@ant-design/icons';
+import AssetXpert1 from "../login-component/images/GatepassOne.png";
+import AssetXpert2 from "../login-component/images/GatepassTwo.png";
 import './login-component.css';
-import Axios from "axios";
 
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
-import SchemaxLogo from '../login-component-images/schemax-logo.png';
-import { LoginUserDto, UserPermissionsDto } from "../user-models";
-import { ActionTypes } from "../action-types";
-import { useIAMClientState } from "../iam-client";
-import { loginUser } from "../actions";
 import { LoginDto } from "libs/shared-models";
 import { UserManagementServices } from "libs/shared-services";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useIAMClientState } from "../iam-client";
+import SchemaxLogo from '../login-component-images/schemax-logo.png';
 
 interface LocationState {
     from: { pathname: string };
-  }
+}
 
 
 const LoginComponent = () => {
@@ -106,7 +103,7 @@ const LoginComponent = () => {
     //         setUser(response.data);
     //        navigate('/asset-dashboard',{replace:true})
     //         AlertMessages.getSuccessMessage('Login Successful');
-          
+
     //         // Optionally, reload the page
     //         // window.location.reload();
     //     } else {
@@ -134,15 +131,13 @@ const LoginComponent = () => {
             const loginDto = new LoginDto(values.username, values.password)
             service.login(loginDto).then((res) => {
                 if (res.status) {
+                    res.data.unitCode = 'NORLANKA'
+                    res.data.companyCode = 'NORLANKA'
                     localStorage.setItem('userName', JSON.stringify(res.data));
-                    
                     localStorage.setItem('helpxUserName', values.username)
-                    console.log( JSON.stringify(res.data), 'log')
                     setAuthState([{ userName: values.username, isAuthenticated: true }]);
-                    console.log(setAuthState, 'setAuthState')
                     message.success(res.internalMessage)
                     navigate('/dc-view')
-                    // navigate('/')
                 } else {
                     message.error(res.internalMessage)
                 }
@@ -177,7 +172,7 @@ const LoginComponent = () => {
     //         return false;
     //     }
     // };
-    
+
     const ProductsCards = [
         {
             title: 'Warehouse Mangemennt',
@@ -197,14 +192,14 @@ const LoginComponent = () => {
         color: '#fff',
         textAlign: 'center',
     };
-    
+
     const downloadFile = async () => {
         const response = await Axios({ url: './assets/AssetXpert - product-catalogy.pdf', method: 'GET', responseType: 'blob' })
         const blob = new Blob([response.data]);
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'AssetXpert - product-catalogy.pdf'; 
+        link.download = 'AssetXpert - product-catalogy.pdf';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -215,7 +210,7 @@ const LoginComponent = () => {
 
     return (
         <div style={{ height: '100vh', overflowY: 'hidden' }}>
-            <Header style={{ padding: '10px', background: 'black', border: '1px solid gray',height:"65px" }}>
+            <Header style={{ padding: '10px', background: 'black', border: '1px solid gray', height: "65px" }}>
                 <Row >
                     <Col xs={8} sm={8} md={8} lg={8} xl={8} style={{ color: 'white', marginTop: '-3px' }}>
                         {/* <h1 style={{ color: 'white', marginTop: '-15px' }}>Schemax</h1> */}
@@ -226,15 +221,15 @@ const LoginComponent = () => {
                     </Col>
                     <Col xs={8} sm={8} md={8} lg={8} xl={8} style={{ display: 'flex', justifyContent: 'end' }}>
                         <a href="tel:+919014375798" >
-                        <img src={supporticon} style={{ fontSize: '54px', height: "59px", marginLeft: '20px', cursor: 'pointer',paddingBottom:"24px" }} /></a>
-                        <img src={videoiconnew} alt="/" style={{ fontSize: '24px', height: "59px",paddingBottom:"24px", marginLeft: '20px', cursor: 'pointer', marginTop: '7px' }} />
+                            <img src={supporticon} style={{ fontSize: '54px', height: "59px", marginLeft: '20px', cursor: 'pointer', paddingBottom: "24px" }} /></a>
+                        <img src={videoiconnew} alt="/" style={{ fontSize: '24px', height: "59px", paddingBottom: "24px", marginLeft: '20px', cursor: 'pointer', marginTop: '7px' }} />
                         <img
                             onClick={downloadFile}
                             src={downloadicon}
-                            alt="/" style={{ fontSize: '24px', height: "59px",paddingBottom:"24px", marginLeft: '20px', cursor: 'pointer', marginTop: '7px' }}
+                            alt="/" style={{ fontSize: '24px', height: "59px", paddingBottom: "24px", marginLeft: '20px', cursor: 'pointer', marginTop: '7px' }}
                         />
                         <a aria-label="Chat on WhatsApp" target="_blank" href="https://wa.me/919014375798?text=Hi%20there%21%20I%27m%20reaching%20out%20for%20some%20help.%20Can%20you%20assist%20me%20%3F">
-                            <img alt="Chat on WhatsApp" src={WhatsappIcon} style={{ color: "white", fontSize: '24px', height: "59px",paddingBottom:"24px", marginLeft: '20px', cursor: 'pointer' }} />
+                            <img alt="Chat on WhatsApp" src={WhatsappIcon} style={{ color: "white", fontSize: '24px', height: "59px", paddingBottom: "24px", marginLeft: '20px', cursor: 'pointer' }} />
                         </a>
                     </Col>
                 </Row>
@@ -361,7 +356,7 @@ const LoginComponent = () => {
                                         </Form.Item>
                                     </Col>
 
-<Col span={24}>
+                                    <Col span={24}>
                                         <Col span={24}>
                                             <Button
                                                 type="primary" htmlType="submit"
@@ -390,7 +385,7 @@ const LoginComponent = () => {
                             display: 'flex',
                             flexDirection: 'column',
                         }}>
-                            <Divider style={{ color: '#ffff',marginBottom: "-1px",}}>Powered by @SchemaxTech</Divider>
+                            <Divider style={{ color: '#ffff', marginBottom: "-1px", }}>Powered by @SchemaxTech</Divider>
                             <span style={{
                                 alignSelf: 'flex-start', fontSize: '15px',
                                 fontWeight: 700,

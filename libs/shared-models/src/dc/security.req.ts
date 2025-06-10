@@ -1,9 +1,9 @@
 import { StatusEnum } from "../enum/status-enum";
 
-export class SecurityCheckReq{
-    dcId:number;
-    status:StatusEnum;
-    securityUser:string;
-    checkoutTime?:Date;
-    chechInTime?:Date;
+export class SecurityCheckReq {
+    dcId: number;
+    status: StatusEnum;
+    securityUser: string;
+    checkoutTime?: Date;
+    chechInTime?: Date;
 }

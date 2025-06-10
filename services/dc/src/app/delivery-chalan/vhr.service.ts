@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
+import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { DataSource, In } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
@@ -17,6 +17,7 @@ import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
+import { GrnServices } from 'libs/shared-services';
 
 @Injectable()
 export class VHRService {
@@ -25,7 +26,8 @@ export class VHRService {
     private vehicleOTRRepository: VehicleOTRRepository,
     private vehicleRepository: VehicleRepository,
     private vehicleStateRepository: VehicleStateRepository,
-    private dataSource: DataSource
+    private dataSource: DataSource,
+    private grnServices: GrnServices
   ) { }
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
@@ -465,27 +467,29 @@ export class VHRService {
   async createVehicle(vehicleDtos: VehicleDto[]): Promise<CommonResponse> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
+    const vehicleInrRecord = await this.dataSource.getRepository(VehicleINREntity).findOne({ select: ['refId', 'refNumber', 'toType'], where: { id: vehicleDtos[0].id } });
+    const currentDate = new Date()
     await queryRunner.startTransaction();
     try {
+      const vehicleModal: VehicleModal[] = []
       const savedVehicles: VehicleEntity[] = [];
       for (const vehicleDto of vehicleDtos) {
         const entity = new VehicleEntity();
+        entity.vinrId = vehicleDto.id;
+        entity.vehicleNo = vehicleDto.vehicleNo;
+        entity.dName = vehicleDto.dName;
+        entity.dContact = vehicleDto.dContact;
+        entity.vehicleType = vehicleDto.vehicleType;
+        entity.vState = vehicleDto.vState;
         if (vehicleDto.readyToIn !== undefined) {
-          entity.vinrId = vehicleDto.id;
-          entity.vehicleNo = vehicleDto.vehicleNo;
-          entity.dName = vehicleDto.dName;
-          entity.dContact = vehicleDto.dContact;
-          entity.arrivalDateTime = new Date();
-          entity.vState = vehicleDto.vState;
-          entity.vehicleType = vehicleDto.vehicleType;
+          entity.arrivalDateTime = currentDate;
         } else if (vehicleDto.readyToSend !== undefined) {
-          entity.votrId = vehicleDto.id;
-          entity.vehicleNo = vehicleDto.vehicleNo;
-          entity.dName = vehicleDto.dName;
-          entity.dContact = vehicleDto.dContact;
-          entity.departureDateTime = new Date();
-          entity.vState = vehicleDto.vState;
-          entity.vehicleType = vehicleDto.vehicleType;
+          entity.departureDateTime = currentDate;
+          if (vehicleInrRecord.toType === LocationToTypeEnum.WH) {
+            const sOut = new SecurityCheckRequest(vehicleDto.createdUser, vehicleDto.unitCode, vehicleDto.companyCode, vehicleDto.userId, vehicleDto.id, vehicleDto.vehicleNo, vehicleDto.dName, vehicleDto.createdUser, vehicleDto.dContact, undefined, currentDate, vehicleDto.id, CheckListStatus.VERIFIED, vehicleDto.vehicleNo, '', 0, 0, '', '')
+            await this.grnServices.saveSecurityCheckOut(sOut)
+          }
+
         }
         const savedVehicle = await queryRunner.manager.save(entity);
         savedVehicles.push(savedVehicle);
@@ -493,29 +497,27 @@ export class VHRService {
         const vehStateEntity = new VehicleStateEntity();
         vehStateEntity.vid = savedVehicle.id;
         vehStateEntity.vState = TruckStateEnum.OPEN;
-        vehStateEntity.createdAt = new Date();
-        vehStateEntity.updatedAt = new Date();
+        vehStateEntity.createdAt = currentDate;
+        vehStateEntity.updatedAt = currentDate;
         vehStateEntity.versionFlag = 1;
         if (savedVehicle.vinrId) {
           vehStateEntity.vinrId = savedVehicle.vinrId;
           // Update INR vehicle status
-          await this.vehicleINRRepository.update(
-            { id: savedVehicle.vinrId },
-            { reqStatus: 1 } // Consider using enum/constant for status codes
-          );
+          await this.vehicleINRRepository.update({ id: savedVehicle.vinrId }, { reqStatus: 1 }); // Consider using enum/constant for status codes
         } else if (savedVehicle.votrId) {
           vehStateEntity.votrId = savedVehicle.votrId;
           // Update OTR vehicle status
-          await this.vehicleOTRRepository.update(
-            { id: savedVehicle.votrId },
-            { reqStatus: 1 }
-          );
+          await this.vehicleOTRRepository.update({ id: savedVehicle.votrId }, { reqStatus: 1 });
         }
-
+        const vModal = new VehicleModal(savedVehicle.id, vehicleDto.vehicleNo, vehicleDto.dName, vehicleDto.dContact, currentDate, currentDate, vehicleDto.vehicleType, true, savedVehicle.vinrId, savedVehicle.votrId, vehicleDto.vState);
+        vehicleModal.push(vModal)
         await queryRunner.manager.save(vehStateEntity);
       }
       await queryRunner.commitTransaction();
-
+      if (vehicleInrRecord.toType === LocationToTypeEnum.WH) {
+        const vReq = new ADDVehicleReqModal(vehicleInrRecord.refId, vehicleInrRecord.refNumber, LocationFromTypeEnum.WH, vehicleModal, vehicleDtos[0].createdUser, vehicleDtos[0].unitCode, vehicleDtos[0].companyCode, 0)
+        await this.grnServices.saveSecurityCheckIn(vReq)
+      }
       return new CommonResponse(true, 1, 'Vehicles created successfully', savedVehicles);
     } catch (error) {
       await queryRunner.rollbackTransaction();
