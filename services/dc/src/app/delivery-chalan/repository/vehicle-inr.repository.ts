@@ -83,7 +83,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
 
             for (const rec of vehicleINRRecords) {
                 let veichleStateToSave = [];
-                const vehRec = vehicleRecords.filter(r => r.vinrId === rec.id);
+                const vehRec = vehicleRecords.filter(r => Number(r.vinrId) === rec.id);
                 for (const data of vehRec) {
                     const vehState = vehicleStateRecords.filter(rr => rr.vid === data.id);
                     const finalVehicleStateRecords = vehState.map(state => ({
