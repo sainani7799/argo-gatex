@@ -32,6 +32,7 @@ export class VHRService {
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
     const transactionalEntityManager = this.dataSource;
+    console.log(JSON.stringify(reqs), 'reqs');
     try {
       const vINTEntityToSave: VehicleINREntity[] = [];
       const vehicleEntitiesToSave: VehicleEntity[] = [];
@@ -56,6 +57,8 @@ export class VHRService {
           }
           vINTEntityToSave.push(entity);
 
+          await transactionalEntityManager.save(vINTEntityToSave);
+
           const vehiclesToSave: VehicleEntity[] = [];
 
           for (const vehicleReq of req.vehicleRecords || []) {
@@ -76,6 +79,8 @@ export class VHRService {
             vehicleEntitiesToSave.push(...vehiclesToSave);
           }
 
+          await transactionalEntityManager.save(vehicleEntitiesToSave);
+
           for (const vehicle of vehiclesToSave) {
             let vehicleStateEntity = await transactionalEntityManager.findOne(VehicleStateEntity, { where: { vid: vehicle.id } });
 
@@ -95,9 +100,6 @@ export class VHRService {
             vehicleStateEntitiesToSave.push(vehicleStateEntity);
           }
         }
-
-        await transactionalEntityManager.save(vINTEntityToSave);
-        await transactionalEntityManager.save(vehicleEntitiesToSave);
         await transactionalEntityManager.save(vehicleStateEntitiesToSave);
       });
 
