@@ -83,9 +83,9 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
 
             for (const rec of vehicleINRRecords) {
                 let veichleStateToSave = [];
-                const vehRec = vehicleRecords.filter(r => r.vinrId === rec.id);
+                const vehRec = vehicleRecords.filter(r => r.vinrId == rec.id);
                 for (const data of vehRec) {
-                    const vehState = vehicleStateRecords.filter(rr => rr.vid === data.id);
+                    const vehState = vehicleStateRecords.filter(rr => rr.vid == data.id);
                     const finalVehicleStateRecords = vehState.map(state => ({
                         ...state,
                         vehicleTypeEnum: TruckStateEnum[state.vehicleType as unknown as keyof typeof TruckStateEnum] || "UNKNOWN"
@@ -102,8 +102,8 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
             }
             const finalVehicleINRRecords = vehicleINR.map(vinr => ({
                 ...vinr,
-                reqStatusData: vinr.reqStatus === ReqStatus.OPEN ? "OPEN" : "DONE",
-                readyToInData: vinr.readyToIn === 1 ? "IN" : "OUT"
+                reqStatusData: vinr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
+                readyToInData: vinr.readyToIn == 1 ? "IN" : "OUT"
             }));
 
             return finalVehicleINRRecords;
@@ -156,7 +156,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
             let vehicleINR = [];
             for (const rec of vehicleINRRecords) {
                 let veichleStateToSave = [];
-                const vehRec = vehicleRecords.filter(r => r.vinrId === rec.id);
+                const vehRec = vehicleRecords.filter(r => r.vinrId == rec.id);
                 for (const data of vehRec) {
                     veichleStateToSave.push({ ...data });
                 }
@@ -168,8 +168,8 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
 
             const finalVehicleINRRecords = vehicleINR.map(vinr => ({
                 ...vinr,
-                reqStatusData: vinr.reqStatus === ReqStatus.OPEN ? "OPEN" : "DONE",
-                readyToInData: vinr.readyToIn === 1 ? "IN" : "OUT"
+                reqStatusData: vinr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
+                readyToInData: vinr.readyToIn == 1 ? "IN" : "OUT"
             }));
             if (finalVehicleINRRecords) {
                 return new CommonResponse(true, 1, 'Data Retived', finalVehicleINRRecords); 

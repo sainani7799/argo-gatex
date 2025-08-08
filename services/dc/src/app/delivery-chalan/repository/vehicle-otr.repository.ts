@@ -62,9 +62,9 @@ export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
 
             for (const rec of vehicleOTRRecords) {
                 let veichleStateToSave = [];
-                const vehRec = vehicleRecords.filter(r => r.votrId === rec.id);
+                const vehRec = vehicleRecords.filter(r => r.votrId == rec.id);
                 for (const data of vehRec) {
-                    const vehState = vehicleStateRecords.filter(rr => rr.vid === data.id);
+                    const vehState = vehicleStateRecords.filter(rr => rr.vid == data.id);
                     const finalVehicleStateRecords = vehState.map(state => ({
                         ...state,
                         vehicleTypeEnum: TruckStateEnum[state.vehicleType as unknown as keyof typeof TruckStateEnum] || "UNKNOWN"
@@ -81,8 +81,8 @@ export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
             }
             const finalVehicleOTRRecords = vehicleOTR.map(votr => ({
                 ...votr,
-                reqStatusData: votr.reqStatus === ReqStatus.OPEN ? "OPEN" : "DONE",
-                readyToSendData: votr.readyToSend === 1 ? "IN" : "OUT"
+                reqStatusData: votr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
+                readyToSendData: votr.readyToSend == 1 ? "IN" : "OUT"
             }));
 
             return finalVehicleOTRRecords;
@@ -139,7 +139,7 @@ export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
 
             for (const rec of vehicleOTRRecords) {
                 let veichleStateToSave = [];
-                const vehRec = vehicleRecords.filter(r => r.votrId === rec.id);
+                const vehRec = vehicleRecords.filter(r => r.votrId == rec.id);
                 for (const data of vehRec) {
                     veichleStateToSave.push({ ...data });
                 }
@@ -151,8 +151,8 @@ export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
 
             const finalVehicleOTRRecords = vehicleOTR.map(votr => ({
                 ...votr,
-                reqStatusData: votr.reqStatus === ReqStatus.OPEN ? "OPEN" : "DONE",
-                readyToSendData: votr.readyToSend === 1 ? "IN" : "OUT"
+                reqStatusData: votr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
+                readyToSendData: votr.readyToSend == 1 ? "IN" : "OUT"
             }));
             if (finalVehicleOTRRecords) {
                 return new CommonResponse(true, 1, 'Data Retived', finalVehicleOTRRecords);

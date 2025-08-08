@@ -32,11 +32,8 @@ export class VHRService {
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
     const transactionalEntityManager = this.dataSource;
+    console.log(JSON.stringify(reqs), 'reqs');
     try {
-      const vINTEntityToSave: VehicleINREntity[] = [];
-      const vehicleEntitiesToSave: VehicleEntity[] = [];
-      const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
-
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
           let entity = await transactionalEntityManager.findOne(VehicleINREntity, {
@@ -54,9 +51,8 @@ export class VHRService {
               expectedArrival: new Date().toISOString(),
             });
           }
-          vINTEntityToSave.push(entity);
 
-          const vehiclesToSave: VehicleEntity[] = [];
+          const savedEntity = await transactionalEntityManager.save(entity);
 
           for (const vehicleReq of req.vehicleRecords || []) {
             let vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
@@ -66,46 +62,35 @@ export class VHRService {
             } else {
               vehicleEntity = transactionalEntityManager.create(VehicleEntity, {
                 ...vehicleReq,
-                vinrId: req.id,
+                vinrId: savedEntity.id,
                 arrivalDateTime: new Date().toISOString()
               });
             }
-            vehiclesToSave.push(vehicleEntity);
-          }
-          if (vehiclesToSave.length > 0) {
-            vehicleEntitiesToSave.push(...vehiclesToSave);
-          }
 
-          for (const vehicle of vehiclesToSave) {
-            let vehicleStateEntity = await transactionalEntityManager.findOne(VehicleStateEntity, { where: { vid: vehicle.id } });
+            const savedVehicleEntity = await transactionalEntityManager.save(vehicleEntity);
+
+            let vehicleStateEntity = await transactionalEntityManager.findOne(VehicleStateEntity, { where: { vid: savedVehicleEntity.id } });
 
             if (vehicleStateEntity) {
-              Object.assign(vehicleStateEntity, { vinrId: vehicle.vinrId });
+              Object.assign(vehicleStateEntity, { vinrId: savedVehicleEntity.vinrId });
             } else {
               vehicleStateEntity = transactionalEntityManager.create(VehicleStateEntity, {
-                id: vehicle.id,
-                vid: vehicle.id,
-                vinrId: vehicle.vinrId,
+                id: savedVehicleEntity.id,
+                vid: savedVehicleEntity.id,
+                vinrId: savedVehicleEntity.vinrId,
                 vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 versionFlag: 1,
               });
             }
-            vehicleStateEntitiesToSave.push(vehicleStateEntity);
+            await transactionalEntityManager.save(vehicleStateEntity);
           }
+
         }
-
-        await transactionalEntityManager.save(vINTEntityToSave);
-        await transactionalEntityManager.save(vehicleEntitiesToSave);
-        await transactionalEntityManager.save(vehicleStateEntitiesToSave);
       });
 
-      return new CommonResponse(true, 1, "Data Processed", {
-        vinrRecords: vINTEntityToSave,
-        vehicleRecords: vehicleEntitiesToSave,
-        vehicleStateRecords: vehicleStateEntitiesToSave,
-      });
+      return new CommonResponse(true, 1, "Data Processed");
     } catch (err) {
       console.error(err);
       return new CommonResponse(false, 0, "Error occurred", null);
