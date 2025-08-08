@@ -637,9 +637,13 @@ export class VHRService {
 
   async updateWeightByVINRid(req: any): Promise<CommonResponse> {
     try {
-      const result = await this.vehicleRepository.update({ id: req.vId }, { updatedWeight: req.updatedWeight, vState: TruckStateEnum.CLOSED });
-      if (result.affected) {
-        await this.vehicleStateRepository.update({ vid: req.vId }, { vState: TruckStateEnum.CLOSED })
+      let result = [];
+      for (const rec of req) {
+        const data = await this.vehicleRepository.update({ id: rec.vId }, { updatedWeight: rec.updatedWeight, vState: TruckStateEnum.CLOSED });
+        await this.vehicleStateRepository.update({ vid: rec.vId }, { vState: TruckStateEnum.CLOSED })
+        result.push(data)
+      }
+      if (result.length > 0) {
         return new CommonResponse(true, 2001, 'Weight Updated Successfully', result)
       } else {
         return new CommonResponse(false, 2000, 'Failed to Update Weight', [])
