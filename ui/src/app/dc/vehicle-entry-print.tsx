@@ -52,6 +52,8 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
     Vehicle Type     - ${vehData?.vehicleType ? vehData?.vehicleType : "-"}
     In-House Vehicle - ${vehData?.inHouseVehicle ? "Yes" : "No"}
     Status           - ${vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") ? vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") : "-"}
+    Weight           - ${vehData?.weight ? vehData?.weight : "-"}
+    id           - ${vehData?.id ? vehData?.id : "-"}
     `;
     return (
         <>

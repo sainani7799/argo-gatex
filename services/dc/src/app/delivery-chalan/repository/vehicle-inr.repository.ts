@@ -58,7 +58,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                    ve.vehicle_type AS vehicleType, ve.in_house_vehicle AS inHouseVehicle, ve.vinr_id AS vinrId, 
                    ve.votr_id AS votrId, ve.is_active AS isActive, ve.created_at AS createdAt, 
                    ve.created_user AS createdUser, ve.updated_at AS updatedAt, ve.updated_user AS updatedUser, 
-                   ve.version_flag AS versionFlag
+                   ve.version_flag AS versionFlag,ve.weight,ve.updated_weight as updateWeight
             FROM vehicle_en ve
             WHERE 1=1
         `;
@@ -132,7 +132,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                        ve.vehicle_type AS vehicleType, ve.in_house_vehicle AS inHouseVehicle, ve.vinr_id AS vinrId, 
                        ve.votr_id AS votrId, ve.is_active AS isActive, ve.created_at AS createdAt, 
                        ve.created_user AS createdUser, ve.updated_at AS updatedAt, ve.updated_user AS updatedUser, 
-                       ve.version_flag AS versionFlag
+                       ve.version_flag AS versionFlag,ve.weight,ve.updated_weight as updateWeight
                 FROM vehicle_en ve
                 WHERE ve.vehicle_no = ?
             `;

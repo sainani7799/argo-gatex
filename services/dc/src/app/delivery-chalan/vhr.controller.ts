@@ -208,4 +208,14 @@ export class VHRController {
       return (error);
     }
   }
+
+  @Post('/updateWeightByVINRid')
+  @ApiBody({ type: VehicleReqDTO })
+  async updateWeightByVINRid(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.updateWeightByVINRid(req);
+    } catch (error) {
+      return (error);
+    }
+  }
 }

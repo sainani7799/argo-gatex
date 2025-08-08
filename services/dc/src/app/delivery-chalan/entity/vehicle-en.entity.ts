@@ -42,7 +42,7 @@ export class VehicleEntity {
 
     @Column('varchar', {
         name: 'vehicle_type',
-        nullable: true,        
+        nullable: true,
     })
     vehicleType: VehicleTypeEnum;
 
@@ -106,5 +106,17 @@ export class VehicleEntity {
         name: "version_flag"
     })
     versionFlag: number;
+
+    @Column('int', {
+        name: 'weight',
+        nullable: true
+    })
+    weight: number;
+
+    @Column('int', {
+        name: 'updated_weight',
+        nullable: true
+    })
+    updatedWeight: number;
 
 }
