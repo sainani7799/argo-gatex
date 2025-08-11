@@ -36,11 +36,12 @@ export class VHRService {
     try {
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
+          const where:any = { refId: String(req.refId), fromType: req.fromType };
+          if (req.id) {
+            where.id = req.id;
+          }
           let entity = await transactionalEntityManager.findOne(VehicleINREntity, {
-            where: [
-              { refId: String(req.refId), fromType: req.fromType },
-              { id: req.id }
-            ]
+            where
           });
 
           if (entity) {
@@ -55,7 +56,9 @@ export class VHRService {
           const savedEntity = await transactionalEntityManager.save(entity);
 
           for (const vehicleReq of req.vehicleRecords || []) {
-            let vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
+            let vehicleEntity = undefined;
+            if(vehicleReq.id)
+            await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
 
             if (vehicleEntity) {
               Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
@@ -77,7 +80,7 @@ export class VHRService {
               vehicleStateEntity = transactionalEntityManager.create(VehicleStateEntity, {
                 id: savedVehicleEntity.id,
                 vid: savedVehicleEntity.id,
-                vinrId: savedVehicleEntity.vinrId,
+                vinrId: savedEntity.id,
                 vState: TruckStateEnum.OPEN,
                 createdAt: new Date(),
                 updatedAt: new Date(),
