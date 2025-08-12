@@ -400,6 +400,7 @@ const VehcileEntry = () => {
                                         return <Empty />
                                     }
                                     return (
+                                        <Card>
                                         <Table
                                             rowKey={(record, index) => index}
                                             columns={columnsVehicleRecords}
@@ -407,6 +408,7 @@ const VehcileEntry = () => {
                                             pagination={false}
                                             bordered
                                         />
+                                        </Card>
                                     );
                                 },
                                 rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
@@ -453,6 +455,7 @@ const VehcileEntry = () => {
                                         return <Empty />
                                     }
                                     return (
+                                        <Card>
                                         <Table
                                             columns={columnsVehicleRecords}
                                             dataSource={record.vehicleRecords}
@@ -460,6 +463,7 @@ const VehcileEntry = () => {
                                             bordered
                                             rowKey={(record, index) => index}
                                         />
+                                        </Card>
                                     );
                                 },
                                 rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,

@@ -41,19 +41,22 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
     console.log(data, 'data');
     console.log(vehData, 'vehData');
 
+    // const qrData = `
+    // Reference ID     - ${data?.refId ? data?.refId : "-"}
+    // Reference Number - ${data?.refNumber ? data?.refNumber : "-"}
+    // ${data?.expectedArrival ? "Arrival" : "Departure"}   - ${data?.expectedArrival ||  data?.expectedDeparture || "-"}
+    // ${vehData?.vinrId ? "Vechicle IN Id" : "Vechicle OUT Id"}   - ${vehData?.vinrId || vehData?.votrId || "-"}
+    // Vehicle No       - ${vehData?.vehicleNo ? vehData?.vehicleNo : "-"}
+    // Driver Name      - ${vehData?.dName ? vehData?.dName : '-'}
+    // Driver Contact   - ${vehData?.dContact ? vehData?.dContact : "-"}
+    // Vehicle Type     - ${vehData?.vehicleType ? vehData?.vehicleType : "-"}
+    // In-House Vehicle - ${vehData?.inHouseVehicle ? "Yes" : "No"}
+    // Status           - ${vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") ? vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") : "-"}
+    // Weight           - ${vehData?.weight ? vehData?.weight : "-"}
+    // id           - ${vehData?.id ? vehData?.id : "-"}
+    // `;
     const qrData = `
-    Reference ID     - ${data?.refId ? data?.refId : "-"}
-    Reference Number - ${data?.refNumber ? data?.refNumber : "-"}
-    ${data?.expectedArrival ? "Arrival" : "Departure"}   - ${data?.expectedArrival ||  data?.expectedDeparture || "-"}
-    ${vehData?.vinrId ? "Vechicle IN Id" : "Vechicle OUT Id"}   - ${vehData?.vinrId || vehData?.votrId || "-"}
     Vehicle No       - ${vehData?.vehicleNo ? vehData?.vehicleNo : "-"}
-    Driver Name      - ${vehData?.dName ? vehData?.dName : '-'}
-    Driver Contact   - ${vehData?.dContact ? vehData?.dContact : "-"}
-    Vehicle Type     - ${vehData?.vehicleType ? vehData?.vehicleType : "-"}
-    In-House Vehicle - ${vehData?.inHouseVehicle ? "Yes" : "No"}
-    Status           - ${vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") ? vehData?.vehicleStateRecords[0]?.vehicleTypeEnum.replace(/_/g, " ") : "-"}
-    Weight           - ${vehData?.weight ? vehData?.weight : "-"}
-    id           - ${vehData?.id ? vehData?.id : "-"}
     `;
     return (
         <>
@@ -123,7 +126,7 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                 ))}
                             </Col>
                             <Col span={6}>
-                                <QRCode type="svg" errorLevel='M' size={220} value={qrData} />
+                                <QRCode type="svg" errorLevel='H' size={220} value={qrData} />
                             </Col>
                         </Row>
 

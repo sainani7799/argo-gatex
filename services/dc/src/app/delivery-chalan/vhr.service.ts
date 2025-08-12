@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
+import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
 import { CommonResponse } from 'libs/shared-models/src/common';
 import { DataSource, In } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
@@ -641,6 +641,16 @@ export class VHRService {
       for (const rec of req) {
         const data = await this.vehicleRepository.update({ id: rec.vId }, { updatedWeight: rec.updatedWeight, vState: TruckStateEnum.CLOSED });
         await this.vehicleStateRepository.update({ vid: rec.vId }, { vState: TruckStateEnum.CLOSED })
+
+        const vehEnId = await this.vehicleRepository.findOne({ where: { id: rec.vid } }); // Find id in Veh EN DB
+        if (vehEnId) {
+          const findINRId = await this.vehicleRepository.find({ where: { vinrId: vehEnId.id } })  // Find VINR in Veh EN 
+          const allClosed = findINRId.every(v => v.vState === TruckStateEnum.CLOSED);
+          if (allClosed) {
+            // Then Update if all are CLOSED
+            await this.vehicleINRRepository.update({ id: vehEnId.id }, { reqStatus: ReqStatus.DONE });
+          }
+        }
         result.push(data)
       }
       if (result.length > 0) {
