@@ -36,7 +36,7 @@ export class VHRService {
     try {
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
-          const where:any = { refId: String(req.refId), fromType: req.fromType };
+          const where: any = { refId: String(req.refId), fromType: req.fromType };
           if (req.id) {
             where.id = req.id;
           }
@@ -57,8 +57,8 @@ export class VHRService {
 
           for (const vehicleReq of req.vehicleRecords || []) {
             let vehicleEntity = undefined;
-            if(vehicleReq.id)
-            await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
+            if (vehicleReq.id)
+              await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
 
             if (vehicleEntity) {
               Object.assign(vehicleEntity, { ...vehicleReq, vinrId: req.id });
@@ -643,15 +643,17 @@ export class VHRService {
       let result = [];
       for (const rec of req) {
         const data = await this.vehicleRepository.update({ id: rec.vId }, { updatedWeight: rec.updatedWeight, vState: TruckStateEnum.CLOSED });
-        await this.vehicleStateRepository.update({ vid: rec.vId }, { vState: TruckStateEnum.CLOSED })
+        const vehState = await this.vehicleStateRepository.update({ vid: rec.vId }, { vState: TruckStateEnum.CLOSED })
 
-        const vehEnId = await this.vehicleRepository.findOne({ where: { id: rec.vid } }); // Find id in Veh EN DB
-        if (vehEnId) {
-          const findINRId = await this.vehicleRepository.find({ where: { vinrId: vehEnId.id } })  // Find VINR in Veh EN 
-          const allClosed = findINRId.every(v => v.vState === TruckStateEnum.CLOSED);
-          if (allClosed) {
-            // Then Update if all are CLOSED
-            await this.vehicleINRRepository.update({ id: vehEnId.id }, { reqStatus: ReqStatus.DONE });
+        if (vehState) {
+          const vehEnId = await this.vehicleRepository.findOne({ where: { id: rec.vId } }); // Find id in Veh EN DB
+          if (vehEnId) {
+            const findINRId = await this.vehicleRepository.find({ where: { vinrId: vehEnId.vinrId } })  // Find VINR in Veh EN 
+            const allClosed = findINRId.every(v => v.vState === TruckStateEnum.CLOSED);
+            if (allClosed) {
+              // Then Update if all are CLOSED
+              await this.vehicleINRRepository.update({ id: findINRId[0]?.vinrId }, { reqStatus: ReqStatus.DONE });
+            }
           }
         }
         result.push(data)
