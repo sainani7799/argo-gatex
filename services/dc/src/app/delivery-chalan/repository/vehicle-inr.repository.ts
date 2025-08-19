@@ -114,16 +114,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
 
     async getAllINVehicleByVehReq(req: VehicleReqDTO): Promise<CommonResponse> {
         try {
-            let vehicleInr = `
-            SELECT vinr.id, vinr.ref_id AS refId, vinr.ref_number AS refNumber, vinr.expected_arrival AS expectedArrival,
-                   vinr.from, vinr.to, vinr.from_type AS fromType, vinr.to_type AS toType, vinr.ready_to_in AS readyToIn,
-                   vinr.req_status AS reqStatus, vinr.has_items AS hasItems, vinr.is_active AS isActive,
-                   vinr.created_at AS createdAt, vinr.created_user AS createdUser, vinr.updated_at AS updatedAt,
-                   vinr.updated_user AS updatedUser, vinr.version_flag AS versionFlag
-            FROM vehicle_inr vinr
-            WHERE 1=1
-        `;
-            const vehicleINRRecords = await this.query(vehicleInr);
+
 
             const today = new Date().toISOString().split("T")[0];
             let vehicleQuery = `
@@ -141,6 +132,18 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
             if (vehicleRecords.length === 0) {
                 return new CommonResponse(false, 1, 'No record found for the given vehicle number');
             }
+
+            let vehicleInr = `
+            SELECT vinr.id, vinr.ref_id AS refId, vinr.ref_number AS refNumber, vinr.expected_arrival AS expectedArrival,
+                   vinr.from, vinr.to, vinr.from_type AS fromType, vinr.to_type AS toType, vinr.ready_to_in AS readyToIn,
+                   vinr.req_status AS reqStatus, vinr.has_items AS hasItems, vinr.is_active AS isActive,
+                   vinr.created_at AS createdAt, vinr.created_user AS createdUser, vinr.updated_at AS updatedAt,
+                   vinr.updated_user AS updatedUser, vinr.version_flag AS versionFlag
+            FROM vehicle_inr vinr
+            WHERE 1=1 AND vinr.id = ${vehicleRecords[0].vinrId}
+        `;
+
+            const vehicleINRRecords = await this.query(vehicleInr);
 
             const arrivalDateQuery = `
                 SELECT * FROM vehicle_en 
@@ -165,14 +168,17 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                     vehicleRecords: veichleStateToSave,
                 });
             }
+            console.log(vehicleINR,'vehicleINR');
 
             const finalVehicleINRRecords = vehicleINR.map(vinr => ({
                 ...vinr,
                 reqStatusData: vinr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
                 readyToInData: vinr.readyToIn == 1 ? "IN" : "OUT"
             }));
+            console.log(finalVehicleINRRecords,'finalVehicleINRRecords');
+            
             if (finalVehicleINRRecords) {
-                return new CommonResponse(true, 1, 'Data Retived', finalVehicleINRRecords); 
+                return new CommonResponse(true, 1, 'Data Retived', finalVehicleINRRecords);
             } else {
                 return new CommonResponse(false, 0, "No records found", []);
             }
