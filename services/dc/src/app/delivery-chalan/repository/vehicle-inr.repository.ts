@@ -168,14 +168,12 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                     vehicleRecords: veichleStateToSave,
                 });
             }
-            console.log(vehicleINR,'vehicleINR');
 
             const finalVehicleINRRecords = vehicleINR.map(vinr => ({
                 ...vinr,
                 reqStatusData: vinr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
                 readyToInData: vinr.readyToIn == 1 ? "IN" : "OUT"
             }));
-            console.log(finalVehicleINRRecords,'finalVehicleINRRecords');
             
             if (finalVehicleINRRecords) {
                 return new CommonResponse(true, 1, 'Data Retived', finalVehicleINRRecords);
