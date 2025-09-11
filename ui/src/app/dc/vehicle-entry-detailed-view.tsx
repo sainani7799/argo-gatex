@@ -5,6 +5,7 @@ import { TruckStateEnum } from "libs/shared-models";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import VehicleEntryPrint from "./vehicle-entry-print";
+import { render } from "react-dom";
 
 
 const VehicleEntryDetailedView = () => {
@@ -75,6 +76,15 @@ const VehicleEntryDetailedView = () => {
             },
         },
         {
+            title: "Remarks",
+            dataIndex: "vehicleStateRecords",
+            align: "center",
+            render: (rec) => {
+                const remark = rec?.[0]?.remarks;
+                return remark ? remark : "-"
+            },
+        },
+        {
             title: "Action",
             align: "center",
             render: (rec) => (
@@ -82,6 +92,7 @@ const VehicleEntryDetailedView = () => {
             ),
         }
     ];
+
 
     const openPrintModal = (rec) => {
         setPrintData(rec)
@@ -126,7 +137,7 @@ const VehicleEntryDetailedView = () => {
                 </Descriptions>
                 <br />
 
-                <Table columns={columns} dataSource={data.vehicleRecords} rowKey={id} pagination={false} bordered />
+                <Table columns={columns} dataSource={data?.vehicleRecords} rowKey={id} pagination={false} bordered />
 
             </Card >
 
