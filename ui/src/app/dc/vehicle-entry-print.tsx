@@ -3,6 +3,7 @@ import { Button, Card, Col, QRCode, Row } from 'antd';
 import dayjs from 'dayjs';
 import html2pdf from 'html2pdf.js';
 import './dc-print.css';
+import { TruckStateEnum } from 'libs/shared-models';
 
 export interface VehicleEntryPrintProps {
     rec: any,
@@ -58,6 +59,9 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
     const qrData = `
     Vehicle No       - ${vehData?.vehicleNo ? vehData?.vehicleNo : "-"}
     `;
+
+    console.log(vehData?.vehicleStateRecords[0]?.vehicleTypeEnum, 'vehData?.vehicleStateRecords[0]?.vehicleTypeEnum');
+
     return (
         <>
             <Card title='VEHICLE ENTRY PRINT'
@@ -125,9 +129,17 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                                     </div>
                                 ))}
                             </Col>
-                            <Col span={6}>
-                                <QRCode type="svg" errorLevel='H' size={220} value={qrData} />
-                            </Col>
+                            {vehData?.vehicleStateRecords[0]?.vehicleTypeEnum === "RETURN" ? (
+                                <Col span={6}>
+                                    <div style={{ filter: "blur(5px)" }}>
+                                        <QRCode type="svg" errorLevel='H' size={220} value={qrData} />
+                                    </div>
+                                </Col>
+                            ) : (
+                                <Col span={6}>
+                                    <QRCode type="svg" errorLevel='H' size={220} value={qrData} />
+                                </Col>
+                            )}
                         </Row>
 
                         <br />

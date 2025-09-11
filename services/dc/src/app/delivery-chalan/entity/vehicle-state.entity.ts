@@ -68,5 +68,7 @@ export class VehicleStateEntity {
         name: "version_flag"
     })
     versionFlag: number;
-
+    
+    @Column('text', { name: 'remarks', nullable: true })
+    remarks: string;
 }

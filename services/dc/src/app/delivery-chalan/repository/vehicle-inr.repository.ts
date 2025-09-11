@@ -70,7 +70,7 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
             let vehicleStateQuery = `
             SELECT vs.id, vs.vid, vs.vinr_id AS vinrId, vs.votr_id AS votrId, vs.state AS vehicleType,
                    vs.is_active AS isActive, vs.created_at AS createdAt, vs.created_user AS createdUser,
-                   vs.updated_at AS updatedAt, vs.updated_user AS updatedUser, vs.version_flag AS versionFlag
+                   vs.updated_at AS updatedAt, vs.updated_user AS updatedUser, vs.version_flag AS versionFlag,vs.remarks
             FROM vehicle_state vs
             WHERE 1=1
         `;

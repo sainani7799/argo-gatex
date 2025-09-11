@@ -11,6 +11,7 @@ import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
 import { VHRService } from "./vhr.service";
 import { VehicleReqDTO } from "./dto/vehicle-req.dto";
+import { VehicleStatusDTO } from "./dto/vehicle-status.dto";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
@@ -214,6 +215,16 @@ export class VHRController {
   async updateWeightByVINRid(@Body() req: any): Promise<CommonResponse> {
     try {
       return await this.vhrService.updateWeightByVINRid(req);
+    } catch (error) {
+      return (error);
+    }
+  }
+
+  @Post('/updateVehicleStatusByRefIdAndVehicleNo')
+  @ApiBody({ type: VehicleStatusDTO })
+  async updateVehicleStatusByRefIdAndVehicleNo(@Body() req: any): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.updateVehicleStatusByRefIdAndVehicleNo(req);
     } catch (error) {
       return (error);
     }

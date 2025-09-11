@@ -14,11 +14,13 @@ const VehcileEntry = () => {
         OPEN: "green",
         LOADING: "blue",
         UNLOADING: "orange",
-        PAUSE: "gray",
+        PAUSE: "gold",
         LOAD_COMPLETED: "purple",
         UNLOAD_COMPLETED: "red",
-        CLOSED: "blue"
+        CLOSED: "geekblue",
+        RETURN: "volcano"
     };
+
 
     const vhrService = new VHRServices();
     const [page, setPage] = React.useState(1)
@@ -385,7 +387,7 @@ const VehcileEntry = () => {
                     defaultActiveKey="1" tabBarStyle={{ display: 'flex', justifyContent: 'center' }} onChange={onChangeTabs}>
 
                     <TabPane
-                     tab={<><ArrowDownOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle IN</span></>} key='1'>
+                        tab={<><ArrowDownOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle IN</span></>} key='1'>
 
                         <Table columns={columnsINR} dataSource={VINRData} bordered loading={isLodaing}
                             rowKey={(record, index) => index}
@@ -401,30 +403,31 @@ const VehcileEntry = () => {
                                     }
                                     return (
                                         <Card>
-                                        <Table
-                                            rowKey={(record, index) => index}
-                                            columns={columnsVehicleRecords}
-                                            dataSource={record.vehicleRecords}
-                                            pagination={false}
-                                            bordered
-                                        />
+                                            <Table
+                                                rowKey={(record, index) => index}
+                                                columns={columnsVehicleRecords}
+                                                dataSource={record.vehicleRecords}
+                                                pagination={false}
+                                                bordered
+                                            />
                                         </Card>
                                     );
                                 },
                                 rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
-                                expandIcon: ({ expanded, onExpand, record }) => (
-                                    expanded ? (
-                                        <UpCircleOutlined
-                                            onClick={(e) => onExpand(record, e)}
-                                            style={{ color: '#ed6f15', fontSize: "1.2rem" }}
-                                        />
-                                    ) : (
-                                        <DownCircleOutlined
-                                            onClick={(e) => onExpand(record, e)}
-                                            style={{ color: '#ed6f15', fontSize: "1.2rem" }}
-                                        />
-                                    )
-                                )
+                                expandIcon: ({ expanded, onExpand, record }) =>
+                                    record.vehicleRecords && record.vehicleRecords.length > 0 ? (
+                                        expanded ? (
+                                            <UpCircleOutlined
+                                                onClick={(e) => onExpand(record, e)}
+                                                style={{ color: "#ed6f15", fontSize: "1.2rem" }}
+                                            />
+                                        ) : (
+                                            <DownCircleOutlined
+                                                onClick={(e) => onExpand(record, e)}
+                                                style={{ color: "#ed6f15", fontSize: "1.2rem" }}
+                                            />
+                                        )
+                                    ) : null,
                             }}
 
                             components={{
@@ -456,13 +459,13 @@ const VehcileEntry = () => {
                                     }
                                     return (
                                         <Card>
-                                        <Table
-                                            columns={columnsVehicleRecords}
-                                            dataSource={record.vehicleRecords}
-                                            pagination={false}
-                                            bordered
-                                            rowKey={(record, index) => index}
-                                        />
+                                            <Table
+                                                columns={columnsVehicleRecords}
+                                                dataSource={record.vehicleRecords}
+                                                pagination={false}
+                                                bordered
+                                                rowKey={(record, index) => index}
+                                            />
                                         </Card>
                                     );
                                 },

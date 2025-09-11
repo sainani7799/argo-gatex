@@ -13,10 +13,11 @@ const VehicleEntryDetailedView = () => {
         OPEN: "green",
         LOADING: "blue",
         UNLOADING: "orange",
-        PAUSE: "gray",
+        PAUSE: "gold",
         LOAD_COMPLETED: "purple",
         UNLOAD_COMPLETED: "red",
-        CLOSED: "blue"
+        CLOSED: "geekblue",
+        RETURN: "volcano"
     };
 
     const [openModal, setOpenModal] = useState(Boolean);

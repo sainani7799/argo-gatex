@@ -18,6 +18,7 @@ import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
 import { GrnServices } from 'libs/shared-services';
+import { VehicleStatusDTO } from './dto/vehicle-status.dto';
 
 @Injectable()
 export class VHRService {
@@ -662,6 +663,26 @@ export class VHRService {
         return new CommonResponse(true, 2001, 'Weight Updated Successfully', result)
       } else {
         return new CommonResponse(false, 2000, 'Failed to Update Weight', [])
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateVehicleStatusByRefIdAndVehicleNo(req: VehicleStatusDTO): Promise<CommonResponse> {
+    try {
+      let vehEnQuery = await this.vehicleRepository.findOne({ where: { vinrId: req.refId, vehicleNo: req.vehicleNumber } });
+
+      if (!vehEnQuery) {
+        return new CommonResponse(false, 0, `No vehicle found for RefId - ${req.refId}, Vehicle Number - ${req.vehicleNumber}`)
+      } else {
+        let vehStateQuery = await this.vehicleStateRepository.findOne({ where: { vid: vehEnQuery.id } })
+        if (vehStateQuery.vState !== TruckStateEnum.OPEN) {
+          return new CommonResponse(false, 0, `Requested Vehicle Number - ${req.vehicleNumber} Truck Status is not in OPEN`)
+        } else {
+          await this.vehicleStateRepository.update({ vid: vehEnQuery.id }, { vState: TruckStateEnum.RETURN, remarks: req.remarks })
+          return;
+        }
       }
     } catch (err) {
       console.log(err);
