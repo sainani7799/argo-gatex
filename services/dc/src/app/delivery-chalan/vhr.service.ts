@@ -111,43 +111,52 @@ export class VHRService {
 
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
         for (const req of reqs) {
-          let entity = await transactionalEntityManager.findOne(VehicleOTREntity, {
+
+          // Find or create VehicleOTREntity
+          let votrEntity = await transactionalEntityManager.findOne(VehicleOTREntity, {
             where: [
               { refId: String(req.refId), fromType: req.fromType },
               { id: req.id }
             ]
           });
-
-          if (entity) {
-            Object.assign(entity, req);
+          if (votrEntity) {
+            Object.assign(votrEntity, req);
           } else {
-            entity = transactionalEntityManager.create(VehicleOTREntity, {
+            votrEntity = transactionalEntityManager.create(VehicleOTREntity, {
               ...req,
               expectedDeparture: new Date().toISOString(),
             });
           }
-          vOTREntityToSave.push(entity);
+          await transactionalEntityManager.save(votrEntity);
+          vOTREntityToSave.push(votrEntity);
 
+          // Prepare VehicleEntities with correct votrId
           const vehiclesToSave: VehicleEntity[] = [];
-
           for (const vehicleReq of req.vehicleRecords || []) {
-            let vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
+            let vehicleEntity;
 
-            if (vehicleEntity) {
-              Object.assign(vehicleEntity, { ...vehicleReq, votrId: req.id });
-            } else {
+            if (vehicleReq.id) { // only update if id is present
+              vehicleEntity = await transactionalEntityManager.findOne(VehicleEntity, { where: { id: vehicleReq.id } });
+              if (vehicleEntity) {
+                Object.assign(vehicleEntity, { ...vehicleReq, votrId: votrEntity.id });
+              }
+            }
+
+            if (!vehicleEntity) {
+              // always create new if not found or id is missing
               vehicleEntity = transactionalEntityManager.create(VehicleEntity, {
                 ...vehicleReq,
-                votrId: req.id,
+                votrId: votrEntity.id,
                 departureDateTime: new Date().toISOString()
               });
             }
+
             vehiclesToSave.push(vehicleEntity);
           }
-          if (vehiclesToSave.length > 0) {
-            vehicleEntitiesToSave.push(...vehiclesToSave);
-          }
+          await transactionalEntityManager.save(vehiclesToSave);
 
+
+          // Prepare VehicleStateEntities
           for (const vehicle of vehiclesToSave) {
             let vehicleStateEntity = await transactionalEntityManager.findOne(VehicleStateEntity, { where: { vid: vehicle.id } });
 
@@ -166,11 +175,11 @@ export class VHRService {
             }
             vehicleStateEntitiesToSave.push(vehicleStateEntity);
           }
-        }
 
-        await transactionalEntityManager.save(vOTREntityToSave);
-        await transactionalEntityManager.save(vehicleEntitiesToSave);
-        await transactionalEntityManager.save(vehicleStateEntitiesToSave);
+          if (vehicleStateEntitiesToSave.length > 0) {
+            await transactionalEntityManager.save(vehicleStateEntitiesToSave);
+          }
+        }
       });
 
       return new CommonResponse(true, 1, "Data Processed", {
@@ -180,7 +189,7 @@ export class VHRService {
       });
     } catch (err) {
       console.error(err);
-      return new CommonResponse(false, 0, "Error occurred", null);
+      return new CommonResponse(false, 0, err.message, null);
     }
   }
 
