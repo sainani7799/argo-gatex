@@ -17,10 +17,10 @@ import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm
 export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
     timezone: 'Z',
-    host: '139.59.79.77',
-    username: 'gate_demo',
-    password: 'gate@xyz',
-    database: 'gate-pass',
+    host: '165.22.220.143',
+    username: 'gate_dev',
+    password: 'Gate@xyz',
+    database: 'gatepass_dev',
     synchronize: false,
     logging:true,
     extra :{
@@ -28,18 +28,15 @@ export const typeOrmConfig: DataSourceOptions ={
     },
     entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]
 }
-
-
-
 export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
-    useFactory: async (): Promise<TypeOrmModuleOptions> => {
-      return {
-        ...typeOrmConfig,
-        synchronize: false,
-        logging: true,
-        autoLoadEntities: true
-      }
-    },
+  useFactory: async (): Promise<TypeOrmModuleOptions> => {
+    return {
+      ...typeOrmConfig,
+      synchronize: false,
+      logging: true,
+      autoLoadEntities: true
+    }
+  },
 
 }
 

@@ -1,7 +1,7 @@
 const mailLiveURL = "https://gatex-be.schemaxtech.in/api/mailer";
 
 export const config = {
-    APP_DC: "https://gatex-be.schemaxtech.in/api",
+    APP_DC: "https://gatex-dev-be.schemaxtech.in/api",
     // APP_DC: "http://localhost:3338/api",
     // APP_DC: "http://gpdc.seplcloud.com:3011/api",
     whatsapp_redirection_url: 'http://dev.schemaxtech.in/#',
@@ -9,7 +9,8 @@ export const config = {
     whatsapp_broadcast_url: 'http://206.189.138.212:3232/api',
     APP_ID: 1,
     APP_Name: 'Gate Pass',
-    APP_PRO_TICKET_URL: 'https://proticketx-v1-be.schemaxtech.in/static/helpx-bot/helpx-bot.js'
+    APP_PRO_TICKET_URL: 'https://proticketx-v1-be.schemaxtech.in/static/helpx-bot/helpx-bot.js',
+    XP_APP_WMS_SERVICE_URL: ' https://xpparel-qa-wms.schemaxtech.in/'
 }
 export const configVariables = {
     ...config

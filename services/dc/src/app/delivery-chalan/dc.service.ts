@@ -1,31 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { DcEntityRepository } from './repository/dc-repository';
-import { DcController } from './dc.controller';
-import { DcDto } from './dto/dc.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { DcEntity } from './entity/dc.entity';
-import { DcAdapter } from './adapter/dc.adapter';
-import { error } from 'console';
-import {
-  AcceptReq,
-  AssignReq,
-  DcEmailModel,
-  DcIdReq,
-  DcReportReq,
-  MessageParameters,
-  ReceivedDcReq,
-  RejectDcReq,
-  SecurityCheckReq,
-  StatusEnum,
-  UnitReq,
-} from 'libs/shared-models';
-import { UnitRepository } from '../masters/branch/repo/unit-repo';
-import * as XLSX from 'xlsx';
-import { DcItemEntityRepository } from './repository/dc-items.repo';
-import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
-import moment from 'moment';
 import axios from 'axios';
-import { json } from 'stream/consumers';
+import { AcceptReq, DcEmailModel, DcIdReq, DcReportReq, MessageParameters, ReceivedDcReq, RejectDcReq, ReqStatus, SecurityCheckReq, TruckStateEnum, UnitReq } from 'libs/shared-models';
+import { CommonResponse } from 'libs/shared-models/src/common';
+import { EmailService, WhatsAppNotificationService } from 'libs/shared-services';
+import { DataSource, In } from 'typeorm';
+import * as XLSX from 'xlsx';
+import { UnitRepository } from '../masters/branch/repo/unit-repo';
+import { DcAdapter } from './adapter/dc.adapter';
+import { DcDto } from './dto/dc.dto';
+import { RefIdStatusDTO } from './dto/ref-id-status-dto';
+import { TruckIdReqeust } from './dto/truck-id-dto';
+import { VehicleINRDto } from './dto/vehicle-inr-dto';
+import { VehicleOTRDto } from './dto/vehicle-out.dto';
+import { DcEntity } from './entity/dc.entity';
+import { VehicleEntity } from './entity/vehicle-en.entity';
+import { VehicleINREntity } from './entity/vehicle-inr.entity';
+import { VehicleOTREntity } from './entity/vehicle-otr.entity';
+import { VehicleStateEntity } from './entity/vehicle-state.entity';
+import { DcItemEntityRepository } from './repository/dc-items.repo';
+import { DcEntityRepository } from './repository/dc-repository';
+import { VehicleINRRepository } from './repository/vehicle-inr.repository';
+import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
+import { VehicleStateRepository } from './repository/vehicle-state.repo';
+import { VehicleRepository } from './repository/vehicle.repository';
 
 @Injectable()
 export class DcService {
@@ -35,76 +32,20 @@ export class DcService {
     private unitsRepo: UnitRepository,
     private dcItemSRepo: DcItemEntityRepository,
     private wpService: WhatsAppNotificationService,
-    private mailService : EmailService
-  ) {}
-
-  async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
-    console.log('-create api call');
-    try {
-      const slNoNonReturnable = await this.dcRepo.count({
-        where: { dcType: 'nonReturnable' },
-      });
-      const slNoReturnable = await this.dcRepo.count({
-        where: { dcType: 'returnable' },
-      });
-
-      const slNo =
-        req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
-      console.log(slNo, 'slNO');
-
-      const nextSlNo = slNo + 1;
-      console.log(nextSlNo, 'Next slNo');
-
-      const formattedSlNo = String(
-        Math.min(Math.max(nextSlNo, 1), 99999)
-      ).padStart(5, '0');
-      // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
-
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const lastTwoDigitsOfYear = String(currentYear).slice(-2);
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
-      const day = String(currentDate.getDate()).padStart(2, '0');
-
-      const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
-      const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
-      console.log(dcNum, 'dcNum');
-
-      req.dcNumber = dcNum;
-      const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
-        req,
-        isUpdate
-      );
-      console.log(convertedDcEntity, '----coneverted entity');
-      const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
-      // console.log(savedDcEntity,'--save dc entity')
-      const savedDcDto: DcDto =
-        this.dcAdapter.convertEntityToDto(savedDcEntity);
-      if (savedDcDto) {
-        const response = new CommonResponse(
-          true,
-          1,
-          isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
-          savedDcDto
-        );
-        return response;
-      } else {
-        throw new Error('DC saved but issue while transforming into DTO');
-      }
-    } catch (error) {
-      console.log('dc creation log');
-      console.log(error);
-      throw error;
-    }
-  }
-
+    private mailService: EmailService,
+    private vehicleStateRepository: VehicleStateRepository,
+    private vehicleINRRepository: VehicleINRRepository,
+    private vehicleOTRRepository: VehicleOTRRepository,
+    private vehicleRepository: VehicleRepository,
+    private dataSource: DataSource
+  ) { }
 
   // async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
   //   console.log('-create api call');
   //   try {
   //     const slNoNonReturnable = await this.dcRepo.count({
   //       where: { dcType: 'nonReturnable' },
-  //     });
+  //     });  SS
   //     const slNoReturnable = await this.dcRepo.count({
   //       where: { dcType: 'returnable' },
   //     });
@@ -175,6 +116,7 @@ export class DcService {
   //       });
   //       await Promise.all(updatePromises);
 
+  //     if (savedDcDto) {
   //       const response = new CommonResponse(
   //         true,
   //         1,
@@ -182,12 +124,106 @@ export class DcService {
   //         savedDcDto
   //       );
   //       return response;
+  //     } else {
+  //       throw new Error('DC saved but issue while transforming into DTO');
+  //     }
   //   } catch (error) {
   //     console.log('dc creation log');
   //     console.log(error);
   //     throw error;
   //   }
   // }
+
+
+  async createDc(req: DcDto, isUpdate: boolean): Promise<CommonResponse> {
+    console.log('-create api call');
+    try {
+      const slNoNonReturnable = await this.dcRepo.count({
+        where: { dcType: 'nonReturnable' },
+      });
+      const slNoReturnable = await this.dcRepo.count({
+        where: { dcType: 'returnable' },
+      });
+
+      const slNo =
+        req.dcType === 'returnable' ? slNoReturnable : slNoNonReturnable;
+      console.log(slNo, 'slNO');
+
+      const nextSlNo = slNo + 1;
+      console.log(nextSlNo, 'Next slNo');
+
+      const formattedSlNo = String(
+        Math.min(Math.max(nextSlNo, 1), 99999)
+      ).padStart(5, '0');
+      // const formattedSlNo = String(Math.min(Math.max(slNo, 1), 99999)).padStart(5,'0');
+
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+      const lastTwoDigitsOfYear = String(currentYear).slice(-2);
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 as months are zero-indexed
+      const day = String(currentDate.getDate()).padStart(2, '0');
+
+      const returnablePrefix = req.dcType === 'returnable' ? 'GPR' : 'GP';
+      const dcNum = `${returnablePrefix}${lastTwoDigitsOfYear}${month}${day}${formattedSlNo}`;
+      console.log(dcNum, 'dcNum');
+
+      req.dcNumber = dcNum;
+      const convertedDcEntity: DcEntity = this.dcAdapter.convertDtoToEntity(
+        req,
+        isUpdate
+      );
+      console.log(convertedDcEntity, '----coneverted entity');
+      const savedDcEntity: DcEntity = await this.dcRepo.save(convertedDcEntity);
+      // console.log(savedDcEntity,'--save dc entity')
+      const savedDcDto: DcDto =
+        this.dcAdapter.convertEntityToDto(savedDcEntity);
+      if (!savedDcDto) {
+        throw new Error('DC saved but issue while transforming into DTO');
+      }
+      const emailAddresses = ['bhargavg@schemaxtech.com', 'bhanuteja.reddi@schemaxtech.com', 'rajesh.nalam@schemaxtech.com', 'naidulokesh728@gmail.com', 'ajaykumarbali96@gmail.com'];
+      const updatePromises = emailAddresses.map(async (email) => {
+        const updatePayload = {
+          dcId: savedDcDto.dcId,
+          isAssignable: 'YES',
+          emailId: email,
+          assignBy: 8, // Example hardcoded value
+          status: 'SENT FOR APPROVAL',
+          dcNumber: savedDcDto.dcNumber,
+          fromUnit: savedDcDto.fromUnitId,
+          toAddresserName: savedDcDto.toAddresser,
+          created_user: savedDcDto.createdUser,
+          purpose: savedDcDto.purpose,
+        };
+
+        // Update DC
+        const updateResponse = await this.updateDc(updatePayload);
+        if (!updateResponse?.status) {
+          console.error(`Failed to update DC for email ${email}`, updateResponse);
+        }
+
+        // Send Email
+        const emailResult = await this.sendDcMailForGatePass(updatePayload);
+        if (!emailResult) {
+          console.error(`Failed to send email to ${email}`);
+        } else {
+          console.log(`Email sent successfully to ${email}`);
+        }
+      });
+      await Promise.all(updatePromises);
+
+      const response = new CommonResponse(
+        true,
+        1,
+        isUpdate ? 'DC Updated Successfully' : 'DC Created Successfully',
+        savedDcDto
+      );
+      return response;
+    } catch (error) {
+      console.log('dc creation log');
+      console.log(error);
+      throw error;
+    }
+  }
 
 
   private async sendDcMailForGatePass(dto: any): Promise<boolean> {
@@ -231,7 +267,7 @@ export class DcService {
             <input type="hidden" id="dcId" value=${dto.dcId} />
         
             <a
-              href="https://gatex.schemaxtech.in/#/dc-email-detail-view/${dto.dcId}"
+              href="https://gatex-dev.schemaxtech.in/#/dc-email-detail-view/${dto.dcId}"
               style="
                 display: inline-block;
                 padding: 10px 20px;
@@ -243,7 +279,7 @@ export class DcService {
               >View Details of GatePass</a
             >
             <a
-            href="https://gatex.schemaxtech.in/#/dc-email/${dto.dcId}"
+            href="https://gatex-dev.schemaxtech.in/#/dc-email/${dto.dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -255,7 +291,7 @@ export class DcService {
             >Accept Gate Pass</a
           >
           <a
-            href="https://gatex.schemaxtech.in/#/dc-reject-mail/${dto.dcId}"
+            href="https://gatex-dev.schemaxtech.in/#/dc-reject-mail/${dto.dcId}"
             style="
               display: inline-block;
               padding: 10px 20px;
@@ -270,7 +306,7 @@ export class DcService {
         </html>
         `;
     dcDetails.subject = 'Gate Pass : ' + dto.dcNumber;
-  
+
     try {
       const res = await this.mailService.sendDcMail(dcDetails);
       return res.status === 201 && res.data.status;
@@ -329,7 +365,7 @@ export class DcService {
     messageContent += `*To: ${dto.toAddresserName || 'N/A'}* \\n`
     messageContent += `*Created By: ${dto.created_user || 'N/A'}* \\n`
     messageContent += `*Purpose: ${dto.purpose || 'N/A'}* \\n`
-    messageContent +=`Please click the link below for details`;
+    messageContent += `Please click the link below for details`;
 
     // Parameters for the WhatsApp template
     const parameters = [
@@ -358,7 +394,7 @@ export class DcService {
           console.log(`Message sent successfully to ${contact}`);
         }
       }
-     
+
 
       return new CommonResponse(
         true,
@@ -438,11 +474,86 @@ export class DcService {
     }
   }
 
+  // async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
+  //   console.log(dto, 'SecurityCheckReq');
+  //   const currentDate = new Date();
+  //   const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
+  //   if (dcRecord) {
+  //     const updateData = await this.dcRepo.update(
+  //       { dcId: dto.dcId },
+  //       {
+  //         status: dto.status,
+  //         securityUser: dto.securityUser,
+  //         checkoutTime: dto.checkoutTime,
+  //         securityCheckedDate: currentDate,
+  //       }
+  //     );
+  //     return new CommonResponse(true, 333, 'update successfully', updateData);
+  //   } else {
+  //     return new CommonResponse(false, 6666, 'something went wrong');
+  //   }
+  // }
+
   async securityCheckDone(dto: SecurityCheckReq): Promise<CommonResponse> {
-    console.log(dto, 'SecurityCheckReq');
+    console.log(dto, "SecurityCheckReq");
     const currentDate = new Date();
+
+    // Fetch the DC record
     const dcRecord = await this.dcRepo.findOne({ where: { dcId: dto.dcId } });
-    if (dcRecord) {
+    if (!dcRecord) {
+      return new CommonResponse(false, 6666, "Dispatch Challan not found");
+    }
+
+    const dispatchChallanNo = dcRecord.dispatchChallanNo;
+
+    const validatePayload = {
+      username: "admin", // from gate pass
+      unitCode: "B3", // hardcoded
+      companyCode: "5000", // hardcoded
+      userId: 20, // replace with actual user ID
+      srIds: [dispatchChallanNo], // required challanNo
+      remarks: "",
+      iNeedVendorInfoAlso: false,
+      iNeedTruckInfoAlso: false,
+      iNeedSrItemsAlso: false,
+      iNeedSrItemsAttrAlso: false,
+    };
+
+    try {
+      console.log('-----------')
+      const validateResponse = await axios.post(
+        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/validateCheckoutShippingRequest",
+        validatePayload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (!validateResponse?.data || validateResponse?.data?.status !== true) {
+        return new CommonResponse(false, 6667, "Validation failed for Shipping Request");
+      }
+      const approvePayload = {
+        username: "admin", // from gate pass
+        unitCode: "B3", // hardcoded
+        companyCode: "5000", // hardcoded
+        userId: 20, // replace with actual user ID
+        srId: dispatchChallanNo, // required challanNo
+        remarks: "",
+        truckOutTimes: [{ truckId: 0, checkoutDateTime: null, remarks: null }]
+      };
+
+      const approveResponse = await axios.post(
+        "https://xpparel-demo-pkdms.schemaxtech.in/shipping-request/checkoutShippingRequest",
+        approvePayload,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(approveResponse.data)
+
+      if (!approveResponse?.data || approveResponse?.data?.status !== true) {
+        return new CommonResponse(false, 6668, 'Approved');
+      }
+
       const updateData = await this.dcRepo.update(
         { dcId: dto.dcId },
         {
@@ -452,9 +563,11 @@ export class DcService {
           securityCheckedDate: currentDate,
         }
       );
-      return new CommonResponse(true, 333, 'update successfully', updateData);
-    } else {
-      return new CommonResponse(false, 6666, 'something went wrong');
+
+      return new CommonResponse(true, 333, "Updated successfully", updateData);
+    } catch (error) {
+      console.error("Error in securityCheckDone:", error.message || error);
+      return new CommonResponse(false, 9999, "An error occurred during the security check");
     }
   }
 
@@ -935,3 +1048,12 @@ export class DcService {
     return new CommonResponse(false, 0, 'No data found');
   }
 }
+
+
+
+
+
+
+
+
+

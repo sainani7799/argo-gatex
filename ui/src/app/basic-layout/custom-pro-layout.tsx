@@ -5,6 +5,7 @@ import Icon, {
   AuditOutlined,
   BarChartOutlined,
   CalendarOutlined,
+  CarOutlined,
   CheckCircleOutlined,
   CreditCardOutlined,
   DeleteOutlined,
@@ -234,6 +235,11 @@ const menuData = [
         name: 'Receiver',
         icon: <InboxOutlined  />,
       },
+      // {
+      //   path: '/vehicle-grid',
+      //   name: 'Vehicle',
+      //   icon: <CarOutlined />,
+      // },
       {
         path: '/dc-security-in',
         name: 'Security Check In',
@@ -249,6 +255,12 @@ const menuData = [
         name: 'Gate Pass Report',
         icon: <BarChartOutlined  />,
       },
+      {
+        path: '/vehcile-entry',
+        name: 'Vehicle Entry',
+        icon: <CarOutlined  />,
+      },
+  
     ],
   }
 ];
@@ -409,7 +421,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
               colorMenuBackground: dark ? '#000' : '#047595',
               colorTextMenu: '#fff',
               colorBgMenuItemHover: '#005f7a',
-              colorTextMenuItemHover: '#fff',
+              colorTextMenuItemHover: '#000',
               colorBgCollapsedButton: '#047595',
               colorTextCollapsedButton: '#fff',
             },

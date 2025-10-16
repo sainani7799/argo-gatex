@@ -16,9 +16,10 @@ import { DcModule } from './delivery-chalan/dc.module';
 import { DatabaseModule } from './app.datasourse-db-module';
 import { RoleModule } from './masters/role/role.module';
 import { BuyerTeamModule } from './masters/buyer_team/buyer_team.module';
+import { VehicleModule } from './masters/vehicle/vehicle.module';
 
 @Module({
-  imports: [DatabaseModule,DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule,ApprovedUserModule,DcModule,RoleModule,BuyerTeamModule],
+  imports: [DatabaseModule,DepartmentModule, EmployeeModule, UserModule, DesignationModule, UnitModule, SectionsEntity,WarehouseModule,SupplierModule,ItemModule,AddressModule,ApprovedUserModule,DcModule,RoleModule,BuyerTeamModule,VehicleModule],
   controllers: [AppController],
   providers: [AppService],
 })

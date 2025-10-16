@@ -44,6 +44,10 @@ import CustomProLayout from './basic-layout/custom-pro-layout';
 import { LoginComponent } from './common';
 import DCSecurityIn from './dc/dc-security-in';
 import Dashboard from './dashboard/dashboard';
+import VehicleGrid from './dc/veichle-grid';
+import VehicleForm from './dc/vehicle-form';
+import VehcileEntry from './dc/vehicle-entry';
+import VehicleEntryDetailedView from './dc/vehicle-entry-detailed-view';
 
 const AppRoutes = () => {
   const router = createHashRouter(
@@ -56,7 +60,7 @@ const AppRoutes = () => {
             closeForm={() => { }}
             updateDetails={(undefined) => { }}
           />} />
-           <Route path="/dashboard" key="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" key="/dashboard" element={<Dashboard />} />
           <Route path="/users" key="/users" element={<UserFormGrid />} />
           <Route path="/employee-view" key="/employee-view" element={<EmployeeGrid />} />
           <Route path="/employee-form" element={<EmployeeForm employeeData={undefined}
@@ -112,17 +116,22 @@ const AppRoutes = () => {
           <Route path="/dc-detail-view-security/:id/:security" element={<DcDetailsView dcId={undefined} />} />
           <Route path="/dc-mail/:id" element={<DcMail dcId={undefined} />} />
           <Route path="/approval-user" element={<ApproverGrid />} />
+          <Route path="/vehcile-entry" element={<VehcileEntry />} />
+          <Route path="/vehcile-entry-detailed-view" element={<VehicleEntryDetailedView />} />
           <Route path="/approval-user-from" element={<ApprovedUserForm
             data={undefined}
             isUpdate={false}
             closeForm={() => { }}
             updateApprovalUser={(undefined) => { }} />} />
+          <Route path="/vehicle-grid" key="/vehicle-grid" element={<VehicleGrid />} />
+          <Route path="/vehicle-form" key="/vehicle-form" element={<VehicleForm updateDetails={undefined} isUpdate={false} veichleData={undefined} closeForm={undefined} />} />
         </Route>
         <Route path="/login" element={< LoginComponent />} />
         <Route path="/dc-email-detail-view/:id" element={<DcEmailDetailsView dcId={undefined} />} />
         <Route path="/dc-email/:id" element={<DcMail dcId={undefined} />} />
         <Route path="/dc-reject-mail/:id" element={<DcRejectMail dcId={undefined} />} />
         <Route path="/login" key="/login" element={<LoginComponent />} />
+
       </Route>
     )
   );
