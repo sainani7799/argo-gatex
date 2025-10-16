@@ -5,22 +5,9 @@ pipeline {
         PATH = "${WORKSPACE}/node_modules/.bin:$PATH"
     }
     stages {
-        stage('Check Node Version') {
-            steps {
-                sh 'node -v'
-                sh 'npm -v'
-            }
-        }
         stage('Install Dependencies') {
             steps {
-                sh 'ls -la' // List files to confirm presence of package.json
                 sh 'npm install --force'
-            }
-        }
-        stage('Check Nx Version') {
-            steps {
-                sh 'nx --version'
-                sh 'nx reset'
             }
         }
         stage('Build Backend') {
@@ -45,12 +32,12 @@ pipeline {
         }
         stage('Transfer Build Files') {
             steps {
-                sshagent(credentials: ['3']) { // Use the correct credentials ID here
+                sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
-                        ssh root@165.22.220.143 "rm -rf /var/www/html/gate_app/*"
-                        ssh root@165.22.220.143 "rm -rf /var/www/html/gate_pass/dist/services"
-                        scp -r $CI_PROJECT_DIR/dist/ui/* root@165.22.220.143:/var/www/html/gate_app
-                        scp -r $CI_PROJECT_DIR/dist/services root@165.22.220.143:/var/www/html/gate_pass/dist
+                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_app/*"
+                        ssh root@139.59.79.77 "rm -rf /var/www/html/gate_pass/dist/services"
+                        scp -r $CI_PROJECT_DIR/dist/ui/* root@139.59.79.77:/var/www/html/gate_app
+                        scp -r $CI_PROJECT_DIR/dist/services root@139.59.79.77:/var/www/html/gate_pass/dist
                     '''
                 }
             }
@@ -58,9 +45,9 @@ pipeline {
         /*
         stage('start Services with PM2') {
             steps {
-                sshagent(credentials: ['3']) { // Use the correct credentials ID here
+                sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
-                        ssh root@165.22.220.143 <<EOF
+                        ssh root@139.59.79.77 <<EOF
 pm2 start /var/www/html/gate_pass/dist/services/dc/main.js --name "gate-7000"
 pm2 save
 EOF
@@ -71,10 +58,10 @@ EOF
         */
         stage('Restart Services with PM2') {
             steps {
-                sshagent(credentials: ['3']) { // Use the correct credentials ID here
+                sshagent(credentials: ['2']) { // Use the correct credentials ID here
                     sh '''
-                        ssh root@165.22.220.143 <<EOF
-pm2 restart gate-7000
+                        ssh root@139.59.79.77 <<EOF
+pm2 restart gate-3338
 pm2 save
 EOF
                     '''
