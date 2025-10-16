@@ -11,7 +11,7 @@ async function bootstrap() {
   }));
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
-  const port = 7000;
+  const port = 3338;
   const options = new DocumentBuilder()
     .setTitle('Planning Operations')
     .setDescription('')
