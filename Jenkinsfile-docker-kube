@@ -1,0 +1,100 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_REGISTRY   = "rajudunna"
+        DOCKER_CREDENTIALS = "3"
+        DOCKERFILES_DIR   = "dockerfiles"
+        KUBECONFIG = credentials('kubeconfig-uat')
+        UAT_CONTEXT       = "do-sgp1-sq-mes-uat"
+    }
+
+    stages {
+        stage('Build and Push Docker Images') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: "${DOCKER_CREDENTIALS}",
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
+                    script {
+                        def TIMESTAMP = new Date().format("yyyy-MM-dd-HHmmss")
+
+                        sh """
+                            echo "\$DOCKER_PASS" | docker login -u "\$DOCKER_USER" --password-stdin
+
+                            for dockerfile in ${DOCKERFILES_DIR}/Dockerfile.*; do
+                                service=\$(basename "\$dockerfile" | cut -d'.' -f2)
+                                imageName="${DOCKER_REGISTRY}/\$service:${TIMESTAMP}"
+                                latestTag="${DOCKER_REGISTRY}/\$service:latest"
+
+                                echo "🐳 Building image for \$service"
+                                docker build -f "\$dockerfile" -t "\$imageName" -t "\$latestTag" .
+
+                                echo "📤 Pushing \$imageName and \$latestTag"
+                                docker push "\$imageName"
+                                docker push "\$latestTag"
+                            done
+                        """
+                    }
+                }
+            }
+        }
+        /*
+        stage('Restart UAT Deployment') {
+            steps {
+                sh """
+                    echo "switching to UAT context..."
+                    kubectl config use-context ${UAT_CONTEXT}
+
+                    kubectl rollout restart deployment/gatex-uat-backend-deployment
+                    kubectl rollout restart deployment/gatex-uat-ui-deployment
+                """
+            }
+        }
+        */
+    }
+    post {
+        success {
+            script {
+                def startTime = currentBuild.getStartTimeInMillis()
+                def endTime = System.currentTimeMillis()
+                def duration = (endTime - startTime) / 1000
+
+                // Send success email
+                emailext(
+                    to: 'saikumarvardhi7799@gmail.com, rajud@schemaxtech.com, arunkumars@schemaxtech.com',
+                    subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                    body: """Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' was successful.
+Start Time: ${new Date(startTime)}
+End Time: ${new Date(endTime)}
+Duration: ${duration} seconds
+Check console output at ${env.BUILD_URL} to view the results."""
+                )
+            }
+        }
+        failure {
+            script {
+                def logFile = "${WORKSPACE}/log"
+                def logContent = ""
+                if (fileExists(logFile)) {
+                    logContent = readFile(logFile).take(1000)
+                } else {
+                    logContent = "Log file not found."
+                }
+
+                // Send failure email
+                emailext(
+                    to: 'saikumarvardhi7799@gmail.com, rajud@schemaxtech.com, arunkumars@schemaxtech.com',
+                    subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
+                    body: """Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.
+Error Log:
+${logContent}
+Check console output at ${env.BUILD_URL} to view the results."""
+                )
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+# 🌟 Base Image
+FROM node:18-alpine AS base
+
+# 🌟 Build Stage (No node_modules in final image)
+FROM base AS builder
+WORKDIR /app
+
+# ✅ Copy only required files (Avoid unnecessary files)
+COPY package.json package-lock.json ./
+RUN npm install --force
+
+# ✅ Copy the entire monorepo (excluding node_modules)
+COPY . .
+
+
+# ✅ Build the required service
+RUN npx nx run services-dc:build
+
+
+# 🌟 Production Stage (Minimal Image)
+FROM node:18-alpine AS runtime
+WORKDIR /app
+
+# ✅ Copy only the built service (No node_modules)
+COPY --from=builder /app/dist/services/dc ./dist
+
+
+# ✅ Start the application
+CMD ["node", "dist/main.js"]
