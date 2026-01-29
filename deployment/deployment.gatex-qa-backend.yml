@@ -70,10 +70,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - gatex-qa-backend-be.xpparel.com
+        - gatex-qa-be.xpparel.com
       secretName: gatex-qa-backend-tls
   rules:
-    - host: gatex-qa-backend-be.xpparel.com
+    - host: gatex-qa-be.xpparel.com
       http:
         paths:
           - path: /
