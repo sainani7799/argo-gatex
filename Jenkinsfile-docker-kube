@@ -7,6 +7,7 @@ pipeline {
         DOCKERFILES_DIR   = "dockerfiles"
         KUBECONFIG = credentials('kubeconfig-uat')
         UAT_CONTEXT       = "do-sgp1-sq-mes-uat"
+        NAME_SPACE        = "mes-qa"
     }
 
     stages {
@@ -42,19 +43,17 @@ pipeline {
                 }
             }
         }
-        /*
         stage('Restart UAT Deployment') {
             steps {
                 sh """
                     echo "switching to UAT context..."
                     kubectl config use-context ${UAT_CONTEXT}
 
-                    kubectl rollout restart deployment/gatex-uat-backend-deployment
-                    kubectl rollout restart deployment/gatex-uat-ui-deployment
+                    kubectl rollout restart deployment/gatex-qa-backend-deployment -n {NAME_SPACE}
+                    kubectl rollout restart deployment/gatex-qa-ui-deployment -n {NAME_SPACE}
                 """
             }
         }
-        */
     }
     post {
         success {
