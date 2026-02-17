@@ -43,7 +43,7 @@ pipeline {
                 }
             }
         }
-        stage('Restart UAT Deployment') {
+        stage('Restart QA Deployment') {
             steps {
                 sh """
                     echo "switching to UAT context..."
