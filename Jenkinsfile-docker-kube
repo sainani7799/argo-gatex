@@ -49,8 +49,8 @@ pipeline {
                     echo "switching to UAT context..."
                     kubectl config use-context ${UAT_CONTEXT}
 
-                    kubectl rollout restart deployment/gatex-qa-backend-deployment -n {NAME_SPACE}
-                    kubectl rollout restart deployment/gatex-qa-ui-deployment -n {NAME_SPACE}
+                    kubectl rollout restart deployment/gatex-qa-backend-deployment -n ${NAME_SPACE}
+                    kubectl rollout restart deployment/gatex-qa-ui-deployment -n ${NAME_SPACE}
                 """
             }
         }
