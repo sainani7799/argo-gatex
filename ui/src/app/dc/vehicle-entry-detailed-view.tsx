@@ -28,6 +28,8 @@ const VehicleEntryDetailedView = () => {
     const data = location.state
     const [printData, setPrintData] = useState<any>([]);
 
+    const vehicleTableData = data?.fullData ? [data.fullData.vehicle] : data?.vehicleRecords || [];
+
     const columns: any = [
         {
             title: "Vehicle No",
@@ -112,7 +114,15 @@ const VehicleEntryDetailedView = () => {
                 }
             >
                 <Descriptions bordered column={2} size="small">
-                    <Descriptions.Item label={<span style={{ fontWeight: "bold" }}>Reference Number</span>}>{data?.refNumber}</Descriptions.Item>
+                    {/* <Descriptions.Item label={<span style={{ fontWeight: "bold" }}>Reference Number</span>}>{data?.refNumber}</Descriptions.Item> */}
+                    <Descriptions.Item label={<span style={{ fontWeight: "bold" }}>Reference Number</span>}>
+                        {data?.refNumbers
+                            ? data.refNumbers.map(ref => (
+                                <Tag style={{ fontWeight: 'bold' }} key={ref} color="blue">{ref}</Tag>
+                            ))
+                            : data?.refNumber}
+                    </Descriptions.Item>
+
                     {data?.expectedArrival !== undefined ? (
                         <Descriptions.Item label={<span style={{ fontWeight: "bold" }}>Expected Arrival</span>}>
                             {dayjs(data?.expectedArrival).format('YYYY-MM-DD')}
@@ -137,7 +147,7 @@ const VehicleEntryDetailedView = () => {
                 </Descriptions>
                 <br />
 
-                <Table columns={columns} dataSource={data?.vehicleRecords} rowKey={id} pagination={false} bordered />
+                <Table columns={columns} dataSource={vehicleTableData} rowKey={id} pagination={false} bordered />
 
             </Card >
 

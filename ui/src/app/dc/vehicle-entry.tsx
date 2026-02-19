@@ -22,6 +22,9 @@ const VehcileEntry = () => {
     };
 
 
+
+
+
     const vhrService = new VHRServices();
     const [page, setPage] = React.useState(1)
     const [VINRData, setVINRData] = useState<any>([])
@@ -40,6 +43,9 @@ const VehcileEntry = () => {
         getVINRALL();
         getVOTRALL();
     }, []);
+
+
+
 
     const getVINRALL = () => {
         setIsLoading(true)
@@ -74,6 +80,83 @@ const VehcileEntry = () => {
         })
     }
 
+    const vehicleRefMap = {};
+    VINRData.forEach(ref => {
+        ref.vehicleRecords?.forEach(vehicle => {
+            const latestState = vehicle.vehicleStateRecords?.[vehicle.vehicleStateRecords.length - 1];
+            if (!vehicleRefMap[vehicle.vehicleNo]) {
+                vehicleRefMap[vehicle.vehicleNo] = {
+                    id: ref.id,
+                    vehicleNo: vehicle.vehicleNo,
+                    refNumbers: [],
+                    expectedArrival: ref.expectedArrival,
+                    from: ref.from,
+                    to: ref.to,
+                    fromType: ref.fromType,
+                    toType: ref.toType,
+                    readyToInData: ref.readyToInData,
+                    reqStatusData: ref.reqStatusData,
+                    driverName: vehicle.dName || "-",
+                    driverContact: vehicle.dContact || "-",
+                    vehicleType: vehicle.vehicleType || "-",
+                    inHouseVehicle: vehicle.inHouseVehicle === 1 ? "YES" : "NO",
+                    status: latestState?.vehicleTypeEnum || "-",
+                    remarks: latestState?.remarks || "-",
+                    fullData: {
+                        ref,
+                        vehicle
+                    }
+                };
+            }
+            if (!vehicleRefMap[vehicle.vehicleNo].refNumbers.includes(ref.refNumber)) {
+                vehicleRefMap[vehicle.vehicleNo].refNumbers.push(ref.refNumber);
+            }
+        });
+    });
+
+    const vehicleWiseINRData = Object.values(vehicleRefMap);
+
+
+
+    const vehicleRefMapOTR: any = {};
+    VOTRData.forEach(ref => {
+        ref.vehicleRecords?.forEach(vehicle => {
+            const latestState = vehicle.vehicleStateRecords?.[vehicle.vehicleStateRecords.length - 1];
+            if (!vehicleRefMapOTR[vehicle.vehicleNo]) {
+                vehicleRefMapOTR[vehicle.vehicleNo] = {
+                    id: ref.id,
+                    vehicleNo: vehicle.vehicleNo,
+                    refNumbers: [],
+                    expectedDeparture: ref.expectedDeparture,
+                    from: ref.from,
+                    to: ref.to,
+                    fromType: ref.fromType,
+                    toType: ref.toType,
+                    readyToSendData: ref.readyToSendData,
+                    reqStatusData: ref.reqStatusData,
+                    driverName: vehicle.dName || "-",
+                    driverContact: vehicle.dContact || "-",
+                    vehicleType: vehicle.vehicleType || "-",
+                    inHouseVehicle: vehicle.inHouseVehicle === 1 ? "YES" : "NO",
+                    status: latestState?.vehicleTypeEnum || "-",
+                    remarks: latestState?.remarks || "-",
+                    fullData: {
+                        ref,
+                        vehicle
+                    }
+                };
+            }
+            if (!vehicleRefMapOTR[vehicle.vehicleNo].refNumbers.includes(ref.refNumber)) {
+                vehicleRefMapOTR[vehicle.vehicleNo].refNumbers.push(ref.refNumber);
+            }
+        });
+    });
+
+    const vehicleWiseOTRData = Object.values(vehicleRefMapOTR);
+
+
+
+
     const showDrawer = (rec) => {
         setOpenFormData(rec);
         // form.setFieldsValue({ reqStatus: rec.reqStatus });
@@ -94,11 +177,33 @@ const VehcileEntry = () => {
             render: (text, object, index) => (page - 1) * 10 + (index + 1),
         },
         {
-            title: "Refernce Number",
-            dataIndex: "refNumber",
+            title: "Vehicle Number",
+            dataIndex: "vehicleNo",
             align: "center",
-            render: (rec) => (rec ? rec : '-')
+            render: (rec) => (
+                <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                    {rec}
+                </span>
+            )
         },
+
+
+        {
+            title: "Reference Number",
+            dataIndex: "refNumbers",
+            align: "center",
+            render: (refs) => (
+                <>
+                    {refs.map((ref, i) => (
+                        <Tag style={{ fontWeight: "bold" }} color="blue" key={i}>
+                            {ref}
+                        </Tag>
+                    ))}
+                </>
+            )
+        },
+
+
         {
             title: "Expected Arrival",
             dataIndex: "expectedArrival",
@@ -151,40 +256,62 @@ const VehcileEntry = () => {
                 );
             }
         },
+        // {
+        //     title: "Actions",
+        //     align: "center",
+        //     render: (rec) => {
+        //         const menu = (
+        //             <>
+        //                 <Menu >
+        //                     <Tooltip title='Detail View' placement="rightTop"  >
+        //                         <Menu.Item key='1'
+        //                             icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
+        //                         </Menu.Item>
+        //                     </Tooltip>
+
+        //                     <Tooltip title='Edit' placement="rightTop" >
+        //                         <Menu.Item key='2'
+        //                             icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
+        //                         >
+        //                         </Menu.Item>
+        //                     </Tooltip>
+        //                 </Menu>
+        //             </>
+        //         )
+        //         return (
+        //             <span>
+        //                 {/* 3-dots dropdown trigger */}
+        //                 <Tooltip placement="top" title="Actions">
+        //                     <Dropdown overlay={menu} trigger={['click']}>
+        //                         <MoreOutlined style={{ fontSize: '20px', color: 'blue', cursor: 'pointer' }} />
+        //                     </Dropdown>
+        //                 </Tooltip>
+        //             </span>
+        //         );
+        //     },
+        // },
+
         {
             title: "Actions",
             align: "center",
-            render: (rec) => {
-                const menu = (
-                    <>
-                        <Menu >
-                            <Tooltip title='Detail View' placement="rightTop"  >
-                                <Menu.Item key='1'
-                                    icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
-                                </Menu.Item>
-                            </Tooltip>
-
-                            <Tooltip title='Edit' placement="rightTop" >
-                                <Menu.Item key='2'
-                                    icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
-                                >
-                                </Menu.Item>
-                            </Tooltip>
-                        </Menu>
-                    </>
-                )
-                return (
-                    <span>
-                        {/* 3-dots dropdown trigger */}
-                        <Tooltip placement="top" title="Actions">
-                            <Dropdown overlay={menu} trigger={['click']}>
-                                <MoreOutlined style={{ fontSize: '20px', color: 'blue', cursor: 'pointer' }} />
-                            </Dropdown>
-                        </Tooltip>
-                    </span>
-                );
-            },
+            render: (rec) => (
+                <Tooltip title="Detail View" placement="top">
+                    <EyeOutlined
+                        style={{
+                            color: "blue",
+                            fontSize: 22,
+                            cursor: "pointer"
+                        }}
+                        onClick={() =>
+                            navigate(`/vehcile-entry-detailed-view?${rec.id}`, {
+                                state: rec
+                            })
+                        }
+                    />
+                </Tooltip>
+            )
         },
+
     ]
 
     const columnsVehicleRecords: any = [
@@ -239,15 +366,33 @@ const VehcileEntry = () => {
             render: (text, object, index) => (page - 1) * 10 + (index + 1),
         },
         {
-            title: "Refernce Number",
-            dataIndex: "refNumber",
+            title: "Vehicle Number",
+            dataIndex: "vehicleNo",
             align: "center",
-            render: (rec) => (rec ? rec : '-'),
-            filteredValue: [String(searchedText).toLowerCase()],
-            onFilter: (value, record) => {
-                return SequenceUtils.globalFilter(value, record)
-            }
+            render: (rec) => (
+                <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                    {rec}
+                </span>
+            )
         },
+
+
+        {
+            title: "Reference Number",
+            dataIndex: "refNumbers",
+            align: "center",
+            render: (refs) => (
+                <>
+                    {refs.map((ref, i) => (
+                        <Tag style={{ fontWeight: "bold" }} color="blue" key={i}>
+                            {ref}
+                        </Tag>
+                    ))}
+                </>
+            )
+        },
+
+
         {
             title: "Expected Departure",
             dataIndex: "expectedDeparture",
@@ -296,40 +441,62 @@ const VehcileEntry = () => {
                 );
             }
         },
+        // {
+        //     title: "Actions",
+        //     align: "center",
+        //     render: (rec) => {
+        //         const menu = (
+        //             <>
+        //                 <Menu >
+        //                     <Tooltip title='Detail View' placement="rightTop"  >
+        //                         <Menu.Item key='1'
+        //                             icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
+        //                         </Menu.Item>
+        //                     </Tooltip>
+
+        //                     <Tooltip title='Edit' placement="rightTop" >
+        //                         <Menu.Item key='2'
+        //                             icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
+        //                         >
+        //                         </Menu.Item>
+        //                     </Tooltip>
+        //                 </Menu>
+        //             </>
+        //         )
+        //         return (
+        //             <span>
+        //                 {/* 3-dots dropdown trigger */}
+        //                 <Tooltip placement="top" title="Actions">
+        //                     <Dropdown overlay={menu} trigger={['click']}>
+        //                         <MoreOutlined style={{ fontSize: '20px', color: 'blue', cursor: 'pointer' }} />
+        //                     </Dropdown>
+        //                 </Tooltip>
+        //             </span>
+        //         );
+        //     },
+        // },
+
         {
             title: "Actions",
             align: "center",
-            render: (rec) => {
-                const menu = (
-                    <>
-                        <Menu >
-                            <Tooltip title='Detail View' placement="rightTop"  >
-                                <Menu.Item key='1'
-                                    icon={<EyeOutlined style={{ color: "blue", fontSize: 20 }} onClick={() => navigate(`/vehcile-entry-detailed-view?${rec.id}`, { state: rec })} />} >
-                                </Menu.Item>
-                            </Tooltip>
-
-                            <Tooltip title='Edit' placement="rightTop" >
-                                <Menu.Item key='2'
-                                    icon={<EditOutlined style={{ fontSize: '24px', color: 'blue' }} onClick={() => showDrawer(rec)} />}
-                                >
-                                </Menu.Item>
-                            </Tooltip>
-                        </Menu>
-                    </>
-                )
-                return (
-                    <span>
-                        {/* 3-dots dropdown trigger */}
-                        <Tooltip placement="top" title="Actions">
-                            <Dropdown overlay={menu} trigger={['click']}>
-                                <MoreOutlined style={{ fontSize: '20px', color: 'blue', cursor: 'pointer' }} />
-                            </Dropdown>
-                        </Tooltip>
-                    </span>
-                );
-            },
+            render: (rec) => (
+                <Tooltip title="Detail View" placement="top">
+                    <EyeOutlined
+                        style={{
+                            color: "blue",
+                            fontSize: 22,
+                            cursor: "pointer"
+                        }}
+                        onClick={() =>
+                            navigate(`/vehcile-entry-detailed-view?${rec.id}`, {
+                                state: rec
+                            })
+                        }
+                    />
+                </Tooltip>
+            )
         },
+
     ]
 
     const onChangeTabs = (key) => {
@@ -389,46 +556,46 @@ const VehcileEntry = () => {
                     <TabPane
                         tab={<><ArrowDownOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle IN</span></>} key='1'>
 
-                        <Table columns={columnsINR} dataSource={VINRData} bordered loading={isLodaing}
+                        <Table columns={columnsINR} dataSource={vehicleWiseINRData} bordered loading={isLodaing}
                             rowKey={(record, index) => index}
 
                             pagination={{
                                 onChange: (page) => { setPage(page); }
                             }}
 
-                            expandable={{
-                                expandedRowRender: (record) => {
-                                    if (!record.vehicleRecords || record.vehicleRecords.length === 0) {
-                                        return <Empty />
-                                    }
-                                    return (
-                                        <Card>
-                                            <Table
-                                                rowKey={(record, index) => index}
-                                                columns={columnsVehicleRecords}
-                                                dataSource={record.vehicleRecords}
-                                                pagination={false}
-                                                bordered
-                                            />
-                                        </Card>
-                                    );
-                                },
-                                rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
-                                expandIcon: ({ expanded, onExpand, record }) =>
-                                    record.vehicleRecords && record.vehicleRecords.length > 0 ? (
-                                        expanded ? (
-                                            <UpCircleOutlined
-                                                onClick={(e) => onExpand(record, e)}
-                                                style={{ color: "#ed6f15", fontSize: "1.2rem" }}
-                                            />
-                                        ) : (
-                                            <DownCircleOutlined
-                                                onClick={(e) => onExpand(record, e)}
-                                                style={{ color: "#ed6f15", fontSize: "1.2rem" }}
-                                            />
-                                        )
-                                    ) : null,
-                            }}
+                            // expandable={{
+                            //     expandedRowRender: (record) => {
+                            //         if (!record.vehicleRecords || record.vehicleRecords.length === 0) {
+                            //             return <Empty />
+                            //         }
+                            //         return (
+                            //             <Card>
+                            //                 <Table
+                            //                     rowKey={(record, index) => index}
+                            //                     columns={columnsVehicleRecords}
+                            //                     dataSource={record.vehicleRecords}
+                            //                     pagination={false}
+                            //                     bordered
+                            //                 />
+                            //             </Card>
+                            //         );
+                            //     },
+                            //     rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
+                            //     expandIcon: ({ expanded, onExpand, record }) =>
+                            //         record.vehicleRecords && record.vehicleRecords.length > 0 ? (
+                            //             expanded ? (
+                            //                 <UpCircleOutlined
+                            //                     onClick={(e) => onExpand(record, e)}
+                            //                     style={{ color: "#ed6f15", fontSize: "1.2rem" }}
+                            //                 />
+                            //             ) : (
+                            //                 <DownCircleOutlined
+                            //                     onClick={(e) => onExpand(record, e)}
+                            //                     style={{ color: "#ed6f15", fontSize: "1.2rem" }}
+                            //                 />
+                            //             )
+                            //         ) : null,
+                            // }}
 
                             components={{
                                 header: {
@@ -445,45 +612,45 @@ const VehcileEntry = () => {
 
                     <TabPane tab={<><ArrowUpOutlined style={{ fontSize: '20px', color: '#016582', marginRight: 8 }} /><span style={{ fontSize: "0.9rem" }}>Vehicle OUT</span></>} key='2'>
 
-                        <Table columns={columnsOTR} dataSource={VOTRData} bordered loading={isLodaing}
+                        <Table columns={columnsOTR} dataSource={vehicleWiseOTRData} bordered loading={isLodaing}
                             rowKey={(record, index) => index}
 
                             pagination={{
                                 onChange: (page) => { setPage(page); }
                             }}
 
-                            expandable={{
-                                expandedRowRender: (record) => {
-                                    if (!record.vehicleRecords || record.vehicleRecords.length === 0) {
-                                        return <Empty />
-                                    }
-                                    return (
-                                        <Card>
-                                            <Table
-                                                columns={columnsVehicleRecords}
-                                                dataSource={record.vehicleRecords}
-                                                pagination={false}
-                                                bordered
-                                                rowKey={(record, index) => index}
-                                            />
-                                        </Card>
-                                    );
-                                },
-                                rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
-                                expandIcon: ({ expanded, onExpand, record }) => (
-                                    expanded ? (
-                                        <UpCircleOutlined
-                                            onClick={(e) => onExpand(record, e)}
-                                            style={{ color: '#ed6f15', fontSize: "1.2rem" }}
-                                        />
-                                    ) : (
-                                        <DownCircleOutlined
-                                            onClick={(e) => onExpand(record, e)}
-                                            style={{ color: '#ed6f15', fontSize: "1.2rem" }}
-                                        />
-                                    )
-                                )
-                            }}
+                            // expandable={{
+                            //     expandedRowRender: (record) => {
+                            //         if (!record.vehicleRecords || record.vehicleRecords.length === 0) {
+                            //             return <Empty />
+                            //         }
+                            //         return (
+                            //             <Card>
+                            //                 <Table
+                            //                     columns={columnsVehicleRecords}
+                            //                     dataSource={record.vehicleRecords}
+                            //                     pagination={false}
+                            //                     bordered
+                            //                     rowKey={(record, index) => index}
+                            //                 />
+                            //             </Card>
+                            //         );
+                            //     },
+                            //     rowExpandable: (record) => record.vehicleRecords && record.vehicleRecords.length > 0,
+                            //     expandIcon: ({ expanded, onExpand, record }) => (
+                            //         expanded ? (
+                            //             <UpCircleOutlined
+                            //                 onClick={(e) => onExpand(record, e)}
+                            //                 style={{ color: '#ed6f15', fontSize: "1.2rem" }}
+                            //             />
+                            //         ) : (
+                            //             <DownCircleOutlined
+                            //                 onClick={(e) => onExpand(record, e)}
+                            //                 style={{ color: '#ed6f15', fontSize: "1.2rem" }}
+                            //             />
+                            //         )
+                            //     )
+                            // }}
 
                             components={{
                                 header: {

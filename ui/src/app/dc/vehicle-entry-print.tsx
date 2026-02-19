@@ -100,7 +100,14 @@ const VehicleEntryPrint = (props: VehicleEntryPrintProps) => {
                         <Row gutter={[16, 16]} style={{ marginLeft: '10px' }}>
                             <Col span={15}>
                                 {[
-                                    { label: "Reference Number", value: data?.refNumber },
+                                    // { label: "Reference Number", value: data?.refNumber },
+                                    {
+                                        label: "Reference Number",
+                                        value: data?.refNumbers?.length
+                                            ? data.refNumbers.join(", ")
+                                            : data?.refNumber || "-"
+                                    },
+
                                     {
                                         label: data?.expectedArrival !== undefined ? "Expected Arrival" : "Expected Departure",
                                         value: dayjs(data?.expectedArrival || data?.expectedDeparture).format('YYYY-MM-DD')

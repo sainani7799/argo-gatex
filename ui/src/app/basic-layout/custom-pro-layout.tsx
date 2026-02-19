@@ -86,17 +86,17 @@ const iconMap = {
   UserOutlined: antdIcons.UserOutlined,
   DashboardOutlined: antdIcons.DashboardOutlined,
   LogoutOutlined: antdIcons.LogoutOutlined,
-  PieChartOutlined:antdIcons.PieChartOutlined,
-  CarOutlined:antdIcons.CarOutlined,
-  EditOutlined:antdIcons.EditOutlined,
-  PicCenterOutlined:antdIcons.PicCenterOutlined,
-  UsergroupAddOutlined:antdIcons.UsergroupAddOutlined,
-  RadiusSettingOutlined:antdIcons.RadiusSettingOutlined,
-  AppstoreOutlined:antdIcons.AppstoreOutlined,
-  SettingOutlined:antdIcons.SettingOutlined,
-  DollarOutlined:antdIcons.DollarOutlined,
-  FileSearchOutlined:antdIcons.FileSearchOutlined,
-  SlidersOutlined:antdIcons.SlidersOutlined
+  PieChartOutlined: antdIcons.PieChartOutlined,
+  CarOutlined: antdIcons.CarOutlined,
+  EditOutlined: antdIcons.EditOutlined,
+  PicCenterOutlined: antdIcons.PicCenterOutlined,
+  UsergroupAddOutlined: antdIcons.UsergroupAddOutlined,
+  RadiusSettingOutlined: antdIcons.RadiusSettingOutlined,
+  AppstoreOutlined: antdIcons.AppstoreOutlined,
+  SettingOutlined: antdIcons.SettingOutlined,
+  DollarOutlined: antdIcons.DollarOutlined,
+  FileSearchOutlined: antdIcons.FileSearchOutlined,
+  SlidersOutlined: antdIcons.SlidersOutlined
 
   // Add other icons as needed
 };
@@ -104,12 +104,12 @@ function renderIcon(menuId, iconName) {
   console.log(menuId);
   console.log(iconName);
   const IconComponent = iconMap[iconName];
-      if (IconComponent) {
-          return <IconComponent key={menuId} />;
-      } else {
-          return null;
-      }
+  if (IconComponent) {
+    return <IconComponent key={menuId} />;
+  } else {
+    return null;
   }
+}
 
 const getSubMenu = (route) => {
   if (route && route?.subMenuData && route?.subMenuData?.length != 1) {
@@ -170,7 +170,7 @@ const menuData = [
       {
         path: '/employee-view',
         name: 'Employee',
-        icon: <UserOutlined  />,
+        icon: <UserOutlined />,
       },
       // {
       //   path: '/users',
@@ -180,32 +180,32 @@ const menuData = [
       {
         path: '/supplier-view',
         name: 'Buyers',
-        icon: <ShoppingOutlined  />,
+        icon: <ShoppingOutlined />,
       },
       {
         path: '/address-view',
         name: 'Address',
-        icon: <EnvironmentOutlined  />,
+        icon: <EnvironmentOutlined />,
       },
       {
         path: '/approval-user',
         name: 'Approval Users',
-        icon: <CheckCircleOutlined  />,
+        icon: <CheckCircleOutlined />,
       },
       {
         path: '/warehouse-grid',
         name: 'Warehouse',
-        icon: <HomeOutlined  />,
+        icon: <HomeOutlined />,
       },
       {
         path: '/item-grid',
         name: 'Items',
-        icon: <ShoppingCartOutlined  />,
+        icon: <ShoppingCartOutlined />,
       },
       {
         path: '/buyerteam-grid',
         name: 'Userwise (Buyer Team)',
-        icon: <TeamOutlined  />,
+        icon: <TeamOutlined />,
       },
 
     ],
@@ -213,54 +213,54 @@ const menuData = [
   {
     path: '/dc',
     name: 'Gate Pass',
-    icon: <SecurityScanOutlined  />,
+    icon: <SecurityScanOutlined />,
     children: [
-      {
-        path: '/dc-view',
-        name: 'Indent',
-        icon: <FileTextOutlined  />,
-      },
-      {
-        path: '/dc-return-view',
-        name: 'Returnable',
-        icon: <UndoOutlined  />,
-      },
-      {
-        path: '/dc-approval-grid',
-        name: 'Approver',
-        icon: <AuditOutlined  />,
-      },
-      {
-        path: '/dc-received',
-        name: 'Receiver',
-        icon: <InboxOutlined  />,
-      },
+      // {
+      //   path: '/dc-view',
+      //   name: 'Indent',
+      //   icon: <FileTextOutlined  />,
+      // },
+      // {
+      //   path: '/dc-return-view',
+      //   name: 'Returnable',
+      //   icon: <UndoOutlined  />,
+      // },
+      // {
+      //   path: '/dc-approval-grid',
+      //   name: 'Approver',
+      //   icon: <AuditOutlined  />,
+      // },
+      // {
+      //   path: '/dc-received',
+      //   name: 'Receiver',
+      //   icon: <InboxOutlined  />,
+      // },
       // {
       //   path: '/vehicle-grid',
       //   name: 'Vehicle',
       //   icon: <CarOutlined />,
       // },
-      {
-        path: '/dc-security-in',
-        name: 'Security Check In',
-        icon: <SafetyOutlined  />,
-      },
-      {
-        path: '/dc-security',
-        name: 'Security Check Out',
-        icon: <SafetyOutlined  />,
-      },
-      {
-        path: '/security-report',
-        name: 'Gate Pass Report',
-        icon: <BarChartOutlined  />,
-      },
+      // {
+      //   path: '/dc-security-in',
+      //   name: 'Security Check In',
+      //   icon: <SafetyOutlined  />,
+      // },
+      // {
+      //   path: '/dc-security',
+      //   name: 'Security Check Out',
+      //   icon: <SafetyOutlined  />,
+      // },
+      // {
+      //   path: '/security-report',
+      //   name: 'Gate Pass Report',
+      //   icon: <BarChartOutlined  />,
+      // },
       {
         path: '/vehcile-entry',
         name: 'Vehicle Entry',
-        icon: <CarOutlined  />,
+        icon: <CarOutlined />,
       },
-  
+
     ],
   }
 ];
@@ -306,30 +306,30 @@ export const CustomProLayout = (props: CustomProLayoutProps) => {
 
   let menu
   const getAllSubMenus = () => {
-    menu =IAMClientAuthContext.user ? IAMClientAuthContext.user : '';
+    menu = IAMClientAuthContext.user ? IAMClientAuthContext.user : '';
     const menuData = IAMClientAuthContext.menuAccessObject ? IAMClientAuthContext.menuAccessObject : [];
-const menus = menuData.sort((a,b) => a.orderId - b.orderId);
-// console.log(menus)
+    const menus = menuData.sort((a, b) => a.orderId - b.orderId);
+    // console.log(menus)
     const processedMenuData = menus.map(menuItem => {
-        const menuItems = menuItem.subMenuData.sort((a,b) => a.orderId - b.orderId);
-      const processedSubMenuItems =  menuItems?.map(subMenuItem => (
+      const menuItems = menuItem.subMenuData.sort((a, b) => a.orderId - b.orderId);
+      const processedSubMenuItems = menuItems?.map(subMenuItem => (
 
         {
-            path: subMenuItem.path,
-            label: subMenuItem.subMenuName,
-            key: subMenuItem.subMenuId, 
-            icon:renderIcon(subMenuItem.subMenuId,subMenuItem.subMenuIconName),
-      }))
+          path: subMenuItem.path,
+          label: subMenuItem.subMenuName,
+          key: subMenuItem.subMenuId,
+          icon: renderIcon(subMenuItem.subMenuId, subMenuItem.subMenuIconName),
+        }))
       return {
-        key: menuItem.menuId, 
+        key: menuItem.menuId,
         label: menuItem.menuName,
-        icon: renderIcon(menuItem.menuId,menuItem.menuIconName),
-        path:menuItem.path?menuItem.path:'/',
+        icon: renderIcon(menuItem.menuId, menuItem.menuIconName),
+        path: menuItem.path ? menuItem.path : '/',
         children: processedSubMenuItems.length > 0 ? processedSubMenuItems : null,
 
       };
     });
-  
+
     return processedMenuData;
   };
 
@@ -363,30 +363,30 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
       children: item.children ? transformMenuData(item.children) : undefined,
     }));
 
-    const handleMouseEnter = () => {
-      setCollapsed(false);
-    };
-  
-    const handleMouseLeave = () => {
-      setCollapsed(true);
-    };
-  
-    useEffect(() => {
-      const sidebar = document.querySelector('.ant-pro-sider');
+  const handleMouseEnter = () => {
+    setCollapsed(false);
+  };
+
+  const handleMouseLeave = () => {
+    setCollapsed(true);
+  };
+
+  useEffect(() => {
+    const sidebar = document.querySelector('.ant-pro-sider');
+    if (sidebar) {
+      sidebar.addEventListener('mouseenter', handleMouseEnter);
+      sidebar.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
       if (sidebar) {
-        sidebar.addEventListener('mouseenter', handleMouseEnter);
-        sidebar.addEventListener('mouseleave', handleMouseLeave);
+        sidebar.removeEventListener('mouseenter', handleMouseEnter);
+        sidebar.removeEventListener('mouseleave', handleMouseLeave);
       }
-  
-      return () => {
-        if (sidebar) {
-          sidebar.removeEventListener('mouseenter', handleMouseEnter);
-          sidebar.removeEventListener('mouseleave', handleMouseLeave);
-        }
-      };
-    }, []);
-    
-  
+    };
+  }, []);
+
+
   return (
     <ProConfigProvider dark={dark}>
       <div
@@ -428,7 +428,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
           }}
           menu={{
             // request: async () => treeRouter(getAllSubMenus()),
-            request: async () =>  menuData,
+            request: async () => menuData,
             collapsedShowGroupTitle: true,
           }}
           location={{
@@ -531,8 +531,8 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
                   setPathname(item.path || '/');
                 }}
               >
-                 {item.icon}
-                 <span style={{ marginLeft: 8 }}>{item.name}</span>
+                {item.icon}
+                <span style={{ marginLeft: 8 }}>{item.name}</span>
               </Link>
             );
           }}
@@ -551,7 +551,7 @@ const menus = menuData.sort((a,b) => a.orderId - b.orderId);
           )}
         >
           <Content style={{ minHeight: '90vh' }}>
-            <Outlet/>
+            <Outlet />
           </Content>
         </ProLayout>
       </div>
