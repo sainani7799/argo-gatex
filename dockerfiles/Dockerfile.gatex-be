@@ -1,41 +1,55 @@
-# 🌟 Base Image
+# -----------------------------
+# Base image (shared)
+# -----------------------------
 FROM node:18-alpine AS base
-
-# 🌟 Build Stage (No node_modules in final image)
-FROM base AS builder
 WORKDIR /app
 
-# ✅ Copy only required files (Avoid unnecessary files)
-COPY package.json package-lock.json ./
-RUN npm install --force
+# Disable npm extra logs for speed
+ENV NPM_CONFIG_LOGLEVEL=error
 
-# ✅ Copy the entire monorepo (excluding node_modules)
+# -----------------------------
+# Dependencies stage (cache layer)
+# -----------------------------
+FROM base AS deps
+
+# Copy only dependency-related files first (max cache reuse)
+COPY package.json package-lock.json nx.json tsconfig.base.json ./
+
+# Install ALL dependencies (needed for Nx build)
+RUN npm ci --no-audit --progress=false
+
+# -----------------------------
+# Builder stage
+# -----------------------------
+FROM deps AS builder
+
+# Copy rest of the source
 COPY . .
 
+# Build specific service
+RUN npx nx build services-dc
 
-# ✅ Build the required service
-RUN npx nx run services-dc:build
+# Remove dev dependencies after build
+RUN npm prune --omit=dev
 
-
-# 🌟 Production Stage (Minimal Image)
+# -----------------------------
+# Runtime stage (minimal)
+# -----------------------------
 FROM node:18-alpine AS runtime
 WORKDIR /app
 
-# ✅ Copy only the built service (No node_modules)
+ENV NODE_ENV=production
+
+# Copy production node_modules
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy built service
 COPY --from=builder /app/dist/services/dc ./dist
-# copy script which generate the env js at runtime before nginx starts
+
+# Copy runtime env script
 COPY dockerfiles/generate-env.sh /docker-entrypoint.d/10-generate-env.sh
 RUN chmod +x /docker-entrypoint.d/10-generate-env.sh
 
-{
-    APP_DC: "https://gatex-qa-be.xpparel.com/api",
-    APP_ID: 1,
-    APP_Name: 'Gate Pass',
-    APP_IAM_SERVER_URL: "https://mes-qa-iam-be.xpparel.com",
-    APP_IAM_CLIENT_ID: "e5b8e845-650e-49e5-a860-71eea76ca545",
-    XP_APP_WMS_SERVICE_URL: ' https://xpparel-qa-wms.schemaxtech.in/'
-}
+EXPOSE 3000
 
-
-# ✅ Start the application
 CMD ["node", "dist/main.js"]
