@@ -1,0 +1,214 @@
+.ant-layout-sider-children .logo {
+    height: 32px !important;
+    margin: 0px !important;
+    position: relative;
+    height: 32px;
+    padding-left: 5px;
+    text-align: left;
+    overflow: hidden;
+    line-height: 32px;
+    background: #001529;
+    transition: all 0.3s;
+  }
+  .ant-layout-sider-children .logo img {
+    float: left;
+    height: 32px;
+  }
+  .ant-layout-sider-children .logo h1 {
+    display: inline-block;
+    margin: 0;
+    color: #fff;
+    font-weight: 600;
+    font-size: 30px;
+    font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+    vertical-align: middle;
+  }
+  .ant-menu.ant-menu-dark.ant-menu-root {
+    text-align: left;
+    padding-top: 10px !important;
+    margin-left: 10% !important;
+  }
+  .ant-pro-global-header-trigger {
+    float: left;
+    margin-left: 20px;
+    font-size: 25px;
+    line-height: normal;
+  }
+  .ant-layout-header {
+    height: 42px;
+  }
+  .ant-pro-global-header {
+    position: relative;
+    height: 42px;
+    box-shadow: rgba(0, 21, 41, 0.08) 0px 1px 4px;
+    padding: 0px;
+    background: rgb(255, 255, 255);
+  }
+  
+  .content.header {
+    position: relative;
+    height: auto !important;
+    box-shadow: rgba(0, 21, 41, 0.08) 0px 1px 4px;
+    padding: 0px;
+    background: #3f7477 !important;
+    margin: -24px -24px 0px;
+    padding: 0px 10px !important;
+    font-size: 23px;
+    color: #ffffff;
+    line-height: unset;
+  }
+  .content.header h3 {
+    color: #fff;
+    padding: 0;
+  }
+  .ant-btn-primary{
+    margin-right:15%;
+  }
+  @media screen and (max-width: 992px) {
+    .ant-pro-global-header-trigger {
+      margin-left: 10px;
+    }
+  }
+  @media screen and (min-width: 992px) {
+    .ant-layout-sider.ant-layout-sider-dark {
+      flex: 0 0 230px !important;
+      max-width: 230px !important;
+      min-width: 200px;
+      width: 230px !important;
+    }
+    .ant-layout-sider.ant-layout-sider-dark.ant-layout-sider-collapsed {
+      flex: 0 0 80px !important;
+      max-width: 80p !important;
+      min-width: 80px;
+      width: 80px !important;
+    }
+    .samllLogo {
+      display: none !important;
+    }
+  }
+  .samllLogo {
+    display: block;
+    float: left;
+  }
+  .samllLogo img {
+    width: 32px;
+    float: left;
+  }
+  .ant-layout {
+    min-height: 100vh;
+  }
+  .ant-menu-sub.ant-menu-inline > .ant-menu-item,
+  .ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+    height: auto !important;
+  }
+  .ant-menu-inline .ant-menu-item,
+  .ant-menu-inline .ant-menu-submenu-title {
+    white-space: unset !important;
+    height: auto !important;
+  }
+  .ant-menu-inline-collapsed .ant-menu-item,
+  .ant-menu-inline-collapsed .ant-menu-submenu-title {
+    white-space: unset;
+    height: 30 !important;
+  }
+  /* .ant-menu-inline .ant-menu-item a{
+      text-overflow: ellipsis !important;
+      overflow: hidden;
+  } */
+  .ant-menu-vertical > .ant-menu-item,
+  .ant-menu-vertical-left > .ant-menu-item,
+  .ant-menu-vertical-right > .ant-menu-item,
+  .ant-menu-inline > .ant-menu-item,
+  .ant-menu-vertical > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-vertical-left > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-vertical-right > .ant-menu-submenu > .ant-menu-submenu-title,
+  .ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+    height: 30px !important;
+    line-height: 20px !important;
+      font-size: 12px;
+      padding: 5px 0;
+  }
+  .ant-menu-vertical .ant-menu-item:not(:last-child),
+  .ant-menu-vertical-left .ant-menu-item:not(:last-child),
+  .ant-menu-vertical-right .ant-menu-item:not(:last-child),
+  .ant-menu-inline .ant-menu-item:not(:last-child) {
+    margin-bottom: 0px !important;
+  }
+  .line-height-20 {
+    line-height: 20px;
+  }
+  ul,li{
+    list-style-type: none;
+    margin-left: auto;
+  }
+  .categoryNav .ant-menu-submenu-title {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  div.ant-menu-submenu-title {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .anticon anticon-user-switch{
+    margin-left: 2%;
+  }
+  /* .ant-menu-item ant-menu-item-only-child{
+    margin-left: 3%;
+  } */
+  @media only screen and (max-width: 600px) {
+    #masters\$Menu {
+      margin-left: -20px;
+  }
+  a{
+    margin-left: 10%;
+  }
+  .ant-menu-dark.ant-menu-inline .ant-menu-item, .ant-menu-dark.ant-menu-inline .ant-menu-submenu-title{
+    width: 82% !important;
+  }
+  .ant-form-item{
+    margin-bottom: 0px;
+    margin-top:7px;
+  }
+  .ant-form-item .ant-form-item-label{
+    padding:0px;
+  }
+  .ant-row.ant-form-item.formControls{
+    margin-top: 13px;
+  }
+  .spins {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    width: 75vw;
+        height: 75vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+  }
+    /*.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td{
+      padding: 0px 0px !important;
+    }
+     footer{
+      display: none;
+    }
+    .ant-layout-sider-children{
+      height:80%;
+    }
+    .ant-card-head {
+      padding: 0px inherit;
+    }
+    .ant-layout-header{
+      height: -5px !important;
+    }
+    .ant-layout-content{
+      padding: 0% !important;
+    } 
+    .ant-layout-content{
+      padding: 2px;
+      margin: -25px 16px !important;
+    }
+    .ant-layout-header,.ant-layout-content{
+      padding: 5px !important;
+    }*/
+  }

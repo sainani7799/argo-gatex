@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: mes-qa
+  name: qa-gatex-node-modules-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadOnlyMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 174.138.21.99
+    path: /root/sq-gatex-uat/node_modules
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: mes-qa
+  name: qa-gatex-node-modules-pvc
+spec:
+  accessModes:
+    - ReadOnlyMany
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: ""

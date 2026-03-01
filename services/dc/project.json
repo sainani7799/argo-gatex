@@ -1,0 +1,57 @@
+{
+  "name": "services-dc",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "services/dc/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/services/dc",
+        "main": "services/dc/src/main.ts",
+        "tsConfig": "services/dc/tsconfig.app.json",
+        "assets": ["services/dc/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "services/dc/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "services-dc:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "services-dc:build:development"
+        },
+        "production": {
+          "buildTarget": "services-dc:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["services/dc/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "services/dc/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

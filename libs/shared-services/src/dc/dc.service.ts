@@ -1,0 +1,139 @@
+import { AcceptReq, AssignReq, DcIdReq, DcReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "@gatex/shared-models";
+import { CommonAxiosServicePms } from "../common-axios-service-prs";
+import { CommonResponse } from "@gatex/shared-models";
+
+export class DcService extends CommonAxiosServicePms {
+    private DcController = '/dc';
+
+
+    async createDc(dto: DcReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/createDc', dto);
+
+    }
+    async updateDc(dto: AssignReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/updateDc', dto);
+
+    }
+    async acceptDc(dto: AcceptReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/acceptDc', dto);
+
+    }
+
+    async rejectDc(dto: RejectDcReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/rejectDc', dto);
+
+    }
+
+    async getAllGatePass(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePass', req);
+    }
+
+    async getIntransAndCompleteGatePass(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getIntransAndCompleteGatePass', req);
+    }
+
+    async getDcDetailsById(req: DcIdReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getDcDetailsById', req);
+
+    }
+
+    async receivedDc(dto: ReceivedDcReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/receivedDc', dto);
+
+    }
+
+    async securityCheckDone(dto: SecurityCheckReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/securityCheckDone', dto);
+
+    }
+
+    async securityCheckIn(dto: SecurityCheckReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/securityCheckIn', dto);
+
+    }
+
+    async getSecurityGatePass(dto: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getSecurityGatePass', dto);
+    }
+
+    async getSecurityInGatePass(dto: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getSecurityInGatePass', dto);
+    }
+
+    async securityReport(dto: any): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/securityReport', dto);
+    }
+
+    async getAllUnitsData(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllUnitsData');
+    }
+
+    async getDcDrop(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getDcDrop');
+    }
+
+    async getItemDrop(): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getItemDrop');
+    }
+
+    async getEmpDrop(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getEmpDrop');
+    }
+
+    async getApprovedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getApprovedBy');
+    }
+
+    async getCheckedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getCheckedBy');
+    }
+
+    async getReceivedBy(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getReceivedBy');
+    }
+
+    async getPurpose(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getPurpose');
+    }
+
+    async getCreated(): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getCreated');
+    }
+
+    async getAllGatePassTounit(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassTounit', req);
+    }
+
+    async updateRetunableData(req: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/updateRetunableData', req);
+    }
+
+    async getAllGatePassReturnable(req: UnitReq): Promise<any> {
+        return await this.axiosPostCall(this.DcController + '/getAllGatePassReturnable', req);
+    }
+
+    async getVINR(req?: any[]): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINR', req);
+    }
+
+    async getVOTR(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTR', req);
+    }
+
+    async getVINRALL(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVINRALL', req);
+    }
+
+    async getVOTRALL(req?: any): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/getVOTRALL', req);
+    }
+
+    async createVehicle(req?: any[]): Promise<CommonResponse> {
+        return await this.axiosPostCall(this.DcController + '/createVehicle', req);
+    }
+
+}
+
+// // export async function acceptDc(dto) {
+//     return await this.axiosPostCall(this.DcController + '/acceptDc', dto);
+//   }

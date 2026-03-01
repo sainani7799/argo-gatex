@@ -1,0 +1,78 @@
+name: 1. Build DEV Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - dockerfiles/**
+      - packages/**
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        include:
+          - dockerfile: dockerfiles/Dockerfile.gatex-ui
+            image: gatex-ui
+          - dockerfile: dockerfiles/Dockerfile.gatex-be
+            image: gatex-be
+
+    outputs:
+      version: ${{ steps.vars.outputs.VERSION }}
+      tag_suffix: ${{ steps.vars.outputs.TAG_SUFFIX }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set version and tag suffix
+        id: vars
+        run: |
+          # Extract version from package.json or use run number
+          BASE_VERSION="1.0.${{ github.run_number }}"
+          
+          # Always build with -dev suffix (for both main push and release)
+          TAG_SUFFIX="dev"
+          VERSION="${BASE_VERSION}-dev"
+          
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "TAG_SUFFIX=${TAG_SUFFIX}" >> $GITHUB_OUTPUT
+          echo "Building version: ${VERSION}"
+
+      - name: Build and Push images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Summary
+        run: |
+          echo "✅ Successfully built and pushed: ${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}"
+          echo ""
+          echo "🎯 Next Steps:"
+          echo "To promote to ALPHA, go to Actions → '2. Promote to ALPHA' → Run workflow"
+

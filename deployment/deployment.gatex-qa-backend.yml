@@ -1,0 +1,85 @@
+# 2️⃣ gatex-qa-backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-backend-deployment
+  labels:
+    app: gatex-qa-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatex-qa-backend
+  template:
+    metadata:
+      labels:
+        app: gatex-qa-backend
+    spec:
+      containers:
+        - name: gatex-qa-backend
+          image: rajudunna/gatex-qa-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3338
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: node-modules-volume
+              mountPath: /app/node_modules
+      volumes:
+        - name: node-modules-volume
+          persistentVolumeClaim:
+            claimName: qa-gatex-node-modules-pvc
+
+---
+
+# 3️⃣ gatex-qa-backend Service (ClusterIP for Ingress routing)
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-backend-service
+spec:
+  selector:
+    app: gatex-qa-backend
+  ports:
+    - protocol: TCP
+      port: 3338
+      targetPort: 3338
+  type: ClusterIP
+
+
+
+---
+
+# 7️⃣ gatex-qa-backend Ingress with TLS
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-backend-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - gatex-qa-be.xpparel.com
+      secretName: gatex-qa-backend-tls
+  rules:
+    - host: gatex-qa-be.xpparel.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatex-qa-backend-service
+                port:
+                  number: 3338

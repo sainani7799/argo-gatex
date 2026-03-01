@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-ui-deployment
+  labels:
+    app: gatex-qa-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatex-qa-ui
+  template:
+    metadata:
+      labels:
+        app: gatex-qa-ui
+    spec:
+      containers:
+        - name: gatex-qa-ui
+          image: rajudunna/gatex-qa-ui:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+
+---
+# -------------------
+# UI Service (LoadBalancer for MetalLB)
+# -------------------
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-ui-service
+spec:
+  selector:
+    app: gatex-qa-ui
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+# -------------------
+# Ingress with HTTPS
+# -------------------
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: mes-qa
+  name: gatex-qa-ui-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - gatex-qa.xpparel.com
+      secretName: gatex-qa-ui-tls
+  rules:
+    - host: gatex-qa.xpparel.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gatex-qa-ui-service
+                port:
+                  number: 80
+

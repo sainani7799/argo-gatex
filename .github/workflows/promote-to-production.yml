@@ -1,0 +1,124 @@
+name: 4. Promote to PRODUCTION
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'rc version to promote prod(e.g., 1.0.5-rc)'
+        required: true
+        type: string
+
+jobs:
+  check_authorization:
+    runs-on: ubuntu-24.04
+    outputs:
+      authorized: ${{ steps.check.outputs.authorized }}
+    steps:
+      - name: Check if user is authorized
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.ORG_READ_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # List of allowed users and teams (format for teams: org/team-name)
+          # Examples: "user1 user2 schemax-pte-ltd/dev-team schemax-pte-ltd/qa-team"
+          ALLOWED_USERS="SCHEMAX-PTE-LTD/devops SCHEMAX-PTE-LTD/code_approvers"
+          
+          TRIGGERED_BY="${{ github.actor }}"
+          REPO="${{ github.repository }}"
+          ORG="${REPO%%/*}"
+          
+          echo "🔍 Checking authorization for user: $TRIGGERED_BY"
+          
+          # Check if user is directly listed
+          if echo "$ALLOWED_USERS" | grep -w "$TRIGGERED_BY" > /dev/null; then
+            echo "✅ User $TRIGGERED_BY is directly authorized"
+            echo "authorized=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          # Check team memberships
+          for entry in $ALLOWED_USERS; do
+            if [[ "$entry" == *"/"* ]]; then
+              # This is a team (format: org/team-name)
+              TEAM_SLUG="${entry#*/}"
+              echo "🔍 Checking if $TRIGGERED_BY is in team: $entry"
+              echo "   API endpoint: /orgs/$ORG/teams/$TEAM_SLUG/memberships/$TRIGGERED_BY"
+              
+              # Use GitHub API to check team membership
+              if gh api \
+                -H "Accept: application/vnd.github+json" \
+                -H "X-GitHub-Api-Version: 2022-11-28" \
+                "/orgs/$ORG/teams/$TEAM_SLUG/memberships/$TRIGGERED_BY" 2>&1 | tee /tmp/api_response.txt; then
+                
+                # Check if response indicates active membership
+                if grep -q '"state": "active"' /tmp/api_response.txt 2>/dev/null || \
+                   grep -q '"role"' /tmp/api_response.txt 2>/dev/null; then
+                  echo "✅ User $TRIGGERED_BY is authorized via team: $entry"
+                  echo "authorized=true" >> $GITHUB_OUTPUT
+                  exit 0
+                fi
+              else
+                echo "⚠️  API call failed for team $entry (user may not be a member)"
+              fi
+            fi
+          done
+          
+          echo "❌ User $TRIGGERED_BY is NOT authorized to promote to PRODUCTION"
+          echo "Allowed users and teams: $ALLOWED_USERS"
+          echo "authorized=false" >> $GITHUB_OUTPUT
+          exit 1
+
+  promote_to_prod:
+    needs: check_authorization
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        include:
+          - image: gatex-ui
+          - image: gatex-be
+
+    steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install crane
+        run: |
+          curl -sL "https://github.com/google/go-containerregistry/releases/download/v0.19.0/go-containerregistry_Linux_x86_64.tar.gz" > crane.tar.gz
+          tar -xzf crane.tar.gz crane
+          chmod +x crane
+          sudo mv crane /usr/local/bin/
+
+      - name: Retag image to Production
+        run: |
+          DEV_TAG="${{ github.event.inputs.version }}"
+          ALPHA_TAG="${DEV_TAG/-dev/-alpha}"
+          PROD_TAG="${DEV_TAG/-dev/-prod}"
+          
+          echo "Retagging ${ALPHA_TAG} to ${PROD_TAG}"
+          
+          crane copy \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${ALPHA_TAG} \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${PROD_TAG}
+          
+          # Also tag as latest for production
+          crane copy \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${ALPHA_TAG} \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:latest
+          
+          echo "✅ Successfully tagged ${{ matrix.image }}:${PROD_TAG} and latest"
+
+      - name: Summary
+        run: |
+          echo "🎉 Production deployment complete!"
+          echo ""
+          echo "Images tagged:"
+          echo "  - ${{ matrix.image }}:${PROD_TAG}"
+          echo "  - ${{ matrix.image }}:latest"

@@ -1,0 +1,27 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { TruckStateEnum, VehilceRequestTypeEnum } from "@gatex/shared-models";
+
+export class TruckIdReqeust {
+
+    @ApiProperty()
+    truckId: number;
+
+    @ApiProperty()
+    vinrId: bigint;
+   
+    @ApiProperty()
+    votrId: bigint;
+
+    @ApiProperty()
+    state: TruckStateEnum;
+
+    @ApiProperty()
+    vrType: VehilceRequestTypeEnum;
+
+    @ApiProperty()
+    dateTime: string;
+
+    @ApiProperty()
+    person: string;
+}
+
