@@ -1,10 +1,10 @@
 import { BankOutlined, EditOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Divider, message, Drawer, Switch, Dropdown, Menu } from 'antd';
-import { SupplierService, WarehouseService } from 'libs/shared-services';
+import { SupplierService, WarehouseService } from '@gatex/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import WarehouseForm from './warehouse-form';
-import { CreateWarehouseDto, UnitReq } from 'libs/shared-models';
+import { CreateWarehouseDto, UnitReq } from '@gatex/shared-models';
 import Highlighter from 'react-highlight-words'
 import React from 'react';
 

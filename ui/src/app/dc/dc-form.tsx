@@ -29,7 +29,7 @@ import {
   StatusEnum,
   ToAddressReq,
   itemCode
-} from 'libs/shared-models';
+} from '@gatex/shared-models';
 import {
   AddressService,
   ApprovalUserService,
@@ -40,7 +40,7 @@ import {
   SupplierService,
   UnitService,
   WarehouseService,
-} from 'libs/shared-services';
+} from '@gatex/shared-services';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 const { Option } = Select;

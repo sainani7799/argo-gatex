@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message } from 'antd';
-import { BuyerTeamService, EmployeeService, RoleService, UserManagementServices } from 'libs/shared-services';
+import { BuyerTeamService, EmployeeService, RoleService, UserManagementServices } from '@gatex/shared-services';
 import { Link, useNavigate } from 'react-router-dom';
-import { CreateUserDto } from 'libs/shared-models';
+import { CreateUserDto } from '@gatex/shared-models';
 
 const { Option } = Select;
 

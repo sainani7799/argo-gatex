@@ -1,5 +1,3 @@
-
-
 export * from './customer-enum';
 export * from './message-response';
 export * from './message.request';

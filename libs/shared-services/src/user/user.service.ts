@@ -1,6 +1,6 @@
-import { AuthResponseModel,CreateUserDto,LoginDto, UserModel } from 'libs/shared-models/src'
+import { AuthResponseModel,CreateUserDto,LoginDto, UserModel } from '@gatex/shared-models';
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 
 export class UserManagementServices extends CommonAxiosServicePms {
     private userManagementController = '/user-management';

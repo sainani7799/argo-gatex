@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { TruckStateEnum, VehilceRequestTypeEnum } from "libs/shared-models";
+import { TruckStateEnum, VehilceRequestTypeEnum } from "@gatex/shared-models";
 
 export class TruckIdReqeust {
 

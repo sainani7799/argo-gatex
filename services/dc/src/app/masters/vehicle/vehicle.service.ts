@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { CommonResponse } from "libs/shared-models/src/common";
-import { UnitReq } from "libs/shared-models";
+import { CommonResponse } from "@gatex/shared-models";
+import { UnitReq } from "@gatex/shared-models";
 import { Raw } from "typeorm";
 import { VehicleRepository } from "./repository/vehicle.repository";
 import { VehicleAdapter } from "./dto/vehicle.adapter";

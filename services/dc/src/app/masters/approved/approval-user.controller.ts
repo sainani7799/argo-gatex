@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { ApprovedUserService } from "./approval-user.service";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { ApiConsumes } from "@nestjs/swagger";
 import { extname } from "path";
 import { FileInterceptor } from '@nestjs/platform-express';

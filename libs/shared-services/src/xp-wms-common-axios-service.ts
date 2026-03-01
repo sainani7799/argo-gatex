@@ -1,11 +1,11 @@
-import { AxiosRequestConfig } from 'axios'; 
-import { config as appConfig } from '../config';
+import { AxiosRequestConfig } from 'axios';
+import { configVariables } from '../config';
 import { AxiosInstance } from './axios-instance';
 
 
 
 export class XPWMSCommonAxiosService {
-    URL = appConfig.XP_APP_WMS_SERVICE_URL;
+    URL = configVariables.APP_WMS_SERVICE_URL;
     axiosPostCall = async (urlEndPoint: string, data?: any, config?: AxiosRequestConfig) => {
         return await AxiosInstance.post(this.URL + '' + urlEndPoint, data, config)
             .then(response => {

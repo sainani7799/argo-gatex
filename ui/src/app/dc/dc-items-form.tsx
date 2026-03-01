@@ -1,11 +1,11 @@
 import { CheckOutlined, EditOutlined, EyeOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Select, Descriptions, Radio } from 'antd';
-import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
+import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from '@gatex/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
-import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, DcReq, StatusEnum, ToAddressReq, UnitReq } from 'libs/shared-models';
+import { AcceptReq, AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, DcReq, StatusEnum, ToAddressReq, UnitReq } from '@gatex/shared-models';
 import DCForm from './dc-form';
 import moment from 'moment';
 import TextArea from 'antd/es/input/TextArea';

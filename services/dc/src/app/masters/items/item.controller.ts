@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ItemService } from "./item.service";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 @Controller("/item-controller")
 export class ItemController {

@@ -1,8 +1,8 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "libs/shared-models";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "@gatex/shared-models";
+import { CommonResponse } from "@gatex/shared-models";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleDto } from "./dto/vehicle-en.dto";

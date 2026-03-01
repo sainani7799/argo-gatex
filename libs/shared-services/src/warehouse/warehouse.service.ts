@@ -1,4 +1,4 @@
-import { CreateWarehouseDto, UnitReq } from "libs/shared-models";
+import { CreateWarehouseDto, UnitReq } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 

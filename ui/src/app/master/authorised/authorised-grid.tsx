@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
 import { Table } from "antd/lib";
 import { Link } from "react-router-dom";
-import { ApprovalUserService } from "libs/shared-services";
+import { ApprovalUserService } from "@gatex/shared-services";
 import React from "react";
 
 

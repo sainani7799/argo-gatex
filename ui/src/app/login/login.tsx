@@ -2,8 +2,8 @@ import { Button, Card, Col, Divider, Form, Input, Modal, Row, Typography, messag
 import React, { useState } from 'react';
 import './login.css'
 import { useNavigate } from 'react-router-dom';
-import { UserManagementServices } from 'libs/shared-services';
-import { LoginDto } from 'libs/shared-models';
+import { UserManagementServices } from '@gatex/shared-services';
+import { LoginDto } from '@gatex/shared-models';
 // import logo  from '../logo.jpeg';
 const { Text, Link, Title } = Typography;
 const { useToken } = theme

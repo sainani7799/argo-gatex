@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from 'libs/shared-models';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from '@gatex/shared-models';
+import { CommonResponse } from '@gatex/shared-models';
 import { DataSource, In } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
 import { TruckIdReqeust } from './dto/truck-id-dto';
@@ -17,7 +17,7 @@ import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
-import { GrnServices } from 'libs/shared-services';
+import { GrnServices } from '@gatex/shared-services';
 import { VehicleStatusDTO } from './dto/vehicle-status.dto';
 
 @Injectable()

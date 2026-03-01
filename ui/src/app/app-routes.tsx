@@ -26,7 +26,7 @@ import ItemGrid from './master/items/item-grid';
 import DCForm from './dc/dc-form';
 import DCGrid from './dc/dc-grid';
 import DcDetailsView from './dc/dc-detail-view';
-import { DcEmailModel } from 'libs/shared-models';
+import { DcEmailModel } from '@gatex/shared-models';
 import { DcMail } from './dc/dc-mail';
 import DCReceived from './dc/dc-recived';
 import DcRejectMail from './dc/dc-mail-reject';

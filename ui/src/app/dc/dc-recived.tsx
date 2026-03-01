@@ -1,7 +1,7 @@
 import { CheckOutlined, EyeOutlined, LockOutlined, MoreOutlined, RightOutlined, RightSquareOutlined, SearchOutlined } from "@ant-design/icons";
 import { Button, Card, Col, Divider, Drawer, Dropdown, Form, Input, Menu, Popconfirm, Row, Select, Switch, Table, Tag, Tooltip, message } from "antd";
-import { AcceptableEnum, DcEmailModel, ReceivedDcReq, StatusEnum } from "libs/shared-models";
-import { DcService, EmailService } from "libs/shared-services";
+import { AcceptableEnum, DcEmailModel, ReceivedDcReq, StatusEnum } from "@gatex/shared-models";
+import { DcService, EmailService } from "@gatex/shared-services";
 import moment from "moment";
 import React, { useRef } from "react";
 import { useEffect, useState } from "react";

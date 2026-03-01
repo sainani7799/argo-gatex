@@ -1,6 +1,6 @@
-import { AcceptReq, AssignReq, DcIdReq, DcReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "libs/shared-models";
+import { AcceptReq, AssignReq, DcIdReq, DcReq, ReceivedDcReq, RejectDcReq, SecurityCheckReq, UnitReq } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 export class DcService extends CommonAxiosServicePms {
     private DcController = '/dc';

@@ -1,4 +1,4 @@
-import { TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
+import { TruckStateEnum, VehicleTypeEnum } from "@gatex/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_en')

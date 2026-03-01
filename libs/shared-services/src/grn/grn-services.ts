@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { XPWMSCommonAxiosService } from '../xp-wms-common-axios-service';
-import { ADDVehicleReqModal, SecurityCheckRequest } from 'libs/shared-models';
-import { GlobalResponseObject } from 'libs/shared-models/src/common';
+import { ADDVehicleReqModal, SecurityCheckRequest } from '@gatex/shared-models';
+import { GlobalResponseObject } from '@gatex/shared-models';
 
 export class GrnServices extends XPWMSCommonAxiosService {
 

@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ItemEntityRepository } from "./repository/item.repository";
 import { CreateItemDto } from "./dto/item.dto";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { ItemEntity } from "./entity/item.entity";
-import { itemCode, itemId } from "libs/shared-models";
+import { itemCode, itemId } from "@gatex/shared-models";
 import { Raw } from "typeorm";
 import { itemsAdapter } from "./dto/item.adapter";
 

@@ -1,6 +1,6 @@
 import { Button, Card, Col, QRCode, Row, message } from "antd";
-import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
-import { AddressService, DcService } from "libs/shared-services";
+import { DcIdReq, ToAddressReq, UnitReq } from "@gatex/shared-models";
+import { AddressService, DcService } from "@gatex/shared-services";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import html2pdf from 'html2pdf.js';

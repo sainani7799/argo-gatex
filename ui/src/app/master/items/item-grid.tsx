@@ -1,7 +1,7 @@
 import { AppstoreOutlined, BarcodeOutlined, CheckOutlined, ContainerOutlined, EditOutlined, ExclamationCircleOutlined, EyeOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, ShoppingCartOutlined, TagsOutlined, UnorderedListOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Divider, Drawer, Switch, Dropdown, Menu } from 'antd';
-import { ItemDto } from 'libs/shared-models';
-import { ItemService } from 'libs/shared-services';
+import { ItemDto } from '@gatex/shared-models';
+import { ItemService } from '@gatex/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ItemForm from './item-form';

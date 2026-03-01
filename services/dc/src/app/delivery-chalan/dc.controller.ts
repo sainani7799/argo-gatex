@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Res } from "@nestjs/common";
 import { ApiBody } from "@nestjs/swagger";
 import { Response } from 'express';
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { DcService } from "./dc.service";
 import { DcDto } from "./dto/dc.dto";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
@@ -10,7 +10,7 @@ import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
 import { MailerService } from "./send-mail";
 import { VRStatusDTO } from "./dto/vr-status-req.dto";
-import { VRRefIdsResponseModel } from "libs/shared-models";
+import { VRRefIdsResponseModel } from "@gatex/shared-models";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { VehicleDto } from "./dto/vehicle-en.dto";
 

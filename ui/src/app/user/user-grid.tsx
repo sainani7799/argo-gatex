@@ -5,8 +5,8 @@ import { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { UserManagementServices } from 'libs/shared-services/src';
-import { CreateUserDto } from 'libs/shared-models';
+import { UserManagementServices } from '@gatex/shared-services';
+import { CreateUserDto } from '@gatex/shared-models';
 import UserForm from './user-form';
 import Highlighter from 'react-highlight-words'
 

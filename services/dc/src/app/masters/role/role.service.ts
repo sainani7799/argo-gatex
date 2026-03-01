@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoleAdapter } from './role.adapter';
 import { RoleEntity } from './entity/role.entity';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 
 @Injectable()
 export class RoleService {

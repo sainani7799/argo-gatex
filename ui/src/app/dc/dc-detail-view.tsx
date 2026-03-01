@@ -1,7 +1,7 @@
 import { Button, Card, Col, Descriptions, Modal, Row, Table, message } from "antd";
 import DescriptionsItem from "antd/es/descriptions/Item";
-import { DcIdReq, ToAddressReq, UnitReq } from "libs/shared-models";
-import { AddressService, DcService } from "libs/shared-services";
+import { DcIdReq, ToAddressReq, UnitReq } from "@gatex/shared-models";
+import { AddressService, DcService } from "@gatex/shared-services";
 import React from "react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";

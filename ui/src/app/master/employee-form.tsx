@@ -1,5 +1,5 @@
-import { CreateEmployeeDto } from 'libs/shared-models/src';
-import {  DepartmentService, DesignationService, EmployeeService, UnitService } from 'libs/shared-services/src';
+import { CreateEmployeeDto } from '@gatex/shared-models';
+import {  DepartmentService, DesignationService, EmployeeService, UnitService } from '@gatex/shared-services';
 import { Button, Card, Col, DatePicker, Form, Input, Row, Select, message, theme } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import moment from 'moment';

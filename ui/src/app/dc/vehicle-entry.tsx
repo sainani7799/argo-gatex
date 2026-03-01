@@ -2,8 +2,8 @@ import { ArrowDownOutlined, ArrowUpOutlined, CarOutlined, DownCircleOutlined, Ed
 import { Button, Card, Col, Drawer, Dropdown, Empty, Form, Input, Menu, message, Row, Select, Table, Tabs, Tag, Tooltip } from "antd";
 import TabPane from 'antd/es/tabs/TabPane';
 import dayjs from "dayjs";
-import { ReqStatus, TruckStateEnum, VehicleTypeEnum } from "libs/shared-models";
-import { VHRServices } from "libs/shared-services";
+import { ReqStatus, TruckStateEnum, VehicleTypeEnum } from "@gatex/shared-models";
+import { VHRServices } from "@gatex/shared-services";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SequenceUtils } from "../common";

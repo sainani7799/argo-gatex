@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { VehicleService } from "./vehicle.service";
 import { VehicleDto } from "./dto/vehicle.dto";
 import { ApiTags } from "@nestjs/swagger";

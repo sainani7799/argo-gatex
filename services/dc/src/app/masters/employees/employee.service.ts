@@ -4,8 +4,8 @@ import { EmployeeAdapter } from './adapter/employee.adapter';
 import { EmployeeRequest } from './dto/employee.request';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
 import { ReportingRequest } from './dto/reporting-manager.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { CreateEmployeeDto, GetAllEmployeeResponse, ToEmpReq, UnitReq } from 'libs/shared-models';
+import { CommonResponse } from '@gatex/shared-models';
+import { CreateEmployeeDto, GetAllEmployeeResponse, ToEmpReq, UnitReq } from '@gatex/shared-models';
 
 @Injectable()
 export class EmployeeService {

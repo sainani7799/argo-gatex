@@ -4,8 +4,8 @@ import { Body, Post } from '@nestjs/common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 import { DepartmentService } from './department.service';
 import { DepartmentDto } from './dto/department.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { DepartmentIdReq } from 'libs/shared-models';
+import { CommonResponse } from '@gatex/shared-models';
+import { DepartmentIdReq } from '@gatex/shared-models';
 
 @Controller('departmentdata')
 @ApiTags('deparmentdata')

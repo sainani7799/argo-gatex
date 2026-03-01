@@ -6,4 +6,8 @@ export class SecurityCheckReq {
     securityUser: string;
     checkoutTime?: Date;
     chechInTime?: Date;
+    username: string;
+    unitCode: string;
+    companyCode: string;
+    userId: number;
 }

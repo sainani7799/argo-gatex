@@ -1,7 +1,7 @@
 import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { ItemDto } from 'libs/shared-models';
-import { ItemService } from 'libs/shared-services';
+import { ItemDto } from '@gatex/shared-models';
+import { ItemService } from '@gatex/shared-services';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 

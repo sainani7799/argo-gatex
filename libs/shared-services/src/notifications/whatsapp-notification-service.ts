@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { whatsApp } from '../../../../services/dc/whatsapp';
-import { MessageParameters, MessageRequest, MessageResponse } from 'libs/shared-models/src/notification';
+import { MessageParameters, MessageRequest, MessageResponse } from '@gatex/shared-models';
 import connection from './connection';
 export class WhatsAppNotificationService {
     URL = connection.DEPLOY_URL;

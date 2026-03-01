@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { WarehouseEntityRepository } from "./repository/warehouse.repository";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { CreateWarehouseDto } from "./dto/warehouse.dto";
 import { WarehouseEntity } from "./entity/warehouse.entity";
-import { UnitReq } from "libs/shared-models";
+import { UnitReq } from "@gatex/shared-models";
 import { WarehouseAdapter } from "./dto/warehouse.adapter";
 import { Raw } from "typeorm";
 

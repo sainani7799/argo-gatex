@@ -1,6 +1,6 @@
 import { Button, message } from "antd"
-import { AcceptReq, AcceptableEnum, DcEmailModel, DcIdReq, StatusEnum } from "libs/shared-models"
-import { DcService, EmailService } from "libs/shared-services"
+import { AcceptReq, AcceptableEnum, DcEmailModel, DcIdReq, StatusEnum } from "@gatex/shared-models"
+import { DcService, EmailService } from "@gatex/shared-services"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import image from "../../../../ui/src/assets/EIG1.gif"

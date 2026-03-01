@@ -4,8 +4,8 @@ import { Body, Get, Post } from '@nestjs/common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 import { UnitService } from './unit.service';
 import { UnitDto } from './dto/unit.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { GetAllUnitResponse } from 'libs/shared-models';
+import { CommonResponse } from '@gatex/shared-models';
+import { GetAllUnitResponse } from '@gatex/shared-models';
 
 @Controller('unitData')
 @ApiTags('unitData')

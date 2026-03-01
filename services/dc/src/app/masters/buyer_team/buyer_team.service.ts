@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBuyerTeamDto } from './dto/buyer_team.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BuyerTeamEntity } from './entities/buyer_team.entity';
 import { Repository } from 'typeorm';

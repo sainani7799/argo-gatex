@@ -1,8 +1,8 @@
 import { CheckOutlined, EyeOutlined, FileProtectOutlined, FilterOutlined, IdcardOutlined, LockOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons';
 import { Badge, Button, Card, Col, Descriptions, Drawer, Dropdown, Form, Input, Menu, Radio, Row, Select, Table, Tabs, Tag, Tooltip, message } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
-import { AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, StatusEnum, ToAddressReq, UnitReq } from 'libs/shared-models';
-import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from 'libs/shared-services';
+import { AcceptableEnum, ApprovalIdReq, AssignReq, CreateAddressDto, DcEmailModel, DcIdReq, StatusEnum, ToAddressReq, UnitReq } from '@gatex/shared-models';
+import { AddressService, ApprovalUserService, DcService, DepartmentService, EmailService, } from '@gatex/shared-services';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';

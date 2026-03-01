@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
-import { CreateEmployeeDto, GetAllEmployeeResponse, UnitReq, } from "libs/shared-models/src";
+import { CreateEmployeeDto, GetAllEmployeeResponse, UnitReq, } from "@gatex/shared-models";
 
 
 export class EmployeeService extends CommonAxiosServicePms {

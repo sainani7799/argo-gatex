@@ -1,4 +1,4 @@
-import { BuyerTeameDto } from "libs/shared-models";
+import { BuyerTeameDto } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 

@@ -34,8 +34,8 @@ import {
   ReceivedDcReq,
   SecurityCheckReq,
   StatusEnum,
-} from 'libs/shared-models';
-import { DcService, EmailService, EmployeeService } from 'libs/shared-services';
+} from '@gatex/shared-models';
+import { DcService, EmailService, EmployeeService } from '@gatex/shared-services';
 import moment from 'moment';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';

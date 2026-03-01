@@ -1,11 +1,11 @@
 import { EditOutlined, EnvironmentOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, message, Switch, Divider, Drawer, Dropdown, Menu } from 'antd';
-import { AddressService } from 'libs/shared-services';
+import { AddressService } from '@gatex/shared-services';
 import React, { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Highlighter from 'react-highlight-words'
-import { CreateAddressDto } from 'libs/shared-models';
+import { CreateAddressDto } from '@gatex/shared-models';
 import AddressForm from './address-form';
 
 const AddressGrid = () => {

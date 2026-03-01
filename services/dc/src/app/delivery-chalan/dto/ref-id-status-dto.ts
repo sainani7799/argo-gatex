@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { ReqStatus, VehilceRequestTypeEnum } from "libs/shared-models";
+import { ReqStatus, VehilceRequestTypeEnum } from "@gatex/shared-models";
 
 export class RefIdStatusDTO {
     @ApiProperty()

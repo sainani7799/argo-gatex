@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Select, Card, Row, Col, message, Typography, Upload, UploadProps } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LoadingOutlined, PlusOutlined, UploadOutlined } from "@ant-design/icons";
-import { ApprovedUserDto } from "libs/shared-models";
-import { ApprovalUserService, BuyerTeamService, EmployeeService } from "libs/shared-services";
+import { ApprovedUserDto } from "@gatex/shared-models";
+import { ApprovalUserService, BuyerTeamService, EmployeeService } from "@gatex/shared-services";
 
 const { TextArea } = Input;
 const { Option } = Select;

@@ -6,8 +6,8 @@ import { UnitEntity } from './entity/unit.entity';
 import { UnitAdapter } from './adapter/branch-adapter';
 import { UnitDto } from './dto/unit.dto';
 import { UnitRepository } from './repo/unit-repo';
-import { CommonResponse } from 'libs/shared-models/src/common';
-import { UnitReq } from 'libs/shared-models';
+import { CommonResponse } from '@gatex/shared-models';
+import { UnitReq } from '@gatex/shared-models';
 
 @Injectable()
 export class UnitService {

@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
+import { configVariables } from '../config';
 import { AxiosInstance } from './axios-instance';
-import { config as appConfig } from '../config';
 
 export class CommonAxiosServicePms {
     async axiosPostCall(urlEndPoint: string | {urlEndPoint: string, serviceUrl: string}, data?: any, config?: AxiosRequestConfig) {
@@ -8,7 +8,7 @@ export class CommonAxiosServicePms {
         let queryString = '';
         // if only query string(urlEndPoint) is specified, then the default connection host is assigned
         if (typeof urlEndPoint == 'string') {
-            hostIp = appConfig.APP_DC ;
+            hostIp = configVariables.APP_GATEX_SERVICE_URL;
             queryString = urlEndPoint;
         } else {
             // if a specific sub-service is specified then the connection host is dynamic based on the service name
@@ -28,7 +28,7 @@ export class CommonAxiosServicePms {
         let queryString = '';
         // if only query string(urlEndPoint) is specified, then the default connection host is assigned
         if (typeof urlEndPoint == 'string') {
-            hostIp = appConfig.APP_DC;
+            hostIp = configVariables.APP_GATEX_SERVICE_URL;
             queryString = urlEndPoint;
         } else {
             // if a specific sub-service is specified then the connection host is dynamic based on the service name

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { DesignationRepository } from "./repository/designation.repo";
 import { DesignationEntity } from "./entity/designation.entity";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 @Injectable()
 export class DesignationService {

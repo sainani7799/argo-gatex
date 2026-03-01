@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import { CreateUnitDto } from "libs/shared-models";
+import { CreateUnitDto } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 
 

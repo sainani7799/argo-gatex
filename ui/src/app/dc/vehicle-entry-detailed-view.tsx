@@ -1,7 +1,7 @@
 import { ArrowLeftOutlined, PrinterOutlined } from "@ant-design/icons";
 import { Button, Card, Descriptions, Modal, Table, Tag } from "antd";
 import dayjs from "dayjs";
-import { TruckStateEnum } from "libs/shared-models";
+import { TruckStateEnum } from "@gatex/shared-models";
 import { useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import VehicleEntryPrint from "./vehicle-entry-print";

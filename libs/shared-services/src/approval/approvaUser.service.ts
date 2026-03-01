@@ -1,4 +1,4 @@
-import { ApprovalIdReq, ApprovedUserDto } from "libs/shared-models";
+import { ApprovalIdReq, ApprovedUserDto } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 

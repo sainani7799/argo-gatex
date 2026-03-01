@@ -1,4 +1,4 @@
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 
 export class VHRServices extends CommonAxiosServicePms {

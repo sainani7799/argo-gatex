@@ -1,9 +1,9 @@
 import { DeleteOutlined, EditOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, TeamOutlined } from '@ant-design/icons';
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Divider, message, Drawer, Switch, Dropdown, Menu } from 'antd';
-import { BuyerTeamService, SupplierService } from 'libs/shared-services';
+import { BuyerTeamService, SupplierService } from '@gatex/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BuyerTeameDto, UnitReq } from 'libs/shared-models';
+import { BuyerTeameDto, UnitReq } from '@gatex/shared-models';
 import Highlighter from 'react-highlight-words'
 import BuyerTeamForm from '../buyerTeam/buyerTeam-form';
 import React from 'react';

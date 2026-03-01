@@ -1,4 +1,4 @@
-import { ItemDto, itemCode } from "libs/shared-models";
+import { ItemDto, itemCode } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
 

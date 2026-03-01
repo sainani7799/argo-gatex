@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { LocationFromTypeEnum, ReqStatus } from "libs/shared-models";
+import { LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { VehicleDto } from "./vehicle-en.dto";
 
 export class VehicleOTRDto {

@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { WarehouseService } from "./warehouse.service";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { CreateWarehouseDto } from "./dto/warehouse.dto";
-import { UnitReq } from "libs/shared-models";
+import { UnitReq } from "@gatex/shared-models";
 
 @Controller("/warehouse-controller")
 export class WarehouseController {

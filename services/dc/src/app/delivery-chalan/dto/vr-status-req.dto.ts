@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { LocationFromTypeEnum } from "libs/shared-models";
+import { LocationFromTypeEnum } from "@gatex/shared-models";
 
 export class VRStatusDTO {
     @ApiProperty()

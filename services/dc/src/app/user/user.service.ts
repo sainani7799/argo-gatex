@@ -3,12 +3,12 @@ import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
 import { UserEntity } from "./entity/user.entity";
 import { UserEntityRepository } from "./repository/user-repository";
 import { Repository } from 'typeorm';
-import { LoginDto, AuthResponseModel, AuthModel } from 'libs/shared-models';
+import { LoginDto, AuthResponseModel, AuthModel } from '@gatex/shared-models';
 import { CreateUserDto } from "./dto/user.dto";
 import { toUserDto } from "./mapper";
 import { UserRequestDto } from "./dto/user-request.dto";
 import { DataSource } from 'typeorm';
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 
 @Injectable()

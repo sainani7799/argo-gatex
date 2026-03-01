@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EmployeeEntity } from '../entity/employee.entity';
-import { CreateEmployeeDto } from 'libs/shared-models';
+import { CreateEmployeeDto } from '@gatex/shared-models';
 
 @Injectable()
 export class EmployeeAdapter {

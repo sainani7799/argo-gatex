@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ApprovedUserEntityRepository } from "./repository/approval-user.repository";
 import { ApprovedUserDto } from "./dto/appUser";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { ApprovedUserEntity } from "./entity/appUser.entity";
-import { ApprovalIdReq } from "libs/shared-models";
+import { ApprovalIdReq } from "@gatex/shared-models";
 
 @Injectable()
 export class ApprovedUserService {

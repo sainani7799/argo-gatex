@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ReqStatus, TruckStateEnum } from 'libs/shared-models';
+import { ReqStatus, TruckStateEnum } from '@gatex/shared-models';
 import { DataSource, Repository } from 'typeorm';
 import { RefIdStatusDTO } from '../dto/ref-id-status-dto';
 import { VehicleOTREntity } from '../entity/vehicle-otr.entity';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 import { VehicleReqDTO } from '../dto/vehicle-req.dto';
 
 @Injectable()

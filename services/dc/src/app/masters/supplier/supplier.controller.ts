@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { SupplierService } from "./supplier.service";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { CreateSupplierDto } from "./dto/supplier.dto";
 
 @Controller("/suppliers")

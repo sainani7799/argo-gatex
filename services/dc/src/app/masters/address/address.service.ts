@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { AddressEntityRepository } from "./repository/address.repository";
 import { CreateAddressDto } from "./dto/address.dto";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { AddressEntity } from "./entity/address.entity";
 import { Raw } from "typeorm";
 import { AddressAdapter } from "./dto/address.adapter";
-import { ToAddressReq, UnitReq } from "libs/shared-models";
+import { ToAddressReq, UnitReq } from "@gatex/shared-models";
 
 @Injectable()
 export class AddressService {

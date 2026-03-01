@@ -1,4 +1,4 @@
-import { LocationFromTypeEnum, ReqStatus } from "libs/shared-models";
+import { LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_otr')

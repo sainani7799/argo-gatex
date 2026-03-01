@@ -1,6 +1,6 @@
 import { Button, Card, Col, Form, Input, message, Modal, Row, theme } from "antd";
-import { LoginDto } from "libs/shared-models";
-import { UserManagementServices } from "libs/shared-services";
+import { LoginDto } from "@gatex/shared-models";
+import { UserManagementServices } from "@gatex/shared-services";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './newLogin.css'

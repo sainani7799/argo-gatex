@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { CreateWarehouseDto } from 'libs/shared-models';
-import { WarehouseService, UnitService } from 'libs/shared-services';
+import { CreateWarehouseDto } from '@gatex/shared-models';
+import { WarehouseService, UnitService } from '@gatex/shared-services';
 const { Option } = Select;
 
 export interface warehouseFormProps {

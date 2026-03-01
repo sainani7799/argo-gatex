@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { GetVehicleNAInrReqModal, ReqStatus, TruckStateEnum } from 'libs/shared-models';
+import { GetVehicleNAInrReqModal, ReqStatus, TruckStateEnum } from '@gatex/shared-models';
 import { DataSource, Repository } from 'typeorm';
 import { RefIdStatusDTO } from '../dto/ref-id-status-dto';
 import { VRStatusDTO } from '../dto/vr-status-req.dto';
 import { VehicleEntity } from '../entity/vehicle-en.entity';
 import { VehicleINREntity } from '../entity/vehicle-inr.entity';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 import { VehicleReqDTO } from '../dto/vehicle-req.dto';
 
 @Injectable()

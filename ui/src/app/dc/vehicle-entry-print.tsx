@@ -3,7 +3,7 @@ import { Button, Card, Col, QRCode, Row } from 'antd';
 import dayjs from 'dayjs';
 import html2pdf from 'html2pdf.js';
 import './dc-print.css';
-import { TruckStateEnum } from 'libs/shared-models';
+import { TruckStateEnum } from '@gatex/shared-models';
 
 export interface VehicleEntryPrintProps {
     rec: any,

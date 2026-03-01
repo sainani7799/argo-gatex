@@ -1,7 +1,7 @@
-import { CreateDepartmentDto, DepartmentIdReq } from "libs/shared-models";
+import { CreateDepartmentDto, DepartmentIdReq } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 import { AxiosRequestConfig } from "axios";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 
 export class DepartmentService extends CommonAxiosServicePms {

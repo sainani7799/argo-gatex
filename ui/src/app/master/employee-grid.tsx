@@ -1,13 +1,12 @@
-import { CheckCircleOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, EllipsisOutlined, IdcardOutlined, MoreOutlined, RightSquareOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Divider, Drawer, Dropdown, Input, Menu, Popconfirm, Row, Space, Switch, Table, Tag, Tooltip, message } from 'antd'
+import { DeleteOutlined, EditOutlined, MoreOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CreateEmployeeDto } from '@gatex/shared-models'
+import { EmployeeService } from '@gatex/shared-services'
+import { Button, Card, Drawer, Dropdown, Input, Menu, Popconfirm, Table, Tooltip, message } from 'antd'
+import moment from 'moment'
 import React, { useEffect, useRef, useState } from 'react'
+import Highlighter from 'react-highlight-words'
 import { Link } from 'react-router-dom'
 import EmployeeForm from './employee-form'
-import { CreateEmployeeDto } from 'libs/shared-models/src/employee'
-import { EmployeeService } from 'libs/shared-services'
-import { ColumnType } from 'antd/es/table'
-import Highlighter from 'react-highlight-words'
-import moment from 'moment'
 
 const EmployeeGrid = () => {
     const service = new EmployeeService;

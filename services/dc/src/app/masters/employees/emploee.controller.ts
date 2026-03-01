@@ -3,10 +3,10 @@ import { Body, Get, Post } from '@nestjs/common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 import { EmployeeService } from './employee.service';
 import { EmployeeDto } from './dto/employee.dto';
-import { CreateEmployeeDto, GetAllEmployeeResponse } from 'libs/shared-models';
+import { CreateEmployeeDto, GetAllEmployeeResponse } from '@gatex/shared-models';
 import { EmployeeRequest } from './dto/employee.request';
 import { ReportingRequest } from './dto/reporting-manager.dto';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 
 @Controller('employees')
 @ApiTags('employees')

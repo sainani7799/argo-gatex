@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { SupplierEntityRepository } from "./repository/supplier.repository";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 import { CreateSupplierDto } from "./dto/supplier.dto";
 import { SupplierEntity } from "./entity/supplier.entity";
 import { SupplierAdapter } from "./dto/buyer.adapter";

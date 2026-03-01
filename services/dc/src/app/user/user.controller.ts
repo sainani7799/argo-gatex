@@ -1,10 +1,10 @@
 import { Body, Controller, HttpException, HttpStatus, Post } from "@nestjs/common";
 import { UserMangementService } from "./user.service";
-import { AuthResponseModel, LoginDto, UserResponse } from "libs/shared-models";
+import { AuthResponseModel, LoginDto, UserResponse } from "@gatex/shared-models";
 import { ApplicationExceptionHandler } from 'libs/backend-utils/src/lib/libs/application-exception-handler';
 import { CreateUserDto } from "./dto/user.dto";
 import { UserRequestDto } from "./dto/user-request.dto";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 
 @Controller("/user-management")

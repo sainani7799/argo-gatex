@@ -1,6 +1,6 @@
 import { Modal, Table, Input, Form, Popconfirm, Card, Row, Button, Col, Tooltip, Drawer, Divider, Switch, message, Dropdown, Menu } from 'antd';
-import { SupplierDto } from 'libs/shared-models';
-import { SupplierService } from 'libs/shared-services';
+import { SupplierDto } from '@gatex/shared-models';
+import { SupplierService } from '@gatex/shared-services';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SupplierForm from './supplier-form';

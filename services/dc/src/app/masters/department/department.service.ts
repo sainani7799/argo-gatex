@@ -5,9 +5,9 @@ import { DepartmentEntity } from './entity/department.entity';
 import { DepartmentDto } from './dto/department.dto';
 import { DepartmentAdapter } from './adapter/department-adapter';
 import { DepartmentRepository } from './repo/department-repo';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 import { SectionsEntity } from './entity/section.entity';
-import { DepartmentIdReq } from 'libs/shared-models';
+import { DepartmentIdReq } from '@gatex/shared-models';
 
 @Injectable()
 export class DepartmentService {

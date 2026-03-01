@@ -1,4 +1,4 @@
-import { DcEmailModel } from "libs/shared-models";
+import { DcEmailModel } from "@gatex/shared-models";
 import { CommonAxiosServicePms } from "../common-axios-service-prs";
 
 export class EmailService extends CommonAxiosServicePms {

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Select, Card, message, Col, Row, theme } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { SupplierService } from 'libs/shared-services';
-import { SupplierDto } from 'libs/shared-models';
+import { SupplierService } from '@gatex/shared-services';
+import { SupplierDto } from '@gatex/shared-models';
 import form from 'antd/es/form';
 
 const { useToken } = theme;

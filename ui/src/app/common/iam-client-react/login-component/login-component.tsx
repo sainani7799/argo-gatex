@@ -16,8 +16,8 @@ import AssetXpert2 from "../login-component/images/GatepassTwo.png";
 import './login-component.css';
 
 import axios from "axios";
-import { LoginDto } from "libs/shared-models";
-import { UserManagementServices } from "libs/shared-services";
+import { LoginDto } from "@gatex/shared-models";
+import { UserManagementServices } from "@gatex/shared-services";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useIAMClientState } from "../iam-client";

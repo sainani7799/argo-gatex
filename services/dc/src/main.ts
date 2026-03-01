@@ -1,9 +1,12 @@
-import { Logger, ValidationPipe } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
+import { ClassSerializerInterceptor, Logger, ValidationPipe } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 
-import { AppModule } from './app/app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { HttpExceptionFilter } from '@gatex/backend-utils';
+import { ConfigService } from '@nestjs/config';
 import * as bodyParser from 'body-parser';
+import { AppModule } from './app/app.module';
+import { createDocument } from './swagger/swagger';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
@@ -12,18 +15,15 @@ async function bootstrap() {
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = parseInt(process.env.APP_SERVER_PORT || '3338', 10);
-  const options = new DocumentBuilder()
-    .setTitle('Planning Operations')
-    .setDescription('')
-    .setVersion('1.0')
-    // .setBasePath(`${ptsConfigs.swagger.basePath}`)
-    .addBearerAuth()
-    .addTag('ms')
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(`api`, app, document);
-  app.use(bodyParser.json({ limit: '10mb' }));
-  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+  createDocument(app);
+  const reflector = app.get(Reflector);
+  const configService = app.get(ConfigService);
+  app.use(bodyParser.urlencoded({ limit: configService.get('maxPayloadSize'), extended: true }));
+  app.use(bodyParser.json({ limit: configService.get('maxPayloadSize') }));
+  app.useGlobalPipes(new ValidationPipe({ validationError: { target: false }, transform: true, forbidUnknownValues: false }));
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector));
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   app.enableCors();
   await app.listen(port);
   Logger.log(

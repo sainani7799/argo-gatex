@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { AcceptableEnum, StatusEnum } from "libs/shared-models";
+import { AcceptableEnum, StatusEnum } from "@gatex/shared-models";
 import { DcItemsDto } from "./dc-items.dto";
 
 export class DcDto {

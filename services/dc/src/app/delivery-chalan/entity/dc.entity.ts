@@ -1,4 +1,4 @@
-import { AcceptableEnum, StatusEnum } from "libs/shared-models";
+import { AcceptableEnum, StatusEnum } from "@gatex/shared-models";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 import { DcItemEntity } from "./dc-items.entity";
 

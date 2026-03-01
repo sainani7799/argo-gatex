@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AddressService } from "./address.service";
-import { CommonResponse } from "libs/shared-models/src/common";
+import { CommonResponse } from "@gatex/shared-models";
 
 @Controller('address')
 @ApiTags('address')

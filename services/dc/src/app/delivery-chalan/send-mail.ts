@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CommonResponse } from 'libs/shared-models/src/common';
+import { CommonResponse } from '@gatex/shared-models';
 import nodemailer from 'nodemailer';
 import { SendOptions } from './dto/send-mail';
 import * as fs from 'fs';
