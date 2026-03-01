@@ -17,14 +17,15 @@ import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from "@nestjs/typeorm
 export const typeOrmConfig: DataSourceOptions ={
     type: "mysql",
     timezone: 'Z',
-    host: '64.227.137.119',
-    username: 'xpparel_qa_user',
-    password: 'Xpparel_qa@123',
-    database: 'gatex_sq',
+    host: process.env.APP_DB_HOST || '64.227.137.119',
+    username: process.env.APP_DB_USERNAME || 'xpparel_qa_user',
+    password: process.env.APP_DB_PASSWORD || 'Xpparel_qa@123',
+    database: process.env.APP_DB_DATABASE || 'gatex_sq',
+    port: parseInt(process.env.APP_DB_PORT || '3306', 10),
     synchronize: false,
-    logging:true,
+    logging: process.env.APP_DB_LOGGING === 'true' || true,
     extra :{
-       connectionLimit: 20
+       connectionLimit: parseInt(process.env.APP_DB_CONNECTION_LIMIT || '20', 10)
     },
     entities:[DepartmentEntity,UserEntity,EmployeeEntity,DesignationEntity,UnitEntity,WarehouseEntity,SupplierEntity,ItemEntity,AddressEntity,ApprovedUserEntity,DcEntity,DcItemEntity,RoleEntity]
 }
