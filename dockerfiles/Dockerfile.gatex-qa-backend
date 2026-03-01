@@ -23,6 +23,16 @@ WORKDIR /app
 
 # ✅ Copy only the built service (No node_modules)
 COPY --from=builder /app/dist/services/dc ./dist
+# copy script which generate the env js at runtime before nginx starts
+COPY dockerfiles/generate-env.sh /docker-entrypoint.d/10-generate-env.sh
+RUN chmod +x /docker-entrypoint.d/10-generate-env.sh
+
+{
+    APP_DC: "https://gatex-qa-be.xpparel.com/api",
+    APP_ID: 1,
+    APP_Name: 'Gate Pass',
+    XP_APP_WMS_SERVICE_URL: ' https://xpparel-qa-wms.schemaxtech.in/'
+}
 
 
 # ✅ Start the application
