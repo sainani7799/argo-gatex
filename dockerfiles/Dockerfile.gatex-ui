@@ -21,6 +21,10 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copy built assets from previous stage
 COPY --from=builder /app/dist/ui /usr/share/nginx/html
 
+# Copy the environment generation script
+COPY dockerfiles/generate-env.sh /docker-entrypoint.d/10-generate-env.sh
+RUN chmod +x /docker-entrypoint.d/10-generate-env.sh
+
 EXPOSE 80
 
 # Start Nginx
