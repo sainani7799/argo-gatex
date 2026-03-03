@@ -27,5 +27,3 @@ RUN chmod +x /docker-entrypoint.d/10-generate-env.sh
 
 EXPOSE 80
 
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
