@@ -82,6 +82,23 @@ jobs:
           - image: gatex-be
 
     steps:
+      - name: Validate version format
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          
+          # Enforce that input must end in -alpha
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-alpha$ ]]; then
+            echo "❌ Invalid version: '${VERSION}'"
+            echo ""
+            echo "Only -alpha versions can be promoted to RC."
+            echo "Expected format: 1.x.x-alpha (e.g., 1.0.5-alpha or 1.0.123-alpha)"
+            exit 1
+          fi
+          
+          RC_TAG="${VERSION/-alpha/-rc}"
+          echo "✅ Valid alpha version: ${VERSION}"
+          echo "✅ Will promote to: ${RC_TAG}"
+
       - name: Login to GHCR
         uses: docker/login-action@v3
         with:
@@ -98,9 +115,8 @@ jobs:
 
       - name: Retag image to RC
         run: |
-          DEV_TAG="${{ github.event.inputs.version }}"
-          ALPHA_TAG="${DEV_TAG/-dev/-alpha}"
-          RC_TAG="${DEV_TAG/-dev/-rc}"
+          ALPHA_TAG="${{ github.event.inputs.version }}"
+          RC_TAG="${ALPHA_TAG/-alpha/-rc}"
           
           echo "Retagging ${ALPHA_TAG} to ${RC_TAG}"
           
