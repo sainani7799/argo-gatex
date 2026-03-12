@@ -1,0 +1,69 @@
+name: 2. Build DEV Images
+
+on:
+  push:
+    tags:
+      - '[0-9]*.[0-9]*.[0-9]*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Git tag to build (e.g. 1.42.0)'
+        required: true
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        include:
+          - dockerfile: dockerfiles/Dockerfile.gatex-be
+            image: gatex-be
+          - dockerfile: dockerfiles/Dockerfile.gatex-ui
+            image: gatex-ui
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve Docker version
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            GIT_TAG="${{ github.event.inputs.tag }}"
+          else
+            GIT_TAG="${{ github.ref_name }}"
+          fi
+          echo "VERSION=${GIT_TAG}-dev" >> $GITHUB_OUTPUT
+          echo "Building Docker version: ${GIT_TAG}-dev"
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push images
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Summary
+        run: |
+          echo "✅ Built and pushed: ${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}"
+          echo ""
+          echo "🎯 Next Steps:"
+          echo "To promote to ALPHA, go to Actions → '3. Promote to ALPHA' → Run workflow"
