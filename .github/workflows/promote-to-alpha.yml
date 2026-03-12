@@ -141,7 +141,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ghcr.io/schemax-pte-ltd/xapparel/${{ matrix.image }}:${{ steps.version.outputs.alpha_tag }}
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${{ steps.version.outputs.alpha_tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
