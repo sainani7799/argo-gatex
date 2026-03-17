@@ -83,7 +83,7 @@ jobs:
 
     steps:
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -98,19 +98,24 @@ jobs:
 
       - name: Retag image to Production
         run: |
-          DEV_TAG="${{ github.event.inputs.version }}"
-          ALPHA_TAG="${DEV_TAG/-dev/-alpha}"
-          PROD_TAG="${DEV_TAG/-dev/-prod}"
-          
-          echo "Retagging ${ALPHA_TAG} to ${PROD_TAG}"
-          
+          RC_TAG="${{ github.event.inputs.version }}"
+
+          # Validate input ends with -rc
+          if [[ "${RC_TAG}" != *"-rc" ]]; then
+            echo "❌ Input version '${RC_TAG}' must end with '-rc'"
+            exit 1
+          fi
+
+          PROD_TAG="${RC_TAG/-rc/-prod}"
+
+          echo "Retagging ${RC_TAG} → ${PROD_TAG}"
           crane copy \
-            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${ALPHA_TAG} \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${RC_TAG} \
             ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${PROD_TAG}
           
           # Also tag as latest for production
           crane copy \
-            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${ALPHA_TAG} \
+            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${RC_TAG} \
             ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:latest
           
           echo "✅ Successfully tagged ${{ matrix.image }}:${PROD_TAG} and latest"
@@ -119,6 +124,8 @@ jobs:
         run: |
           echo "🎉 Production deployment complete!"
           echo ""
+          RC_TAG="${{ github.event.inputs.version }}"
+          PROD_TAG="${RC_TAG/-rc/-prod}"
           echo "Images tagged:"
           echo "  - ${{ matrix.image }}:${PROD_TAG}"
           echo "  - ${{ matrix.image }}:latest"
