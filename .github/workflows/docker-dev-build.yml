@@ -11,8 +11,30 @@ on:
         required: true
 
 jobs:
+  pick_runner:
+    runs-on: ubuntu-latest
+    outputs:
+      runner: ${{ steps.check.outputs.runner }}
+    steps:
+      - name: Check self-hosted runner availability
+        id: check
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PIPELINE_TOKEN }}
+          script: |
+            const { data } = await github.rest.actions.listSelfHostedRunnersForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            const available = data.runners.some(r => r.status === 'online' && !r.busy);
+            const runner = available ? 'self-hosted' : 'ubuntu-latest';
+            core.info(`Self-hosted runners online: ${data.runners.filter(r => r.status === 'online').length}`);
+            core.info(`Any idle: ${available} → using: ${runner}`);
+            core.setOutput('runner', runner);
+
   build_and_publish:
-    runs-on: ubuntu-24.04
+    needs: pick_runner
+    runs-on: ${{ needs.pick_runner.outputs.runner }}
     permissions:
       contents: read
       packages: write
@@ -41,25 +63,25 @@ jobs:
           echo "Building Docker version: ${GIT_TAG}-dev"
 
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build and Push images
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
             ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:buildcache,mode=max
 
       - name: Summary
         run: |
