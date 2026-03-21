@@ -88,9 +88,9 @@ jobs:
       matrix:
         include:
           - dockerfile: dockerfiles/Dockerfile.gatex-ui
-          - image: gatex-ui
+            image: gatex-ui
           - dockerfile: dockerfiles/Dockerfile.gatex-be
-          - image: gatex-be
+            image: gatex-be
 
     steps:
       - name: Checkout code
