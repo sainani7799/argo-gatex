@@ -1,4 +1,4 @@
-import { LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
+import { GatePassStatus, LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_otr')
@@ -110,4 +110,36 @@ export class VehicleOTREntity {
         name: "version_flag"
     })
     versionFlag: number;
+
+    @Column('varchar', {
+        name: 'gatex_number',
+        nullable: true
+    })
+    gatexNumber: string;
+
+    @Column('tinyint', {
+        name: 'gatepass_status',
+        nullable: true
+    })
+    gatePassStatus: GatePassStatus;
+
+    @Column('varchar', {
+        name: 'mail_recipent',
+        nullable: true,
+        length: 100
+    })
+    mailRecipent: string;
+
+    @Column('varchar', {
+        name: 'approvel_url',
+        nullable: true
+    })
+    approvelUrl: string;
+
+    @Column('varchar', {
+        name: 'api_method',
+        nullable: true
+    })
+    apiMethod: string;
+
 }
