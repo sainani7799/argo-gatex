@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
 import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "@gatex/shared-models";
@@ -229,4 +229,23 @@ export class VHRController {
       return (error);
     }
   }
+
+  @Get('/approveGatePassById/:refId')
+  async approveGatePassById(@Param('refId') refId: string): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.approveGatePassById(refId);
+    } catch (err) {
+      return (err);
+    }
+  }
+
+  @Get('/rejectGatePassById/:refId')
+  async rejectGatePassById(@Param('refId') refId: string): Promise<CommonResponse> {
+    try {
+      return await this.vhrService.rejectGatePassById(refId);
+    } catch (err) {
+      return (err);
+    }
+  }
+
 }

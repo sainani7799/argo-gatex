@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from '@gatex/shared-models';
+import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, DcEmailModel, GatePassStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from '@gatex/shared-models';
 import { CommonResponse } from '@gatex/shared-models';
 import { DataSource, In } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
@@ -17,8 +17,10 @@ import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
-import { GrnServices } from '@gatex/shared-services';
+import { configVariables, GrnServices } from '@gatex/shared-services';
 import { VehicleStatusDTO } from './dto/vehicle-status.dto';
+import { MailerService } from './send-mail';
+import { AxiosInstance } from 'libs/shared-services/src/axios-instance';
 
 @Injectable()
 export class VHRService {
@@ -28,7 +30,8 @@ export class VHRService {
     private vehicleRepository: VehicleRepository,
     private vehicleStateRepository: VehicleStateRepository,
     private dataSource: DataSource,
-    private grnServices: GrnServices
+    private grnServices: GrnServices,
+    private mailerService: MailerService,
   ) { }
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
@@ -110,6 +113,11 @@ export class VHRService {
       const vehicleStateEntitiesToSave: VehicleStateEntity[] = [];
 
       await transactionalEntityManager.transaction(async transactionalEntityManager => {
+        let runningSerial = await transactionalEntityManager.count(VehicleOTREntity);
+        const now = new Date();
+        const yy = String(now.getFullYear()).slice(-2);
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
         for (const req of reqs) {
 
           // Find or create VehicleOTREntity
@@ -122,8 +130,15 @@ export class VHRService {
           if (votrEntity) {
             Object.assign(votrEntity, req);
           } else {
+            runningSerial++;
+            const formatted = String(runningSerial).padStart(5, "0");
+            const gatexNumber = `DC${yy}${mm}${dd}${formatted}`;
             votrEntity = transactionalEntityManager.create(VehicleOTREntity, {
               ...req,
+              gatexNumber: gatexNumber,
+              mailRecipent: req.mailRecipent?.join(','),
+              approvelUrl: req.approvelUrl,
+              apiMethod: req.apiMethod,
               expectedDeparture: new Date().toISOString(),
             });
           }
@@ -182,6 +197,33 @@ export class VHRService {
         }
       });
 
+
+      const emailAddresses = [reqs.map(req => req.mailRecipent)];
+      for (const votr of vOTREntityToSave) {
+        for (const email of emailAddresses) {
+          const payload = {
+            dcId: votr.id,
+            refId: votr.refId,
+            isAssignable: 'YES',
+            emailId: email,
+            assignBy: 8,
+            status: 'SENT FOR APPROVAL',
+            dcNumber: votr.gatexNumber,
+            fromUnit: votr.fromType,
+            toAddresserName: votr.toType,
+            created_user: votr.createdUser,
+            purpose: "Sub Contracting",
+            gatePassStatus: votr.gatePassStatus
+          };
+          if (emailAddresses.length) {
+            const result = await this.sendDcMailForGatePass(payload);
+            if (!result) {
+              console.error("Mail failed →", votr.gatexNumber, email);
+            }
+          }
+        }
+      }
+
       return new CommonResponse(true, 1, "Data Processed", {
         votrRecords: vOTREntityToSave,
         vehicleRecords: vehicleEntitiesToSave,
@@ -192,6 +234,84 @@ export class VHRService {
       return new CommonResponse(false, 0, err.message, null);
     }
   }
+
+
+  private async sendDcMailForGatePass(dto: any): Promise<boolean> {
+    const dcDetails = new DcEmailModel();
+    dcDetails.dcNo = dto.dcNumber;
+    dcDetails.to = dto.emailId;
+    dcDetails.html = `
+            <html>
+            <head>
+              <meta charset="UTF-8" />
+              <style>
+                #acceptDcLink {
+                      display: inline-block;
+                      padding: 10px 20px;
+                      background-color: #28a745;
+                      color: #fff;
+                      text-decoration: none;
+                      border-radius: 5px;
+                      margin-top: 10px;
+                      transition: background-color 0.3s ease, color 0.3s ease;
+                      cursor: pointer;
+                  }
+                  #acceptDcLink.accepted {
+                      background-color: #6c757d;
+                      cursor: not-allowed;
+                  }
+                  #acceptDcLink:hover {
+                      background-color: #218838;
+                      color: #fff;
+                  }
+              </style>
+            </head>
+            <body>
+              <p>Dear team,</p>
+              <p>Please find the Gate Pass details below:</p>
+              <p>DC NO: ${dto.dcNumber}</p>
+              <p>DC created user name : ${dto.created_user}</p>
+              <p>Purpose of this DC : ${dto.purpose}</p>
+              <p>Please click the link below for details:</p>
+              <input type="hidden" id="assignBy" value=${dto.assignBy} /> 
+              <input type="hidden" id="dcId" value=${dto.dcId} />
+              <a
+              href="${configVariables.APP_GATEX_SERVICE_URL}/api/vhr/approveGatePassById/${dto.refId}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #108f1a;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+              "
+              >Accept Gate Pass</a
+            >
+            <a
+              href="${configVariables.APP_GATEX_SERVICE_URL}/api/vhr/rejectGatePassById/${dto.refId}"
+              style="
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #ff001e;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+              "
+              >Reject Gate Pass</a
+            >
+            </body>
+          </html>
+          `;
+    dcDetails.subject = 'Gate Pass : ' + dto.dcNumber;
+    try {
+      const res = await this.mailerService.sendDcMail(dcDetails);
+      return res?.status;
+    } catch (error) {
+      console.error(error.message);
+      return false;
+    }
+  }
+
 
   async getVINR(request: RefIdStatusDTO[]): Promise<CommonResponse> {
     try {
@@ -695,6 +815,47 @@ export class VHRService {
       }
     } catch (err) {
       console.log(err);
+    }
+  }
+  async approveGatePassById(refId: string): Promise<CommonResponse> {
+    try {
+      const votrDetails = await this.vehicleOTRRepository.findOne({ where: { refId: refId } });
+      if (!votrDetails) {
+        return new CommonResponse(false, 0, 'Gatepass record not found');
+      }
+      const approvelUrl = votrDetails.approvelUrl;
+      const updateResult = await this.vehicleOTRRepository.update({ refId: refId }, { gatePassStatus: GatePassStatus.APPROVE });
+      const reqPayload = new RefIdReq(refId)
+      if (updateResult.affected && updateResult.affected > 0) {
+        //external system call
+        await AxiosInstance.post(approvelUrl, reqPayload);
+        return new CommonResponse(true, 1, 'Gatepass Approved', updateResult);
+      } else {
+        return new CommonResponse(false, 0, 'No records found to update');
+      }
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async rejectGatePassById(refId: string): Promise<CommonResponse> {
+    try {
+      const votrDetails = await this.vehicleOTRRepository.findOne({ where: { refId: refId } });
+      if (!votrDetails) {
+        return new CommonResponse(false, 0, 'Gatepass record not found');
+      }
+      const approvelUrl = votrDetails.approvelUrl;
+      const updateResult = await this.vehicleOTRRepository.update({ refId: refId }, { gatePassStatus: GatePassStatus.REJECT });
+      const reqPayload = new RefIdReq(refId)
+      if (updateResult.affected && updateResult.affected > 0) {
+        //call to external system
+        await AxiosInstance.post(approvelUrl, reqPayload);
+        return new CommonResponse(true, 1, 'Gatepass Rejected', updateResult);
+      } else {
+        return new CommonResponse(false, 0, 'No records found to update');
+      }
+    } catch (err) {
+      return new CommonResponse(false, 500, 'Error updating status', err?.message || err);
     }
   }
 
