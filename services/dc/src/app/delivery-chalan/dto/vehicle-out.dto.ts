@@ -55,5 +55,14 @@ export class VehicleOTRDto {
     versionFlag: number;
 
     @ApiProperty()
+    mailRecipent: string[];
+
+    @ApiProperty()
+    approvelUrl: string;
+
+    @ApiProperty()
+    apiMethod: string; //by default POST
+
+    @ApiProperty()
     vehicleRecords: VehicleDto[];
 }

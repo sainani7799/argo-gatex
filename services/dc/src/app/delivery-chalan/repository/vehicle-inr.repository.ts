@@ -133,6 +133,8 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                 return new CommonResponse(false, 1, 'No record found for the given vehicle number');
             }
 
+            const vinrIds = [...new Set(vehicleRecords.map(v => v.vinrId))];
+
             let vehicleInr = `
             SELECT vinr.id, vinr.ref_id AS refId, vinr.ref_number AS refNumber, vinr.expected_arrival AS expectedArrival,
                    vinr.from, vinr.to, vinr.from_type AS fromType, vinr.to_type AS toType, vinr.ready_to_in AS readyToIn,
@@ -140,10 +142,12 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                    vinr.created_at AS createdAt, vinr.created_user AS createdUser, vinr.updated_at AS updatedAt,
                    vinr.updated_user AS updatedUser, vinr.version_flag AS versionFlag
             FROM vehicle_inr vinr
-            WHERE 1=1 AND vinr.id = ${vehicleRecords[0].vinrId}
-        `;
+            WHERE 1=1 AND vinr.id IN (?) AND vinr.req_status = ?`;
 
-            const vehicleINRRecords = await this.query(vehicleInr);
+            const vehicleINRRecords = await this.query(vehicleInr, [vinrIds, ReqStatus.OPEN]);
+            if (vehicleINRRecords.length === 0) {
+                return new CommonResponse(false, 1, 'No OPEN records found for this vehicle');
+            }
 
             const arrivalDateQuery = `
                 SELECT * FROM vehicle_en 
@@ -174,14 +178,14 @@ export class VehicleINRRepository extends Repository<VehicleINREntity> {
                 reqStatusData: vinr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
                 readyToInData: vinr.readyToIn == 1 ? "IN" : "OUT"
             }));
-            
+
             if (finalVehicleINRRecords) {
                 return new CommonResponse(true, 1, 'Data Retived', finalVehicleINRRecords);
             } else {
                 return new CommonResponse(false, 0, "No records found", []);
             }
         } catch (err) {
-            console.log(err);
+            throw err
         }
     }
 

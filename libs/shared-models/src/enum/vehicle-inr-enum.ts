@@ -20,3 +20,9 @@ export enum ReqStatus {
     OPEN = 0,
     DONE = 1
 }
+
+export enum GatePassStatus {
+    OPEN = 1,
+    APPROVE = 2,
+    REJECT = 0
+}
