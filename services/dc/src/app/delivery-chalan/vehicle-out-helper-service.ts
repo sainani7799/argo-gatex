@@ -1,4 +1,4 @@
-import { CheckListStatus, CommonResponse, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, SecurityCheckRequest } from "@gatex/shared-models";
+import { CheckListStatus, CommonResponse, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest } from "@gatex/shared-models";
 import { GrnServices, PkShippingRequestService } from "@gatex/shared-services";
 import { Injectable } from "@nestjs/common";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
@@ -18,6 +18,9 @@ export class VehicleOutHelperService {
         const otrRecord = await this.vehicleOTRRepository.findOne({ where: { id: Number(req.votrId) } });
         if (!otrRecord) {
             return new CommonResponse(false, 0, 'No OTR records found');
+        }
+        if (otrRecord.reqStatus == ReqStatus.OPEN) {
+            return new CommonResponse(false, 0, 'Out Request is not in open state');
         }
         const vehicle = await this.vehicleRepository.findOne({ where: { id: req.truckId }, });
         if (!vehicle) {

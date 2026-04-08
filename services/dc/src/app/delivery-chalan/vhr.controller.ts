@@ -1,23 +1,24 @@
+import { ADDHistoryReqModel, ADDVehicleReqModal, CommonResponse, GetVehicleNAInrReqModal, GetVehicleResModel, GlobalResponseObject, VRRefIdsResponseModel } from "@gatex/shared-models";
 import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { returnException } from "libs/backend-utils/src/lib/libs/application-exception-handler";
-import { ADDHistoryReqModel, ADDVehicleReqModal, GetVehicleNAInrReqModal, GetVehicleResModel, VRRefIdsResponseModel } from "@gatex/shared-models";
-import { CommonResponse } from "@gatex/shared-models";
 import { RefIdStatusDTO } from "./dto/ref-id-status-dto";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleDto } from "./dto/vehicle-en.dto";
 import { VehicleINRDto } from "./dto/vehicle-inr-dto";
 import { VehicleOTRDto } from "./dto/vehicle-out.dto";
-import { VRStatusDTO } from "./dto/vr-status-req.dto";
-import { VHRService } from "./vhr.service";
 import { VehicleReqDTO } from "./dto/vehicle-req.dto";
 import { VehicleStatusDTO } from "./dto/vehicle-status.dto";
+import { VRStatusDTO } from "./dto/vr-status-req.dto";
+import { VehicleOutHelperService } from "./vehicle-out-helper-service";
+import { VHRService } from "./vhr.service";
 
 @ApiTags('Vehicle Request')
 @Controller("vhr")
 export class VHRController {
   constructor(
     private readonly vhrService: VHRService,
+    private readonly vOutHelperService: VehicleOutHelperService,
   ) { }
 
   @Post('/createVINR')
@@ -182,7 +183,7 @@ export class VHRController {
 
   @Post('/updateDepartureAndStatus')
   @ApiBody({ type: TruckIdReqeust })
-  async updateDepartureAndStatus(@Body() req: any): Promise<any> {
+  async updateDepartureAndStatus(@Body() req: TruckIdReqeust): Promise<CommonResponse> {
     try {
       return await this.vhrService.updateDepartureAndStatus(req);
     } catch (error) {
@@ -202,7 +203,7 @@ export class VHRController {
 
   @Post('/getAllOUTVehicleByVehReq')
   @ApiBody({ type: VehicleReqDTO })
-  async getAllOUTVehicleByVehReq(@Body() req?: any): Promise<CommonResponse> {
+  async getAllOUTVehicleByVehReq(@Body() req?: VehicleReqDTO): Promise<CommonResponse> {
     try {
       return await this.vhrService.getAllOUTVehicleByVehReq(req);
     } catch (error) {
@@ -248,4 +249,13 @@ export class VHRController {
     }
   }
 
+  @Post('/updateVehicleOutStatusToExternalSystem')
+  @ApiBody({ type: TruckIdReqeust })
+  async updateVehicleOutStatusToExternalSystem(@Body() req: any): Promise<GlobalResponseObject> {
+    try {
+      return await this.vOutHelperService.updateVehicleOutStatusToExternalSystem(req);
+    } catch (error) {
+      return returnException(GlobalResponseObject, error);
+    }
+  }
 }

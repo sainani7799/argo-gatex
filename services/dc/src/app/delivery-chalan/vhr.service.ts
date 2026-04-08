@@ -1,13 +1,16 @@
+import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, CommonResponse, DcEmailModel, GatePassStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from '@gatex/shared-models';
+import { configVariables, GrnServices } from '@gatex/shared-services';
 import { Injectable } from '@nestjs/common';
 import { ErrorResponse } from 'libs/backend-utils/src/lib/libs/global-res-object';
-import { ADDHistoryReqModel, ADDVehicleReqModal, CheckListStatus, DcEmailModel, GatePassStatus, GetVehicleNAInrReqModal, GetVehicleResModel, HistoryRecord, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest, TruckStateEnum, VehicleModal, VRRefIdsResponseModel } from '@gatex/shared-models';
-import { CommonResponse } from '@gatex/shared-models';
-import { DataSource, In } from 'typeorm';
+import { AxiosInstance } from 'libs/shared-services/src/axios-instance';
+import { DataSource, In, Raw } from 'typeorm';
 import { RefIdStatusDTO } from './dto/ref-id-status-dto';
 import { TruckIdReqeust } from './dto/truck-id-dto';
 import { VehicleDto } from './dto/vehicle-en.dto';
 import { VehicleINRDto } from './dto/vehicle-inr-dto';
 import { VehicleOTRDto } from './dto/vehicle-out.dto';
+import { VehicleReqDTO } from './dto/vehicle-req.dto';
+import { VehicleStatusDTO } from './dto/vehicle-status.dto';
 import { VRStatusDTO } from './dto/vr-status-req.dto';
 import { VehicleEntity } from './entity/vehicle-en.entity';
 import { VehicleINREntity } from './entity/vehicle-inr.entity';
@@ -17,11 +20,8 @@ import { VehicleINRRepository } from './repository/vehicle-inr.repository';
 import { VehicleOTRRepository } from './repository/vehicle-otr.repository';
 import { VehicleStateRepository } from './repository/vehicle-state.repo';
 import { VehicleRepository } from './repository/vehicle.repository';
-import { configVariables, GrnServices } from '@gatex/shared-services';
-import { VehicleStatusDTO } from './dto/vehicle-status.dto';
 import { MailerService } from './send-mail';
-import { AxiosInstance } from 'libs/shared-services/src/axios-instance';
-
+import { VehicleOutHelperService } from './vehicle-out-helper-service';
 @Injectable()
 export class VHRService {
   constructor(
@@ -32,6 +32,7 @@ export class VHRService {
     private dataSource: DataSource,
     private grnServices: GrnServices,
     private mailerService: MailerService,
+    private vehicleOutHelperService: VehicleOutHelperService,
   ) { }
 
   async createVINR(reqs: VehicleINRDto[]): Promise<CommonResponse> {
@@ -607,7 +608,6 @@ export class VHRService {
             const sOut = new SecurityCheckRequest(vehicleDto.createdUser, vehicleDto.unitCode, vehicleDto.companyCode, vehicleDto.userId, vehicleDto.id, vehicleDto.vehicleNo, vehicleDto.dName, vehicleDto.createdUser, vehicleDto.dContact, undefined, currentDate, vehicleDto.id, CheckListStatus.VERIFIED, vehicleDto.vehicleNo, '', 0, 0, '', '')
             await this.grnServices.saveSecurityCheckOut(sOut)
           }
-
         }
         const savedVehicle = await queryRunner.manager.save(entity);
         savedVehicles.push(savedVehicle);
@@ -697,8 +697,13 @@ export class VHRService {
     }
   }
 
-
-  async updateDepartureAndStatus(req: TruckIdReqeust): Promise<string> {
+  //OLD - NOT USING
+  /**
+   * OLD ENDPOINT CHANGED TO BELOW API(updateDepartureAndStatus)
+   * @param req 
+   * @returns 
+   */
+  async updateDepartureAndStatusOld(req: TruckIdReqeust): Promise<string> {
     try {
       // Fetch OTR records for the given votrId
       const otrRecords = await this.vehicleOTRRepository.find({ where: { id: Number(req.votrId) } });
@@ -741,6 +746,54 @@ export class VHRService {
     }
   }
 
+  async updateDepartureAndStatus(req: TruckIdReqeust): Promise<CommonResponse> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const otrRecord = await queryRunner.manager.findOne(VehicleOTREntity, { where: { id: Number(req.votrId) } });
+      if (!otrRecord) {
+        await queryRunner.rollbackTransaction();
+        return new CommonResponse(false, 0, 'No OTR records found');
+      }
+      const vehicle = await queryRunner.manager.findOne(VehicleEntity, { where: { id: req.truckId }, });
+      if (!vehicle) {
+        await queryRunner.rollbackTransaction();
+        return new CommonResponse(false, 0, `No vehicle found for vehicleId: ${req.truckId}`);
+      }
+      vehicle.departureDateTime = new Date();
+      await queryRunner.manager.save(VehicleEntity, vehicle);
+      //Check if all vehicles related to this votrId have departed
+      const relatedVehicles = await queryRunner.manager.find(VehicleEntity, { where: { votrId: Number(req.votrId) } });
+      const allDeparted = relatedVehicles.every(v => v.departureDateTime !== null);
+
+      // If all vehicles departed, update OTR status
+      if (allDeparted) {
+        otrRecord.reqStatus = ReqStatus.DONE;
+        await queryRunner.manager.save(VehicleOTREntity, otrRecord);
+      }
+
+      await queryRunner.commitTransaction();
+
+      // Call external System to update the gateout status after commit
+      try {
+        await this.vehicleOutHelperService.updateVehicleOutStatusToExternalSystem(req);
+      } catch (extError) {
+        console.error('External system sync failed:', extError);
+      }
+
+      return new CommonResponse(true, 1, 'Departure updated successfully');
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+        return new CommonResponse(false, 0, `Failed to update departure: ${error.message}`);
+      }
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
 
   async getAllINVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
     try {
@@ -755,7 +808,13 @@ export class VHRService {
     }
   }
 
-  async getAllOUTVehicleByVehReq(req?: RefIdStatusDTO): Promise<CommonResponse> {
+  //NOT USING
+  /**
+   * OLD ENDPOINT CHANGED AND OPTIMIZED TO BELOW
+   * @param req 
+   * @returns 
+   */
+  async getAllOUTVehicleByVehReqOld(req?: RefIdStatusDTO): Promise<CommonResponse> {
     try {
       const result = await this.vehicleOTRRepository.getAllOUTVehicleByVehReq(req)
       if (result && typeof result === "object" && "status" in result) {
@@ -765,6 +824,49 @@ export class VHRService {
     } catch (err) {
       console.error(err);
       return new CommonResponse(false, 0, "Error occurred", null);
+    }
+  }
+
+
+  async getAllOUTVehicleByVehReq(req?: VehicleReqDTO): Promise<CommonResponse> {
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const vehicleRecords = await this.vehicleRepository.find({ where: { vehicleNo: req.vehicleNo, departureDateTime: Raw(alias => `DATE(${alias}) = :today`, { today }) } });
+      if (vehicleRecords.length === 0) {
+        return new CommonResponse(false, 1, "No record found for the given vehicle number with today's Departure date");
+      }
+      const votrIds = [...new Set(vehicleRecords?.map(v => Number(v.votrId)))]?.filter(id => id);
+      if (votrIds.length === 0) {
+        return new CommonResponse(false, 1, "No associated OTR records found for this vehicle");
+      }
+      const vehicleOTRRecords = await this.vehicleOTRRepository.find({ where: { id: In(votrIds), reqStatus: ReqStatus.OPEN } });
+      const vehicleIds = vehicleRecords.map(v => v.id);
+      const vehicleStateRecords = await this.vehicleStateRepository.find({ where: { vid: In(vehicleIds) } });
+      const vehicleOTR = [];
+      for (const rec of vehicleOTRRecords) {
+        const vehicleRecordsToSave = [];
+        const matchedVehicles = vehicleRecords.filter(r => Number(r.votrId) === Number(rec.id));
+        for (const vehicleData of matchedVehicles) {
+          const vehState = vehicleStateRecords.filter(rr => Number(rr.vid) === Number(vehicleData.id));
+          const finalVehicleStateRecords = vehState.map(state => ({
+            ...state,
+            vehicleTypeEnum: TruckStateEnum[state.vState as unknown as keyof typeof TruckStateEnum] || "UNKNOWN"
+          }));
+          vehicleRecordsToSave.push({ ...vehicleData, vehicleStateRecords: finalVehicleStateRecords });
+        }
+        vehicleOTR.push({ ...rec, vehicleRecords: vehicleRecordsToSave });
+      }
+
+      const finalVehicleOTRRecords = vehicleOTR.map(votr => ({
+        ...votr,
+        reqStatusData: votr.reqStatus == ReqStatus.OPEN ? "OPEN" : "DONE",
+        readyToSendData: votr.readyToSend == 1 ? "IN" : "OUT"
+      }));
+
+      return new CommonResponse(true, 1, "Data Retrieved Successfully", finalVehicleOTRRecords);
+
+    } catch (err) {
+      throw err;
     }
   }
 
