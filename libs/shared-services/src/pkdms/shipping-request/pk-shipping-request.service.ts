@@ -1,4 +1,4 @@
-import { CommonResponse, PkShippingRequestCheckoutRequest, PkShippingRequestIdRequest } from '@gatex/shared-models';
+import { CommonResponse, GlobalResponseObject, PkShippingRequestCheckoutRequest, PkShippingRequestIdRequest, RefIdReq } from '@gatex/shared-models';
 import { AxiosRequestConfig } from 'axios';
 import { PkDMSCommonAxiosService } from '../common-axios.service';
 
@@ -13,5 +13,9 @@ export class PkShippingRequestService extends PkDMSCommonAxiosService {
 
     async checkoutShippingRequest(reqModel: PkShippingRequestCheckoutRequest, config?: AxiosRequestConfig): Promise<CommonResponse> {
         return await this.axiosPostCall(this.getURLwithMainEndPoint('checkoutShippingRequest'), reqModel, config);
+    }
+
+    async updateShipmentReqStatusAfterGateOut(reqModel: RefIdReq, config?: AxiosRequestConfig): Promise<GlobalResponseObject> {
+        return await this.axiosPostCall(this.getURLwithMainEndPoint('updateShipmentReqStatusAfterGateOut'), reqModel, config);
     }
 }

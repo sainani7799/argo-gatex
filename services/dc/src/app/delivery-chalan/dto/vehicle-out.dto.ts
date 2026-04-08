@@ -1,5 +1,5 @@
+import { LocationFromTypeEnum, LocationToTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { ApiProperty } from "@nestjs/swagger";
-import { LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { VehicleDto } from "./vehicle-en.dto";
 
 export class VehicleOTRDto {
@@ -25,7 +25,7 @@ export class VehicleOTRDto {
     fromType: LocationFromTypeEnum;
 
     @ApiProperty()
-    toType: LocationFromTypeEnum;
+    toType: LocationToTypeEnum;
 
     @ApiProperty()
     readyToSend: number;
