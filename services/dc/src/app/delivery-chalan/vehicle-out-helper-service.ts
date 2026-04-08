@@ -1,5 +1,5 @@
-import { CheckListStatus, CommonResponse, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest } from "@gatex/shared-models";
-import { GrnServices, PkShippingRequestService } from "@gatex/shared-services";
+import { CheckListStatus, CommonResponse, GatePassOutReq, LocationFromTypeEnum, LocationToTypeEnum, RefIdReq, ReqStatus, SecurityCheckRequest } from "@gatex/shared-models";
+import { GrnServices, PkShippingRequestService, SubContractingService } from "@gatex/shared-services";
 import { Injectable } from "@nestjs/common";
 import { TruckIdReqeust } from "./dto/truck-id-dto";
 import { VehicleOTRRepository } from "./repository/vehicle-otr.repository";
@@ -9,11 +9,13 @@ import { VehicleRepository } from "./repository/vehicle.repository";
 export class VehicleOutHelperService {
     constructor(
         private readonly pkShippingRequestService: PkShippingRequestService,
+        private readonly subContractingService: SubContractingService,
         private grnService: GrnServices,
         private vehicleOTRRepository: VehicleOTRRepository,
         private vehicleRepository: VehicleRepository,
     ) { }
 
+    //TODO:gatex to accomodate the unitCode and companyCode in the structure
     async updateVehicleOutStatusToExternalSystem(req: TruckIdReqeust) {
         const otrRecord = await this.vehicleOTRRepository.findOne({ where: { id: Number(req.votrId) } });
         if (!otrRecord) {
@@ -39,7 +41,15 @@ export class VehicleOutHelperService {
                 case LocationFromTypeEnum.WH:
                     switch (otrRecord.toType) {
                         case LocationToTypeEnum.SUPP:
-                            return await this.grnService.saveSecurityCheckOut(new SecurityCheckRequest(vehicle.createdUser, '', '', 0, Number(otrRecord.refId), vehicle.vehicleNo, vehicle.dName, vehicle.createdUser, vehicle.dContact, undefined, new Date(), Number(otrRecord?.refNumber?.split('-')[0]), CheckListStatus.VERIFIED, vehicle.vehicleNo, '', 0, 0, '', ''));
+                            return await this.grnService.saveSecurityCheckOut(new SecurityCheckRequest(vehicle.createdUser, 'C03', 'SQ', null, Number(otrRecord.refId), vehicle.vehicleNo, vehicle.dName, vehicle.createdUser, vehicle.dContact, undefined, new Date(), Number(otrRecord?.refNumber?.split('-')[0]), CheckListStatus.VERIFIED, vehicle.vehicleNo, '', 0, 0, '', ''));
+                        default:
+                            break;
+                    }
+                    break;
+                case LocationFromTypeEnum.SPS:
+                    switch (otrRecord.toType) {
+                        case LocationToTypeEnum.SUBCON:
+                            return await this.subContractingService.onGatePassApprovalForOutReq(new GatePassOutReq(vehicle.createdUser, 'C03', 'SQ', null, otrRecord.gatexNumber, Number(otrRecord.refId), otrRecord.gatePassStatus));
                         default:
                             break;
                     }

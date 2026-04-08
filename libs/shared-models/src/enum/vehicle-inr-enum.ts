@@ -4,7 +4,8 @@ export enum LocationFromTypeEnum {
     WH = "WH",
     INS = "INS",
     SUPP = "SUPP",
-    PKMS = "PKMS"
+    PKMS = "PKMS",
+    SPS = "SPS"
 }
 
 export enum LocationToTypeEnum {
@@ -12,7 +13,8 @@ export enum LocationToTypeEnum {
     WH = "WH",
     INS = "INS",
     SUPP = "SUPP",
-    SHIP = "SHIP"
+    SHIP = "SHIP",
+    SUBCON = "SUBCON"
 }
 
 
@@ -24,5 +26,6 @@ export enum ReqStatus {
 export enum GatePassStatus {
     OPEN = 1,
     APPROVE = 2,
-    REJECT = 0
+    REJECT = 0,
+    NR = 3
 }
