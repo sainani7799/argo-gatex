@@ -754,13 +754,11 @@ export class VHRService {
     try {
       const otrRecord = await queryRunner.manager.findOne(VehicleOTREntity, { where: { id: Number(req.votrId) } });
       if (!otrRecord) {
-        await queryRunner.rollbackTransaction();
-        return new CommonResponse(false, 0, 'No OTR records found');
+        throw new Error('No Out Request records found');
       }
       const vehicle = await queryRunner.manager.findOne(VehicleEntity, { where: { id: req.truckId }, });
       if (!vehicle) {
-        await queryRunner.rollbackTransaction();
-        return new CommonResponse(false, 0, `No vehicle found for vehicleId: ${req.truckId}`);
+        throw new Error(`No vehicle found for vehicleId: ${req.truckId}`);
       }
       vehicle.departureDateTime = new Date();
       await queryRunner.manager.save(VehicleEntity, vehicle);
@@ -780,15 +778,15 @@ export class VHRService {
       try {
         await this.vehicleOutHelperService.updateVehicleOutStatusToExternalSystem(req);
       } catch (extError) {
-        console.error('External system sync failed:', extError);
+        throw extError;
       }
 
       return new CommonResponse(true, 1, 'Departure updated successfully');
     } catch (error) {
       if (queryRunner.isTransactionActive) {
         await queryRunner.rollbackTransaction();
-        return new CommonResponse(false, 0, `Failed to update departure: ${error.message}`);
       }
+      throw error;
     } finally {
       await queryRunner.release();
     }
