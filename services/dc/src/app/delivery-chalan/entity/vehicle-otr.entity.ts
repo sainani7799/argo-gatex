@@ -1,4 +1,4 @@
-import { GatePassStatus, LocationFromTypeEnum, ReqStatus } from "@gatex/shared-models";
+import { GatePassStatus, LocationFromTypeEnum, LocationToTypeEnum, ReqStatus } from "@gatex/shared-models";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 
 @Entity('vehicle_otr')
@@ -49,11 +49,11 @@ export class VehicleOTREntity {
 
     @Column({
         type: "enum",
-        enum: LocationFromTypeEnum,
+        enum: LocationToTypeEnum,
         nullable: true,
         name: "to_type"
     })
-    toType: LocationFromTypeEnum;
+    toType: LocationToTypeEnum;
 
     @Column('tinyint', {
         name: 'ready_to_send',
