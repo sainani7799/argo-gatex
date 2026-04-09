@@ -1,10 +1,9 @@
+import { CommonResponse, ReqStatus, TruckStateEnum } from '@gatex/shared-models';
 import { Injectable } from '@nestjs/common';
-import { ReqStatus, TruckStateEnum } from '@gatex/shared-models';
 import { DataSource, Repository } from 'typeorm';
 import { RefIdStatusDTO } from '../dto/ref-id-status-dto';
-import { VehicleOTREntity } from '../entity/vehicle-otr.entity';
-import { CommonResponse } from '@gatex/shared-models';
 import { VehicleReqDTO } from '../dto/vehicle-req.dto';
+import { VehicleOTREntity } from '../entity/vehicle-otr.entity';
 
 @Injectable()
 export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
@@ -94,6 +93,12 @@ export class VehicleOTRRepository extends Repository<VehicleOTREntity> {
 
     }
 
+    //NOT USING
+    /**
+     * OLD METHOD NOT USING
+     * @param req 
+     * @returns 
+     */
     async getAllOUTVehicleByVehReq(req: VehicleReqDTO): Promise<CommonResponse> {
         try {
             let query = `

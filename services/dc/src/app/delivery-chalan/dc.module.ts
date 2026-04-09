@@ -1,4 +1,4 @@
-import { EmailService, GrnServices, PkShippingRequestService, WhatsAppNotificationService } from "@gatex/shared-services";
+import { EmailService, GrnServices, PkShippingRequestService, SubContractingService, WhatsAppNotificationService } from "@gatex/shared-services";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ApplicationExceptionHandler } from "libs/backend-utils/src/lib/libs/application-exception-handler";
@@ -17,13 +17,14 @@ import { VehicleOTRRepository } from "./repository/vehicle-otr.repository";
 import { VehicleStateRepository } from "./repository/vehicle-state.repo";
 import { VehicleRepository } from "./repository/vehicle.repository";
 import { MailerService } from "./send-mail";
+import { VehicleOutHelperService } from "./vehicle-out-helper-service";
 import { VHRController } from "./vhr.controller";
 import { VHRService } from "./vhr.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([VehicleINREntity, VehicleOTREntity, VehicleEntity, VehicleStateEntity])],
   controllers: [DcController, VHRController],
-  providers: [DcService, VHRService, DcAdapter, DcEntityRepository, VehicleINRRepository, VehicleOTRRepository, VehicleRepository, ApplicationExceptionHandler, UnitRepository, DcItemEntityRepository, MailerService, WhatsAppNotificationService, EmailService, VehicleStateRepository, GrnServices, PkShippingRequestService],
+  providers: [DcService, VHRService, DcAdapter, DcEntityRepository, VehicleINRRepository, VehicleOTRRepository, VehicleRepository, ApplicationExceptionHandler, UnitRepository, DcItemEntityRepository, MailerService, WhatsAppNotificationService, EmailService, VehicleStateRepository, GrnServices, PkShippingRequestService, VehicleOutHelperService, SubContractingService],
   exports: [DcService, VHRService, GrnServices],
 })
 export class DcModule { }
