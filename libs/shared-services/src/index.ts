@@ -19,3 +19,4 @@ export * from '../config'
 export * from './xp-wms-common-axios-service';
 export * from './grn'
 export * from './pkdms';
+export * from './sps';

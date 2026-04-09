@@ -2,6 +2,7 @@
 export interface ConfigTypo {
     APP_WMS_SERVICE_URL: string,
     APP_PKDMS_SERVICE_URL: string,
+    APP_SPS_SERVICE_URL: string,
     APP_GATEX_SERVICE_URL: string,
     APP_IAM_SERVER_URL: string,
     APP_IAM_CLIENT_ID: string,
@@ -16,6 +17,7 @@ export interface ConfigTypo {
 export const configVariables: ConfigTypo = {
     APP_WMS_SERVICE_URL: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_WMS_SERVICE_URL'] : process.env['APP_WMS_SERVICE_URL'] || 'https://xpparel-dev-wms.schemaxtech.in',
     APP_PKDMS_SERVICE_URL: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_PKDMS_SERVICE_URL'] : process.env['APP_PKDMS_SERVICE_URL'] || 'https://xpparel-dev-pkdms.schemaxtech.in',
+    APP_SPS_SERVICE_URL: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_SPS_SERVICE_URL'] : process.env['APP_SPS_SERVICE_URL'] || 'https://xpparel-dev-sps.schemaxtech.in',
     APP_GATEX_SERVICE_URL: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_GATEX_SERVICE_URL'] : process.env['APP_GATEX_SERVICE_URL'] || 'https://gatex-be.schemaxtech.in/api',
     APP_IAM_SERVER_URL: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_IAM_SERVER_URL'] : process.env['APP_IAM_SERVER_URL'] || 'https://sq-dev-iam-be.schemaxtech.in',
     APP_IAM_CLIENT_ID: (typeof window !== 'undefined') ? window[`_env_`]?.['APP_IAM_CLIENT_ID'] : process.env['APP_IAM_CLIENT_ID'] || 'https://sq-dev-iam-be.schemaxtech.in',

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
 import { CommonResponse } from '@gatex/shared-models';
+import { Injectable } from '@nestjs/common';
+import * as fs from 'fs';
 import nodemailer from 'nodemailer';
 import { SendOptions } from './dto/send-mail';
-import * as fs from 'fs';
 
 @Injectable()
 export class MailerService {
@@ -10,19 +10,20 @@ export class MailerService {
   private readonly filePath: string = 'dist/services/dc/dcErrorLog.docx';
 
   constructor() {
+    //TODO: need to move this to configuration and use env variables
     this.transporter = nodemailer.createTransport({
       service: 'gmail',
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
       auth: {
-        user: 'shahimnb.bot@shahi.co.in',
-        pass: 'ukir yeur yyre mxgt',
+        user: 'alerts@schemaxtech.com',
+        pass: 'vqem erti nuze kria',
       },
     });
   }
 
-  
+
   async sendMail(req: any) {
     const inv: any = Object.values(req.invoiceDoc);
     const sli: any = Object.values(req.sliDoc);
@@ -51,10 +52,10 @@ export class MailerService {
       ],
     };
     const sendMail = await this.transporter.sendMail({
-      from: '"DXM BOT" <no-reply@shahi.co.in>',
+      from: '"GATE PASS" <alerts@schemaxtech.com>',
       to: req.to,
       cc: req.ccMails.split(','),
-      subject: req.subject ,
+      subject: req.subject,
       text: req.text,
       attachments: message.attachments,
     });
@@ -79,27 +80,24 @@ export class MailerService {
     }
   }
   async sendDcMail(req: any) {
-    try{
+    try {
       await this.logError(req.subject)
       const sendDcMail = await this.transporter.sendMail({
-        from: '"GATE PASS" <no-reply@shahi.co.in>',
+        from: '"GATE PASS" <alerts@schemaxtech.com>',
         to: req.to,
-        dcNo:req.dcNo,
+        dcNo: req.dcNo,
         subject: req.subject,
-        html : req.html
+        html: req.html
       });
       return new CommonResponse(true, 1111, 'Mail sent sucessfully');
-    }catch(err){
-      // await this.logError(err)
-      // console.log('------send mail error in service')
-      // console.log(err)
-      // console.log('-------End in service')
-      //  throw err
+    } catch (err) {
+      await this.logError(err)
+      throw err
     }
   }
 
- async logError(error: any) {
-  console.log(error,'error')
+  async logError(error: any) {
+    console.log(error, 'error')
     const errorMessage = `${new Date().toISOString()}: ${error}\n`;
     // Append error message to the file
     fs.appendFile(this.filePath, errorMessage, (err) => {
