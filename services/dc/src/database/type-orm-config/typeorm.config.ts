@@ -11,11 +11,11 @@ const databaseConfig = configuration().database;
 
 export const typeOrmConfig: DataSourceOptions = {
   type: databaseConfig.type,
-  host: '64.227.137.119',
+  host: databaseConfig.host,
   port: databaseConfig.port,
-  username: 'xpparel_pe',
-  password: 'Xpparel@123',
-  database: 'gatex_sq',
+  username: databaseConfig.username,
+  password: databaseConfig.password,
+  database: databaseConfig.dbName,
   timezone: 'Z',
   migrations: ['dist/database/migrations/*.js*{.ts,.js}'],
   extra: {
