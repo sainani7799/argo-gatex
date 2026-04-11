@@ -9,9 +9,6 @@ import { createDocument } from './swagger/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
-  }));
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = parseInt(process.env.APP_SERVER_PORT || '3338', 10);
