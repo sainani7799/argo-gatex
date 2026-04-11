@@ -752,13 +752,19 @@ export class VHRService {
     await queryRunner.startTransaction();
 
     try {
+      if (!req.truckId || !req.votrId) {
+        throw new ErrorResponse(0, "Truck Id and Votr Id are Mandatory in the request")
+      }
       const otrRecord = await queryRunner.manager.findOne(VehicleOTREntity, { where: { id: Number(req.votrId) } });
       if (!otrRecord) {
-        throw new Error('No Out Request records found');
+        throw new ErrorResponse(0, 'No Out Request records found');
+      }
+      if (otrRecord.reqStatus == ReqStatus.DONE) {
+        throw new ErrorResponse(0, "The vehicle out request is already done")
       }
       const vehicle = await queryRunner.manager.findOne(VehicleEntity, { where: { id: req.truckId }, });
       if (!vehicle) {
-        throw new Error(`No vehicle found for vehicleId: ${req.truckId}`);
+        throw new ErrorResponse(0, `No vehicle found for vehicleId: ${req.truckId}`);
       }
       vehicle.departureDateTime = new Date();
       await queryRunner.manager.save(VehicleEntity, vehicle);
@@ -828,6 +834,9 @@ export class VHRService {
 
   async getAllOUTVehicleByVehReq(req?: VehicleReqDTO): Promise<CommonResponse> {
     try {
+      if (!req.vehicleNo) {
+        throw new ErrorResponse(0, "vehicleNo is required")
+      }
       const today = new Date().toISOString().split("T")[0];
       const vehicleRecords = await this.vehicleRepository.find({ where: { vehicleNo: req.vehicleNo, departureDateTime: Raw(alias => `DATE(${alias}) = :today`, { today }) } });
       if (vehicleRecords.length === 0) {
