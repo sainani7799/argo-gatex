@@ -130,6 +130,7 @@ export class VHRService {
           });
           if (votrEntity) {
             Object.assign(votrEntity, req);
+            votrEntity.gatePassStatus = GatePassStatus.OPEN;
           } else {
             runningSerial++;
             const formatted = String(runningSerial).padStart(5, "0");
@@ -775,6 +776,7 @@ export class VHRService {
       // If all vehicles departed, update OTR status
       if (allDeparted) {
         otrRecord.reqStatus = ReqStatus.DONE;
+        otrRecord.gatePassStatus = GatePassStatus.APPROVE;
         await queryRunner.manager.save(VehicleOTREntity, otrRecord);
       }
 
