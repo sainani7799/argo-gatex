@@ -4,7 +4,7 @@ import { SPSCommonAxiosService } from '../sps-common-axios.service';
 
 export class SubContractingService extends SPSCommonAxiosService {
     private getURLwithMainEndPoint(childUrl: string) {
-        return '/sub-contracting/' + childUrl;
+        return '/job-sub-contracting/' + childUrl;
     }
 
     async onGatePassApprovalForOutReq(reqModel: GatePassOutReq, config?: AxiosRequestConfig): Promise<GlobalResponseObject> {
