@@ -784,7 +784,10 @@ export class VHRService {
 
       // Call external System to update the gateout status after commit
       try {
-        await this.vehicleOutHelperService.updateVehicleOutStatusToExternalSystem(req);
+        const extResponse = await this.vehicleOutHelperService.updateVehicleOutStatusToExternalSystem(req);
+        if (!extResponse.status) {
+          throw new ErrorResponse(0, `Error from External System:${extResponse.internalMessage}`)
+        }
       } catch (extError) {
         throw extError;
       }
