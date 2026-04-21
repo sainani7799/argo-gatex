@@ -8,6 +8,7 @@ on:
       - dockerfiles/**
       - services/**
       - ui/**
+      - .github/workflows/**
   workflow_dispatch:
 
 jobs:
