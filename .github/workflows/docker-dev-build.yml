@@ -79,9 +79,9 @@ jobs:
           file: ${{ matrix.dockerfile }}
           push: true
           tags: |
-            ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}
-          cache-from: type=registry,ref=ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/schemax-pte-ltd/gatex/${{ matrix.image }}:buildcache,mode=max
+            ghcr.io/sainani7799/argo-gatex/${{ matrix.image }}:${{ steps.vars.outputs.VERSION }}
+          cache-from: type=registry,ref=ghcr.io/sainani7799/argo-gatex/${{ matrix.image }}:buildcache
+          cache-to: type=registry,ref=ghcr.io/sainani7799/argo-gatex/${{ matrix.image }}:buildcache,mode=max
 
       - name: Summary
         run: |
