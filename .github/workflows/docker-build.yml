@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PIPELINE_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       # tag using new tag logic
       - name: Create and push Git tag
