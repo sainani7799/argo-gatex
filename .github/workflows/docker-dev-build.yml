@@ -103,17 +103,17 @@ jobs:
       - name: Update image tags
         run: |
           VERSION="${{ github.ref_name }}-dev"
-          # Update backend image
-          sed -i "s|image: ghcr.io/sainani7799/argo-gatex/gatex-be:.*|image: ghcr.io/sainani7799/argo-gatex/gatex-be:$VERSION|" deployment-repo/base/gatex-be-service/gatex-be/deployment.yaml
-          # Update UI image
-          sed -i "s|image: ghcr.io/sainani7799/argo-gatex/gatex-ui:.*|image: ghcr.io/sainani7799/argo-gatex/gatex-ui:$VERSION|" deployment-repo/base/gatex-ui-service/gatex-ui/deployment.yaml
+          # Update backend newTag
+          sed -i "s|newTag: .*|newTag: $VERSION|" deployment-repo/base/gatex-be-service/kustomization.yaml
+          # Update UI newTag
+          sed -i "s|newTag: .*|newTag: $VERSION|" deployment-repo/base/gatex-ui-service/kustomization.yaml
 
       - name: Commit and push changes
         run: |
           cd deployment-repo
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add base/
+          git add base/gatex-be-service/kustomization.yaml base/gatex-ui-service/kustomization.yaml
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
