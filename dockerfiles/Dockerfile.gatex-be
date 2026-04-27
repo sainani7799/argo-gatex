@@ -38,7 +38,6 @@ RUN npm prune --omit=dev
 FROM node:18-alpine AS runtime
 WORKDIR /app
 
-
 ENV NODE_ENV=production
 
 # Copy production node_modules
